@@ -65,6 +65,7 @@ public class CRC16M {
     }
 
     public static void main(String args[]) {
-        System.out.print(GetModBusCRC("4d43003001870c05D4FF373438594D430353595bceb19c00010001FFFF000B87FF0CBDFBD6B9D6D8B8B4C8EBB3A1"));
+        String str = "4d43002c01890c05D4FF373438594D430353595b72535b00010001FFFF000D89A30303037323830393936";
+        System.out.print(GetModBusCRC(str));
     }
 }

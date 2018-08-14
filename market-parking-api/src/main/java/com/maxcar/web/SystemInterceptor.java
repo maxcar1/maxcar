@@ -44,7 +44,7 @@ public class SystemInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        /*logger.info("用户认证方法调用之前");
+        logger.info("用户认证方法调用之前");
         InterfaceResult interfaceResult = new InterfaceResult();
         String resource = request.getServletPath();
         logger.info("拦截的path为{}",resource);
@@ -87,8 +87,8 @@ public class SystemInterceptor implements HandlerInterceptor {
                 interfaceResult.InterfaceResult403();
             }
 //        }
-        response.getWriter().write(JsonTools.toJson(interfaceResult));*/
-        return true;
+        response.getWriter().write(JsonTools.toJson(interfaceResult));
+        return false;
     }
 
 

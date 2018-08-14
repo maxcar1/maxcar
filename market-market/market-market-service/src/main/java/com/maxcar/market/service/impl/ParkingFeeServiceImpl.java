@@ -1175,13 +1175,18 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 flag = true;
             }
             Map map = DateUtils.getHMS(Calendar.getInstance().getTime(), parking.getArrivalTime());
-            json.put("hour", map.get("hour"));
-            json.put("minute", map.get("minute"));
-            json.put("second", map.get("second"));
+            StringBuilder sb = new StringBuilder();
+            sb.append(map.get("hour"));
+            sb.append("时");
+            sb.append(map.get("minute"));
+            sb.append("分");
+            sb.append(map.get("second"));
+            sb.append("秒");
+            json.put("workTime", sb);
             json.put("staffName",staff.getStaffName());
             json.put("position",barrier.getBarrierPosition());
             if (flag){
-                json.put("money","0");
+                json.put("money","0元");
             }else{
                 ParkingFeeDetail detail = new ParkingFeeDetail();
                 detail.setParkingFeeId(parking.getId());
@@ -1191,7 +1196,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 for(ParkingFeeDetail parkingFeeDetail:parkingFeeDetails){
                     total +=parkingFeeDetail.getChargePrice();
                 };
-                json.put("money",total);
+                json.put("money",total+"元");
             }
             result.InterfaceResult200(json);
         }else{
@@ -1289,12 +1294,16 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         String userId = params.getString("userId");
         String barrierId = params.getString("barrierId");
         Barrier barrier = barrierService.selectByBarrierId(barrierId);
-        parking.setEmployeesId(userId);
-        parking.setMarketId(marketId);
-        parking.setBrakeId(barrier.getBarrierId());
-        ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
-        parkingFee.setLeaveTime(Calendar.getInstance().getTime());
-        parkingFeeMapper.updateByPrimaryKeySelective(parkingFee);
+        if (null != barrier){
+            parking.setEmployeesId(userId);
+            parking.setMarketId(marketId);
+            parking.setBrakeId(barrier.getBarrierId());
+            ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
+            parkingFee.setLeaveTime(Calendar.getInstance().getTime());
+            parkingFeeMapper.updateByPrimaryKeySelective(parkingFee);
+        }else{
+            logger.info("没有道闸id为==>{}的信息",barrierId);
+        }
         return result;
     }
 

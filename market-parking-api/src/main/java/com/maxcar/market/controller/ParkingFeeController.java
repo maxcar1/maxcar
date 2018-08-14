@@ -187,9 +187,9 @@ public class ParkingFeeController extends BaseController {
     public InterfaceResult goOffWork(HttpServletRequest request,@PathVariable String barrierId) throws Exception{
         User user = getCurrentUser(request);
         JSONObject params = new JSONObject();
-        params.put("barrierId",barrierId);
         if (null != user){
             params = (JSONObject) JSONObject.toJSON(user);
+            params.put("barrierId",barrierId);
         }
         InterfaceResult result = parkingFeeService.goOffWork(params);
         return result;
