@@ -32,6 +32,7 @@ public class ClientMQTT{
     public void init() {
         /*clientId = LoadProperties.getProperties_3("../../../application.properties","clientid");*/
         clientId = UuidUtils.getUUID();
+        logger.info("{},clientId为===>{}",this.getClass().getName(),clientId);
         mqttServerHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.host");
         topic = LoadProperties.getProperties_3("../../../application.properties","mqtt.push.topic");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
