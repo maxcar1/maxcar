@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.tenant.app.dao.ChargeNotifyDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.tenant.app.entity.ChargeNotifyDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="charge_order_id" property="chargeOrderId" jdbcType="VARCHAR" />
+    <result column="detail" property="detail" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="insert" parameterType="com.maxcar.tenant.app.entity.ChargeNotifyDetail" >
+    insert into charge_notify_detail (id, charge_order_id, detail)
+    values (#{id}, #{chargeOrderId}, #{detail})
+  </insert>
+
+</mapper>

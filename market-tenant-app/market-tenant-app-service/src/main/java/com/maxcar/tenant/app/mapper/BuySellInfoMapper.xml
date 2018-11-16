@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.tenant.app.dao.BuySellInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.tenant.app.entity.BuySellInfo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="seller_type" property="sellerType" jdbcType="INTEGER" />
+    <result column="seller_name" property="sellerName" jdbcType="VARCHAR" />
+    <result column="seller_idcard" property="sellerIdcard" jdbcType="VARCHAR" />
+    <result column="seller_idcard_address" property="sellerIdcardAddress" jdbcType="VARCHAR" />
+    <result column="seller_phone" property="sellerPhone" jdbcType="VARCHAR" />
+    <result column="seller_idcard_front" property="sellerIdcardFront" jdbcType="VARCHAR" />
+    <result column="seller_idcard_reverse" property="sellerIdcardReverse" jdbcType="VARCHAR" />
+    <result column="seller_agency" property="sellerAgency" jdbcType="VARCHAR" />
+    <result column="seller_credit_code" property="sellerCreditCode" jdbcType="VARCHAR" />
+    <result column="seller_address" property="sellerAddress" jdbcType="VARCHAR" />
+    <result column="seller_business_license" property="sellerBusinessLicense" jdbcType="VARCHAR" />
+    <result column="buyer_type" property="buyerType" jdbcType="TINYINT" />
+    <result column="buyer_name" property="buyerName" jdbcType="VARCHAR" />
+    <result column="buyer_idcard" property="buyerIdcard" jdbcType="VARCHAR" />
+    <result column="buyer_idcard_address" property="buyerIdcardAddress" jdbcType="VARCHAR" />
+    <result column="buyer_phone" property="buyerPhone" jdbcType="VARCHAR" />
+    <result column="buyer_idcard_front" property="buyerIdcardFront" jdbcType="VARCHAR" />
+    <result column="buyer_idcard_reverse" property="buyerIdcardReverse" jdbcType="VARCHAR" />
+    <result column="buyer_agency" property="buyerAgency" jdbcType="VARCHAR" />
+    <result column="buyer_credit_code" property="buyerCreditCode" jdbcType="VARCHAR" />
+    <result column="buyer_business_license" property="buyerBusinessLicense" jdbcType="VARCHAR" />
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="isvalid" property="isvalid" jdbcType="TINYINT" />
+    <result column="buyer_address" property="buyerAddress" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, seller_type, seller_name, seller_idcard, seller_idcard_address, seller_phone, 
+    seller_idcard_front, seller_idcard_reverse, seller_agency, seller_credit_code, seller_address, 
+    seller_business_license, buyer_type, buyer_name, buyer_idcard, buyer_idcard_address, 
+    buyer_phone, buyer_idcard_front, buyer_idcard_reverse, buyer_agency, buyer_credit_code, 
+    buyer_business_license, insert_time, update_time, remarks, isvalid, buyer_address
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.tenant.app.entity.BuySellInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from buy_sell_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from buy_sell_info
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from buy_sell_info
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.maxcar.tenant.app.entity.BuySellInfoExample" >
+    delete from buy_sell_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.tenant.app.entity.BuySellInfo" >
+    insert into buy_sell_info (id, seller_type, seller_name, 
+      seller_idcard, seller_idcard_address, seller_phone, 
+      seller_idcard_front, seller_idcard_reverse, 
+      seller_agency, seller_credit_code, seller_address, 
+      seller_business_license, buyer_type, buyer_name, 
+      buyer_idcard, buyer_idcard_address, buyer_phone, 
+      buyer_idcard_front, buyer_idcard_reverse, buyer_agency, 
+      buyer_credit_code, buyer_business_license, 
+      insert_time, update_time, remarks, 
+      isvalid)
+    values (#{id,jdbcType=VARCHAR}, #{sellerType,jdbcType=INTEGER}, #{sellerName,jdbcType=VARCHAR}, 
+      #{sellerIdcard,jdbcType=VARCHAR}, #{sellerIdcardAddress,jdbcType=VARCHAR}, #{sellerPhone,jdbcType=VARCHAR}, 
+      #{sellerIdcardFront,jdbcType=VARCHAR}, #{sellerIdcardReverse,jdbcType=VARCHAR}, 
+      #{sellerAgency,jdbcType=VARCHAR}, #{sellerCreditCode,jdbcType=VARCHAR}, #{sellerAddress,jdbcType=VARCHAR}, 
+      #{sellerBusinessLicense,jdbcType=VARCHAR}, #{buyerType,jdbcType=TINYINT}, #{buyerName,jdbcType=VARCHAR}, 
+      #{buyerIdcard,jdbcType=VARCHAR}, #{buyerIdcardAddress,jdbcType=VARCHAR}, #{buyerPhone,jdbcType=VARCHAR}, 
+      #{buyerIdcardFront,jdbcType=VARCHAR}, #{buyerIdcardReverse,jdbcType=VARCHAR}, #{buyerAgency,jdbcType=VARCHAR}, 
+      #{buyerCreditCode,jdbcType=VARCHAR}, #{buyerBusinessLicense,jdbcType=VARCHAR}, 
+      #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{isvalid,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.tenant.app.entity.BuySellInfo" >
+    insert into buy_sell_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sellerType != null" >
+        seller_type,
+      </if>
+      <if test="sellerName != null" >
+        seller_name,
+      </if>
+      <if test="sellerIdcard != null" >
+        seller_idcard,
+      </if>
+      <if test="sellerIdcardAddress != null" >
+        seller_idcard_address,
+      </if>
+      <if test="sellerPhone != null" >
+        seller_phone,
+      </if>
+      <if test="sellerIdcardFront != null" >
+        seller_idcard_front,
+      </if>
+      <if test="sellerIdcardReverse != null" >
+        seller_idcard_reverse,
+      </if>
+      <if test="sellerAgency != null" >
+        seller_agency,
+      </if>
+      <if test="sellerCreditCode != null" >
+        seller_credit_code,
+      </if>
+      <if test="sellerAddress != null" >
+        seller_address,
+      </if>
+      <if test="sellerBusinessLicense != null" >
+        seller_business_license,
+      </if>
+      <if test="buyerType != null" >
+        buyer_type,
+      </if>
+      <if test="buyerName != null" >
+        buyer_name,
+      </if>
+      <if test="buyerIdcard != null" >
+        buyer_idcard,
+      </if>
+      <if test="buyerIdcardAddress != null" >
+        buyer_idcard_address,
+      </if>
+      <if test="buyerPhone != null" >
+        buyer_phone,
+      </if>
+      <if test="buyerIdcardFront != null" >
+        buyer_idcard_front,
+      </if>
+      <if test="buyerIdcardReverse != null" >
+        buyer_idcard_reverse,
+      </if>
+      <if test="buyerAgency != null" >
+        buyer_agency,
+      </if>
+      <if test="buyerCreditCode != null" >
+        buyer_credit_code,
+      </if>
+      <if test="buyerBusinessLicense != null" >
+        buyer_business_license,
+      </if>
+      <if test="insertTime != null" >
+        insert_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="isvalid != null" >
+        isvalid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerType != null" >
+        #{sellerType,jdbcType=INTEGER},
+      </if>
+      <if test="sellerName != null" >
+        #{sellerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcard != null" >
+        #{sellerIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcardAddress != null" >
+        #{sellerIdcardAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerPhone != null" >
+        #{sellerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcardFront != null" >
+        #{sellerIdcardFront,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcardReverse != null" >
+        #{sellerIdcardReverse,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerAgency != null" >
+        #{sellerAgency,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerCreditCode != null" >
+        #{sellerCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerAddress != null" >
+        #{sellerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerBusinessLicense != null" >
+        #{sellerBusinessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerType != null" >
+        #{buyerType,jdbcType=TINYINT},
+      </if>
+      <if test="buyerName != null" >
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcard != null" >
+        #{buyerIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcardAddress != null" >
+        #{buyerIdcardAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerPhone != null" >
+        #{buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcardFront != null" >
+        #{buyerIdcardFront,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcardReverse != null" >
+        #{buyerIdcardReverse,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerAgency != null" >
+        #{buyerAgency,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerCreditCode != null" >
+        #{buyerCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerBusinessLicense != null" >
+        #{buyerBusinessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="isvalid != null" >
+        #{isvalid,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maxcar.tenant.app.entity.BuySellInfoExample" resultType="java.lang.Integer" >
+    select count(*) from buy_sell_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update buy_sell_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerType != null" >
+        seller_type = #{record.sellerType,jdbcType=INTEGER},
+      </if>
+      <if test="record.sellerName != null" >
+        seller_name = #{record.sellerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerIdcard != null" >
+        seller_idcard = #{record.sellerIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerIdcardAddress != null" >
+        seller_idcard_address = #{record.sellerIdcardAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerPhone != null" >
+        seller_phone = #{record.sellerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerIdcardFront != null" >
+        seller_idcard_front = #{record.sellerIdcardFront,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerIdcardReverse != null" >
+        seller_idcard_reverse = #{record.sellerIdcardReverse,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerAgency != null" >
+        seller_agency = #{record.sellerAgency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerCreditCode != null" >
+        seller_credit_code = #{record.sellerCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerAddress != null" >
+        seller_address = #{record.sellerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerBusinessLicense != null" >
+        seller_business_license = #{record.sellerBusinessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerType != null" >
+        buyer_type = #{record.buyerType,jdbcType=TINYINT},
+      </if>
+      <if test="record.buyerName != null" >
+        buyer_name = #{record.buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerIdcard != null" >
+        buyer_idcard = #{record.buyerIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerIdcardAddress != null" >
+        buyer_idcard_address = #{record.buyerIdcardAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerPhone != null" >
+        buyer_phone = #{record.buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerIdcardFront != null" >
+        buyer_idcard_front = #{record.buyerIdcardFront,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerIdcardReverse != null" >
+        buyer_idcard_reverse = #{record.buyerIdcardReverse,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerAgency != null" >
+        buyer_agency = #{record.buyerAgency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerCreditCode != null" >
+        buyer_credit_code = #{record.buyerCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerBusinessLicense != null" >
+        buyer_business_license = #{record.buyerBusinessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="record.insertTime != null" >
+        insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remarks != null" >
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isvalid != null" >
+        isvalid = #{record.isvalid,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update buy_sell_info
+    set id = #{record.id,jdbcType=VARCHAR},
+      seller_type = #{record.sellerType,jdbcType=INTEGER},
+      seller_name = #{record.sellerName,jdbcType=VARCHAR},
+      seller_idcard = #{record.sellerIdcard,jdbcType=VARCHAR},
+      seller_idcard_address = #{record.sellerIdcardAddress,jdbcType=VARCHAR},
+      seller_phone = #{record.sellerPhone,jdbcType=VARCHAR},
+      seller_idcard_front = #{record.sellerIdcardFront,jdbcType=VARCHAR},
+      seller_idcard_reverse = #{record.sellerIdcardReverse,jdbcType=VARCHAR},
+      seller_agency = #{record.sellerAgency,jdbcType=VARCHAR},
+      seller_credit_code = #{record.sellerCreditCode,jdbcType=VARCHAR},
+      seller_address = #{record.sellerAddress,jdbcType=VARCHAR},
+      seller_business_license = #{record.sellerBusinessLicense,jdbcType=VARCHAR},
+      buyer_type = #{record.buyerType,jdbcType=TINYINT},
+      buyer_name = #{record.buyerName,jdbcType=VARCHAR},
+      buyer_idcard = #{record.buyerIdcard,jdbcType=VARCHAR},
+      buyer_idcard_address = #{record.buyerIdcardAddress,jdbcType=VARCHAR},
+      buyer_phone = #{record.buyerPhone,jdbcType=VARCHAR},
+      buyer_idcard_front = #{record.buyerIdcardFront,jdbcType=VARCHAR},
+      buyer_idcard_reverse = #{record.buyerIdcardReverse,jdbcType=VARCHAR},
+      buyer_agency = #{record.buyerAgency,jdbcType=VARCHAR},
+      buyer_credit_code = #{record.buyerCreditCode,jdbcType=VARCHAR},
+      buyer_business_license = #{record.buyerBusinessLicense,jdbcType=VARCHAR},
+      insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      isvalid = #{record.isvalid,jdbcType=TINYINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.tenant.app.entity.BuySellInfo" >
+    update buy_sell_info
+    <set >
+      <if test="sellerType != null" >
+        seller_type = #{sellerType,jdbcType=INTEGER},
+      </if>
+      <if test="sellerName != null" >
+        seller_name = #{sellerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcard != null" >
+        seller_idcard = #{sellerIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcardAddress != null" >
+        seller_idcard_address = #{sellerIdcardAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerPhone != null" >
+        seller_phone = #{sellerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcardFront != null" >
+        seller_idcard_front = #{sellerIdcardFront,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerIdcardReverse != null" >
+        seller_idcard_reverse = #{sellerIdcardReverse,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerAgency != null" >
+        seller_agency = #{sellerAgency,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerCreditCode != null" >
+        seller_credit_code = #{sellerCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerAddress != null" >
+        seller_address = #{sellerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerBusinessLicense != null" >
+        seller_business_license = #{sellerBusinessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerType != null" >
+        buyer_type = #{buyerType,jdbcType=TINYINT},
+      </if>
+      <if test="buyerName != null" >
+        buyer_name = #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcard != null" >
+        buyer_idcard = #{buyerIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcardAddress != null" >
+        buyer_idcard_address = #{buyerIdcardAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerPhone != null" >
+        buyer_phone = #{buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcardFront != null" >
+        buyer_idcard_front = #{buyerIdcardFront,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIdcardReverse != null" >
+        buyer_idcard_reverse = #{buyerIdcardReverse,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerAgency != null" >
+        buyer_agency = #{buyerAgency,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerCreditCode != null" >
+        buyer_credit_code = #{buyerCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerBusinessLicense != null" >
+        buyer_business_license = #{buyerBusinessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="isvalid != null" >
+        isvalid = #{isvalid,jdbcType=TINYINT},
+      </if>
+      <if test="buyerAddress != null" >
+        buyer_address = #{buyerAddress,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.tenant.app.entity.BuySellInfo" >
+    update buy_sell_info
+    set seller_type = #{sellerType,jdbcType=INTEGER},
+      seller_name = #{sellerName,jdbcType=VARCHAR},
+      seller_idcard = #{sellerIdcard,jdbcType=VARCHAR},
+      seller_idcard_address = #{sellerIdcardAddress,jdbcType=VARCHAR},
+      seller_phone = #{sellerPhone,jdbcType=VARCHAR},
+      seller_idcard_front = #{sellerIdcardFront,jdbcType=VARCHAR},
+      seller_idcard_reverse = #{sellerIdcardReverse,jdbcType=VARCHAR},
+      seller_agency = #{sellerAgency,jdbcType=VARCHAR},
+      seller_credit_code = #{sellerCreditCode,jdbcType=VARCHAR},
+      seller_address = #{sellerAddress,jdbcType=VARCHAR},
+      seller_business_license = #{sellerBusinessLicense,jdbcType=VARCHAR},
+      buyer_type = #{buyerType,jdbcType=TINYINT},
+      buyer_name = #{buyerName,jdbcType=VARCHAR},
+      buyer_idcard = #{buyerIdcard,jdbcType=VARCHAR},
+      buyer_idcard_address = #{buyerIdcardAddress,jdbcType=VARCHAR},
+      buyer_phone = #{buyerPhone,jdbcType=VARCHAR},
+      buyer_idcard_front = #{buyerIdcardFront,jdbcType=VARCHAR},
+      buyer_idcard_reverse = #{buyerIdcardReverse,jdbcType=VARCHAR},
+      buyer_agency = #{buyerAgency,jdbcType=VARCHAR},
+      buyer_credit_code = #{buyerCreditCode,jdbcType=VARCHAR},
+      buyer_business_license = #{buyerBusinessLicense,jdbcType=VARCHAR},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      isvalid = #{isvalid,jdbcType=TINYINT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

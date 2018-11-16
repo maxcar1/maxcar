@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.market.dao.ShoppingGuideDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.market.pojo.ShoppingGuideDetail" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="market_introduction" property="marketIntroduction" jdbcType="VARCHAR" />
+    <result column="gallery_image" property="galleryImage" jdbcType="VARCHAR" />
+    <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, logo, market_id, market_introduction, gallery_image, isvalid, insert_time, update_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.market.pojo.ShoppingGuideDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from shopping_guide_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from shopping_guide_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from shopping_guide_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.maxcar.market.pojo.ShoppingGuideDetailExample" >
+    delete from shopping_guide_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.market.pojo.ShoppingGuideDetail" >
+    insert into shopping_guide_detail (id, logo, market_id, 
+      market_introduction, gallery_image, isvalid, 
+      insert_time, update_time)
+    values (#{id,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, 
+      #{marketIntroduction,jdbcType=VARCHAR}, #{galleryImage,jdbcType=VARCHAR}, #{isvalid,jdbcType=INTEGER}, 
+      #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.market.pojo.ShoppingGuideDetail" >
+    insert into shopping_guide_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="logo != null" >
+        logo,
+      </if>
+      <if test="marketId != null" >
+        market_id,
+      </if>
+      <if test="marketIntroduction != null" >
+        market_introduction,
+      </if>
+      <if test="galleryImage != null" >
+        gallery_image,
+      </if>
+      <if test="isvalid != null" >
+        isvalid,
+      </if>
+      <if test="insertTime != null" >
+        insert_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="marketIntroduction != null" >
+        #{marketIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="galleryImage != null" >
+        #{galleryImage,jdbcType=VARCHAR},
+      </if>
+      <if test="isvalid != null" >
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maxcar.market.pojo.ShoppingGuideDetailExample" resultType="java.lang.Integer" >
+    select count(*) from shopping_guide_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update shopping_guide_detail
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.logo != null" >
+        logo = #{record.logo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.marketId != null" >
+        market_id = #{record.marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.marketIntroduction != null" >
+        market_introduction = #{record.marketIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="record.galleryImage != null" >
+        gallery_image = #{record.galleryImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isvalid != null" >
+        isvalid = #{record.isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="record.insertTime != null" >
+        insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update shopping_guide_detail
+    set id = #{record.id,jdbcType=VARCHAR},
+      logo = #{record.logo,jdbcType=VARCHAR},
+      market_id = #{record.marketId,jdbcType=VARCHAR},
+      market_introduction = #{record.marketIntroduction,jdbcType=VARCHAR},
+      gallery_image = #{record.galleryImage,jdbcType=VARCHAR},
+      isvalid = #{record.isvalid,jdbcType=INTEGER},
+      insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.market.pojo.ShoppingGuideDetail" >
+    update shopping_guide_detail
+    <set >
+      <if test="logo != null" >
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="marketIntroduction != null" >
+        market_introduction = #{marketIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="galleryImage != null" >
+        gallery_image = #{galleryImage,jdbcType=VARCHAR},
+      </if>
+      <if test="isvalid != null" >
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.market.pojo.ShoppingGuideDetail" >
+    update shopping_guide_detail
+    set logo = #{logo,jdbcType=VARCHAR},
+      market_id = #{marketId,jdbcType=VARCHAR},
+      market_introduction = #{marketIntroduction,jdbcType=VARCHAR},
+      gallery_image = #{galleryImage,jdbcType=VARCHAR},
+      isvalid = #{isvalid,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

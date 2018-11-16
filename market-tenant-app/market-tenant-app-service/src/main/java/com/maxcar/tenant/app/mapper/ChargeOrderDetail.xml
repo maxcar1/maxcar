@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.tenant.app.dao.ChargeOrderDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.tenant.app.entity.ChargeOrderDetail" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="staff_id" property="staffId" jdbcType="VARCHAR" />
+    <result column="charge_type" property="chargeType" jdbcType="TINYINT" />
+    <result column="charge_money" property="chargeMoney" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="supplier_biz_id" property="supplierBizId" jdbcType="VARCHAR" />
+    <result column="prepay_id" property="prepayId" jdbcType="VARCHAR" />
+    <result column="fee_type" property="feeType" jdbcType="INTEGER" />
+    <result column="transfer_car_no" property="transferCarNo" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, staff_id, charge_type, charge_money, state, supplier_biz_id, prepay_id, fee_type, transfer_car_no, gmt_create,
+    gmt_modified
+  </sql>
+
+  <insert id="insert" parameterType="com.maxcar.tenant.app.entity.ChargeOrderDetail" >
+    insert into charge_order_detail (id, staff_id, charge_type, charge_money, state, prepay_id, fee_type, transfer_car_no)
+    values (#{id}, #{staffId}, #{chargeType}, #{chargeMoney}, #{state}, #{prepayId}, #{feeType}, #{transferCarNo})
+  </insert>
+
+  <select id="find" resultMap="BaseResultMap" parameterType="String">
+    select * from charge_order_detail where id = #{id}
+  </select>
+
+  <update id="updateState" parameterType="com.maxcar.tenant.app.entity.ChargeOrderDetail" >
+    update charge_order_detail set state = #{state}
+    <if test="supplierBizId != null">
+      , supplier_biz_id = #{supplierBizId}
+    </if>
+    where id = #{id}
+  </update>
+
+  <select id="getChargeOrderByTransferCarNo" resultMap="BaseResultMap">
+    select * from charge_order_detail
+    where transfer_car_no = #{transferCarNo} and fee_type = #{feeType} and state = 2 limit 1
+  </select>
+
+</mapper>

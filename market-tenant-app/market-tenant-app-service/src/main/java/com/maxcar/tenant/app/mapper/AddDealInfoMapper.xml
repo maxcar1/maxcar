@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.tenant.app.dao.AddDealInfoMapper" >
+
+  <resultMap id="BaseResultMap" type="com.maxcar.tenant.app.entity.AddDealInfo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="car_manager" property="carManager" jdbcType="VARCHAR" />
+    <result column="deal_price" property="dealPrice" jdbcType="INTEGER" />
+    <result column="burden_owner" property="burdenOwner" jdbcType="TINYINT" />
+    <result column="mileage" property="mileage" jdbcType="INTEGER" />
+    <result column="engine_no" property="engineNo" jdbcType="VARCHAR" />
+    <result column="environmental_standards" property="environmentalStandards" jdbcType="VARCHAR" />
+    <result column="isvalid" property="isvalid" jdbcType="TINYINT" />
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="trading_type" property="tradingType" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, car_manager, deal_price, burden_owner, mileage, engine_no, environmental_standards,
+    isvalid, insert_time, update_time, trading_type
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from add_deal_info
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from add_deal_info
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maxcar.tenant.app.entity.AddDealInfo" >
+    insert into add_deal_info (id, car_manager, deal_price, burden_owner, mileage, engine_no,
+      environmental_standards, trading_type)
+    values (#{id}, #{carManager}, #{dealPrice}, #{burdenOwner}, #{mileage}, #{engineNo},
+      #{environmentalStandards}, #{tradingType})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.tenant.app.entity.AddDealInfo" >
+    update add_deal_info
+    <set >
+      <if test="carManager != null" >
+        car_manager = #{carManager},
+      </if>
+      <if test="dealPrice != null" >
+        deal_price = #{dealPrice},
+      </if>
+      <if test="burdenOwner != null" >
+        burden_owner = #{burdenOwner},
+      </if>
+      <if test="mileage != null" >
+        mileage = #{mileage},
+      </if>
+      <if test="engineNo != null" >
+        engine_no = #{engineNo},
+      </if>
+      <if test="environmentalStandards != null" >
+        environmental_standards = #{environmentalStandards},
+      </if>
+      <if test="isvalid != null" >
+        isvalid = #{isvalid},
+      </if>
+      <if test="tradingType != null" >
+        trading_type = #{tradingType},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.tenant.app.entity.AddDealInfo" >
+    update add_deal_info
+    set car_manager = #{carManager},
+      deal_price = #{dealPrice},
+      burden_owner = #{burdenOwner},
+      mileage = #{mileage},
+      engine_no = #{engineNo},
+      environmental_standards = #{environmentalStandards}
+    where id = #{id}
+  </update>
+
+  <update id="updateDealPrice">
+    update add_deal_info set deal_price = #{dealPrice} where id = #{id}
+  </update>
+
+</mapper>

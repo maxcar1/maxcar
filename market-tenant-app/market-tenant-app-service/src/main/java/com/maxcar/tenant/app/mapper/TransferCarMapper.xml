@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.tenant.app.dao.TransferCarMapper">
+    <resultMap id="BaseResultMap" type="com.maxcar.tenant.app.entity.TransferCar">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="transfer_car_no" property="transferCarNo" jdbcType="VARCHAR"/>
+        <result column="market_id" property="marketId" jdbcType="VARCHAR"/>
+        <result column="car_id" property="carId" jdbcType="VARCHAR"/>
+        <result column="bye_sell_info" property="byeSellInfo" jdbcType="VARCHAR"/>
+        <result column="add_deal_info" property="addDealInfo" jdbcType="VARCHAR"/>
+        <result column="tenant_id" property="tenantId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="type" property="type" jdbcType="TINYINT"/>
+        <result column="vin" property="vin" jdbcType="VARCHAR"/>
+        <result column="brand_model" property="brandModel" jdbcType="VARCHAR"/>
+        <result column="car_type" property="carType" jdbcType="TINYINT"/>
+        <result column="register_code" property="registerCode" jdbcType="VARCHAR"/>
+        <result column="plate_num" property="plateNum" jdbcType="VARCHAR"/>
+        <result column="check_out_photo" property="checkOutPhoto" jdbcType="VARCHAR"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="isvalid" property="isvalid" jdbcType="TINYINT"/>
+        <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="configuration_id" property="configurationId" jdbcType="VARCHAR"/>
+        <result column="quality_service" property="qualityService" jdbcType="TINYINT"/>
+        <result column="buyer_sign" property="buyerSign" jdbcType="VARCHAR"/>
+        <result column="seller_sign" property="sellerSign" jdbcType="VARCHAR"/>
+        <result column="contract_url" property="contractUrl" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id, transfer_car_no, market_id, car_id, bye_sell_info, add_deal_info, tenant_id, `status`, `type`,
+        vin, brand_model, car_type, register_code, plate_num, check_out_photo, start_time, remarks, isvalid,
+        insert_time, update_time,configuration_id, quality_service, buyer_sign, seller_sign, contract_url
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.maxcar.tenant.app.entity.TransferCarExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from transfer_car
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <!--  根据ID 获取有效 过户车辆信息  -->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from transfer_car
+        where id = #{id,jdbcType=VARCHAR} and isvalid = 1
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from transfer_car
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.maxcar.tenant.app.entity.TransferCarExample">
+        delete from transfer_car
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.maxcar.tenant.app.entity.TransferCar">
+        insert into transfer_car
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="transferCarNo != null">
+                transfer_car_no,
+            </if>
+            <if test="marketId != null">
+                market_id,
+            </if>
+            <if test="carId != null">
+                car_id,
+            </if>
+            <if test="byeSellInfo != null">
+                bye_sell_info,
+            </if>
+            <if test="addDealInfo != null">
+                add_deal_info,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="vin != null">
+                vin,
+            </if>
+            <if test="brandModel != null">
+                brand_model,
+            </if>
+            <if test="carType != null">
+                car_type,
+            </if>
+            <if test="registerCode != null">
+                register_code,
+            </if>
+            <if test="plateNum != null">
+                plate_num,
+            </if>
+            <if test="checkOutPhoto != null">
+                check_out_photo,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="isvalid != null">
+                isvalid,
+            </if>
+            <if test="insertTime != null">
+                insert_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="configurationId != null">
+                configuration_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="transferCarNo != null">
+                #{transferCarNo,jdbcType=VARCHAR},
+            </if>
+            <if test="marketId != null">
+                #{marketId,jdbcType=VARCHAR},
+            </if>
+            <if test="carId != null">
+                #{carId,jdbcType=VARCHAR},
+            </if>
+            <if test="byeSellInfo != null">
+                #{byeSellInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="addDealInfo != null">
+                #{addDealInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="vin != null">
+                #{vin,jdbcType=VARCHAR},
+            </if>
+            <if test="brandModel != null">
+                #{brandModel,jdbcType=VARCHAR},
+            </if>
+            <if test="carType != null">
+                #{carType,jdbcType=TINYINT},
+            </if>
+            <if test="registerCode != null">
+                #{registerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="plateNum != null">
+                #{plateNum,jdbcType=VARCHAR},
+            </if>
+            <if test="checkOutPhoto != null">
+                #{checkOutPhoto,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="isvalid != null">
+                #{isvalid,jdbcType=TINYINT},
+            </if>
+            <if test="insertTime != null">
+                #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="configurationId != null">
+                #{configurationId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.maxcar.tenant.app.entity.TransferCarExample"
+            resultType="java.lang.Integer">
+        select count(*) from transfer_car
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update transfer_car
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.transferCarNo != null">
+                transfer_car_no = #{record.transferCarNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.marketId != null">
+                market_id = #{record.marketId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.carId != null">
+                car_id = #{record.carId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.byeSellInfo != null">
+                bye_sell_info = #{record.byeSellInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.addDealInfo != null">
+                add_deal_info = #{record.addDealInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tenantId != null">
+                tenant_id = #{record.tenantId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.status != null">
+                status = #{record.status,jdbcType=TINYINT},
+            </if>
+            <if test="record.type != null">
+                type = #{record.type,jdbcType=TINYINT},
+            </if>
+            <if test="record.vin != null">
+                vin = #{record.vin,jdbcType=VARCHAR},
+            </if>
+            <if test="record.brandModel != null">
+                brand_model = #{record.brandModel,jdbcType=VARCHAR},
+            </if>
+            <if test="record.carType != null">
+                car_type = #{record.carType,jdbcType=TINYINT},
+            </if>
+            <if test="record.registerCode != null">
+                register_code = #{record.registerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.plateNum != null">
+                plate_num = #{record.plateNum,jdbcType=VARCHAR},
+            </if>
+            <if test="record.checkOutPhoto != null">
+                check_out_photo = #{record.checkOutPhoto,jdbcType=VARCHAR},
+            </if>
+            <if test="record.startTime != null">
+                start_time = #{record.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.remarks != null">
+                remarks = #{record.remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isvalid != null">
+                isvalid = #{record.isvalid,jdbcType=TINYINT},
+            </if>
+            <if test="record.insertTime != null">
+                insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update transfer_car
+        set id = #{record.id,jdbcType=VARCHAR},
+        transfer_car_no = #{record.transferCarNo,jdbcType=VARCHAR},
+        market_id = #{record.marketId,jdbcType=VARCHAR},
+        car_id = #{record.carId,jdbcType=VARCHAR},
+        bye_sell_info = #{record.byeSellInfo,jdbcType=VARCHAR},
+        add_deal_info = #{record.addDealInfo,jdbcType=VARCHAR},
+        tenant_id = #{record.tenantId,jdbcType=VARCHAR},
+        status = #{record.status,jdbcType=TINYINT},
+        type = #{record.type,jdbcType=TINYINT},
+        vin = #{record.vin,jdbcType=VARCHAR},
+        brand_model = #{record.brandModel,jdbcType=VARCHAR},
+        car_type = #{record.carType,jdbcType=TINYINT},
+        register_code = #{record.registerCode,jdbcType=VARCHAR},
+        plate_num = #{record.plateNum,jdbcType=VARCHAR},
+        check_out_photo = #{record.checkOutPhoto,jdbcType=VARCHAR},
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+        isvalid = #{record.isvalid,jdbcType=TINYINT},
+        insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.tenant.app.entity.TransferCar">
+        update transfer_car
+        <set>
+            <if test="transferCarNo != null">
+                transfer_car_no = #{transferCarNo,jdbcType=VARCHAR},
+            </if>
+            <if test="marketId != null">
+                market_id = #{marketId,jdbcType=VARCHAR},
+            </if>
+            <if test="carId != null">
+                car_id = #{carId,jdbcType=VARCHAR},
+            </if>
+            <if test="byeSellInfo != null">
+                bye_sell_info = #{byeSellInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="addDealInfo != null">
+                add_deal_info = #{addDealInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="vin != null">
+                vin = #{vin,jdbcType=VARCHAR},
+            </if>
+            <if test="brandModel != null">
+                brand_model = #{brandModel,jdbcType=VARCHAR},
+            </if>
+            <if test="carType != null">
+                car_type = #{carType,jdbcType=TINYINT},
+            </if>
+            <if test="registerCode != null">
+                register_code = #{registerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="plateNum != null">
+                plate_num = #{plateNum,jdbcType=VARCHAR},
+            </if>
+            <if test="checkOutPhoto != null">
+                check_out_photo = #{checkOutPhoto,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="isvalid != null">
+                isvalid = #{isvalid,jdbcType=TINYINT},
+            </if>
+            <if test="configurationId != null">
+                configuration_id = #{configurationId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.maxcar.tenant.app.entity.TransferCar">
+        update transfer_car
+        set transfer_car_no = #{transferCarNo,jdbcType=VARCHAR},
+        market_id = #{marketId,jdbcType=VARCHAR},
+        car_id = #{carId,jdbcType=VARCHAR},
+        bye_sell_info = #{byeSellInfo,jdbcType=VARCHAR},
+        add_deal_info = #{addDealInfo,jdbcType=VARCHAR},
+        tenant_id = #{tenantId,jdbcType=VARCHAR},
+        status = #{status,jdbcType=TINYINT},
+        type = #{type,jdbcType=TINYINT},
+        vin = #{vin,jdbcType=VARCHAR},
+        brand_model = #{brandModel,jdbcType=VARCHAR},
+        car_type = #{carType,jdbcType=TINYINT},
+        register_code = #{registerCode,jdbcType=VARCHAR},
+        plate_num = #{plateNum,jdbcType=VARCHAR},
+        check_out_photo = #{checkOutPhoto,jdbcType=VARCHAR},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        remarks = #{remarks,jdbcType=VARCHAR},
+        isvalid = #{isvalid,jdbcType=TINYINT},
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateIsvalid" parameterType="String">
+        update transfer_car set isvalid = 0
+        where id = #{transferCarId} and `type` = 1
+    </update>
+
+    <update id="updateStatus">
+        update transfer_car
+        set status = #{status}
+        <if test="status == 5">
+            , `type` = 2
+        </if>
+        where transfer_car_no = #{transferCarNo}
+    </update>
+
+    <select id="getTransferCarByNo" resultMap="BaseResultMap" parameterType="String">
+        select * from transfer_car where transfer_car_no = #{transferCarNo}
+    </select>
+
+    <update id="updateSign">
+        update transfer_car
+        <set>
+            <if test="sellerSign != null and sellerSign != ''">
+                seller_sign = #{sellerSign},
+            </if>
+            <if test="buyerSign != null and buyerSign != ''">
+                buyer_sign = #{buyerSign}
+            </if>
+        </set>
+        where id = #{transferCarId}
+    </update>
+
+    <update id="updateContractUrl">
+        update transfer_car set contract_url = #{contractUrl} where id = #{id}
+    </update>
+
+    <select id="getTransferCarByCarId" resultMap="BaseResultMap" parameterType="String">
+        select * from transfer_car where car_type = 1 and car_id = #{carId}  and isvalid = 1 limit 1
+    </select>
+
+</mapper>

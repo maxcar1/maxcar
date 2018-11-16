@@ -1,0 +1,19 @@
+#mq配置
+com:
+ mqtt:
+  consumerProperties:
+    url: tcp://mqtt-t.maxcar.com.cn:1883
+    clientId: mqttjs_e8022a4d0b
+    topics: good,test,yes
+    username: mqttclient
+    password: 123456
+    timeout: 10
+    keepalive: 20
+  producerProperties:
+    urls: tcp://mqtt-t.maxcar.com.cn:1883
+    clientId: mqttjs_e8022a4d0b
+    topic: good
+    username: mqttclient
+    password: 123456
+    timeout: 10
+    keepalive: 20

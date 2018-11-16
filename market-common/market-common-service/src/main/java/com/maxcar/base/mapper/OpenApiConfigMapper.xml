@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.base.dao.OpenApiConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.base.pojo.OpenApiConfig" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <id column="app_key" property="appKey" jdbcType="VARCHAR" />
+    <id column="app_secret" property="appSecret" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="api_type" property="apiType" jdbcType="INTEGER" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+    <result column="is_ip" property="isIp" jdbcType="INTEGER" />
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
+    <result column="insert_operator" property="insertOperator" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_operator" property="updateOperator" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, app_key, app_secret, ip, market_id,is_ip, api_type, company_name, is_valid, insert_time,
+    insert_operator, update_time, update_operator, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from open_api_config
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey"  >
+    delete from open_api_config
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.base.pojo.OpenApiConfig" >
+    insert into open_api_config (id, app_key, app_secret, 
+      ip, market_id, api_type, 
+      company_name,is_ip, is_valid, insert_time,
+      insert_operator, update_time, update_operator, 
+      remark)
+    values (#{id,jdbcType=VARCHAR}, #{appKey,jdbcType=VARCHAR}, #{appSecret,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, #{apiType,jdbcType=INTEGER}, 
+      #{companyName,jdbcType=VARCHAR},#{isIp,jdbcType=INTEGER}, #{isValid,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP},
+      #{insertOperator,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateOperator,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.base.pojo.OpenApiConfig" >
+    insert into open_api_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="appKey != null" >
+        app_key,
+      </if>
+      <if test="appSecret != null" >
+        app_secret,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="marketId != null" >
+        market_id,
+      </if>
+      <if test="apiType != null" >
+        api_type,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="isIp != null" >
+        is_ip,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="insertTime != null" >
+        insert_time,
+      </if>
+      <if test="insertOperator != null" >
+        insert_operator,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateOperator != null" >
+        update_operator,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="appKey != null" >
+        #{appKey,jdbcType=VARCHAR},
+      </if>
+      <if test="appSecret != null" >
+        #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="apiType != null" >
+        #{apiType,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="isIp != null" >
+        #{isIp,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertOperator != null" >
+        #{insertOperator,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateOperator != null" >
+        #{updateOperator,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.base.pojo.OpenApiConfig" >
+    update open_api_config
+    <set >
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="appKey != null" >
+        app_key = #{appKey,jdbcType=VARCHAR},
+      </if>
+      <if test="appSecret != null" >
+        app_secret = #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="apiType != null" >
+        api_type = #{apiType,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="isIp != null" >
+        is_ip = #{isIp,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertOperator != null" >
+        insert_operator = #{insertOperator,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateOperator != null" >
+        update_operator = #{updateOperator,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.base.pojo.OpenApiConfig" >
+    update open_api_config
+    set ip = #{ip,jdbcType=VARCHAR},
+      market_id = #{marketId,jdbcType=VARCHAR},
+      app_key = #{appKey,jdbcType=VARCHAR},
+      app_secret = #{appSecret,jdbcType=VARCHAR},
+      api_type = #{apiType,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      is_ip = #{isIp,jdbcType=INTEGER},
+      is_valid = #{isValid,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      insert_operator = #{insertOperator,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_operator = #{updateOperator,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="checkSecret" resultMap="BaseResultMap" resultType="java.lang.String">
+    select <include refid="Base_Column_List"/> from open_api_config
+    where app_key = #{appKey,jdbcType=VARCHAR} and is_valid = 1
+  </select>
+</mapper>

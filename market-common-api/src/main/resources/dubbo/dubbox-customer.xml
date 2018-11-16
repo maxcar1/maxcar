@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="maxcar-common-customer" owner="programmer" organization="dubbox"/>
+
+	<dubbo:registry address="${dubbo.registry.address}" register="true"></dubbo:registry>
+
+	<dubbo:annotation package="com.maxcar" />
+
+	<!--<dubbo:protocol name="dubbo" port="9006" serialization="kryo" optimizer="com.maxcar.statistics.util.SerializationOptimizerImpl"/>-->
+	<dubbo:protocol name="dubbo" port="9005"></dubbo:protocol>
+
+
+
+	<!-- 声明需要暴露的服务接口,  service实现bean必须指定名称和ref内容相同-->
+
+	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+	<!-- base -->
+	<dubbo:reference id="cityService" interface="com.maxcar.base.service.CityService" check="false"/>
+	<dubbo:reference id="provinceService" interface="com.maxcar.base.service.ProvinceService" check="false"/>
+	<dubbo:reference id="uploadService" interface="com.maxcar.base.service.UploadService" check="false"/>
+	<dubbo:reference id="daSouCheService" interface="com.maxcar.base.service.DaSouCheService" check="false"/>
+	<dubbo:reference id="carBaseService" interface="com.maxcar.stock.service.CarBaseService" check="false"/>
+	<dubbo:reference id="carService" interface="com.maxcar.stock.service.CarService" check="false"/>
+	<dubbo:reference id="openApiConfigService" interface="com.maxcar.base.service.OpenApiConfigService" check="false"/>
+	<dubbo:reference id="parkingFeeService" interface="com.maxcar.market.service.ParkingFeeService" check="false"/>
+	<dubbo:reference id="parkingFeeRuleService" interface="com.maxcar.market.service.ParkingFeeRuleService" check="false"/>
+	<dubbo:reference id="parkingFeeIntegralService" interface="com.maxcar.market.service.ParkingFeeIntegralService" check="false"/>
+</beans>

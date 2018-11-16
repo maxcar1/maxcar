@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.stock.dao.WishListMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.WishList" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="car_id" property="carId" jdbcType="VARCHAR" />
+    <result column="ticket" property="ticket" jdbcType="VARCHAR" />
+
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
+
+  </resultMap>
+
+  <resultMap id="WxCarMap" type="com.maxcar.stock.pojo.WishList">
+
+
+  </resultMap>
+  <insert id="insertWishList" parameterType="com.maxcar.stock.pojo.WishList">
+    insert  into wish_list(car_id , ticket , market_id , insert_time) values (#{carId},#{ticket} ,#{marketId},#{insertTime})
+
+  </insert>
+  <select id="getWishListCar" parameterType="com.maxcar.stock.pojo.WishList" resultType="com.maxcar.stock.pojo.WxWishListCar">
+        SELECT
+        cb.id,
+        cb.model_name as modelName,
+        ca.initial_licence_time as initial,
+        cb.mileage,
+
+        cb.market_price as marketPrice,
+        cb.new_price as newPrice,
+        ca.market_id as marketId,
+        ut.tenant_name as tenantName,
+      cp.src
+    FROM
+        maxcar_stock_l.car_base cb
+    LEFT JOIN maxcar_stock_l.car ca ON cb.id = ca.id
+    LEFT JOIN maxcar_tenant_l.user_tenant ut ON ca.tenant = ut.id
+      LEFT JOIN maxcar_stock_l.car_pic cp on cp.car_id = cb.id
+    WHERE
+        cb.id IN (
+            SELECT
+                car_id
+            FROM
+                maxcar_stock_l.wish_list
+            WHERE
+                user_id = #{userId}
+      <if test="ticket != null" >
+          AND ticket = #{ticket}
+      </if>
+        )
+      and cp.type=0
+    <if test="marketId != null" >
+      AND ca.market_id = #{marketId}
+    </if>
+
+
+  </select>
+</mapper>
