@@ -22,24 +22,24 @@ public class RankingMapperService {
      * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 交易 condition
      * create_date:  lxy   2018/11/14  18:03
      **/
-    public List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingParameter request) {
+    public List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingParameter parameter) {
 
         String selectColumns = " i.market_id AS marketId,m.name AS marketName, IFNULL(COUNT(*), 0) AS invoiceCount,IFNULL(SUM(i.price), 0) AS invoicePrice ";
         String groupByColumns = " i.market_id ";
 
-        if (StringUtil.isNotEmpty(request.getMarketId())) {
+        if (StringUtil.isNotEmpty(parameter.getMarketId())) {
             selectColumns = " i.tenant_id AS tenantId,ut.tenant_name AS tenantName,IFNULL(COUNT(*), 0) AS invoiceCount,IFNULL(SUM(i.price), 0) AS invoicePrice ";
             groupByColumns = " i.tenant_id";
         }
 
-        request.setSelectColumns(selectColumns);
-        request.setGroupByColumns(groupByColumns);
+        parameter.setSelectColumns(selectColumns);
+        parameter.setGroupByColumns(groupByColumns);
 
-        if (StringUtil.isEmpty(request.getOrderBy())) {
-            request.setOrderBy("invoiceCount");
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("invoiceCount");
         }
 
-        return rankingDao.getInvoiceRanking(request);
+        return rankingDao.getInvoiceRanking(parameter);
     }
 
     /**

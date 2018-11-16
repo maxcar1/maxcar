@@ -3,6 +3,7 @@ package com.maxcar.statistics.dao.provider;
 
 import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
 import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
+import com.maxcar.statistics.model.parameter.getCarInvoiceTypeInvoiceRankingParameter;
 import org.apache.ibatis.jdbc.SQL;
 
 /**
@@ -12,26 +13,26 @@ import org.apache.ibatis.jdbc.SQL;
  **/
 public class RankingProvider {
 
-    public String getInvoiceRanking(GetInvoiceRankingParameter request) {
+    public String getInvoiceRanking(GetInvoiceRankingParameter parameter) {
         return new SQL() {{
-            SELECT(request.getSelectColumns());
+            SELECT(parameter.getSelectColumns());
             FROM(" maxcar_market_l.invoice AS i \n" +
                     "  LEFT JOIN maxcar_user_l.`market` AS m \n" +
                     "    ON i.market_id = m.id \n" +
                     "  LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut \n" +
                     "    ON i.tenant_id = ut.id ");
-            WHERE(request.getSelectCondition());
+            WHERE(parameter.getSelectCondition());
 
-            GROUP_BY(request.getGroupByColumns());
+            GROUP_BY(parameter.getGroupByColumns());
 
-            ORDER_BY(request.getOrderBy() + " DESC ");
+            ORDER_BY(parameter.getOrderBy() + " DESC ");
 
         }}.toString() + "  limit 10 ";
     }
 
-    public String getInventoryRanking(GetInventoryRankingParameter request) {
+    public String getInventoryRanking(GetInventoryRankingParameter parameter) {
         return new SQL() {{
-            SELECT(request.getSelectColumns());
+            SELECT(parameter.getSelectColumns());
             FROM("  maxcar_stock_l.car AS c\n" +
                     "  LEFT JOIN maxcar_stock_l.car_base AS cb\n" +
                     "    ON cb.id = c.id \n" +
@@ -39,22 +40,22 @@ public class RankingProvider {
                     "    ON c.market_id = m.id \n" +
                     "  LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut \n" +
                     "    ON c.tenant = ut.id  ");
-            WHERE(request.getSelectCondition());
+            WHERE(parameter.getSelectCondition());
 
-            GROUP_BY(request.getGroupByColumns());
+            GROUP_BY(parameter.getGroupByColumns());
 
-            ORDER_BY(request.getOrderBy() + " DESC ");
+            ORDER_BY(parameter.getOrderBy() + " DESC ");
 
         }}.toString() + "  limit 10 ";
     }
 
 
-    public String getCarInvoiceTypeInvoiceRanking(GetInvoiceRankingParameter request) {
+    public String getCarInvoiceTypeInvoiceRanking(getCarInvoiceTypeInvoiceRankingParameter parameter) {
         return new SQL() {{
             SELECT(" car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(price), 0) AS invoicePrice ");
             FROM(" maxcar_market_l.invoice ");
             GROUP_BY("car_invoice_type");
-            //ORDER_BY();
+            ORDER_BY(parameter.getOrderBy());
 
         }}.toString();
     }

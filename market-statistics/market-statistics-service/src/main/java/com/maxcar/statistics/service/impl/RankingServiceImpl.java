@@ -38,14 +38,14 @@ public class RankingServiceImpl implements RankingService {
             selectCondition += " AND i.tenant_id != '' ";
         }
 
-        GetInvoiceRankingParameter getInvoiceRankingRequest = new GetInvoiceRankingParameter();
+        GetInvoiceRankingParameter parameter = new GetInvoiceRankingParameter();
 
-        getInvoiceRankingRequest.setMarketId(request.getMarketId());
-        getInvoiceRankingRequest.setOrderBy(request.getOrderBy());
+        parameter.setMarketId(request.getMarketId());
+        parameter.setOrderBy(request.getOrderBy());
 
-        getInvoiceRankingRequest.setSelectCondition(selectCondition);
+        parameter.setSelectCondition(selectCondition);
 
-        return rankingMapperService.getInvoiceRanking(getInvoiceRankingRequest);
+        return rankingMapperService.getInvoiceRanking(parameter);
     }
 
 
@@ -57,14 +57,14 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public List<GetInvoiceRankingResponse> getInvoiceRankingByCondition(GetInvoiceRankingByConditionRequest request) {
 
-        GetInvoiceRankingParameter getInvoiceRankingRequest = new GetInvoiceRankingParameter();
+        GetInvoiceRankingParameter parameter = new GetInvoiceRankingParameter();
 
         String selectCondition = " DATE_FORMAT(i.bill_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D')  " +
                 " AND DATE_FORMAT(i.bill_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D')  ";
 
         if (StringUtil.isNotEmpty(request.getCarInvoiceType())) {
             selectCondition += " AND i.car_invoice_type = #{carInvoiceType} ";
-            getInvoiceRankingRequest.setCarInvoiceType(request.getCarInvoiceType().trim());
+            parameter.setCarInvoiceType(request.getCarInvoiceType().trim());
         }
 
         if (StringUtil.isNotEmpty(request.getMarketId())) {
@@ -73,15 +73,15 @@ public class RankingServiceImpl implements RankingService {
         }
 
 
-        getInvoiceRankingRequest.setMarketId(request.getMarketId());
-        getInvoiceRankingRequest.setOrderBy(request.getOrderBy());
-        getInvoiceRankingRequest.setStartTime(request.getStartTime());
-        getInvoiceRankingRequest.setEndTime(request.getEndTime());
+        parameter.setMarketId(request.getMarketId());
+        parameter.setOrderBy(request.getOrderBy());
+        parameter.setStartTime(request.getStartTime());
+        parameter.setEndTime(request.getEndTime());
 
 
-        getInvoiceRankingRequest.setSelectCondition(selectCondition);
+        parameter.setSelectCondition(selectCondition);
 
-        return rankingMapperService.getInvoiceRanking(getInvoiceRankingRequest);
+        return rankingMapperService.getInvoiceRanking(parameter);
 
     }
 
@@ -118,7 +118,7 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public List<GetInventoryRankingResponse> getInventoryRankingByCondition(GetInventoryRankingByConditionRequest request) {
 
-        GetInventoryRankingParameter getInventoryRankingParameter = new GetInventoryRankingParameter();
+        GetInventoryRankingParameter parameter = new GetInventoryRankingParameter();
 
         String selectCondition = " DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D')" +
                 " AND   DATE_FORMAT(c.insert_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ";
@@ -126,7 +126,7 @@ public class RankingServiceImpl implements RankingService {
         // 按车辆品牌查询
         if (StringUtil.isNotEmpty(request.getBrandName())) {
             selectCondition += " AND cb.brand_name = #{brandName}";
-            getInventoryRankingParameter.setBrandName(request.getBrandName().trim());
+            parameter.setBrandName(request.getBrandName().trim());
         }
         // 按库存周期查询
         if (null != request.getInventoryCycle()) {
@@ -149,14 +149,14 @@ public class RankingServiceImpl implements RankingService {
             selectCondition += " AND c.tenant != '' ";
         }
 
-        getInventoryRankingParameter.setMarketId(request.getMarketId());
-        getInventoryRankingParameter.setOrderBy(request.getOrderBy());
-        getInventoryRankingParameter.setStartTime(request.getStartTime());
-        getInventoryRankingParameter.setEndTime(request.getEndTime());
+        parameter.setMarketId(request.getMarketId());
+        parameter.setOrderBy(request.getOrderBy());
+        parameter.setStartTime(request.getStartTime());
+        parameter.setEndTime(request.getEndTime());
 
-        getInventoryRankingParameter.setSelectCondition(selectCondition);
+        parameter.setSelectCondition(selectCondition);
 
-        return rankingMapperService.getInventoryRanking(getInventoryRankingParameter);
+        return rankingMapperService.getInventoryRanking(parameter);
     }
 
 
