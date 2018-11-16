@@ -240,4 +240,9 @@
 					 id="transferCarService"
 					 check="false" retries="0" timeout="20000"/>
 
+	<!-- 统计相关 -->
+	<dubbo:reference interface="com.maxcar.statistics.service.RankingService" id="rankingService"
+					 check="false" retries="0" timeout="20000"/>
+
+
 </beans>
