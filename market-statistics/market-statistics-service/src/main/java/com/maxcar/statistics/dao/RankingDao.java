@@ -1,6 +1,8 @@
 package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.dao.provider.RankingProvider;
+import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
+import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import org.apache.ibatis.annotations.SelectProvider;

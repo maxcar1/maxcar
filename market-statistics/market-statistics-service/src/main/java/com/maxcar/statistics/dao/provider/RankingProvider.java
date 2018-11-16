@@ -54,7 +54,7 @@ public class RankingProvider {
             SELECT(" car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(price), 0) AS invoicePrice ");
             FROM(" maxcar_market_l.invoice ");
             GROUP_BY("car_invoice_type");
-            ORDER_BY();
+            //ORDER_BY();
 
         }}.toString();
     }

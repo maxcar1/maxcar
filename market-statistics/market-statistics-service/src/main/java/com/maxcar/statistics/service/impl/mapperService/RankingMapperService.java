@@ -2,6 +2,8 @@ package com.maxcar.statistics.service.impl.mapperService;
 
 import com.maxcar.base.util.StringUtil;
 import com.maxcar.statistics.dao.RankingDao;
+import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
+import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
