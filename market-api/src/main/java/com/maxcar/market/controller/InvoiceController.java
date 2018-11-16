@@ -159,7 +159,7 @@ public class InvoiceController extends BaseController {
         Market market = new Market();
         String tenantName = "";
         if (invoice != null) {
-            String userId = invoice.getUserId();
+            String userId = currentUser.getUserId();
             User user = userService.selectByPrimaryKey(userId);
             if(user != null){
                 Staff staff = staffService.selectByPrimaryId(user.getStaffId());
@@ -168,9 +168,9 @@ public class InvoiceController extends BaseController {
                     invoice.setOperatorName(staffName);
                 }
             }
-            String carInvoiceType = invoice.getCarInvoiceType();
-            String type = getCarInvoiceType(carInvoiceType);
-            invoice.setCarInvoiceType(type);
+//            String carInvoiceType = invoice.getCarInvoiceType();
+//            String type = getCarInvoiceType(carInvoiceType);
+//            invoice.setCarInvoiceType(type);
             market = marketService.selectByPrimaryKey(invoice.getMarketId());//市场信息
             tenantName = userTenantService.selectByTenanId(invoice.getTenantId());
             invoice.setTenantName(tenantName);
