@@ -14,5 +14,7 @@
 
     <dubbo:service interface="com.maxcar.statistics.service.RankingService" ref="rankingService" timeout="1200000"/>
 
+    <dubbo:service interface="com.maxcar.statistics.service.TradingService" ref="tradingService" timeout="1200000"/>
+
 
 </beans>
