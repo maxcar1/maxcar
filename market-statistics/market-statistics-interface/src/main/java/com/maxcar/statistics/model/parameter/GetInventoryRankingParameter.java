@@ -1,11 +1,11 @@
-package com.maxcar.statistics.model.request;
+package com.maxcar.statistics.model.parameter;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class GetInventoryRankingRequest implements Serializable {
+public class GetInventoryRankingParameter implements Serializable {
     private static final long serialVersionUID = -1604185110102951083L;
     private String marketId;
 
@@ -22,6 +22,5 @@ public class GetInventoryRankingRequest implements Serializable {
     private String endTime;
 
     private String brandName;
-
 
 }
