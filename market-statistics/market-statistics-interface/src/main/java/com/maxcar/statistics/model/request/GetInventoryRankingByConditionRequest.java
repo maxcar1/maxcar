@@ -23,5 +23,11 @@ public class GetInventoryRankingByConditionRequest implements Serializable {
     //车辆品牌
     private String brandName;
 
+    // 库存周期
+    private Integer inventoryCycle;
+
+    // 车辆年限
+    private Integer AgeByCar;
+
 
 }

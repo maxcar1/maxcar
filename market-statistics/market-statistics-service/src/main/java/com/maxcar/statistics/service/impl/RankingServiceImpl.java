@@ -120,10 +120,17 @@ public class RankingServiceImpl implements RankingService {
         String selectCondition = " DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D')" +
                 " AND   DATE_FORMAT(c.insert_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ";
 
+        // 按车辆品牌查询
         if (StringUtil.isNotEmpty(request.getBrandName())) {
             selectCondition += " AND cb.brand_name = #{brandName}";
             getInventoryRankingRequest.setBrandName(request.getBrandName().trim());
         }
+        // 按库存周期查询
+        if (StringUtil.isNotEmpty(request.getBrandName())) {
+            selectCondition += " AND cb.brand_name = #{brandName}";
+            getInventoryRankingRequest.setBrandName(request.getBrandName().trim());
+        }
+
 
         if (StringUtil.isNotEmpty(request.getMarketId())) {
             selectCondition += " AND c.market_id = #{marketId}  ";
