@@ -1,8 +1,8 @@
 package com.maxcar.statistics.dao.provider;
 
 
-import com.maxcar.statistics.model.request.GetInvoiceRankingRequest;
-import com.maxcar.statistics.model.request.GetInventoryRankingRequest;
+import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
+import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
 import org.apache.ibatis.jdbc.SQL;
 
 /**
@@ -12,7 +12,7 @@ import org.apache.ibatis.jdbc.SQL;
  **/
 public class RankingProvider {
 
-    public String getInvoiceRanking(GetInvoiceRankingRequest request) {
+    public String getInvoiceRanking(GetInvoiceRankingParameter request) {
         return new SQL() {{
             SELECT(request.getSelectColumns());
             FROM(" maxcar_market_l.invoice AS i \n" +
@@ -29,7 +29,7 @@ public class RankingProvider {
         }}.toString() + "  limit 10 ";
     }
 
-    public String getInventoryRanking(GetInventoryRankingRequest request) {
+    public String getInventoryRanking(GetInventoryRankingParameter request) {
         return new SQL() {{
             SELECT(request.getSelectColumns());
             FROM("  maxcar_stock_l.car AS c\n" +
@@ -46,5 +46,16 @@ public class RankingProvider {
             ORDER_BY(request.getOrderBy() + " DESC ");
 
         }}.toString() + "  limit 10 ";
+    }
+
+
+    public String getCarInvoiceTypeInvoiceRanking(GetInvoiceRankingParameter request) {
+        return new SQL() {{
+            SELECT(" car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(price), 0) AS invoicePrice ");
+            FROM(" maxcar_market_l.invoice ");
+            GROUP_BY("car_invoice_type");
+            ORDER_BY();
+
+        }}.toString();
     }
 }

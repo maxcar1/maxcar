@@ -1,8 +1,6 @@
 package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.dao.provider.RankingProvider;
-import com.maxcar.statistics.model.request.GetInvoiceRankingRequest;
-import com.maxcar.statistics.model.request.GetInventoryRankingRequest;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -17,7 +15,7 @@ public interface RankingDao {
      * create_date:  lxy   2018/11/14  18:03
      **/
     @SelectProvider(type = RankingProvider.class, method = "getInvoiceRanking")
-    List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingRequest request);
+    List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingParameter request);
 
 
     /**
@@ -26,5 +24,5 @@ public interface RankingDao {
      * create_date:  lxy   2018/11/14  18:07
      **/
     @SelectProvider(type = RankingProvider.class, method = "getInventoryRanking")
-    List<GetInventoryRankingResponse> getInventoryRanking(GetInventoryRankingRequest request);
+    List<GetInventoryRankingResponse> getInventoryRanking(GetInventoryRankingParameter request);
 }
