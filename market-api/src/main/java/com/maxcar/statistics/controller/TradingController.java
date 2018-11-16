@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class DealController extends BaseController {
+public class TradingController extends BaseController {
 
     @Autowired
     private TradingService tradingService;
