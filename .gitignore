@@ -7,3 +7,4 @@ target/
 logs/
 systemlogs/
 */D:\\maven\\repository/
+*/.gitignore
