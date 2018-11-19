@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * describe: TODO
+ * describe: 排名统计相关
  * create_date: lxy 2018/11/16  11:54
  **/
 @Service("rankingService")

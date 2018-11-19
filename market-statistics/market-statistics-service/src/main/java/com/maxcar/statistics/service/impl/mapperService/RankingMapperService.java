@@ -42,6 +42,8 @@ public class RankingMapperService {
         return rankingDao.getInvoiceRanking(parameter);
     }
 
+
+
     /**
      * param:
      * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 库存 condition

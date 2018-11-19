@@ -3,8 +3,6 @@ package com.maxcar.statistics.dao;
 import com.maxcar.statistics.dao.provider.RankingProvider;
 import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
 import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
-import com.maxcar.statistics.model.parameter.getCarInvoiceTypeInvoiceRankingParameter;
-import com.maxcar.statistics.model.response.GetCarInvoiceTypeInvoiceRankingResponse;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -30,12 +28,5 @@ public interface RankingDao {
     @SelectProvider(type = RankingProvider.class, method = "getInventoryRanking")
     List<GetInventoryRankingResponse> getInventoryRanking(GetInventoryRankingParameter parameter);
 
-    /**
-     * param:
-     * describe: 实时查询__总览——获取市场排行  商户排行 --> 交易
-     * create_date:  lxy   2018/11/16  18:32
-     **/
-    @SelectProvider(type = RankingProvider.class, method = "getCarInvoiceTypeInvoiceRanking")
-    List<GetCarInvoiceTypeInvoiceRankingResponse> getCarInvoiceTypeInvoiceRanking(getCarInvoiceTypeInvoiceRankingParameter parameter);
 
 }

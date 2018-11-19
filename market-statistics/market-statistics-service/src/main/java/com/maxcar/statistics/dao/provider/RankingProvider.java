@@ -3,7 +3,6 @@ package com.maxcar.statistics.dao.provider;
 
 import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
 import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
-import com.maxcar.statistics.model.parameter.getCarInvoiceTypeInvoiceRankingParameter;
 import org.apache.ibatis.jdbc.SQL;
 
 /**
@@ -49,14 +48,4 @@ public class RankingProvider {
         }}.toString() + "  limit 10 ";
     }
 
-
-    public String getCarInvoiceTypeInvoiceRanking(getCarInvoiceTypeInvoiceRankingParameter parameter) {
-        return new SQL() {{
-            SELECT(" car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(price), 0) AS invoicePrice ");
-            FROM(" maxcar_market_l.invoice ");
-            GROUP_BY("car_invoice_type");
-            ORDER_BY(parameter.getOrderBy());
-
-        }}.toString();
-    }
 }
