@@ -90,10 +90,10 @@ public class TradingController extends BaseController {
     public InterfaceResult getAvgPriceRate(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
         getUserMarketAndSetTime(tradingRequest, request);
 
-        tradingService.getAvgPriceRate(tradingRequest);
+        List<TradingResponse> avgPriceRate = tradingService.getAvgPriceRate(tradingRequest);
 
         InterfaceResult interfaceResult = new InterfaceResult();
-        interfaceResult.InterfaceResult200(map);
+        interfaceResult.InterfaceResult200(avgPriceRate);
         return interfaceResult;
     }
 
