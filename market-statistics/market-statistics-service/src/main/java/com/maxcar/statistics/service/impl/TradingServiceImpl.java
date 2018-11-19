@@ -8,7 +8,6 @@ import com.maxcar.statistics.service.impl.mapperService.TradingMapperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 @Service("tradingService")
@@ -128,13 +127,56 @@ public class TradingServiceImpl implements TradingService {
     }
 
     @Override
-    public void getAvgPriceRate(TradingRequest tradingRequest) {
+    public List<TradingResponse> getAvgPriceRate(TradingRequest tradingRequest) throws Exception {
         List<TradingResponse> list = tradingMapperService.getVolumeAndValue(tradingRequest);
-        Double avgPrice = 0.0;
-        for(TradingResponse response : list){
+
+        for (TradingResponse response : list) {
+            // 当前月平均交易价格
             Double price = response.getPrice();
             Double count = response.getCount();
-            avgPrice = price / count;
+            Double avg = price / count;
+            Double avgOneyear = 0.0;
+
+            //  同比增长率
+            String month = response.getMonth();
+            month += "-01";
+            String yearAgoMonth = DateUtils.getYearAgoMonth(month);
+            Date date = DateUtils.parseDate(yearAgoMonth, DateUtils.DATE_FORMAT_DATEONLY);
+            Date monthEnd = DateUtils.getMonthEnd(date);
+            String s = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
+            tradingRequest.setTimeStart(yearAgoMonth);
+            tradingRequest.setTimeEnd(s);
+            List<TradingResponse> oneYearlist = tradingMapperService.getVolumeAndValue(tradingRequest);
+            if (oneYearlist.size() > 0) {
+                TradingResponse responseOneYear = oneYearlist.get(0);
+                Double price1 = responseOneYear.getPrice();
+                Double count1 = responseOneYear.getCount();
+                avgOneyear = price1 / count1;
+            }
+            Double avgPrice = (avg - avgOneyear) / (avgOneyear == 0 ? 1 : avgOneyear);
+            avgPrice = (double) Math.round((avgPrice * 100)) / 100;
+            response.setAvgPriceYear(avgPrice);
+
+            //  环比增长
+            Double avgUp = 0.0;
+            String monthUp = DateUtils.getAgoMonth(month);
+            Date dateUp = DateUtils.parseDate(monthUp, DateUtils.DATE_FORMAT_DATEONLY);
+            Date monthUpEnd = DateUtils.getMonthEnd(dateUp);
+            String up = DateUtils.formatDate(monthUpEnd, DateUtils.DATE_FORMAT_DATEONLY);
+            tradingRequest.setTimeStart(monthUp);
+            tradingRequest.setTimeEnd(up);
+            List<TradingResponse> oneMonthList = tradingMapperService.getVolumeAndValue(tradingRequest);
+            if(oneMonthList.size() > 0){
+                TradingResponse response1 = oneMonthList.get(0);
+                Double priceUp = response1.getPrice();
+                Double countUp = response1.getCount();
+                avgUp = (priceUp / countUp);
+            }
+
+            Double avgPriceUp = (avg - avgUp) / (avgUp == 0 ? 1 : avgUp);
+            avgUp = (double) Math.round((avgPriceUp * 100)) / 100;
+            response.setAvgPriceMonth(avgUp);
         }
+        return list;
     }
 }
