@@ -1554,6 +1554,32 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
         return list;
     }
 
+    /**
+     *   传入日期获取12月前的月份
+     * @param Date
+     * @return
+     */
+    public static String getYearAgoMonth(String Date){
+        String[] split = Date.split("-");
+        String year = split[0];
+        String month = split[1];
+        Integer yearNum = Integer.parseInt(year);
+        Integer monthNum = Integer.parseInt(month);
+        for (int i = 0; i < 12; i++) {
+            monthNum = monthNum - 1;
+            if (monthNum == 0) {
+                yearNum = yearNum - 1;
+                monthNum = 12;
+            }
+        }
+        String agoYear = yearNum.toString();
+        String agoMonth = monthNum.toString();
+
+        String agoDate = agoYear+ "-" +agoMonth + "-" + split[2];
+
+        return agoDate;
+    }
+
     public static void main(String[] args) throws Exception{
         /*Date date3 = DateUtils.addMinutes(new Date(), 5);
         System.out.println(new Date().after(DateUtils.addMinute(new Date(), -10)));
