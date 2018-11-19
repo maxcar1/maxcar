@@ -14,6 +14,8 @@ public class CarVo extends PageBean implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    private String outReason;//出厂原因
+
     private String id;
 
     private String carNo; // 车辆编号
@@ -146,6 +148,14 @@ public class CarVo extends PageBean implements Serializable {
     private String airConditionerControlType;
     private String displacement1;
     private String displacement2;
+
+    public String getOutReason() {
+        return outReason;
+    }
+
+    public void setOutReason(String outReason) {
+        this.outReason = outReason;
+    }
 
     public String getDisplacement1() {
         return displacement1;
