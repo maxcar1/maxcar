@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.CarReview" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="car_id" property="carId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="out_reason" property="outReason" jdbcType="VARCHAR" />
     <result column="back_time" property="backTime" jdbcType="TIMESTAMP" />
     <result column="is_pass" property="isPass" jdbcType="INTEGER" />
@@ -70,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, car_id, out_reason, back_time, is_pass, is_pledge, insert_time, is_valid
+    id, car_id, user_id, out_reason, back_time, is_pass, is_pledge, insert_time, is_valid
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.CarReviewExample" >
     select
@@ -104,12 +105,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.maxcar.stock.pojo.CarReview" >
-    insert into car_review (id, car_id, out_reason, 
-      back_time, is_pass, is_pledge, 
-      insert_time, is_valid)
-    values (#{id,jdbcType=INTEGER}, #{carId,jdbcType=VARCHAR}, #{outReason,jdbcType=VARCHAR}, 
-      #{backTime,jdbcType=TIMESTAMP}, #{isPass,jdbcType=INTEGER}, #{isPledge,jdbcType=INTEGER}, 
-      #{insertTime,jdbcType=TIMESTAMP}, #{isValid,jdbcType=INTEGER})
+    insert into car_review (id, car_id, user_id, 
+      out_reason, back_time, is_pass, 
+      is_pledge, insert_time, is_valid
+      )
+    values (#{id,jdbcType=INTEGER}, #{carId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{outReason,jdbcType=VARCHAR}, #{backTime,jdbcType=TIMESTAMP}, #{isPass,jdbcType=INTEGER}, 
+      #{isPledge,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, #{isValid,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.CarReview" >
     insert into car_review
@@ -119,6 +122,9 @@
       </if>
       <if test="carId != null" >
         car_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
       </if>
       <if test="outReason != null" >
         out_reason,
@@ -145,6 +151,9 @@
       </if>
       <if test="carId != null" >
         #{carId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
       </if>
       <if test="outReason != null" >
         #{outReason,jdbcType=VARCHAR},
@@ -181,6 +190,9 @@
       <if test="record.carId != null" >
         car_id = #{record.carId,jdbcType=VARCHAR},
       </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
       <if test="record.outReason != null" >
         out_reason = #{record.outReason,jdbcType=VARCHAR},
       </if>
@@ -208,6 +220,7 @@
     update car_review
     set id = #{record.id,jdbcType=INTEGER},
       car_id = #{record.carId,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=VARCHAR},
       out_reason = #{record.outReason,jdbcType=VARCHAR},
       back_time = #{record.backTime,jdbcType=TIMESTAMP},
       is_pass = #{record.isPass,jdbcType=INTEGER},
@@ -223,6 +236,9 @@
     <set >
       <if test="carId != null" >
         car_id = #{carId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
       </if>
       <if test="outReason != null" >
         out_reason = #{outReason,jdbcType=VARCHAR},
@@ -248,6 +264,7 @@
   <update id="updateByPrimaryKey" parameterType="com.maxcar.stock.pojo.CarReview" >
     update car_review
     set car_id = #{carId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
       out_reason = #{outReason,jdbcType=VARCHAR},
       back_time = #{backTime,jdbcType=TIMESTAMP},
       is_pass = #{isPass,jdbcType=INTEGER},
