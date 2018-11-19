@@ -7,6 +7,8 @@ public class CarReview {
 
     private String carId;
 
+    private String userId;
+
     private String outReason;
 
     private Date backTime;
@@ -33,6 +35,14 @@ public class CarReview {
 
     public void setCarId(String carId) {
         this.carId = carId == null ? null : carId.trim();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 
     public String getOutReason() {
