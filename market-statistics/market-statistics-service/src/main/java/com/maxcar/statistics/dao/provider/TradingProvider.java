@@ -18,4 +18,5 @@ public class TradingProvider {
             GROUP_BY(request.getGroupByColumns());
         }}.toString();
     }
+
 }

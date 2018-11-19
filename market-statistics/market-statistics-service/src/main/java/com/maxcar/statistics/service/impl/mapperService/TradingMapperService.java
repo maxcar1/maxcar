@@ -3,6 +3,7 @@ package com.maxcar.statistics.service.impl.mapperService;
 import com.maxcar.base.util.StringUtil;
 import com.maxcar.statistics.dao.TradingDao;
 import com.maxcar.statistics.model.request.TradingRequest;
+import com.maxcar.statistics.model.response.TradingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +16,27 @@ public class TradingMapperService {
     @Autowired
     private TradingDao tradingDao;
 
-    public List<LinkedHashMap> getVolumeAndValue(TradingRequest tradingRequest) {
+    public List<TradingResponse> getVolumeAndValue(TradingRequest tradingRequest) {
 
-        String selectColumns = "DATE_FORMAT(i.bill_time, '%Y-%m') AS MONTH,\n" +
-                "IFNULL(SUM(i.price),0) AS price";
+        String selectColumns = "  DATE_FORMAT(i.bill_time, '%Y-%m') AS month,\n" +
+                "IFNULL(SUM(i.price),0) AS price,\n  "+
+                " COUNT(*) AS COUNT ";
         tradingRequest.setSelectColumns(selectColumns);
 
-        if("001".equals(tradingRequest.getMarketId())){
-            String selectCondition = " i.tenant_id = #{tenantId} " +
-                    " AND i.bill_time BETWEEN #{timeStart} AND #{timeEnd} ";
+        if("001".equals(tradingRequest.getUserMaketId())){
+            String selectCondition = "i.invoice_status = 2";
+            if(StringUtil.isNotEmpty(tradingRequest.getTenantId())){
+                selectCondition += "and  i.tenant_id = #{tenantId} ";
+            }
+            if(StringUtil.isNotEmpty(tradingRequest.getTimeStart())){
+                selectCondition += " AND i.bill_time BETWEEN #{timeStart} AND #{timeEnd} ";
+            }
             tradingRequest.setSelectCondition(selectCondition);
         }else {
-            String selectCondition  = " i.market_id = #{marketId} " ;
+            String selectCondition = "i.invoice_status = 2";
+            if(StringUtil.isNotEmpty(tradingRequest.getMarketId())){
+                selectCondition  += "and  i.market_id = #{marketId} " ;
+            }
             if(StringUtil.isNotEmpty(tradingRequest.getTenantId())){
                 selectCondition += "AND  i.tenant_id = #{tenantId} ";
             }
@@ -41,4 +51,5 @@ public class TradingMapperService {
         tradingRequest.setGroupByColumns(groupByColumns);
         return tradingDao.getVolumeAndValue(tradingRequest);
     }
+
 }

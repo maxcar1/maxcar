@@ -9,6 +9,7 @@ public class TradingRequest implements Serializable {
 
     private static final long serialVersionUID = -746273977542930866L;
 
+    private String UserMaketId;
     private String marketId;
     private String tenantId;
     private String timeStart;
