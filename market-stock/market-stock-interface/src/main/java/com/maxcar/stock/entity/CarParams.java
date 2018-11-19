@@ -1,4 +1,6 @@
 package com.maxcar.stock.entity;
+import com.maxcar.base.pojo.PageBean;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -6,7 +8,7 @@ import java.io.Serializable;
  * Created by chiyanlong on 2018/9/4.
  * 接受录车app详情页传入参数
  */
-public class CarParams implements Serializable {
+public class CarParams extends PageBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -83,6 +85,8 @@ public class CarParams implements Serializable {
     private String brandCode;
     @NotNull(message="车系code不能为空")
     private String series;
+    @NotNull(message="车系Code不能为空")
+    private String seriesCode;
     @NotNull(message="车系名称不能为空")
     private String seriesName;
 
@@ -110,6 +114,14 @@ public class CarParams implements Serializable {
     private Integer status;//车辆状态
     private String fuelForm;//燃油方式
     private Integer carStatus;//车辆状态 1质押 2 非质押
+
+    public String getSeriesCode() {
+        return seriesCode;
+    }
+
+    public void setSeriesCode(String seriesCode) {
+        this.seriesCode = seriesCode;
+    }
 
     public Integer getCarStatus() {
         return carStatus;
@@ -320,8 +332,12 @@ public class CarParams implements Serializable {
         this.initialLicenceTimeStr = initialLicenceTimeStr;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public void setStatus(int status) {
