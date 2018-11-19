@@ -48,6 +48,7 @@ import java.util.*;
  */
 @Service("carService")
 public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarService {
+
     @Autowired
     CarMapper carMapper;
     @Autowired
@@ -107,10 +108,11 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     public PageInfo listReview(CarParams carParams) {
         PageHelper.startPage(StringUtils.isBlank(carParams.getCurrentPage()) ? 1 : carParams.getCurrentPage(),
                 StringUtils.isBlank(carParams.getPageSize()) ? 20 : carParams.getPageSize());
-        List<CarVo> carParamsList = carMapper.listReview(carParams);
-        PageInfo p = new PageInfo(carParamsList);
-        return p;
+        List<CarVo> listCarVo = carMapper.listReview(carParams);
+        PageInfo pageInfo = new PageInfo(listCarVo);
+        return pageInfo;
     }
+
 
     /**
      * param:
