@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class GetCarInvoiceTypeInvoiceRankingResponse  implements Serializable{
+public class GetCarInvoiceTypeInvoiceReportResponse implements Serializable{
 
     private static final long serialVersionUID = -4781696025890093933L;
     private String carInvoiceType;
