@@ -1,6 +1,7 @@
 package com.maxcar.statistics.service;
 
 import com.maxcar.statistics.model.request.TradingRequest;
+import com.maxcar.statistics.model.response.TradingResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,5 @@ public interface TradingService {
      *     平均交易价格增长率
      * @param tradingRequest
      */
-    void getAvgPriceRate(TradingRequest tradingRequest);
+    List<TradingResponse> getAvgPriceRate(TradingRequest tradingRequest) throws Exception;
 }
