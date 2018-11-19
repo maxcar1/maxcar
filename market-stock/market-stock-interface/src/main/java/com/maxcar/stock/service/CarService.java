@@ -65,6 +65,8 @@ public interface CarService extends BaseService<Car, String> {
 
     PageInfo listCarVo(CarVo carVo);
 
+    PageInfo listReview(CarParams carParams);
+
     int saveCarVO(CarVo carVo);
 
     Integer selectCountsByCar(Car car);
