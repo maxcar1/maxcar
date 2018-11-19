@@ -103,6 +103,15 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
 
     }
 
+    @Override
+    public PageInfo listReview(CarParams carParams) {
+        PageHelper.startPage(StringUtils.isBlank(carParams.getCurrentPage()) ? 1 : carParams.getCurrentPage(),
+                StringUtils.isBlank(carParams.getPageSize()) ? 20 : carParams.getPageSize());
+        List<CarVo> carParamsList = carMapper.listReview(carParams);
+        PageInfo p = new PageInfo(carParamsList);
+        return p;
+    }
+
     /**
      * param:
      * describe: 根据搜索条件动态查询 总库存量  在场量 出厂量  库存总价值
