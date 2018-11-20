@@ -244,4 +244,8 @@
 					 id="carReviewService"
 					 check="false" retries="0" timeout="20000"/>
 
+	<dubbo:reference interface="com.maxcar.stock.service.ReviewDetailService"
+					 id="reviewDetailService"
+					 check="false" retries="0" timeout="20000"/>
+
 </beans>
