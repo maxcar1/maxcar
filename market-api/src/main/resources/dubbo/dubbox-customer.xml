@@ -240,4 +240,8 @@
 					 id="transferCarService"
 					 check="false" retries="0" timeout="20000"/>
 
+	<dubbo:reference interface="com.maxcar.stock.service.CarReviewService"
+					 id="carReviewService"
+					 check="false" retries="0" timeout="20000"/>
+
 </beans>

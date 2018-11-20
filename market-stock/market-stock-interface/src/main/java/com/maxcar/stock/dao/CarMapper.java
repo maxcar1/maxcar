@@ -1,6 +1,7 @@
 package com.maxcar.stock.dao;
 
 import com.maxcar.base.dao.BaseDao;
+import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
@@ -30,6 +31,8 @@ public interface CarMapper extends BaseDao<Car, String> {
     int updateByVin(Car car);
 
     List<CarVo> listCarVo(CarVo carVo);
+
+    List<CarVo> listReview(CarParams carParams);
 
     /**
      * param:
