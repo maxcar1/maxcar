@@ -2,6 +2,7 @@ package com.maxcar.mqtt.service;
 
 import com.maxcar.util.Canstats;
 import com.maxcar.util.LoadProperties;
+import com.maxcar.util.UuidUtils;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -29,7 +30,8 @@ public class ClientMQTT{
     //类初始化执行
     @PostConstruct
     public void init() {
-        clientId = LoadProperties.getProperties_3("../../../application.properties","clientid");
+        /*clientId = LoadProperties.getProperties_3("../../../application.properties","clientid");*/
+        clientId = UuidUtils.getRandByNum(6);
         mqttServerHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.host");
         topic = LoadProperties.getProperties_3("../../../application.properties","mqtt.push.topic");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
@@ -38,7 +40,7 @@ public class ClientMQTT{
     }
 
 
-    private static MqttClient client;
+    private MqttClient client;
 
     Logger logger = LoggerFactory.getLogger(ClientMQTT.class);
 
@@ -81,7 +83,7 @@ public class ClientMQTT{
         // MQTT的连接设置
         options = new MqttConnectOptions();
         // 设置是否清空session,这里如果设置为false表示服务器会保留客户端的连接记录，设置为true表示每次连接到服务器都以新的身份连接
-        options.setCleanSession(false);
+        options.setCleanSession(true);
         // 设置连接的用户名
         options.setUserName(username);
         // 设置连接的密码
