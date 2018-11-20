@@ -1,6 +1,8 @@
 package com.maxcar.stock.pojo;
 
-public class ReviewDetail {
+import java.io.Serializable;
+
+public class ReviewDetail implements Serializable {
     private Integer id;
 
     private Integer reviewId;
@@ -10,6 +12,16 @@ public class ReviewDetail {
     private Integer reviewResult;
 
     private String reviewDesc;
+
+    private String marketId;
+
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId;
+    }
 
     public Integer getId() {
         return id;
