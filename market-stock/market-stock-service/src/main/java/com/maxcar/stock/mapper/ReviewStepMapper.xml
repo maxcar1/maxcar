@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.ReviewStep" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="step_name" property="stepName" jdbcType="VARCHAR" />
-    <result column="review_id" property="reviewId" jdbcType="INTEGER" />
+    <result column="review_person_id" property="reviewPersonId" jdbcType="INTEGER" />
     <result column="level" property="level" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="apply_type" property="applyType" jdbcType="INTEGER" />
@@ -68,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, step_name, review_id, level, type, apply_type
+    id, step_name, review_person_id, level, type, apply_type
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewStepExample" >
     select
@@ -102,10 +102,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.maxcar.stock.pojo.ReviewStep" >
-    insert into review_step (id, step_name, review_id, 
+    insert into review_step (id, step_name, review_person_id, 
       level, type, apply_type
       )
-    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR}, #{reviewId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR}, #{reviewPersonId,jdbcType=INTEGER}, 
       #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER}
       )
   </insert>
@@ -118,8 +118,8 @@
       <if test="stepName != null" >
         step_name,
       </if>
-      <if test="reviewId != null" >
-        review_id,
+      <if test="reviewPersonId != null" >
+        review_person_id,
       </if>
       <if test="level != null" >
         level,
@@ -138,8 +138,8 @@
       <if test="stepName != null" >
         #{stepName,jdbcType=VARCHAR},
       </if>
-      <if test="reviewId != null" >
-        #{reviewId,jdbcType=INTEGER},
+      <if test="reviewPersonId != null" >
+        #{reviewPersonId,jdbcType=INTEGER},
       </if>
       <if test="level != null" >
         #{level,jdbcType=INTEGER},
@@ -167,8 +167,8 @@
       <if test="record.stepName != null" >
         step_name = #{record.stepName,jdbcType=VARCHAR},
       </if>
-      <if test="record.reviewId != null" >
-        review_id = #{record.reviewId,jdbcType=INTEGER},
+      <if test="record.reviewPersonId != null" >
+        review_person_id = #{record.reviewPersonId,jdbcType=INTEGER},
       </if>
       <if test="record.level != null" >
         level = #{record.level,jdbcType=INTEGER},
@@ -188,7 +188,7 @@
     update review_step
     set id = #{record.id,jdbcType=INTEGER},
       step_name = #{record.stepName,jdbcType=VARCHAR},
-      review_id = #{record.reviewId,jdbcType=INTEGER},
+      review_person_id = #{record.reviewPersonId,jdbcType=INTEGER},
       level = #{record.level,jdbcType=INTEGER},
       type = #{record.type,jdbcType=INTEGER},
       apply_type = #{record.applyType,jdbcType=INTEGER}
@@ -202,8 +202,8 @@
       <if test="stepName != null" >
         step_name = #{stepName,jdbcType=VARCHAR},
       </if>
-      <if test="reviewId != null" >
-        review_id = #{reviewId,jdbcType=INTEGER},
+      <if test="reviewPersonId != null" >
+        review_person_id = #{reviewPersonId,jdbcType=INTEGER},
       </if>
       <if test="level != null" >
         level = #{level,jdbcType=INTEGER},
@@ -220,7 +220,7 @@
   <update id="updateByPrimaryKey" parameterType="com.maxcar.stock.pojo.ReviewStep" >
     update review_step
     set step_name = #{stepName,jdbcType=VARCHAR},
-      review_id = #{reviewId,jdbcType=INTEGER},
+      review_person_id = #{reviewPersonId,jdbcType=INTEGER},
       level = #{level,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       apply_type = #{applyType,jdbcType=INTEGER}
