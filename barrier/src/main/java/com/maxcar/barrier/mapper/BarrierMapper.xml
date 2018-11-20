@@ -564,4 +564,14 @@
         <!--</set>-->
         <!--where barrier_id = #{barrierId,jdbcType=VARCHAR}-->
     <!--</update>-->
+
+    <select id="getBarrierInfoLike" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from barrier
+        <where>
+            isvalid = 1
+            and barrier_id like concat('%',#{barrierId})
+            and mqtt_topic like concat(#{topic},'%')
+        </where>
+        limit 0,1
+    </select>
 </mapper>
