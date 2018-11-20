@@ -9,7 +9,7 @@ import java.util.List;
 @Service("reviewDetailService")
 public class ReviewDetailServiceImpl implements ReviewDetailService {
     @Override
-    public List<ReviewDetail> getReviewDetail() {
+    public List<ReviewDetail> getReviewDetail(ReviewDetail reviewDetail) {
         return null;
     }
 }
