@@ -5,7 +5,7 @@ public class ReviewStep {
 
     private String stepName;
 
-    private Integer reviewId;
+    private Integer reviewPersonId;
 
     private Integer level;
 
@@ -29,12 +29,12 @@ public class ReviewStep {
         this.stepName = stepName == null ? null : stepName.trim();
     }
 
-    public Integer getReviewId() {
-        return reviewId;
+    public Integer getReviewPersonId() {
+        return reviewPersonId;
     }
 
-    public void setReviewId(Integer reviewId) {
-        this.reviewId = reviewId;
+    public void setReviewPersonId(Integer reviewPersonId) {
+        this.reviewPersonId = reviewPersonId;
     }
 
     public Integer getLevel() {
