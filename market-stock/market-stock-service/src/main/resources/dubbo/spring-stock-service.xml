@@ -10,6 +10,7 @@
 	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}"/>
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="9003" />
+	<dubbo:service interface="com.maxcar.stock.service.ReviewDetailService" ref="reviewDetailService"  timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.stock.service.CarReviewService" ref="carReviewService"  timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.stock.service.CarService" ref="carService"  timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.stock.service.CarBaseService" ref="carBaseService"  timeout="1200000"/>
