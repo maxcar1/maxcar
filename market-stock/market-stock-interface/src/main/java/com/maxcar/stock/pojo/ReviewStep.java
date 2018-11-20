@@ -7,11 +7,15 @@ public class ReviewStep {
 
     private Integer reviewPersonId;
 
+    private String orgId;
+
     private Integer level;
 
     private Integer type;
 
     private Integer applyType;
+
+    private String marketId;
 
     public Integer getId() {
         return id;
@@ -37,6 +41,14 @@ public class ReviewStep {
         this.reviewPersonId = reviewPersonId;
     }
 
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId == null ? null : orgId.trim();
+    }
+
     public Integer getLevel() {
         return level;
     }
@@ -59,5 +71,13 @@ public class ReviewStep {
 
     public void setApplyType(Integer applyType) {
         this.applyType = applyType;
+    }
+
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId == null ? null : marketId.trim();
     }
 }
