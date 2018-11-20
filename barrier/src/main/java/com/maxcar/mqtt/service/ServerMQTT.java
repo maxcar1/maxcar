@@ -1,9 +1,6 @@
 package com.maxcar.mqtt.service;
 
-import com.maxcar.util.CRC16M;
-import com.maxcar.util.Canstats;
-import com.maxcar.util.HexUtils;
-import com.maxcar.util.LoadProperties;
+import com.maxcar.util.*;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
@@ -36,7 +33,8 @@ public class ServerMQTT {
      * @throws MqttException
      */
     public ServerMQTT()throws MqttException{
-        clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");
+        /*clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");*/
+        clientId = UuidUtils.getRandByNum(6);
         mqttClientHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.client.host");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
         password = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.password");
