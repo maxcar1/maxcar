@@ -38,4 +38,6 @@ public interface BarrierMapper {
     int updateByPrimaryKeySelective(Barrier record);
 
     int updateByPrimaryKey(Barrier record);
+
+    public Barrier getBarrierInfoLike(@Param("barrierId") String barrierId, @Param("topic")String topic);
 }
