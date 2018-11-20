@@ -78,6 +78,7 @@
         <result column="shelfStatus" property="shelfStatus" jdbcType="INTEGER"/>
         <result column="carChannelId" property="carChannelId" jdbcType="VARCHAR"/>
         <result column="out_reason" property="outReason" jdbcType="VARCHAR"/>
+        <result column="review_id" property="reviewId" jdbcType="INTEGER"/>
     </resultMap>
     <!-- carVo END -->
     <resultMap id="taoBaoCarMap" type="com.maxcar.stock.pojo.TaoBaoCar">
@@ -761,7 +762,7 @@
     </select>
 
     <select id="listReview" parameterType="com.maxcar.stock.entity.CarParams" resultMap="CarVoResultMap">
-        SELECT a.*,d.*,b.out_reason,c.tenant_name
+        SELECT a.*,d.*,b.id as review_id,b.out_reason,c.tenant_name
         from maxcar_stock_l.car a
         LEFT JOIN maxcar_stock_l.car_review b
         on a.id = b.car_id
