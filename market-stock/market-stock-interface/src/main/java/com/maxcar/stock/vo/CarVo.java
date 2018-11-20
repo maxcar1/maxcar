@@ -16,6 +16,8 @@ public class CarVo extends PageBean implements Serializable {
 
     private String outReason;//出厂原因
 
+    private Integer reviewId;//审核id
+
     private String id;
 
     private String carNo; // 车辆编号
@@ -148,6 +150,14 @@ public class CarVo extends PageBean implements Serializable {
     private String airConditionerControlType;
     private String displacement1;
     private String displacement2;
+
+    public Integer getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Integer reviewId) {
+        this.reviewId = reviewId;
+    }
 
     public String getOutReason() {
         return outReason;
