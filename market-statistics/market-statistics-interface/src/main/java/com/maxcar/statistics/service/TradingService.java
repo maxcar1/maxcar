@@ -3,6 +3,7 @@ package com.maxcar.statistics.service;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -33,4 +34,10 @@ public interface TradingService {
      * @param tradingRequest
      */
     List<TradingResponse> getAvgPriceRate(TradingRequest tradingRequest) throws Exception;
+
+    Map<String, Double> getTenantCount(TradingRequest tradingRequest);
+
+    List<TradingResponse> getTenantDeal(TradingRequest tradingRequest) throws Exception;
+
+    void getCarPrice(TradingRequest tradingRequest);
 }
