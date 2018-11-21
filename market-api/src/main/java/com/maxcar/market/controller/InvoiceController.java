@@ -154,12 +154,11 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "查询发票详情")
     public InterfaceResult getInvoiceDetailById(@PathVariable(value = "id") String id, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        User currentUser = getCurrentUser(request);
         Invoice invoice = invoiceService.selectInvoiceDetailById(id);//开票信息
         Market market = new Market();
         String tenantName = "";
         if (invoice != null) {
-            String userId = currentUser.getUserId();
+            String userId = invoice.getUserId();
             User user = userService.selectByPrimaryKey(userId);
             if(user != null){
                 Staff staff = staffService.selectByPrimaryId(user.getStaffId());
@@ -168,9 +167,9 @@ public class InvoiceController extends BaseController {
                     invoice.setOperatorName(staffName);
                 }
             }
-//            String carInvoiceType = invoice.getCarInvoiceType();
-//            String type = getCarInvoiceType(carInvoiceType);
-//            invoice.setCarInvoiceType(type);
+            String carInvoiceType = invoice.getCarInvoiceType();
+            String type = getCarInvoiceType(carInvoiceType);
+            invoice.setCarInvoiceType(type);
             market = marketService.selectByPrimaryKey(invoice.getMarketId());//市场信息
             tenantName = userTenantService.selectByTenanId(invoice.getTenantId());
             invoice.setTenantName(tenantName);
