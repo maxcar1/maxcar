@@ -84,4 +84,20 @@ public class RoleResourceServiceImpl extends BaseServiceImpl<RoleResource,String
     }
 
 
+    public List<Resource> getChildResources1(List<Resource> resources,String userId) {
+        for(Resource resource:resources) {
+            Map map = new HashMap();
+            map.put("userId",userId);
+            map.put("parentId",resource.getResourceId());//一级菜单
+            List<Resource> childRes = roleResourceMapper.findMenuByUserId(map);
+
+            resource.setChildList(childRes);
+            if(childRes!=null) {
+                getChildResources(childRes,userId);
+            }
+        }
+        return resources;
+    }
+
+
 }
