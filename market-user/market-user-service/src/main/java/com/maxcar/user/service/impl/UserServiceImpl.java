@@ -303,9 +303,14 @@ public class UserServiceImpl extends BaseServiceImpl<User,String> implements Use
         if (StringUtils.isNotBlank(user.getMarketId())){
             criteria.andMarketIdEqualTo(user.getMarketId());
         }
+        if(StringUtils.isNotBlank(user.getUserId())){
+            criteria.andUserIdEqualTo(user.getUserId());
+        }
         List<User> list = userMapper.selectByExample(example);
         return list;
     }
+
+
 
     @Override
     public InterfaceResult logout(User user) throws Exception {
