@@ -81,6 +81,10 @@ public class BarrierServiceImpl implements BarrierService {
         return null;
 //        return list;
     }
+    @Override
+    public Barrier getBarrierInfoLike(String barrierId, String topic) {
+        return barrierMapper.getBarrierInfoLike(barrierId,topic);
+    }
 
     @Override
     public InterfaceResult updateOrDelBarrier(Barrier barrier) {
