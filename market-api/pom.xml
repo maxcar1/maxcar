@@ -9,7 +9,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>market-api</name>
-    <description>本地端接口test</description>
+    <description>本地端接口</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
