@@ -1,5 +1,6 @@
 package com.maxcar.stock.dao;
 
+import com.maxcar.stock.entity.Response.ReviewVo;
 import com.maxcar.stock.pojo.ReviewStep;
 import com.maxcar.stock.pojo.ReviewStepExample;
 import java.util.List;
@@ -27,4 +28,6 @@ public interface ReviewStepMapper {
     int updateByPrimaryKeySelective(ReviewStep record);
 
     int updateByPrimaryKey(ReviewStep record);
+
+    List<ReviewVo> reviewVolist(ReviewVo reviewVo);
 }

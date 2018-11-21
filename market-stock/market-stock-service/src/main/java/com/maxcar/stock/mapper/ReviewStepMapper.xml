@@ -12,6 +12,20 @@
     <result column="is_need_review" property="isNeedReview" jdbcType="INTEGER" />
     <result column="market_id" property="marketId" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="ReviewVoResultMap" type="com.maxcar.stock.entity.Response.ReviewVo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="step_name" property="stepName" jdbcType="VARCHAR" />
+    <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="apply_type" property="applyType" jdbcType="INTEGER" />
+    <result column="is_need_review" property="isNeedReview" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="review_result" property="reviewResult" jdbcType="INTEGER" />
+    <result column="review_id" property="reviewId" jdbcType="INTEGER" />
+  </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -274,4 +288,17 @@
       market_id = #{marketId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="reviewVolist" parameterType="com.maxcar.stock.entity.Response.ReviewVo" resultMap="ReviewVoResultMap">
+    SELECT a.*,b.review_result,b.review_id
+    from review_step a
+    LEFT JOIN review_detail b
+    on a.review_person_id = b.review_person_id
+    where a.apply_type = 1
+    <if test="marketId != null and marketId != ''" >
+      and a.market_id = #{marketId}
+    </if>
+    <if test="reviewId != null and reviewId != ''" >
+      and b.review_id = #{reviewId}
+    </if>
+  </select>
 </mapper>

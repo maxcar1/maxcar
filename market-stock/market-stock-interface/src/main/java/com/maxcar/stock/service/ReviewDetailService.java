@@ -7,4 +7,6 @@ import java.util.List;
 public interface ReviewDetailService {
     List<ReviewDetail> getReviewDetail(ReviewDetail reviewDetail);
 
+    boolean saveReviewDetail(ReviewDetail reviewDetail);
+
 }
