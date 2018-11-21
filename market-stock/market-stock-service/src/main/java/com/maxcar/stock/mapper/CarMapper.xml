@@ -1613,4 +1613,32 @@
         from car where stock_status in (1, 2, 3) and vin = #{vin};
     </select>
 
+    <select id="getCarDataStatistics" parameterType="String" resultType="com.maxcar.stock.entity.Response.CarDataStatistics">
+        SELECT
+        IFNULL(COUNT(*),0) AS 'inventoryTotal',
+        COALESCE(SUM(cb.evaluate_price),0) AS 'inventoryValuation',
+        count(if(c.car_status='1',true,null)) as 'pledgeCarTotal',
+        COALESCE(SUM(IF(c.car_status IN (1),cb.evaluate_price, 0)),0) AS 'pledgeCarValuation'
+        FROM car c
+        LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid =1 AND c.car_type =1
+        <if test="tenantId != null and tenantId != '' ">
+            and c.tenant = #{tenantId}
+        </if>
+    </select>
+    <select id="carData" parameterType="String" resultType="com.maxcar.stock.entity.Response.CarDataStatistics">
+        SELECT
+        count(if(c.car_status='1',true,null)) as 'presencePledgeCar',
+        COALESCE(SUM(IF(c.car_status IN (1),cb.evaluate_price, 0)),0) AS 'presencePledgeCarValuation'
+        FROM car c
+        LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid =1 AND c.car_type =1
+        and c.stock_status = 1
+        <if test="tenantId != null and tenantId != '' ">
+            and c.tenant = #{tenantId}
+        </if>
+    </select>
+
 </mapper>
