@@ -1,6 +1,6 @@
 package com.maxcar.stock.service.impl;
 
-import com.maxcar.stock.mapper.ReviewStepMapper;
+import com.maxcar.stock.dao.ReviewStepMapper;
 import com.maxcar.stock.pojo.ReviewStep;
 import com.maxcar.stock.pojo.ReviewStepExample;
 import com.maxcar.stock.service.ReviewStepService;
