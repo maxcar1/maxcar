@@ -381,7 +381,7 @@
                 <local.servers.address>http://localhost:8082</local.servers.address>
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
-                <mqtt.server.host>tcp://192.168.3.59:1883</mqtt.server.host>
+                <mqtt.server.host>tcp://192.168.3.220:1883</mqtt.server.host>
                 <mqtt.push.topic>MQTT_YL_UP_DEV</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
@@ -415,7 +415,7 @@
                 <local.servers.address>http://localhost:8082</local.servers.address>
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
-                <mqtt.server.host>tcp://192.168.3.59:1883</mqtt.server.host>
+                <mqtt.server.host>tcp://192.168.3.17:1883</mqtt.server.host>
                 <mqtt.push.topic>MQTT_WF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
@@ -448,7 +448,7 @@
                 <local.servers.address>http://localhost:8082</local.servers.address>
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
-                <mqtt.server.host>tcp://192.168.3.59:1883</mqtt.server.host>
+                <mqtt.server.host>tcp://192.168.3.17:1883</mqtt.server.host>
                 <mqtt.push.topic>MQTT_QCT_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
@@ -611,6 +611,104 @@
                 <!--mqtt-->
                 <mqtt.server.host>tcp://192.168.7.131:1883</mqtt.server.host>
                 <mqtt.push.topic>MQTT_WX_UP</mqtt.push.topic>
+                <mqtt.server.username>admin</mqtt.server.username>
+                <mqtt.server.password>password</mqtt.server.password>
+            </properties>
+            <activation><!-- 默认激活 -->
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+
+        <!--黄骅端口配置-->
+        <profile>
+            <id>hh</id>
+            <properties>
+                <spring.profiles.active>hh</spring.profiles.active>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.username>root</market.jdbc.username>
+                <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <!-- datasource通用-->
+                <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+                <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+                <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+                <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+                <!--卡夫卡-->
+                <kafka.consumer.zookeeper.connect>172.16.110.107:3001,172.16.110.106:3003,172.16.110.99:3002</kafka.consumer.zookeeper.connect>
+                <kafka.consumer.servers>47.96.29.224:9092,116.62.20.142:9092</kafka.consumer.servers>
+                <kafka.producer.servers>47.96.29.224:9092,116.62.20.142:9092</kafka.producer.servers>
+                <kafka.producer.topic>sync_upload_data_pro</kafka.producer.topic>
+                <kafka.producer.parking.topic>sync_upload_data_parking_pro</kafka.producer.parking.topic>
+                <kafka.consumer.topic>sync_download_014_data_pro</kafka.consumer.topic>
+                <local.servers.address>http://localhost:9090</local.servers.address>
+                <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
+                <!--mqtt-->
+                <mqtt.server.host>tcp://192.168.7.130:1883</mqtt.server.host>
+                <mqtt.push.topic>MQTT_HH_UP</mqtt.push.topic>
+                <mqtt.server.username>admin</mqtt.server.username>
+                <mqtt.server.password>password</mqtt.server.password>
+            </properties>
+            <activation><!-- 默认激活 -->
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+
+        <!--临汾端口配置-->
+        <profile>
+            <id>lf</id>
+            <properties>
+                <spring.profiles.active>lf</spring.profiles.active>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.username>root</market.jdbc.username>
+                <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <!-- datasource通用-->
+                <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+                <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+                <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+                <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+                <!--卡夫卡-->
+                <kafka.consumer.zookeeper.connect>172.16.110.107:3001,172.16.110.106:3003,172.16.110.99:3002</kafka.consumer.zookeeper.connect>
+                <kafka.consumer.servers>47.96.29.224:9092,116.62.20.142:9092</kafka.consumer.servers>
+                <kafka.producer.servers>47.96.29.224:9092,116.62.20.142:9092</kafka.producer.servers>
+                <kafka.producer.topic>sync_upload_data_pro</kafka.producer.topic>
+                <kafka.producer.parking.topic>sync_upload_data_parking_pro</kafka.producer.parking.topic>
+                <kafka.consumer.topic>sync_download_016_data_pro</kafka.consumer.topic>
+                <local.servers.address>http://localhost:9090</local.servers.address>
+                <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
+                <!--mqtt-->
+                <mqtt.server.host>tcp://192.168.7.130:1883</mqtt.server.host>
+                <mqtt.push.topic>MQTT_LF_UP</mqtt.push.topic>
+                <mqtt.server.username>admin</mqtt.server.username>
+                <mqtt.server.password>password</mqtt.server.password>
+            </properties>
+            <activation><!-- 默认激活 -->
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+        <!--攀枝花端口配置-->
+        <profile>
+            <id>pzh</id>
+            <properties>
+                <spring.profiles.active>pzh</spring.profiles.active>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.username>root</market.jdbc.username>
+                <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <!-- datasource通用-->
+                <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+                <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+                <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+                <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+                <!--卡夫卡-->
+                <kafka.consumer.zookeeper.connect>172.16.110.107:3001,172.16.110.106:3003,172.16.110.99:3002</kafka.consumer.zookeeper.connect>
+                <kafka.consumer.servers>47.96.29.224:9092,116.62.20.142:9092</kafka.consumer.servers>
+                <kafka.producer.servers>47.96.29.224:9092,116.62.20.142:9092</kafka.producer.servers>
+                <kafka.producer.topic>sync_upload_data_pro</kafka.producer.topic>
+                <kafka.producer.parking.topic>sync_upload_data_parking_pro</kafka.producer.parking.topic>
+                <kafka.consumer.topic>sync_download_018_data_pro</kafka.consumer.topic>
+                <local.servers.address>http://localhost:9090</local.servers.address>
+                <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
+                <!--mqtt-->
+                <mqtt.server.host>tcp://192.168.7.130:1883</mqtt.server.host>
+                <mqtt.push.topic>MQTT_PZH_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
             </properties>

@@ -87,8 +87,6 @@ public class WxPayServiceImpl implements WxPayService {
             chargeMoney = market.getChangeTheNamePrice() * 100;
         }
 
-        // TODO test 环境是1分钱
-        chargeMoney = 1;
         String chargeOderId = UuidUtils.generateIdentifier();
 
         // 调用微信支付生成预支付订单号

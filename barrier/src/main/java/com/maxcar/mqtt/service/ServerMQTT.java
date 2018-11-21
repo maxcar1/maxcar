@@ -1,9 +1,6 @@
 package com.maxcar.mqtt.service;
 
-import com.maxcar.util.CRC16M;
-import com.maxcar.util.Canstats;
-import com.maxcar.util.HexUtils;
-import com.maxcar.util.LoadProperties;
+import com.maxcar.util.*;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
@@ -36,7 +33,8 @@ public class ServerMQTT {
      * @throws MqttException
      */
     public ServerMQTT()throws MqttException{
-        clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");
+        /*clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");*/
+        clientId = UuidUtils.getRandByNum(6);
         mqttClientHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.client.host");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
         password = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.password");
@@ -54,7 +52,7 @@ public class ServerMQTT {
      */
     private void connect(String topic) {
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setCleanSession(false);
+        options.setCleanSession(true);
         // 设置是否清空session,这里如果设置为false表示服务器会保留客户端的连接记录,这里设置为true表示每次连接到服务器都以新的身份连接
         options.setUserName(username);
         options.setPassword(password.toCharArray());
@@ -146,14 +144,13 @@ public class ServerMQTT {
         try {
 //            String TOPIC = (topic == null || topic.equals("")) ? TOPIC : topic;
 //            topic11 = client.getTopic((topic == null || topic.equals("")) ? TOPIC : topic);
-            ServerMQTT server = new ServerMQTT();
-            server.init(topic);
-            server.message = new MqttMessage();
-            server.message.setQos(Canstats.qos1);  //保证消息能到达一次
-            server.message.setRetained(false);//是否保持连接，客户端会适时发送
-            server.message.setPayload(data);
-            server.publish(server.message);
-            logger.info(server.message.isRetained() + "------ratained状态");
+            this.init(topic);
+            this.message = new MqttMessage();
+            this.message.setQos(Canstats.qos1);  //保证消息能到达一次
+            this.message.setRetained(false);//是否保持连接，客户端会适时发送
+            this.message.setPayload(data);
+            this.publish(this.message);
+            logger.info(this.message.isRetained() + "------ratained状态");
         }catch (Exception ex){
             ex.printStackTrace();
         }
