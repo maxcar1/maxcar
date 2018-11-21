@@ -5,7 +5,7 @@ public class ReviewStep {
 
     private String stepName;
 
-    private Integer reviewPersonId;
+    private String reviewPersonId;
 
     private String orgId;
 
@@ -14,6 +14,8 @@ public class ReviewStep {
     private Integer type;
 
     private Integer applyType;
+
+    private Integer isNeedReview;
 
     private String marketId;
 
@@ -33,12 +35,12 @@ public class ReviewStep {
         this.stepName = stepName == null ? null : stepName.trim();
     }
 
-    public Integer getReviewPersonId() {
+    public String getReviewPersonId() {
         return reviewPersonId;
     }
 
-    public void setReviewPersonId(Integer reviewPersonId) {
-        this.reviewPersonId = reviewPersonId;
+    public void setReviewPersonId(String reviewPersonId) {
+        this.reviewPersonId = reviewPersonId == null ? null : reviewPersonId.trim();
     }
 
     public String getOrgId() {
@@ -71,6 +73,14 @@ public class ReviewStep {
 
     public void setApplyType(Integer applyType) {
         this.applyType = applyType;
+    }
+
+    public Integer getIsNeedReview() {
+        return isNeedReview;
+    }
+
+    public void setIsNeedReview(Integer isNeedReview) {
+        this.isNeedReview = isNeedReview;
     }
 
     public String getMarketId() {
