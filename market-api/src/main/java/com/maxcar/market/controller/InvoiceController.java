@@ -154,7 +154,6 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "查询发票详情")
     public InterfaceResult getInvoiceDetailById(@PathVariable(value = "id") String id, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        User currentUser = getCurrentUser(request);
         Invoice invoice = invoiceService.selectInvoiceDetailById(id);//开票信息
         Market market = new Market();
         String tenantName = "";

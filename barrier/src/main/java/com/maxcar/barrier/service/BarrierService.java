@@ -25,5 +25,5 @@ public interface BarrierService {
 
     InterfaceResult updateOrDelBarrier(Barrier barrier);
 
-
+    Barrier getBarrierInfoLike(String barrierId,String topic);
 }

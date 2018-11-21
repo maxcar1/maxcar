@@ -27,5 +27,7 @@ public class TradingResponse implements Serializable {
     private Double avgPriceYear;
     //  平均交易价格环比增长率
     private Double avgPriceMonth;
+    //  当月商户交易数量
+    private Double tenantCount;
 
 }
