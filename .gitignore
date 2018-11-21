@@ -1,10 +1,7 @@
 *.iml
 .idea/
-*/.idea/
 target/
-*/target/
 .svn/
 logs/
 systemlogs/
 */D:\\maven\\repository/
-*/.gitignore

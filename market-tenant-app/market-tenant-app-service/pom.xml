@@ -16,7 +16,7 @@
     </properties>
 
     <build>
-        <finalName>tenant-app</finalName>
+        <finalName>market-tenant-app</finalName>
 
         <resources>
             <resource>

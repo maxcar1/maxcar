@@ -91,9 +91,6 @@ public class AliPayServiceImpl implements AliPayService {
             subject = "全车通商户版-过户费";
         }
 
-        // TODO test 环境是1分钱
-        chargeMoney = 1;
-
         ChargeOrderDetail chargeOrderDetail = new ChargeOrderDetail();
         chargeOrderDetail.setId(UuidUtils.generateIdentifier());
         chargeOrderDetail.setChargeMoney(chargeMoney);
