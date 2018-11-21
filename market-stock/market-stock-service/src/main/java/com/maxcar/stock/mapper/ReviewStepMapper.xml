@@ -4,10 +4,13 @@
   <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.ReviewStep" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="step_name" property="stepName" jdbcType="VARCHAR" />
-    <result column="review_person_id" property="reviewPersonId" jdbcType="INTEGER" />
+    <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
     <result column="level" property="level" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="apply_type" property="applyType" jdbcType="INTEGER" />
+    <result column="is_need_review" property="isNeedReview" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -68,7 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, step_name, review_person_id, level, type, apply_type
+    id, step_name, review_person_id, org_id, level, type, apply_type, is_need_review, 
+    market_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewStepExample" >
     select
@@ -103,10 +107,12 @@
   </delete>
   <insert id="insert" parameterType="com.maxcar.stock.pojo.ReviewStep" >
     insert into review_step (id, step_name, review_person_id, 
-      level, type, apply_type
+      org_id, level, type, 
+      apply_type, is_need_review, market_id
       )
-    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR}, #{reviewPersonId,jdbcType=INTEGER}, 
-      #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER}
+    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR}, #{reviewPersonId,jdbcType=VARCHAR}, 
+      #{orgId,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{applyType,jdbcType=INTEGER}, #{isNeedReview,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.ReviewStep" >
@@ -121,6 +127,9 @@
       <if test="reviewPersonId != null" >
         review_person_id,
       </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
       <if test="level != null" >
         level,
       </if>
@@ -129,6 +138,12 @@
       </if>
       <if test="applyType != null" >
         apply_type,
+      </if>
+      <if test="isNeedReview != null" >
+        is_need_review,
+      </if>
+      <if test="marketId != null" >
+        market_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -139,7 +154,10 @@
         #{stepName,jdbcType=VARCHAR},
       </if>
       <if test="reviewPersonId != null" >
-        #{reviewPersonId,jdbcType=INTEGER},
+        #{reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=VARCHAR},
       </if>
       <if test="level != null" >
         #{level,jdbcType=INTEGER},
@@ -149,6 +167,12 @@
       </if>
       <if test="applyType != null" >
         #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="isNeedReview != null" >
+        #{isNeedReview,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -168,7 +192,10 @@
         step_name = #{record.stepName,jdbcType=VARCHAR},
       </if>
       <if test="record.reviewPersonId != null" >
-        review_person_id = #{record.reviewPersonId,jdbcType=INTEGER},
+        review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orgId != null" >
+        org_id = #{record.orgId,jdbcType=VARCHAR},
       </if>
       <if test="record.level != null" >
         level = #{record.level,jdbcType=INTEGER},
@@ -179,6 +206,12 @@
       <if test="record.applyType != null" >
         apply_type = #{record.applyType,jdbcType=INTEGER},
       </if>
+      <if test="record.isNeedReview != null" >
+        is_need_review = #{record.isNeedReview,jdbcType=INTEGER},
+      </if>
+      <if test="record.marketId != null" >
+        market_id = #{record.marketId,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -188,10 +221,13 @@
     update review_step
     set id = #{record.id,jdbcType=INTEGER},
       step_name = #{record.stepName,jdbcType=VARCHAR},
-      review_person_id = #{record.reviewPersonId,jdbcType=INTEGER},
+      review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
+      org_id = #{record.orgId,jdbcType=VARCHAR},
       level = #{record.level,jdbcType=INTEGER},
       type = #{record.type,jdbcType=INTEGER},
-      apply_type = #{record.applyType,jdbcType=INTEGER}
+      apply_type = #{record.applyType,jdbcType=INTEGER},
+      is_need_review = #{record.isNeedReview,jdbcType=INTEGER},
+      market_id = #{record.marketId,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -203,7 +239,10 @@
         step_name = #{stepName,jdbcType=VARCHAR},
       </if>
       <if test="reviewPersonId != null" >
-        review_person_id = #{reviewPersonId,jdbcType=INTEGER},
+        review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
       </if>
       <if test="level != null" >
         level = #{level,jdbcType=INTEGER},
@@ -214,16 +253,25 @@
       <if test="applyType != null" >
         apply_type = #{applyType,jdbcType=INTEGER},
       </if>
+      <if test="isNeedReview != null" >
+        is_need_review = #{isNeedReview,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.maxcar.stock.pojo.ReviewStep" >
     update review_step
     set step_name = #{stepName,jdbcType=VARCHAR},
-      review_person_id = #{reviewPersonId,jdbcType=INTEGER},
+      review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
       level = #{level,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
-      apply_type = #{applyType,jdbcType=INTEGER}
+      apply_type = #{applyType,jdbcType=INTEGER},
+      is_need_review = #{isNeedReview,jdbcType=INTEGER},
+      market_id = #{marketId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
