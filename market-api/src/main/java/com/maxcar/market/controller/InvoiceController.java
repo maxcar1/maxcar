@@ -581,8 +581,8 @@ public class InvoiceController extends BaseController {
         return interfaceResult;
     }
 
-    @GetMapping(value = "/invoice/getInvoicePerson/{idCard}")
-    public InterfaceResult getInvoicePerson(@PathVariable(value = "idCard") String idCard, HttpServletRequest request) {
+    @PostMapping(value = "/invoice/getInvoicePerson")
+    public InterfaceResult getInvoicePerson(@RequestBody String idCard, HttpServletRequest request) {
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             String marketId = getCurrentUser(request).getMarketId();
