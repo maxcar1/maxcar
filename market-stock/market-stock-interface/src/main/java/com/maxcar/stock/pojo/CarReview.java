@@ -1,12 +1,13 @@
 package com.maxcar.stock.pojo;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class CarReview implements Serializable {
+public class CarReview {
     private Integer id;
 
     private String carId;
+
+    private String marketId;
 
     private String userId;
 
@@ -36,6 +37,14 @@ public class CarReview implements Serializable {
 
     public void setCarId(String carId) {
         this.carId = carId == null ? null : carId.trim();
+    }
+
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId == null ? null : marketId.trim();
     }
 
     public String getUserId() {

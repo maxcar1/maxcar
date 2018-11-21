@@ -235,6 +235,76 @@ public class CarReviewExample {
             return (Criteria) this;
         }
 
+        public Criteria andMarketIdIsNull() {
+            addCriterion("market_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdIsNotNull() {
+            addCriterion("market_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdEqualTo(String value) {
+            addCriterion("market_id =", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotEqualTo(String value) {
+            addCriterion("market_id <>", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdGreaterThan(String value) {
+            addCriterion("market_id >", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdGreaterThanOrEqualTo(String value) {
+            addCriterion("market_id >=", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdLessThan(String value) {
+            addCriterion("market_id <", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdLessThanOrEqualTo(String value) {
+            addCriterion("market_id <=", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdLike(String value) {
+            addCriterion("market_id like", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotLike(String value) {
+            addCriterion("market_id not like", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdIn(List<String> values) {
+            addCriterion("market_id in", values, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotIn(List<String> values) {
+            addCriterion("market_id not in", values, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdBetween(String value1, String value2) {
+            addCriterion("market_id between", value1, value2, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotBetween(String value1, String value2) {
+            addCriterion("market_id not between", value1, value2, "marketId");
+            return (Criteria) this;
+        }
+
         public Criteria andUserIdIsNull() {
             addCriterion("user_id is null");
             return (Criteria) this;
