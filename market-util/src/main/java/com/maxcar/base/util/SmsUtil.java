@@ -26,7 +26,7 @@ public class SmsUtil {
     private static final String accessKeyId = "LTAICiWi9EI7jW7Y";
     private static final String accessKeySecret = "6zoFcTjrfrrMqqBX4HdlQ04JOGsawk";
 
-    private static final String signName = "阿里云短信测试专用";
+    private static final String signName = "全车通";
 
     /**
      * 发短信
