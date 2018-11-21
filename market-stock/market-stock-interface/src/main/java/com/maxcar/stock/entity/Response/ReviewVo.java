@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class ReviewVo implements Serializable {
 
+    private String id;
+
     private String stepName;//步骤名称
 
     private Integer type;//审核方式1或签     2会签
@@ -19,6 +21,14 @@ public class ReviewVo implements Serializable {
     private String orgName;//部门名字
 
     private Integer reviewId;//审核id
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getStepName() {
         return stepName;
