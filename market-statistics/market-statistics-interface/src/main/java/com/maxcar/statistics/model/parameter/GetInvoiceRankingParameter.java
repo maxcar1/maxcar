@@ -22,6 +22,16 @@ public class GetInvoiceRankingParameter implements Serializable{
 
     private String endTime;
 
+    // 车辆类型
     private String carInvoiceType;
+
+    //车辆品牌
+    private String brandName;
+
+    // 库存周期
+    private Integer inventoryCycle;
+
+    // 车辆年限
+    private Integer AgeByCar;
 
 }

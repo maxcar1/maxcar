@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class GetCarInvoiceTypeInvoiceRankingRequest implements Serializable {
+public class GetInvoiceByBrandNameReportRequest  implements Serializable{
 
     private String marketId;
 
@@ -20,6 +20,5 @@ public class GetCarInvoiceTypeInvoiceRankingRequest implements Serializable {
 
     @NotNull(message = "终止时间不能为null")
     private String endTime;
-
 
 }

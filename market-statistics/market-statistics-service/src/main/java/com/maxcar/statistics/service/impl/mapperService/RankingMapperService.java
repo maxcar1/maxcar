@@ -19,7 +19,7 @@ public class RankingMapperService {
 
     /**
      * param:
-     * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 交易 condition
+     * describe: 实时查询__总览——获取市场排行  商户排行 --> 交易 condition
      * create_date:  lxy   2018/11/14  18:03
      **/
     public List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingParameter parameter) {
@@ -36,17 +36,18 @@ public class RankingMapperService {
         parameter.setGroupByColumns(groupByColumns);
 
         if (StringUtil.isEmpty(parameter.getOrderBy())) {
-            parameter.setOrderBy("invoiceCount");
+            parameter.setOrderBy(" invoiceCount DESC ");
+        } else {
+            parameter.setOrderBy(parameter.getOrderBy() + " DESC ");
         }
 
         return rankingDao.getInvoiceRanking(parameter);
     }
 
 
-
     /**
      * param:
-     * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 库存 condition
+     * describe: 实时查询__总览——获取市场排行  商户排行 --> 库存 condition
      * create_date:  lxy   2018/11/14  18:07
      **/
     public List<GetInventoryRankingResponse> getInventoryRanking(GetInventoryRankingParameter request) {
@@ -62,7 +63,9 @@ public class RankingMapperService {
         request.setGroupByColumns(groupByColumns);
 
         if (StringUtil.isEmpty(request.getOrderBy())) {
-            request.setOrderBy("inventoryCount");
+            request.setOrderBy("inventoryCount DESC ");
+        } else {
+            request.setOrderBy(request.getOrderBy() + " DESC ");
         }
 
         return rankingDao.getInventoryRanking(request);

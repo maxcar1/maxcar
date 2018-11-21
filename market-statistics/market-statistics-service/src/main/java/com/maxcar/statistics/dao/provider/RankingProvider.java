@@ -16,6 +16,10 @@ public class RankingProvider {
         return new SQL() {{
             SELECT(parameter.getSelectColumns());
             FROM(" maxcar_market_l.invoice AS i \n" +
+                    "  LEFT JOIN `maxcar_stock_l`.`car` AS c \n" +
+                    "    ON i.car_id = c.id " +
+                    "  LEFT JOIN `maxcar_stock_l`.`car_base` AS cb \n" +
+                    "    ON i.car_id = cb.id " +
                     "  LEFT JOIN maxcar_user_l.`market` AS m \n" +
                     "    ON i.market_id = m.id \n" +
                     "  LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut \n" +

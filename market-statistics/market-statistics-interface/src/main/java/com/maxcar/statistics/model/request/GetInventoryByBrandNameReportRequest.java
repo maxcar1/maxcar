@@ -6,13 +6,12 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class GetCarInvoiceTypeInvoiceRankingRequest implements Serializable {
+public class GetInventoryByBrandNameReportRequest implements Serializable {
 
     private String marketId;
 
     private String tenantId;
 
-    // 排序的条件
     private String orderBy;
 
     @NotNull(message = "起始时间不能为null")
@@ -20,6 +19,5 @@ public class GetCarInvoiceTypeInvoiceRankingRequest implements Serializable {
 
     @NotNull(message = "终止时间不能为null")
     private String endTime;
-
 
 }
