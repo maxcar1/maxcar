@@ -11,6 +11,8 @@ public class CarReview {
 
     private String userId;
 
+    private String userName;
+
     private String outReason;
 
     private Date backTime;
@@ -22,6 +24,14 @@ public class CarReview {
     private Date insertTime;
 
     private Integer isValid;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public Integer getId() {
         return id;
