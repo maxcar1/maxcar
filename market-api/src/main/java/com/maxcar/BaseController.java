@@ -184,6 +184,22 @@ public class BaseController {
     }
 
     /**
+     * param:
+     * describe: 判断是否是管理员账户
+     * create_date:  lxy   2018/11/22  17:19
+     **/
+    public boolean isManagerFlag(HttpServletRequest request) throws Exception {
+
+        User user = getCurrentUser(request);
+
+        if (null == user || tIsEmpty(user.getManagerFlag())) {
+            return false;
+        }
+
+        return 0 == user.getManagerFlag();
+    }
+
+    /**
      * @Description: 获取当前网络ip
      * @Param: [request]
      * @return: java.lang.String
@@ -327,11 +343,11 @@ public class BaseController {
     }
 
     public static int getIntervalYears(LocalDate beforeTime, LocalDate afterTime) {
-       // Period p = Period.between(beforeTime, afterTime);
+        // Period p = Period.between(beforeTime, afterTime);
         //  System.out.printf("年龄 : %d 年 %d 月 %d 日", p.getYears(), p.getMonths(), p.getDays());
         int intervalDays = getIntervalDays(beforeTime, afterTime);
 
-        return intervalDays/360;
+        return intervalDays / 360;
     }
 
     public static void main(String[] args) throws Exception {

@@ -244,7 +244,7 @@
     <dubbo:reference interface="com.maxcar.statistics.service.RankingService" id="rankingService"
                      check="false" retries="0" timeout="20000"/>
 
-    <dubbo:reference interface="com.maxcar.statistics.service.ReportByCarInvoiceTypeService"
+    <dubbo:reference interface="com.maxcar.statistics.service.ReportGroupCartypeDayService"
                      id="reportByCarInvoiceTypeService"
                      check="false" retries="0" timeout="1200000"/>
 

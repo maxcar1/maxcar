@@ -1,21 +1,23 @@
 package com.maxcar.statistics.service;
 
+import com.maxcar.statistics.model.parameter.GroupCartypeDayParameter;
 import com.maxcar.statistics.model.request.GetCarInvoiceTypeInvoiceRankingRequest;
 import com.maxcar.statistics.model.request.GetInvoiceByCarInvoiceTypeReportRequest;
 import com.maxcar.statistics.model.response.GetCarInvoiceTypeInvoiceReportResponse;
 import com.maxcar.statistics.model.response.GetInvoiceByCarInvoiceTypeReportResponse;
+import com.maxcar.statistics.model.response.GroupCartypeDayResponse;
 
 import java.util.List;
 
-public interface ReportByCarInvoiceTypeService {
+public interface ReportGroupCartypeDayService {
 
 
     /**
      * param:
-     * describe: 车辆类型统计 根据车辆类型划分交易量与占比 --> 交易量 交易价值
-     * create_date:  lxy   2018/11/19  10:18
+     * describe: 分组查询车辆类型日表
+     * create_date:  lxy   2018/11/22  17:13
      **/
-    List<GetCarInvoiceTypeInvoiceReportResponse> getInvoiceByCarInvoiceTypeReport(GetCarInvoiceTypeInvoiceRankingRequest request);
+    List<GroupCartypeDayResponse> groupCartypeDay(GroupCartypeDayParameter parameter);
 
 
     /**

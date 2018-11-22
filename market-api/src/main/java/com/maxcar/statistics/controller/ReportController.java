@@ -4,9 +4,10 @@ package com.maxcar.statistics.controller;
 import com.maxcar.BaseController;
 
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.statistics.model.parameter.GroupCartypeDayParameter;
 import com.maxcar.statistics.model.request.GetCarInvoiceTypeInvoiceRankingRequest;
 import com.maxcar.statistics.model.request.GetInvoiceByCarInvoiceTypeReportRequest;
-import com.maxcar.statistics.service.ReportByCarInvoiceTypeService;
+import com.maxcar.statistics.service.ReportGroupCartypeDayService;
 import com.maxcar.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -22,7 +23,7 @@ import javax.validation.Valid;
 public class ReportController extends BaseController {
 
     @Autowired
-    private ReportByCarInvoiceTypeService reportByCarInvoiceTypeService;
+    private ReportGroupCartypeDayService reportGroupCartypeDayService;
 
 
     /**
@@ -30,9 +31,9 @@ public class ReportController extends BaseController {
      * describe: 车辆类型统计 根据车辆类型划分交易量与占比 --> 交易量 交易价值
      * create_date:  lxy   2018/11/19  10:18
      **/
-    @RequestMapping("/report/getInvoiceByCarInvoiceTypeReport")
-    public InterfaceResult getInvoiceByCarInvoiceTypeReport(@RequestBody @Valid GetCarInvoiceTypeInvoiceRankingRequest getCarInvoiceTypeInvoiceRankingRequest,
-                                                          BindingResult result, HttpServletRequest request) throws Exception {
+    @RequestMapping("/report/groupCartypeDay")
+    public InterfaceResult groupCartypeDay(@RequestBody @Valid GroupCartypeDayParameter parameter,
+                                                            BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
@@ -42,17 +43,18 @@ public class ReportController extends BaseController {
 
         User user = getCurrentUser(request);
 
-        if (null == user || tIsEmpty(user.getMarketId())) {
-            return getInterfaceResult("600", "账号异常");
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            parameter.setMarketId(user.getMarketId());
         }
 
-        if (!"001".equals(user.getMarketId())) {
-            getCarInvoiceTypeInvoiceRankingRequest.setMarketId(user.getMarketId());
-        }
 
-        return getInterfaceResult("200", reportByCarInvoiceTypeService.getInvoiceByCarInvoiceTypeReport(getCarInvoiceTypeInvoiceRankingRequest));
+        return getInterfaceResult("200", reportGroupCartypeDayService.groupCartypeDay(parameter));
     }
-
 
 
     /**
@@ -62,7 +64,7 @@ public class ReportController extends BaseController {
      **/
     @RequestMapping("/report/getInvoiceByCarInvoiceTypeReportMonth")
     public InterfaceResult getInvoiceByCarInvoiceTypeReportMonth(@RequestBody @Valid GetInvoiceByCarInvoiceTypeReportRequest getInvoiceByCarInvoiceTypeReportRequest,
-                                                          BindingResult result, HttpServletRequest request) throws Exception {
+                                                                 BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
@@ -80,9 +82,8 @@ public class ReportController extends BaseController {
             getInvoiceByCarInvoiceTypeReportRequest.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportByCarInvoiceTypeService.getInvoiceByCarInvoiceTypeReportMonth(getInvoiceByCarInvoiceTypeReportRequest));
+        return getInterfaceResult("200", reportGroupCartypeDayService.getInvoiceByCarInvoiceTypeReportMonth(getInvoiceByCarInvoiceTypeReportRequest));
     }
-
 
 
 }
