@@ -11,6 +11,8 @@ public class ReviewStep implements Serializable {
 
     private String reviewPersonId;
 
+    private String orgId;
+
     private Integer level;
 
     private Integer type;
@@ -18,8 +20,6 @@ public class ReviewStep implements Serializable {
     private Integer applyType;
 
     private String apply;
-
-    private String orgId;
 
     private String marketId;
 
@@ -87,7 +87,15 @@ public class ReviewStep implements Serializable {
     }
 
     public void setReviewPersonId(String reviewPersonId) {
-        this.reviewPersonId = reviewPersonId;
+        this.reviewPersonId = reviewPersonId == null ? null : reviewPersonId.trim();
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId == null ? null : orgId.trim();
     }
 
     public Integer getLevel() {

@@ -6,9 +6,7 @@ import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
-import com.maxcar.stock.entity.Response.BarrierCarListResponse;
-import com.maxcar.stock.entity.Response.GetCarListByMarketIdAndTenantResponse;
-import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
+import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.vo.CarVo;
 import org.apache.ibatis.annotations.Param;
@@ -33,6 +31,10 @@ public interface CarMapper extends BaseDao<Car, String> {
     List<CarVo> listCarVo(CarVo carVo);
 
     List<CarVo> listReview(CarParams carParams);
+
+    List<CarVo> carReviewDetailList(CarParams carParams);
+
+    List<ExportReviewResponse> exportReviewList(CarParams carParams);
 
     /**
      * param:
@@ -134,4 +136,13 @@ public interface CarMapper extends BaseDao<Car, String> {
 
 
     Car getStockCarByVin(String vin);
+
+    /**
+     * 商户库存信息
+     * @param tenantId
+     * @return
+     */
+    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId);
+
+    CarDataStatistics carData(@Param("tenantId") String tenantId);
 }

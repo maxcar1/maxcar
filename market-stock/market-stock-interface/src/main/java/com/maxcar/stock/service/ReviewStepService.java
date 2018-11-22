@@ -1,18 +1,15 @@
 package com.maxcar.stock.service;
 
-
-import com.maxcar.base.service.BaseService;
+import com.maxcar.stock.entity.Response.ReviewVo;
 import com.maxcar.stock.pojo.FlowStep;
 import com.maxcar.stock.pojo.ReviewStep;
 
 import java.util.List;
-import java.util.Map;
 
-/**
- * 心愿单
- */
-public interface ReviewStepService extends BaseService<ReviewStep,String> {
+public interface ReviewStepService {
+    List<ReviewStep> getReviewStep(ReviewStep reviewStep);
 
+    List<ReviewVo> reviewVolist(ReviewVo reviewVo);
 
     int saveReviewStep(ReviewStep reviewStep);
 
@@ -29,4 +26,5 @@ public interface ReviewStepService extends BaseService<ReviewStep,String> {
     int updateFlowStep(FlowStep flowStep);
 
     int selectMarketCode(FlowStep flowStep);
+
 }

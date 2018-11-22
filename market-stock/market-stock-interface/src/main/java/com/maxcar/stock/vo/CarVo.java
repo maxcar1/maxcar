@@ -18,9 +18,19 @@ public class CarVo extends PageBean implements Serializable {
 
     private Integer reviewId;//审核id
 
+    private Integer reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
+
     private String id;
 
     private String carNo; // 车辆编号
+
+    public Integer getReviewResult() {
+        return reviewResult;
+    }
+
+    public void setReviewResult(Integer reviewResult) {
+        this.reviewResult = reviewResult;
+    }
 
     public String getCarNo() {
         return carNo;

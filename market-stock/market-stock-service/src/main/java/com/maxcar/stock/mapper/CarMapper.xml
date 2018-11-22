@@ -79,6 +79,7 @@
         <result column="carChannelId" property="carChannelId" jdbcType="VARCHAR"/>
         <result column="out_reason" property="outReason" jdbcType="VARCHAR"/>
         <result column="review_id" property="reviewId" jdbcType="INTEGER"/>
+        <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>
     </resultMap>
     <!-- carVo END -->
     <resultMap id="taoBaoCarMap" type="com.maxcar.stock.pojo.TaoBaoCar">
@@ -790,7 +791,85 @@
         <if test="vin != null and vin != ''">
             and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
         </if>
+    </select>
 
+    <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
+        SELECT a.*,d.*,b.id as review_id,b.out_reason,c.tenant_name,e.review_result
+        from maxcar_stock_l.car a
+        LEFT JOIN maxcar_stock_l.car_review b
+        on a.id = b.car_id
+        LEFT JOIN maxcar_tenant_l.user_tenant c
+        on a.tenant = c.id
+        LEFT JOIN maxcar_stock_l.car_base d
+        on a.id = d.id
+        LEFT JOIN maxcar_stock_l.review_detail e
+        on a.id = e.review_id
+        where a.isvalid = 1
+        and  b.is_pass = 1
+        <if test="market != null and market != ''">
+            and a.market_id = #{market}
+        </if>
+        <if test="brandCode != null and brandCode != ''">
+            and d.brand_code = #{brandCode}
+        </if>
+        <if test="seriesCode != null and seriesCode != ''">
+            and d.series_code = #{seriesCode}
+        </if>
+        <if test="tenant != null and tenant != ''">
+            and a.tenant = #{tenant}
+        </if>
+        <if test="reviewResult != null and reviewResult != ''">
+            and e.review_result = #{reviewResult}
+        </if>
+        <if test="carStatus != null and carStatus != ''">
+            and a.car_status= #{carStatus}
+        </if>
+        <if test="vin != null and vin != ''">
+            and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+        </if>
+        <if test="stockStatus != null and stockStatus != ''">
+            and a.stock_status= #{stockStatus}
+        </if>
+
+    </select>
+
+    <select id="exportReviewList" parameterType="com.maxcar.stock.entity.CarParams" resultType="com.maxcar.stock.entity.Response.ExportReviewResponse">
+        SELECT a.*,d.*,b.id as review_id,b.out_reason,c.tenant_name
+        from maxcar_stock_l.car a
+        LEFT JOIN maxcar_stock_l.car_review b
+        on a.id = b.car_id
+        LEFT JOIN maxcar_tenant_l.user_tenant c
+        on a.tenant = c.id
+        LEFT JOIN maxcar_stock_l.car_base d
+        on a.id = d.id
+        LEFT JOIN maxcar_stock_l.review_detail e
+        on a.id = e.review_id
+        where a.isvalid = 1
+        and  b.is_pass = 1
+        <if test="market != null and market != ''">
+            and a.market_id = #{market}
+        </if>
+        <if test="brandCode != null and brandCode != ''">
+            and d.brand_code = #{brandCode}
+        </if>
+        <if test="seriesCode != null and seriesCode != ''">
+            and d.series_code = #{seriesCode}
+        </if>
+        <if test="tenant != null and tenant != ''">
+            and a.tenant = #{tenant}
+        </if>
+        <if test="reviewResult != null and reviewResult != ''">
+            and e.review_result = #{reviewResult}
+        </if>
+        <if test="carStatus != null and carStatus != ''">
+            and a.car_status= #{carStatus}
+        </if>
+        <if test="vin != null and vin != ''">
+            and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+        </if>
+        <if test="stockStatus != null and stockStatus != ''">
+            and a.stock_status= #{stockStatus}
+        </if>
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
@@ -1612,5 +1691,35 @@
         select <include refid="Base_Column_List"/>
         from car where stock_status in (1, 2, 3) and vin = #{vin};
     </select>
+
+    <select id="getCarDataStatistics" parameterType="String" resultType="com.maxcar.stock.entity.Response.CarDataStatistics">
+        SELECT
+        IFNULL(COUNT(*),0) AS 'inventoryTotal',
+        COALESCE(SUM(cb.evaluate_price),0) AS 'inventoryValuation',
+        count(if(c.car_status='1',true,null)) as 'pledgeCarTotal',
+        COALESCE(SUM(IF(c.car_status IN (1),cb.evaluate_price, 0)),0) AS 'pledgeCarValuation'
+        FROM car c
+        LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid =1 AND c.car_type =1
+        <if test="tenantId != null and tenantId != '' ">
+            and c.tenant = #{tenantId}
+        </if>
+    </select>
+    <select id="carData" parameterType="String" resultType="com.maxcar.stock.entity.Response.CarDataStatistics">
+        SELECT
+        count(if(c.car_status='1',true,null)) as 'presencePledgeCar',
+        COALESCE(SUM(IF(c.car_status IN (1),cb.evaluate_price, 0)),0) AS 'presencePledgeCarValuation'
+        FROM car c
+        LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid =1 AND c.car_type =1
+        and c.stock_status = 1
+        <if test="tenantId != null and tenantId != '' ">
+            and c.tenant = #{tenantId}
+        </if>
+    </select>
+
+
 
 </mapper>

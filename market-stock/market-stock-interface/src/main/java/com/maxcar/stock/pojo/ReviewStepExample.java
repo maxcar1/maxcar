@@ -234,63 +234,143 @@ public class ReviewStepExample {
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdIsNull() {
-            addCriterion("review_id is null");
+        public Criteria andReviewPersonIdIsNull() {
+            addCriterion("review_person_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdIsNotNull() {
-            addCriterion("review_id is not null");
+        public Criteria andReviewPersonIdIsNotNull() {
+            addCriterion("review_person_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdEqualTo(Integer value) {
-            addCriterion("review_id =", value, "reviewId");
+        public Criteria andReviewPersonIdEqualTo(String value) {
+            addCriterion("review_person_id =", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdNotEqualTo(Integer value) {
-            addCriterion("review_id <>", value, "reviewId");
+        public Criteria andReviewPersonIdNotEqualTo(String value) {
+            addCriterion("review_person_id <>", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdGreaterThan(Integer value) {
-            addCriterion("review_id >", value, "reviewId");
+        public Criteria andReviewPersonIdGreaterThan(String value) {
+            addCriterion("review_person_id >", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("review_id >=", value, "reviewId");
+        public Criteria andReviewPersonIdGreaterThanOrEqualTo(String value) {
+            addCriterion("review_person_id >=", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdLessThan(Integer value) {
-            addCriterion("review_id <", value, "reviewId");
+        public Criteria andReviewPersonIdLessThan(String value) {
+            addCriterion("review_person_id <", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdLessThanOrEqualTo(Integer value) {
-            addCriterion("review_id <=", value, "reviewId");
+        public Criteria andReviewPersonIdLessThanOrEqualTo(String value) {
+            addCriterion("review_person_id <=", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdIn(List<Integer> values) {
-            addCriterion("review_id in", values, "reviewId");
+        public Criteria andReviewPersonIdLike(String value) {
+            addCriterion("review_person_id like", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdNotIn(List<Integer> values) {
-            addCriterion("review_id not in", values, "reviewId");
+        public Criteria andReviewPersonIdNotLike(String value) {
+            addCriterion("review_person_id not like", value, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdBetween(Integer value1, Integer value2) {
-            addCriterion("review_id between", value1, value2, "reviewId");
+        public Criteria andReviewPersonIdIn(List<String> values) {
+            addCriterion("review_person_id in", values, "reviewPersonId");
             return (Criteria) this;
         }
 
-        public Criteria andReviewIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("review_id not between", value1, value2, "reviewId");
+        public Criteria andReviewPersonIdNotIn(List<String> values) {
+            addCriterion("review_person_id not in", values, "reviewPersonId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReviewPersonIdBetween(String value1, String value2) {
+            addCriterion("review_person_id between", value1, value2, "reviewPersonId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReviewPersonIdNotBetween(String value1, String value2) {
+            addCriterion("review_person_id not between", value1, value2, "reviewPersonId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdIsNull() {
+            addCriterion("org_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdIsNotNull() {
+            addCriterion("org_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdEqualTo(String value) {
+            addCriterion("org_id =", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotEqualTo(String value) {
+            addCriterion("org_id <>", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdGreaterThan(String value) {
+            addCriterion("org_id >", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdGreaterThanOrEqualTo(String value) {
+            addCriterion("org_id >=", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdLessThan(String value) {
+            addCriterion("org_id <", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdLessThanOrEqualTo(String value) {
+            addCriterion("org_id <=", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdLike(String value) {
+            addCriterion("org_id like", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotLike(String value) {
+            addCriterion("org_id not like", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdIn(List<String> values) {
+            addCriterion("org_id in", values, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotIn(List<String> values) {
+            addCriterion("org_id not in", values, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdBetween(String value1, String value2) {
+            addCriterion("org_id between", value1, value2, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotBetween(String value1, String value2) {
+            addCriterion("org_id not between", value1, value2, "orgId");
             return (Criteria) this;
         }
 
@@ -471,6 +551,136 @@ public class ReviewStepExample {
 
         public Criteria andApplyTypeNotBetween(Integer value1, Integer value2) {
             addCriterion("apply_type not between", value1, value2, "applyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewIsNull() {
+            addCriterion("is_need_review is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewIsNotNull() {
+            addCriterion("is_need_review is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewEqualTo(Integer value) {
+            addCriterion("is_need_review =", value, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewNotEqualTo(Integer value) {
+            addCriterion("is_need_review <>", value, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewGreaterThan(Integer value) {
+            addCriterion("is_need_review >", value, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewGreaterThanOrEqualTo(Integer value) {
+            addCriterion("is_need_review >=", value, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewLessThan(Integer value) {
+            addCriterion("is_need_review <", value, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewLessThanOrEqualTo(Integer value) {
+            addCriterion("is_need_review <=", value, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewIn(List<Integer> values) {
+            addCriterion("is_need_review in", values, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewNotIn(List<Integer> values) {
+            addCriterion("is_need_review not in", values, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewBetween(Integer value1, Integer value2) {
+            addCriterion("is_need_review between", value1, value2, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsNeedReviewNotBetween(Integer value1, Integer value2) {
+            addCriterion("is_need_review not between", value1, value2, "isNeedReview");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdIsNull() {
+            addCriterion("market_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdIsNotNull() {
+            addCriterion("market_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdEqualTo(String value) {
+            addCriterion("market_id =", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotEqualTo(String value) {
+            addCriterion("market_id <>", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdGreaterThan(String value) {
+            addCriterion("market_id >", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdGreaterThanOrEqualTo(String value) {
+            addCriterion("market_id >=", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdLessThan(String value) {
+            addCriterion("market_id <", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdLessThanOrEqualTo(String value) {
+            addCriterion("market_id <=", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdLike(String value) {
+            addCriterion("market_id like", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotLike(String value) {
+            addCriterion("market_id not like", value, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdIn(List<String> values) {
+            addCriterion("market_id in", values, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotIn(List<String> values) {
+            addCriterion("market_id not in", values, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdBetween(String value1, String value2) {
+            addCriterion("market_id between", value1, value2, "marketId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarketIdNotBetween(String value1, String value2) {
+            addCriterion("market_id not between", value1, value2, "marketId");
             return (Criteria) this;
         }
     }

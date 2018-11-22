@@ -22,11 +22,8 @@ import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
+import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.entity.Response.BarrierCarListResponse;
-import com.maxcar.stock.entity.Response.CarDetails;
-import com.maxcar.stock.entity.Response.BarrierCarListResponse;
-import com.maxcar.stock.entity.Response.GetCarListByMarketIdAndTenantResponse;
-import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.CarService;
 import com.maxcar.stock.vo.CarVo;
@@ -111,6 +108,20 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         List<CarVo> listCarVo = carMapper.listReview(carParams);
         PageInfo pageInfo = new PageInfo(listCarVo);
         return pageInfo;
+    }
+
+    @Override
+    public PageInfo carReviewDetailList(CarParams carParams) {
+        PageHelper.startPage(StringUtils.isBlank(carParams.getCurrentPage()) ? 1 : carParams.getCurrentPage(),
+                StringUtils.isBlank(carParams.getPageSize()) ? 20 : carParams.getPageSize());
+        List<CarVo> listCarVo = carMapper.carReviewDetailList(carParams);
+        PageInfo pageInfo = new PageInfo(listCarVo);
+        return pageInfo;
+    }
+
+    @Override
+    public List<ExportReviewResponse> exportReviewList(CarParams carParams) {
+        return carMapper.exportReviewList(carParams);
     }
 
 
@@ -998,6 +1009,16 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     @Override
     public Car getStockCarByVin(String vin) {
         return carMapper.getStockCarByVin(vin);
+    }
+
+    @Override
+    public CarDataStatistics getCarDataStatistics(String tenantId) {
+        return carMapper.getCarDataStatistics(tenantId);
+    }
+
+    @Override
+    public CarDataStatistics carData(String tenantId) {
+        return carMapper.carData(tenantId);
     }
 
 

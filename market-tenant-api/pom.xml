@@ -463,7 +463,7 @@
     </profiles>
 
     <build>
-        <finalName>tenant-api</finalName>
+        <finalName>market-tenant-api</finalName>
         <plugins>
             <!--生成可执行jar-->
             <plugin>
