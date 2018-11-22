@@ -601,13 +601,13 @@ public class InvoiceController extends BaseController {
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
                 for (int i = 0 ; i < invoicePersonList.size() ; i ++) {
                     InvoicePerson invoice = invoicePersonList.get(i);
-                    String purchacerName = invoice.getPurchacerName();
-                    String sellerName = invoice.getSellerName();
-                    if(purchacerName != null && idCard.equals(purchacerName)){
+                    String purchacerIdCardBack = invoice.getPurchacerIdCard();
+                    String sellerIdCardBack = invoice.getSellerIdCard();
+                    if(purchacerIdCardBack != null && idCard.equals(purchacerIdCardBack)){
                         interfaceResult.InterfaceResult200(invoicePersonList.get(i));
                         break;
                     }
-                    if(sellerName != null && idCard.equals(sellerName)){
+                    if(sellerIdCardBack != null && idCard.equals(sellerIdCardBack)){
                         interfaceResult.InterfaceResult200(invoicePersonList.get(i));
                         break;
                     }
