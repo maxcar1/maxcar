@@ -7,6 +7,7 @@ import com.maxcar.base.util.StringUtils;
 import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Response.CarDataStatistics;
 import com.maxcar.stock.entity.Response.CarDetails;
+import com.maxcar.stock.entity.Response.ExportReviewResponse;
 import com.maxcar.stock.entity.Response.ReviewVo;
 import com.maxcar.stock.pojo.Car;
 import com.maxcar.stock.pojo.CarBase;
@@ -164,7 +165,7 @@ public class AuditingController extends BaseController {
     }
 
     @RequestMapping("/reviewDetailList")
-    @OperationAnnotation(title = "车辆出场审核待审核列表")
+    @OperationAnnotation(title = "车辆出场审核已审核列表")
     public InterfaceResult carReviewDetailList(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         PageInfo pageInfo = carService.carReviewDetailList(carParams);
@@ -177,8 +178,39 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "导出")
     public InterfaceResult export(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        List<CarVo> list = carService.exportList(carParams);
+        List<ExportReviewResponse> exportList = new ArrayList<>();;
+        for(CarVo carVo:list){
+            ExportReviewResponse exportReviewResponse = new ExportReviewResponse();
+            exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
+            exportReviewResponse.setModelName(carVo.getModelName());
+            exportReviewResponse.setTenantName(carVo.getTenantName());
+            exportReviewResponse.setInsertTime(carVo.getReviewInsertTime()==null?"":carVo.getReviewInsertTime());
+            exportReviewResponse.setCarStatus(carVo.getCarStatus()==1?"质押":"非质押");
+            exportReviewResponse.setOutReason(carVo.getOutReason());
+            if(carVo.getEvaluatePrice() == null){
+                exportReviewResponse.setEvaluatePrice(0.00);
+            }else{
+                exportReviewResponse.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
+            }
+            exportReviewResponse.setReviewResult(carVo.getReviewResult()==1?"审核通过":"审核不通过");
+            exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
+            exportReviewResponse.setVin(carVo.getVin());
+            exportList.add(exportReviewResponse);
+        }
+        interfaceResult.InterfaceResult200(exportList);
+        return interfaceResult;
+    }
+
+
+    @RequestMapping("/detail/{reviewId}")
+    @OperationAnnotation(title = "审核结果")
+    public InterfaceResult carReviewDetailList(@PathVariable Integer reviewId,HttpServletRequest request ) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
 
         return interfaceResult;
     }
+
+
 
 }
