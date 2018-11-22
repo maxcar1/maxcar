@@ -239,5 +239,7 @@
 	<dubbo:reference interface="com.maxcar.tenant.app.service.TransferCarService"
 					 id="transferCarService"
 					 check="false" retries="0" timeout="20000"/>
-
+	<dubbo:reference interface="com.maxcar.stock.service.ReviewStepService"
+					 id="reviewStepService"
+					 check="false" retries="0" timeout="20000"/>
 </beans>

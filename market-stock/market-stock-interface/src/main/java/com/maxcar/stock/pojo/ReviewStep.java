@@ -1,17 +1,70 @@
 package com.maxcar.stock.pojo;
 
-public class ReviewStep {
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+public class ReviewStep implements Serializable {
     private Integer id;
 
     private String stepName;
 
-    private Integer reviewId;
+    private String reviewPersonId;
 
     private Integer level;
 
     private Integer type;
 
     private Integer applyType;
+
+    private String apply;
+
+    private String orgId;
+
+    private String marketId;
+
+    private List<Map> userOrg;
+
+    private Integer isNeedReview;
+
+    private Integer reviewType;
+
+    public  Integer getReviewType(){return  reviewType;}
+
+    public  void setReviewType(){this.reviewType=reviewType;}
+
+    public  Integer getIsNeedReview(){return  isNeedReview;}
+
+    public  void setIsNeedReview(){this.isNeedReview=isNeedReview;}
+
+    public List<Map> getUserOrg(){return  userOrg;}
+
+    public void setUserOrg(List<Map> userOrg){
+        this.userOrg=userOrg;
+    }
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId == null ? null : marketId.trim();
+    }
+
+    public String getOrgld() {
+        return orgId;
+    }
+
+    public void setOrgld(String orgId) {
+        this.orgId = orgId == null ? null : orgId.trim();
+    }
+
+    public String getApply() {
+        return apply;
+    }
+
+    public void setApply(String apply) {
+        this.apply = apply == null ? null : apply.trim();
+    }
 
     public Integer getId() {
         return id;
@@ -29,12 +82,12 @@ public class ReviewStep {
         this.stepName = stepName == null ? null : stepName.trim();
     }
 
-    public Integer getReviewId() {
-        return reviewId;
+    public String getReviewPersonId() {
+        return reviewPersonId;
     }
 
-    public void setReviewId(Integer reviewId) {
-        this.reviewId = reviewId;
+    public void setReviewPersonId(String reviewPersonId) {
+        this.reviewPersonId = reviewPersonId;
     }
 
     public Integer getLevel() {
