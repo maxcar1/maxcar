@@ -587,6 +587,14 @@ public class InvoiceController extends BaseController {
         try {
             String marketId = getCurrentUser(request).getMarketId();
             String idCard = map.get("idCard");
+            String purchacerIdCard = map.get("purchacerIdCard");
+            if(StringUtil.isNotEmpty(purchacerIdCard)){
+                idCard = purchacerIdCard;
+            }
+            String sellerIdCard = map.get("sellerIdCard");
+            if(StringUtil.isNotEmpty(sellerIdCard)){
+                idCard = sellerIdCard;
+            }
             List<InvoicePerson> invoicePersonList = invoiceService.getInvoicePerson(idCard, marketId);
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
                 interfaceResult.InterfaceResult200(invoicePersonList.get(0));
