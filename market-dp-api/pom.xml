@@ -474,7 +474,7 @@
     </profiles>
 
     <build>
-        <finalName>dp-api</finalName>
+        <finalName>market-dp-api</finalName>
         <plugins>
             <!--生成可执行jar-->
             <plugin>

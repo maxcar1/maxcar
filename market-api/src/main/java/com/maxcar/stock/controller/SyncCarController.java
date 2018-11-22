@@ -825,6 +825,8 @@ public class SyncCarController extends BaseController {
 	public InterfaceResult modifyTenant(@RequestBody CarTenantVo carTenantVo,HttpServletRequest request) throws Exception{
 		InterfaceResult interfaceResult = new InterfaceResult();
 		User user = super.getCurrentUser(request);
+		Car car = new Car();
+		car.setId(carTenantVo.getCarId());
 		if (StringUtils.isNotBlank(carTenantVo.getTenant())) {
 			UserTenant tenant = userTenantService.selectByPrimaryKey(carTenantVo.getTenant());
 			if (null == tenant) {
@@ -870,84 +872,35 @@ public class SyncCarController extends BaseController {
 				interfaceResult.InterfaceResult600("可用车位数为0，请确认");
 				return interfaceResult;
 			}
-			Car car = new Car();
-			car.setId(carTenantVo.getCarId());
 			car.setTenant(carTenantVo.getTenant());
-			int count = carService.updateByPrimaryKeySelective(car);
-			if(count>0){
-				interfaceResult.InterfaceResult200("修改成功");
-			}else{
-				interfaceResult.InterfaceResult500("操作失败");
-			}
-			String topic = super.consumerTopic7;
-			switch (user.getMarketId()) {
-				case "006":
-					topic = super.consumerTopic6;
-					break;
-				case "007":
-					topic = super.consumerTopic7;
-					break;
-				case "008":
-					topic = super.consumerTopic8;
-					break;
-				case "010":
-					topic = super.consumerTopic10;
-					break;
-			}
-			//同步删除本地车辆状态
-			//组装云端参数
-			PostParam postParam = new PostParam();
-			postParam.setData(JsonTools.toJson(car));
-			postParam.setMarket(user.getMarketId());
-			postParam.setUrl("/barrier/car/saveCar");
-			postParam.setOnlySend(false);
-			postParam.setMessageTime(Constants.dateformat.format(new Date()));
-			messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
-
 		}
-
+		//更新vin
 		if(StringUtils.isNotBlank(carTenantVo.getVin())){
-			Car car = new Car();
 			car.setVin(carTenantVo.getVin());
 			Car c = carService.getCar(car);
 			if(c!=null){
 				interfaceResult.InterfaceResult500("该vin码已存在，请更换");
 				return interfaceResult;
 			}
-			Car car1 = new Car();
-			car1.setId(carTenantVo.getCarId());
-			car1.setVin(carTenantVo.getVin());
-			int num = carService.updateByPrimaryKeySelective(car1);
-			if(num>0){
-				interfaceResult.InterfaceResult200("修改成功");
-			}else{
-				interfaceResult.InterfaceResult500("操作失败");
-			}
-            String topic = super.consumerTopic7;
-            switch (user.getMarketId()) {
-                case "006":
-                    topic = super.consumerTopic6;
-                    break;
-                case "007":
-                    topic = super.consumerTopic7;
-                    break;
-                case "008":
-                    topic = super.consumerTopic8;
-                    break;
-                case "010":
-                    topic = super.consumerTopic10;
-                    break;
-            }
-            //同步删除本地车辆状态
-            //组装云端参数
-            PostParam postParam = new PostParam();
-            postParam.setData(JsonTools.toJson(car1));
-            postParam.setMarket(user.getMarketId());
-            postParam.setUrl("/barrier/car/saveCar");
-            postParam.setOnlySend(false);
-            postParam.setMessageTime(Constants.dateformat.format(new Date()));
-            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
 		}
-        return interfaceResult;
+		int count = carService.updateByPrimaryKeySelective(car);
+		if(count>0){
+			interfaceResult.InterfaceResult200("修改成功");
+		}else{
+			interfaceResult.InterfaceResult500("操作失败");
+		}
+		String topic = super.getTopic(user.getMarketId());
+		//同步删除本地车辆状态
+		//组装云端参数
+		PostParam postParam = new PostParam();
+		postParam.setData(JsonTools.toJson(car));
+		postParam.setMarket(user.getMarketId());
+		postParam.setUrl("/barrier/car/saveCar");
+		postParam.setOnlySend(false);
+		postParam.setMessageTime(Constants.dateformat.format(new Date()));
+		messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
+		return interfaceResult;
 	}
 }
