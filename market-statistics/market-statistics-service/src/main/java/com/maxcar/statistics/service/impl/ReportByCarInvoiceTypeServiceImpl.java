@@ -8,6 +8,7 @@ import com.maxcar.statistics.model.request.GetInvoiceByCarInvoiceTypeReportReque
 import com.maxcar.statistics.model.response.GetCarInvoiceTypeInvoiceReportResponse;
 import com.maxcar.statistics.model.response.GetInvoiceByCarInvoiceTypeReportResponse;
 import com.maxcar.statistics.service.ReportByCarInvoiceTypeService;
+import com.maxcar.statistics.service.impl.mapperService.CartypeMapperService;
 import com.maxcar.statistics.service.impl.mapperService.ReportMapperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class ReportByCarInvoiceTypeServiceImpl  implements ReportByCarInvoiceTyp
 
     @Autowired
     private ReportMapperService reportMapperService;
+
+    @Autowired
+    private  CartypeMapperService cartypeMapperService;
 
     /**
      * param:
@@ -40,7 +44,7 @@ public class ReportByCarInvoiceTypeServiceImpl  implements ReportByCarInvoiceTyp
         parameter.setEndTime(request.getEndTime());
         parameter.setOrderBy(request.getOrderBy());
         parameter.setGroupByColumns("carInvoiceType");
-
+        cartypeMapperService.InsertCartypeDay();
         return reportMapperService.getCarInvoiceTypeInvoiceReport(parameter);
     }
 

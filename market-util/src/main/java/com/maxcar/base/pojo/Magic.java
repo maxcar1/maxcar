@@ -130,4 +130,6 @@ public interface Magic {
     //过户车辆 买方为机构
     Byte BUYER_TYPE_2 = 2;
 
+
+   String CAR_INVOICE_TYPE = "car_invoice_type";
 }

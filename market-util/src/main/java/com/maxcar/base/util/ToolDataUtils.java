@@ -1,11 +1,16 @@
 package com.maxcar.base.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * describe: data工具类
  * create_date: lxy 2018/10/12  14:04
  **/
 public class ToolDataUtils {
 
+    public static SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * param:
@@ -29,4 +34,39 @@ public class ToolDataUtils {
     public static boolean isOperationFail(int status) {
         return !isOperationSuccess(status);
     }
+
+
+    public static Boolean isLastDayByMonth() {
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        return sdfDay.format(cal.getTime()).equals(getreportTimeByDay());
+    }
+
+    /**
+     * param:
+     * describe: 获取今天的 年月日
+     * create_date:  lxy   2018/11/22  13:36
+     **/
+    public static String getreportTimeByDay() {
+
+        return sdfDay.format(new Date());
+    }
+
+    /**
+     * param:
+     * describe: 计算平均价格
+     * create_date:  lxy   2018/11/22  14:55
+     **/
+    public static Double getAvgPrice(Double price, Integer count) {
+
+        if (0 == price || 0 == count) {
+            return 0.0;
+        }
+
+        return price / count;
+    }
+
 }

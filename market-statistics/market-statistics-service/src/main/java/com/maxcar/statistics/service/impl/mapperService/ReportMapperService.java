@@ -33,13 +33,15 @@ public class ReportMapperService {
 
         if ("carInvoiceType".equals(parameter.getGroupByColumns().trim())) {
 
-            parameter.setSelectColumns("i.car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(i.price), 0) AS invoicePrice ");
-            stringBuffer.append(" AND i.car_invoice_type != '' ");
+            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', i.car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(i.price), 0) AS invoicePrice ");
+            //stringBuffer.append(" AND i.car_invoice_type != '' ");
         } else if ("brandName".equals(parameter.getGroupByColumns().trim())) {
 
             parameter.setSelectColumns(" cb.brand_name AS brandName,, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(i.price), 0) AS invoicePrice ");
-            stringBuffer.append(" AND cb.brand_name != '' ");
+            //stringBuffer.append(" AND cb.brand_name != '' ");
         }
+
+        parameter.setGroupByColumns("i.market_id,i.tenant_id," + parameter.getGroupByColumns());
 
         if (StringUtil.isNotEmpty(parameter.getMarketId())) {
 
