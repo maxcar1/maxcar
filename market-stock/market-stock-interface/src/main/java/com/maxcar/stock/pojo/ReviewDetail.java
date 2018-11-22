@@ -13,16 +13,6 @@ public class ReviewDetail implements Serializable {
 
     private String reviewDesc;
 
-    private String marketId;
-
-    public String getMarketId() {
-        return marketId;
-    }
-
-    public void setMarketId(String marketId) {
-        this.marketId = marketId;
-    }
-
     public Integer getId() {
         return id;
     }
