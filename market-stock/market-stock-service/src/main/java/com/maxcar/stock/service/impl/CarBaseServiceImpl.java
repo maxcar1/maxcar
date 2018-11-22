@@ -67,7 +67,7 @@ public class CarBaseServiceImpl extends BaseServiceImpl<CarBase,String> implemen
     }
 
     @Override
-    public CarDetails getCarBaseById(String id) {
+    public List<CarDetails>  getCarBaseById(String id) {
         return carBaseMapper.getCarBaseById(id);
     }
 

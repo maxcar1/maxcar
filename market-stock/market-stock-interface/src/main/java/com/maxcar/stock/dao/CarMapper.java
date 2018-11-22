@@ -7,6 +7,7 @@ import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.BarrierCarListResponse;
+import com.maxcar.stock.entity.Response.CarDataStatistics;
 import com.maxcar.stock.entity.Response.GetCarListByMarketIdAndTenantResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.pojo.*;
@@ -134,4 +135,13 @@ public interface CarMapper extends BaseDao<Car, String> {
 
 
     Car getStockCarByVin(String vin);
+
+    /**
+     * 商户库存信息
+     * @param tenantId
+     * @return
+     */
+    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId);
+
+    CarDataStatistics carData(@Param("tenantId") String tenantId);
 }
