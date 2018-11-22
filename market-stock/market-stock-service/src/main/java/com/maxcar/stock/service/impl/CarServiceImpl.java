@@ -844,7 +844,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             for (int i = 0; i < lists.size(); i++) {
                 CarPicExample carPicExample = new CarPicExample();
                 String id = lists.get(i).getId() + "";
-                carPicExample.createCriteria().andCarIdEqualTo(id).andTypeEqualTo(0);
+                carPicExample.createCriteria().andCarIdEqualTo(id).andTypeEqualTo(1);
                 List<CarPic> carPicList = carPicMapper.selectByExample(carPicExample);
                 if (CollectionUtil.listIsNotEmpty(carPicList)) {
                     lists.get(i).setSrc(carPicList.get(0).getSrc());
@@ -872,7 +872,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
 
         CarBase carBase = carBaseMapper.selectByPrimaryKey(id);
         CarPicExample carPicExample = new CarPicExample();
-        carPicExample.createCriteria().andCarIdEqualTo(id);
+        carPicExample.createCriteria().andCarIdEqualTo(id).andTypeNotEqualTo(0);
         List<CarPic> carPicList = carPicMapper.selectByExample(carPicExample);
         map.put("car", car);
         JSONObject json = new JSONObject();
