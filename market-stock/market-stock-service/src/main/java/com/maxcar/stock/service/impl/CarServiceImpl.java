@@ -326,6 +326,9 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         if (StringUtil.isNotEmpty(tenantId)) {
             criteria.andTenantEqualTo(tenantId);
         }
+        if(StringUtil.isNotEmpty(areaName)){
+            criteria.andAreaIdEqualTo(areaName);
+        }
         return carMapper.countByExample(example);
 //        return carMapper.countCarNum(marketId);
     }
