@@ -879,6 +879,31 @@ public class SyncCarController extends BaseController {
 			}else{
 				interfaceResult.InterfaceResult500("操作失败");
 			}
+			String topic = super.consumerTopic7;
+			switch (user.getMarketId()) {
+				case "006":
+					topic = super.consumerTopic6;
+					break;
+				case "007":
+					topic = super.consumerTopic7;
+					break;
+				case "008":
+					topic = super.consumerTopic8;
+					break;
+				case "010":
+					topic = super.consumerTopic10;
+					break;
+			}
+			//同步删除本地车辆状态
+			//组装云端参数
+			PostParam postParam = new PostParam();
+			postParam.setData(JsonTools.toJson(car));
+			postParam.setMarket(user.getMarketId());
+			postParam.setUrl("/barrier/car/saveCar");
+			postParam.setOnlySend(false);
+			postParam.setMessageTime(Constants.dateformat.format(new Date()));
+			messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
 		}
 
 		if(StringUtils.isNotBlank(carTenantVo.getVin())){
@@ -889,7 +914,7 @@ public class SyncCarController extends BaseController {
 				interfaceResult.InterfaceResult500("该vin码已存在，请更换");
 				return interfaceResult;
 			}
-			/*Car car1 = new Car();
+			Car car1 = new Car();
 			car1.setId(carTenantVo.getCarId());
 			car1.setVin(carTenantVo.getVin());
 			int num = carService.updateByPrimaryKeySelective(car1);
@@ -897,32 +922,32 @@ public class SyncCarController extends BaseController {
 				interfaceResult.InterfaceResult200("修改成功");
 			}else{
 				interfaceResult.InterfaceResult500("操作失败");
-			}*/
-//            String topic = super.consumerTopic7;
-//            switch (user.getMarketId()) {
-//                case "006":
-//                    topic = super.consumerTopic6;
-//                    break;
-//                case "007":
-//                    topic = super.consumerTopic7;
-//                    break;
-//                case "008":
-//                    topic = super.consumerTopic8;
-//                    break;
-//                case "010":
-//                    topic = super.consumerTopic10;
-//                    break;
-//            }
-//            //同步删除本地车辆状态
-//            //组装云端参数
-//            PostParam postParam = new PostParam();
-//            postParam.setData(JsonTools.toJson(car1));
-//            postParam.setMarket(user.getMarketId());
-//            postParam.setUrl("/barrier/car/saveCar");
-//            postParam.setOnlySend(false);
-//            postParam.setMessageTime(Constants.dateformat.format(new Date()));
-//            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+			}
+            String topic = super.consumerTopic7;
+            switch (user.getMarketId()) {
+                case "006":
+                    topic = super.consumerTopic6;
+                    break;
+                case "007":
+                    topic = super.consumerTopic7;
+                    break;
+                case "008":
+                    topic = super.consumerTopic8;
+                    break;
+                case "010":
+                    topic = super.consumerTopic10;
+                    break;
             }
+            //同步删除本地车辆状态
+            //组装云端参数
+            PostParam postParam = new PostParam();
+            postParam.setData(JsonTools.toJson(car1));
+            postParam.setMarket(user.getMarketId());
+            postParam.setUrl("/barrier/car/saveCar");
+            postParam.setOnlySend(false);
+            postParam.setMessageTime(Constants.dateformat.format(new Date()));
+            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+		}
         return interfaceResult;
 	}
 }
