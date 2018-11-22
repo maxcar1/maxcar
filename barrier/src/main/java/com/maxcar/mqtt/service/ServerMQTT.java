@@ -76,9 +76,13 @@ public class ServerMQTT {
      * @throws MqttPersistenceException
      * @throws MqttException
      */
-    public void publish(MqttMessage message) throws MqttPersistenceException,
+    public void publish(MqttMessage message,String topic) throws MqttPersistenceException,
             MqttException {
         logger.info("发送消息主体! "+mqttTopic+"内容"+message);
+        if (null == mqttTopic){
+            ServerMQTT serverMQTT = new ServerMQTT();
+            serverMQTT.init(topic);
+        }
         MqttDeliveryToken token = mqttTopic.publish(message);
         token.waitForCompletion();
         logger.info("服务端消息已经发送! "
@@ -127,11 +131,11 @@ public class ServerMQTT {
             ServerMQTT server = new ServerMQTT();
             server.init(topic);
             server.message = new MqttMessage();
-            server.message.setQos(Canstats.qos1);  //保证消息能到达一次
+            server.message.setQos(Canstats.qos2);  //保证消息能到达一次
             server.message.setRetained(false);//是否保持连接，客户端会适时发送
             server.message.setPayload(PushCallback.toBytes(outParam));
             logger.info(outParam + "------发送数据");
-            server.publish(server.message);
+            server.publish(server.message,topic);
             logger.info(server.message.isRetained() + "------ratained状态");
         }catch (Exception ex){
             ex.printStackTrace();
@@ -146,10 +150,10 @@ public class ServerMQTT {
 //            topic11 = client.getTopic((topic == null || topic.equals("")) ? TOPIC : topic);
             this.init(topic);
             this.message = new MqttMessage();
-            this.message.setQos(Canstats.qos1);  //保证消息能到达一次
+            this.message.setQos(Canstats.qos2);  //保证消息能到达一次
             this.message.setRetained(false);//是否保持连接，客户端会适时发送
             this.message.setPayload(data);
-            this.publish(this.message);
+            this.publish(this.message,topic);
             logger.info(this.message.isRetained() + "------ratained状态");
         }catch (Exception ex){
             ex.printStackTrace();
