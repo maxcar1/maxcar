@@ -436,7 +436,7 @@
 	</profiles>
 
 	<build>
-		<finalName>maxcar-common-api</finalName>
+		<finalName>market-common-api</finalName>
 		<plugins>
 			<!--生成可执行jar-->
 			<plugin>

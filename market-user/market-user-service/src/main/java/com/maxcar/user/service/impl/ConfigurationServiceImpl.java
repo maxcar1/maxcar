@@ -75,7 +75,7 @@ public class ConfigurationServiceImpl extends BaseServiceImpl<Configuration, Str
             criteria.andConfigurationKeyEqualTo(configuration.getConfigurationKey());
         }
 //        if (StringUtils.isNotEmpty(configuration.getMarketId())) {
-//            // criteria.andMarketIdEqualTo(configuration.getMarketId());
+//             criteria.andMarketIdEqualTo(configuration.getMarketId());
 //            List<String> list = new ArrayList<>();
 //            list.add(configuration.getMarketId());
 //            list.add("");

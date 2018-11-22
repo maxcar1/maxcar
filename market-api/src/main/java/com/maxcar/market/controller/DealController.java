@@ -415,7 +415,7 @@ public class DealController extends BaseController {
 
         User user = getCurrentUser(request);
 
-        if("0".equals(tenantId)){
+        if("0".equals(tenantId) || "00".equals(tenantId)){
             tenantId = null;
         }
 
