@@ -492,9 +492,9 @@
 				<system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
 				<!-- 云端数据源配置datasource库存、交易-->
 				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
-				<system.jdbc.url.stock>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
+				<system.jdbc.url.stock>jdbc:mysql://localhost:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
 				<system.jdbc.user.stock>root</system.jdbc.user.stock>
-				<system.jdbc.password.stock>Maxcar#2018d</system.jdbc.password.stock>
+				<system.jdbc.password.stock>admin</system.jdbc.password.stock>
 				<!-- 云端数据源配置datasource物业、商户-->
 				<system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
 				<system.jdbc.url.market>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_market_l?characterEncoding=utf-8</system.jdbc.url.market>
@@ -502,9 +502,9 @@
 				<system.jdbc.password.market>Maxcar#2018d</system.jdbc.password.market>
 				<!-- 云端数据源配置datasource用户，配置-->
 				<system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
-				<system.jdbc.url.user>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_user_l?characterEncoding=utf-8</system.jdbc.url.user>
+				<system.jdbc.url.user>jdbc:mysql://localhost:3306/maxcar_user_l?characterEncoding=utf-8</system.jdbc.url.user>
 				<system.jdbc.user.user>root</system.jdbc.user.user>
-				<system.jdbc.password.user>Maxcar#2018d</system.jdbc.password.user>
+				<system.jdbc.password.user>admin</system.jdbc.password.user>
 				<!-- 云端数据源配置datasource道闸-->
 				<system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
 				<system.jdbc.url.base>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_base_l?characterEncoding=utf-8</system.jdbc.url.base>
@@ -542,10 +542,10 @@
 				<redisMaxWait>100000</redisMaxWait>
 				<redisTestOnBorrow>true</redisTestOnBorrow>
 				<redisTestOnReturn>true</redisTestOnReturn>
-				<redisHost>localhost</redisHost>
-				<redis.password>maxcar2017</redis.password>
-				<redisPort>6379</redisPort>
-				<redisName>maxcar-redis</redisName>
+				<redisHost>192.168.3.61</redisHost>
+				<redis.password>lmaxcar2017t</redis.password>
+				<redisPort>6881</redisPort>
+				<redisName>market-redis</redisName>
 				<!--卡夫卡-->
 				<kafka.consumer.zookeeper.connect>192.168.3.45:2181,192.168.3.50:2181,192.168.3.51:2181</kafka.consumer.zookeeper.connect>
 				<kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>

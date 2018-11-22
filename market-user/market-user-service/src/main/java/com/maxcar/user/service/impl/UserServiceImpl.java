@@ -6,6 +6,7 @@ import com.maxcar.base.service.impl.BaseServiceImpl;
 import com.maxcar.base.util.MD5Util;
 import com.maxcar.base.util.UuidUtils;
 import com.maxcar.redis.service.SsoService;
+import com.maxcar.stock.pojo.ReviewStep;
 import com.maxcar.user.dao.*;
 import com.maxcar.user.entity.*;
 import com.maxcar.user.service.UserService;
@@ -311,6 +312,16 @@ public class UserServiceImpl extends BaseServiceImpl<User,String> implements Use
     }
 
 
+
+    @Override
+    public List<Map> getUserAndOrgByMarketId(String marketId) {
+        return userMapper.getUserAndOrgByMarketId(marketId);
+    }
+
+    @Override
+    public List<Map> getUserOrgByReview(ReviewStep review) {
+        return userMapper.getUserOrgByReview(review);
+    }
 
     @Override
     public InterfaceResult logout(User user) throws Exception {

@@ -5,7 +5,7 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.CollectionUtil;
 import com.maxcar.base.util.HttpClientUtils;
 import com.maxcar.base.util.StringUtils;
-import com.maxcar.base.util.dasouche.Result;
+import com.maxcar.base.util.dasouche.*;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.CarChannelService;
 import com.maxcar.stock.service.CarService;
@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.*;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -153,12 +154,52 @@ public class NtCarController  {
         }
         return  result;
     }
-    private Result detailInfo(String scModelCode) {
+    private Result detailInfo(String scModelCode) throws IOException {
         Result result = new Result();
-        String s = HttpClientUtils.sendGet("http://www.maxcar.com.cn/maxcar-api/api/models/" + scModelCode+"?wx=008");
+        Properties prop = new Properties();
+        prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+        String newUrl = prop.getProperty("dashouchedetailurl");
+        String appKey = prop.getProperty("dashoucheappKey");
+        String appSecret = prop.getProperty("dashoucheappSecret");
+        JSONObject params = new JSONObject();
+        params.put("timestamp", TimeStampUtils.getTimeM());
+        params.put("scModelCode", scModelCode);
+
+        Iterator<?> it = params.keys();
+
+        List<String> listKey = new ArrayList();
+        while (it.hasNext())
+        {
+            String key = String.valueOf(it.next());
+            listKey.add(key);
+        }
+        Collections.sort(listKey);
+        StringBuffer sb = new StringBuffer();
+        sb.append("appKey=");
+        sb.append(appKey);
+        for (String string : listKey)
+        {
+            sb.append("&");
+            sb.append(string);
+            sb.append("=");
+            sb.append(params.get(string));
+        }
+        String signStringBase64 = null;
+        try {
+            signStringBase64 = BaseEncodeUtil.encodeBase64(sb.toString().getBytes("UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String sign = appSecret + ":" + signStringBase64;
+        sign = SHAUtil.getSha1(sign);
+        String s = HttpClientUtil.get(newUrl + sb, "utf-8", sign);
+        logger.info("大搜车返回=============="+s);
         JSONObject oo = JSONObject.fromObject(s);
-        result.setItem(oo.get("item"));
-        result.setResultCode(200);
+        if (oo.getString("status").equals("200")){
+            result.setItem(oo.get("data"));
+            result.setResultCode(200);
+        }
+
         return result;
     }
 
