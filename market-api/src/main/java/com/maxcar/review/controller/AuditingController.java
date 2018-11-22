@@ -207,6 +207,20 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "审核结果")
     public InterfaceResult carReviewDetailList(@PathVariable Integer reviewId,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        Map<String,Object> map = new HashMap<>();
+        ReviewDetail r =  new ReviewDetail();
+        r.setReviewId(reviewId);
+        List<ReviewDetail> list = reviewDetailService.getReviewDetail(r);
+        if(list != null && list.size()>0){
+            for(ReviewDetail reviewDetail:list){
+                if(reviewDetail.getReviewResult() !=1){
+                    map.put("reviewDetail","审核不通过");
+                }
+                else {
+                    map.put("reviewDetail","审核通过");
+                }
+            }
+        }
 
         return interfaceResult;
     }
