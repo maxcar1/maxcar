@@ -110,6 +110,20 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return pageInfo;
     }
 
+    @Override
+    public PageInfo carReviewDetailList(CarParams carParams) {
+        PageHelper.startPage(StringUtils.isBlank(carParams.getCurrentPage()) ? 1 : carParams.getCurrentPage(),
+                StringUtils.isBlank(carParams.getPageSize()) ? 20 : carParams.getPageSize());
+        List<CarVo> listCarVo = carMapper.carReviewDetailList(carParams);
+        PageInfo pageInfo = new PageInfo(listCarVo);
+        return pageInfo;
+    }
+
+    @Override
+    public List<ExportReviewResponse> exportReviewList(CarParams carParams) {
+        return carMapper.exportReviewList(carParams);
+    }
+
 
     /**
      * param:
