@@ -167,10 +167,18 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "车辆出场审核待审核列表")
     public InterfaceResult carReviewDetailList(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
-
+        PageInfo pageInfo = carService.carReviewDetailList(carParams);
+        interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
     }
 
 
+    @RequestMapping("/export")
+    @OperationAnnotation(title = "导出")
+    public InterfaceResult export(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+
+        return interfaceResult;
+    }
 
 }
