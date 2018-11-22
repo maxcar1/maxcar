@@ -120,8 +120,9 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     }
 
     @Override
-    public List<ExportReviewResponse> exportReviewList(CarParams carParams) {
-        return carMapper.exportReviewList(carParams);
+    public List<CarVo> exportList(CarParams carParams) {
+        List<CarVo> list = carMapper.carReviewDetailList(carParams);
+        return list;
     }
 
 

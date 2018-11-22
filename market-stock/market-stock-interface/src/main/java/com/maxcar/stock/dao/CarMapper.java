@@ -34,7 +34,6 @@ public interface CarMapper extends BaseDao<Car, String> {
 
     List<CarVo> carReviewDetailList(CarParams carParams);
 
-    List<ExportReviewResponse> exportReviewList(CarParams carParams);
 
     /**
      * param:

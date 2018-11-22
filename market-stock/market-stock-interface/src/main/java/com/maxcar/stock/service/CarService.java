@@ -72,7 +72,7 @@ public interface CarService extends BaseService<Car, String> {
 
     PageInfo carReviewDetailList(CarParams carParams);
 
-    List<ExportReviewResponse> exportReviewList(CarParams carParams);
+    List<CarVo> exportList(CarParams carParams);
 
     int saveCarVO(CarVo carVo);
 
