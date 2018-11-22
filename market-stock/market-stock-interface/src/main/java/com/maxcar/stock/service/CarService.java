@@ -10,6 +10,7 @@ import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.CarDataStatistics;
+import com.maxcar.stock.entity.Response.ExportReviewResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.pojo.Car;
 import com.maxcar.stock.pojo.CarIcon;
@@ -68,6 +69,10 @@ public interface CarService extends BaseService<Car, String> {
     PageInfo listCarVo(CarVo carVo);
 
     PageInfo listReview(CarParams carParams);
+
+    PageInfo carReviewDetailList(CarParams carParams);
+
+    List<ExportReviewResponse> exportReviewList(CarParams carParams);
 
     int saveCarVO(CarVo carVo);
 
