@@ -582,10 +582,11 @@ public class InvoiceController extends BaseController {
     }
 
     @PostMapping(value = "/invoice/getInvoicePerson")
-    public InterfaceResult getInvoicePerson(@RequestBody String idCard, HttpServletRequest request) {
+    public InterfaceResult getInvoicePerson(@RequestBody Map<String , String > map, HttpServletRequest request) {
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             String marketId = getCurrentUser(request).getMarketId();
+            String idCard = map.get("idCard");
             List<InvoicePerson> invoicePersonList = invoiceService.getInvoicePerson(idCard, marketId);
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
                 interfaceResult.InterfaceResult200(invoicePersonList.get(0));
