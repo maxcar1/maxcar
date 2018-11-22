@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>customer-api</name>
+    <name>market-customer-api</name>
     <description>微信服务接口</description>
 
     <parent>
@@ -468,7 +468,7 @@
     </profiles>
 
     <build>
-        <finalName>customer-api</finalName>
+        <finalName>market-customer-api</finalName>
         <plugins>
             <!--生成可执行jar-->
             <plugin>
