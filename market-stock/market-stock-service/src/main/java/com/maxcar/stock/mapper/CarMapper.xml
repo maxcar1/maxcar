@@ -794,7 +794,7 @@
     </select>
 
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
-        SELECT a.*,d.*,b.id as review_id,b.out_reason,c.tenant_name,e.review_result
+        SELECT a.*,d.*,b.id as review_id,b.out_reason,b.insert_time,c.tenant_name,e.review_result
         from maxcar_stock_l.car a
         LEFT JOIN maxcar_stock_l.car_review b
         on a.id = b.car_id
@@ -803,7 +803,7 @@
         LEFT JOIN maxcar_stock_l.car_base d
         on a.id = d.id
         LEFT JOIN maxcar_stock_l.review_detail e
-        on a.id = e.review_id
+        on b.id = e.review_id
         where a.isvalid = 1
         and  b.is_pass = 1
         <if test="market != null and market != ''">

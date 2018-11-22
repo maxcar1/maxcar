@@ -12,15 +12,15 @@ public class ExportReviewResponse implements Serializable {
 
     private String insertTime;//申请时间
 
-    private Integer carStatus;//车辆状态 1质押 2 非质押
+    private String carStatus;//车辆状态 1质押 2 非质押
 
     private String outReason;//出厂原因
 
     private Double evaluatePrice;//估价
 
-    private Integer reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
+    private String reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
 
-    private Integer stockStatus;//库存状态 -1 删除 1:在场 2:在内场 3:出场 4:售出未出场 5 售出已出场
+    private String stockStatus;//库存状态 -1 删除 1:在场 2:在内场 3:出场 4:售出未出场 5 售出已出场
 
     private String vin;//vin码
 
@@ -56,11 +56,11 @@ public class ExportReviewResponse implements Serializable {
         this.insertTime = insertTime;
     }
 
-    public Integer getCarStatus() {
+    public String getCarStatus() {
         return carStatus;
     }
 
-    public void setCarStatus(Integer carStatus) {
+    public void setCarStatus(String carStatus) {
         this.carStatus = carStatus;
     }
 
@@ -80,19 +80,19 @@ public class ExportReviewResponse implements Serializable {
         this.evaluatePrice = evaluatePrice;
     }
 
-    public Integer getReviewResult() {
+    public String getReviewResult() {
         return reviewResult;
     }
 
-    public void setReviewResult(Integer reviewResult) {
+    public void setReviewResult(String reviewResult) {
         this.reviewResult = reviewResult;
     }
 
-    public Integer getStockStatus() {
+    public String getStockStatus() {
         return stockStatus;
     }
 
-    public void setStockStatus(Integer stockStatus) {
+    public void setStockStatus(String stockStatus) {
         this.stockStatus = stockStatus;
     }
 
