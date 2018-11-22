@@ -124,9 +124,11 @@ public class PushCallback implements MqttCallback {
                             outParam = map.get("outParam") + "";
                             if (barrier != null && barrier.getMqttTopic() != null) {
                                 byte b[] = toBytes(outParam);
-//                                ServerMQTT serverMQTT = new ServerMQTT();
-//                                logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-//                                serverMQTT.send(b, barrier.getMqttTopic());
+                                if(!barrier.getStatus().equals("4")){
+                                    ServerMQTT serverMQTT = new ServerMQTT();
+                                    logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+                                    serverMQTT.send(b, barrier.getMqttTopic());
+                                }
                             }
                             if (map.get("stockCarInfo") != null) {
                                 Car car = (Car) map.get("stockCarInfo");
@@ -147,6 +149,34 @@ public class PushCallback implements MqttCallback {
                             ServerMQTT serverMQTT = new ServerMQTT();
                             logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
                             serverMQTT.send(b, barrier.getMqttTopic());*/
+                        }else if(codeType.equals("0b")){
+                            if (barrier != null && barrier.getMqttTopic() != null) {
+                                if (barrier.getStatus().equals("4")) {
+                                    String outParam1 = "";
+                                    String value1 = Canstats.headerBody;
+                                    //字符串长度/2
+                                    String value2 = "leng";//44字节
+                                    //协议版本
+                                    String value3 = Canstats.headerVersion;
+                                    String value4 = Canstats.first_kz;//下发数据
+                                    int time = (int) (System.currentTimeMillis() / 1000);
+                                    String timeStamp = PushCallback.toHexString(time);
+                                    //id长度+id号+时间戳+设备类型+程序版本+设备电量
+                                    //12位数
+                                    String value5 = PushCallback.toHexString(barrier.getBarrierId().length() / 2) + barrier.getBarrierId() + timeStamp + Canstats.dzType + Canstats.dzVersion + Canstats.dzPower;
+                                    String value6 = "000B8B";
+                                    String value7 = "";
+                                    value7 = Canstats.yxcc;//允许开闸
+                                    outParam1 = value1 + value2 + value3 + value4 + value5 + value6 + value7;
+                                    outParam1 = outParam1.replaceAll("leng", PushCallback.toHexStringBy0(outParam1.length() / 2 + 2));
+                                    logger.info("数据初始化，先开闸，服务器发送消息：{}", outParam1);
+                                    String outHex = CRC16M.GetModBusCRC(outParam1);
+
+                                    outParam1 = outParam1 + outHex;
+                                    logger.info("数据初始化，先开闸，服务器发送完整消息:{}", outParam1);
+                                    ServerMQTT.send(outParam1, barrier.getMqttTopic());
+                                }
+                            }
                         }
                     }
                 }else {
@@ -165,7 +195,7 @@ public class PushCallback implements MqttCallback {
                         String value2 = "leng";//44字节
                         //协议版本
                         String value3 = Canstats.headerVersion;
-                        String value4 = "8A";//下发数据
+                        String value4 = Canstats.second_send;//下发数据
                         int time = (int) (System.currentTimeMillis() / 1000);
                         String timeStamp = PushCallback.toHexString(time);
                         //id长度+id号+时间戳+设备类型+程序版本+设备电量

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("configurationService")
@@ -68,20 +67,20 @@ public class ConfigurationServiceImpl extends BaseServiceImpl<Configuration, Str
 
         ConfigurationExample.Criteria criteria = configurationExample.createCriteria();
         criteria.andIsvalidEqualTo(1);
-        /*if(configuration.getManagerFlag()!=null && configuration.getManagerFlag()==1) {
+        if(configuration.getManagerFlag()!=null && configuration.getManagerFlag()==1) {
             criteria.andMarketIdEqualTo(configuration.getMarketId());
-        }*/
+        }
         if (StringUtils.isNotEmpty(configuration.getConfigurationKey())) {
             criteria.andConfigurationKeyEqualTo(configuration.getConfigurationKey());
         }
-        if (StringUtils.isNotEmpty(configuration.getMarketId())) {
-            // criteria.andMarketIdEqualTo(configuration.getMarketId());
-            List<String> list = new ArrayList<>();
-            list.add(configuration.getMarketId());
-            list.add("");
-            list.add(null);
-            criteria.andMarketIdIn(list);
-        }
+//        if (StringUtils.isNotEmpty(configuration.getMarketId())) {
+//             criteria.andMarketIdEqualTo(configuration.getMarketId());
+//            List<String> list = new ArrayList<>();
+//            list.add(configuration.getMarketId());
+//            list.add("");
+//            list.add(null);
+//            criteria.andMarketIdIn(list);
+//        }
         return configurationMapper.selectByExample(configurationExample);
     }
 

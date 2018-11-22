@@ -581,11 +581,20 @@ public class InvoiceController extends BaseController {
         return interfaceResult;
     }
 
-    @GetMapping(value = "/invoice/getInvoicePerson/{idCard}")
-    public InterfaceResult getInvoicePerson(@PathVariable(value = "idCard") String idCard, HttpServletRequest request) {
+    @PostMapping(value = "/invoice/getInvoicePerson")
+    public InterfaceResult getInvoicePerson(@RequestBody Map<String , String > map, HttpServletRequest request) {
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             String marketId = getCurrentUser(request).getMarketId();
+            String idCard = map.get("idCard");
+            String purchacerIdCard = map.get("purchacerIdCard");
+            if(StringUtil.isNotEmpty(purchacerIdCard)){
+                idCard = purchacerIdCard;
+            }
+            String sellerIdCard = map.get("sellerIdCard");
+            if(StringUtil.isNotEmpty(sellerIdCard)){
+                idCard = sellerIdCard;
+            }
             List<InvoicePerson> invoicePersonList = invoiceService.getInvoicePerson(idCard, marketId);
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
                 interfaceResult.InterfaceResult200(invoicePersonList.get(0));
