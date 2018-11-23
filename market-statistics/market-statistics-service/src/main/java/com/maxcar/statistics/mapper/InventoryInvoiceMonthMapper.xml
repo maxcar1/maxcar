@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.statistics.dao.InventoryInvoiceMonthMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
+    <result column="report_time" property="reportTime" jdbcType="VARCHAR" />
+    <result column="stock_count" property="stockCount" jdbcType="INTEGER" />
+    <result column="stock_price" property="stockPrice" jdbcType="DOUBLE" />
+    <result column="stock_day_avg" property="stockDayAvg" jdbcType="INTEGER" />
+    <result column="out_library_count" property="outLibraryCount" jdbcType="INTEGER" />
+    <result column="tenant_space" property="tenantSpace" jdbcType="INTEGER" />
+    <result column="sales_count" property="salesCount" jdbcType="INTEGER" />
+    <result column="sales_price" property="salesPrice" jdbcType="DOUBLE" />
+    <result column="sales_avg_price" property="salesAvgPrice" jdbcType="DOUBLE" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
+    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, market_id, tenant_id, report_time, stock_count, stock_price, stock_day_avg, out_library_count, 
+    tenant_space, sales_count, sales_price, sales_avg_price, version, isvalid, register_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from inventory_invoice_month
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from inventory_invoice_month
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity" >
+    insert into inventory_invoice_month (id, market_id, tenant_id, 
+      report_time, stock_count, stock_price, 
+      stock_day_avg, out_library_count, tenant_space, 
+      sales_count, sales_price, sales_avg_price, 
+      version, isvalid, register_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, 
+      #{reportTime,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{stockPrice,jdbcType=DOUBLE}, 
+      #{stockDayAvg,jdbcType=INTEGER}, #{outLibraryCount,jdbcType=INTEGER}, #{tenantSpace,jdbcType=INTEGER}, 
+      #{salesCount,jdbcType=INTEGER}, #{salesPrice,jdbcType=DOUBLE}, #{salesAvgPrice,jdbcType=DOUBLE}, 
+      #{version,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{registerTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity" >
+    insert into inventory_invoice_month
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="marketId != null" >
+        market_id,
+      </if>
+      <if test="tenantId != null" >
+        tenant_id,
+      </if>
+      <if test="reportTime != null" >
+        report_time,
+      </if>
+      <if test="stockCount != null" >
+        stock_count,
+      </if>
+      <if test="stockPrice != null" >
+        stock_price,
+      </if>
+      <if test="stockDayAvg != null" >
+        stock_day_avg,
+      </if>
+      <if test="outLibraryCount != null" >
+        out_library_count,
+      </if>
+      <if test="tenantSpace != null" >
+        tenant_space,
+      </if>
+      <if test="salesCount != null" >
+        sales_count,
+      </if>
+      <if test="salesPrice != null" >
+        sales_price,
+      </if>
+      <if test="salesAvgPrice != null" >
+        sales_avg_price,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="isvalid != null" >
+        isvalid,
+      </if>
+      <if test="registerTime != null" >
+        register_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null" >
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        #{reportTime,jdbcType=VARCHAR},
+      </if>
+      <if test="stockCount != null" >
+        #{stockCount,jdbcType=INTEGER},
+      </if>
+      <if test="stockPrice != null" >
+        #{stockPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="stockDayAvg != null" >
+        #{stockDayAvg,jdbcType=INTEGER},
+      </if>
+      <if test="outLibraryCount != null" >
+        #{outLibraryCount,jdbcType=INTEGER},
+      </if>
+      <if test="tenantSpace != null" >
+        #{tenantSpace,jdbcType=INTEGER},
+      </if>
+      <if test="salesCount != null" >
+        #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="salesPrice != null" >
+        #{salesPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="salesAvgPrice != null" >
+        #{salesAvgPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null" >
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity" >
+    update inventory_invoice_month
+    <set >
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null" >
+        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        report_time = #{reportTime,jdbcType=VARCHAR},
+      </if>
+      <if test="stockCount != null" >
+        stock_count = #{stockCount,jdbcType=INTEGER},
+      </if>
+      <if test="stockPrice != null" >
+        stock_price = #{stockPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="stockDayAvg != null" >
+        stock_day_avg = #{stockDayAvg,jdbcType=INTEGER},
+      </if>
+      <if test="outLibraryCount != null" >
+        out_library_count = #{outLibraryCount,jdbcType=INTEGER},
+      </if>
+      <if test="tenantSpace != null" >
+        tenant_space = #{tenantSpace,jdbcType=INTEGER},
+      </if>
+      <if test="salesCount != null" >
+        sales_count = #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="salesPrice != null" >
+        sales_price = #{salesPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="salesAvgPrice != null" >
+        sales_avg_price = #{salesAvgPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null" >
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity" >
+    update inventory_invoice_month
+    set market_id = #{marketId,jdbcType=VARCHAR},
+      tenant_id = #{tenantId,jdbcType=VARCHAR},
+      report_time = #{reportTime,jdbcType=VARCHAR},
+      stock_count = #{stockCount,jdbcType=INTEGER},
+      stock_price = #{stockPrice,jdbcType=DOUBLE},
+      stock_day_avg = #{stockDayAvg,jdbcType=INTEGER},
+      out_library_count = #{outLibraryCount,jdbcType=INTEGER},
+      tenant_space = #{tenantSpace,jdbcType=INTEGER},
+      sales_count = #{salesCount,jdbcType=INTEGER},
+      sales_price = #{salesPrice,jdbcType=DOUBLE},
+      sales_avg_price = #{salesAvgPrice,jdbcType=DOUBLE},
+      version = #{version,jdbcType=INTEGER},
+      isvalid = #{isvalid,jdbcType=INTEGER},
+      register_time = #{registerTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
