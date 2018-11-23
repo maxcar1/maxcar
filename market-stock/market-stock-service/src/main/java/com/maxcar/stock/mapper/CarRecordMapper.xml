@@ -393,5 +393,18 @@
         ORDER BY insert_time desc limit 0,1
     </select>
 
-
+    <select id="selectPlayingTime" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        *
+        from maxcar_stock_l.car_record
+        where type = 1
+        <if test="vin != null and vin != ''">
+            and vin = #{vin,jdbcType=VARCHAR}
+        </if>
+        <if test="rfid != null and rfid != ''">
+            and rfid =  #{rfid,jdbcType=VARCHAR}
+        </if>
+        ORDER BY insert_time desc
+        LIMIT 1
+    </select>
 </mapper>
