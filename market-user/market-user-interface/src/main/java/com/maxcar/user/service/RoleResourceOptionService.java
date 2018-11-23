@@ -21,4 +21,8 @@ public interface RoleResourceOptionService extends BaseService<RoleResourceOptio
     * @Date: 2018/5/11
     */
     public List<ResourceOption> getResourceOptionByRoleIdAndResourceId(String roleId,String parentRoleId, String resourceId)throws Exception;
-}
+
+
+//    public List<ResourceOption> getOptionByRoleIdAndResourceId(String roleId, String parentRoleId,String resourceId) throws Exception;
+
+    }
