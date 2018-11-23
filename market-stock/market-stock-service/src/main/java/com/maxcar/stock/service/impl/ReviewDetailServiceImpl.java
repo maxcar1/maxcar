@@ -2,6 +2,7 @@ package com.maxcar.stock.service.impl;
 
 import com.maxcar.stock.dao.ReviewDetailMapper;
 import com.maxcar.stock.pojo.ReviewDetail;
+import com.maxcar.stock.pojo.ReviewDetailExample;
 import com.maxcar.stock.pojo.ReviewStepExample;
 import com.maxcar.stock.service.ReviewDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,10 @@ public class ReviewDetailServiceImpl implements ReviewDetailService {
 
     @Override
     public List<ReviewDetail> getReviewDetail(ReviewDetail reviewDetail) {
-        List<ReviewDetail> list = reviewDetailMapper.getReviewDetail(reviewDetail);
-        return null;
+        ReviewDetailExample example = new ReviewDetailExample();
+        example.createCriteria().andReviewIdEqualTo(reviewDetail.getReviewId());
+        List<ReviewDetail> list = reviewDetailMapper.selectByExample(example);
+        return list;
     }
 
     @Override
