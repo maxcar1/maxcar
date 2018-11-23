@@ -992,5 +992,15 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return carMapper.getStockCarByVin(vin);
     }
 
+    @Override
+    public InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response) {
+        if (null == response) {
+            return null;
+        }
+        InventoryStatisticalResponse inventoryStatisticalResponse = carMapper.accumulativeCar(response);
+
+        return inventoryStatisticalResponse;
+    }
+
 
 }
