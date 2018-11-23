@@ -4,6 +4,7 @@ import com.maxcar.barrier.pojo.Barrier;
 import com.maxcar.barrier.pojo.BarrierControlCar;
 import com.maxcar.barrier.pojo.Car;
 import com.maxcar.barrier.pojo.InterfaceResult;
+import com.maxcar.barrier.service.BarrierCameraService;
 import com.maxcar.barrier.service.BarrierControlCarService;
 import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.barrier.service.CarService;
@@ -41,7 +42,27 @@ public class BarrierController {
 
     @Autowired
     private BarrierControlCarService barrierControlCarService;
+    @Autowired
+    private BarrierCameraService barrierCameraService;
 
+    /**
+     * 根据设备ip获取监控设备信息
+     * @param ip
+     * @param request
+     * @return
+     */
+    @GetMapping("/camera/get/{ip}")
+    public InterfaceResult getCameraInfoByIp(@PathVariable("ip") String ip,HttpServletRequest request) {
+        InterfaceResult interfaceResult = new InterfaceResult();
+        try {
+            interfaceResult.InterfaceResult200(barrierCameraService.getCameraInfoByIp(ip));
+        } catch (Exception e) {
+            e.printStackTrace();
+            interfaceResult.InterfaceResult600("获取失败");
+        }
+
+        return interfaceResult;
+    }
 
     @GetMapping("/car/delete/{id}")
     public InterfaceResult listCar(@PathVariable("id") String id,HttpServletRequest request) {
