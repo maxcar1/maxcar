@@ -3,6 +3,8 @@ package com.maxcar.stock.dao;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.CarReviewExample;
 import java.util.List;
+
+import com.maxcar.stock.pojo.HisWarning;
 import org.apache.ibatis.annotations.Param;
 
 public interface CarReviewMapper {
@@ -27,4 +29,7 @@ public interface CarReviewMapper {
     int updateByPrimaryKeySelective(CarReview record);
 
     int updateByPrimaryKey(CarReview record);
+
+    List<HisWarning> selectByMarketid(@Param("marketId") String marketId);
+
 }
