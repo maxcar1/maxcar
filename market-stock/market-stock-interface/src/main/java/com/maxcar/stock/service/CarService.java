@@ -228,4 +228,11 @@ public interface CarService extends BaseService<Car, String> {
     CarDataStatistics getCarDataStatistics(String tenantId);
 
     CarDataStatistics carData(String tenantId);
+
+    /**
+     * 出售管理列表
+     * @param carVo
+     * @return
+     */
+    PageInfo<CarVo> getAllSalesManageCarList(CarVo carVo);
 }

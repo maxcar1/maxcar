@@ -1022,5 +1022,16 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return carMapper.carData(tenantId);
     }
 
+    /**
+     * 出售管理列表
+     * @param carVo
+     * @return
+     */
+    @Override
+    public PageInfo<CarVo> getAllSalesManageCarList(CarVo carVo) {
+
+        return null;
+    }
+
 
 }
