@@ -2,15 +2,11 @@ package com.maxcar.stock.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.maxcar.base.dao.BaseDao;
 import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.base.service.impl.BaseServiceImpl;
-import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.stock.dao.*;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.ReviewListService;
-import com.maxcar.tenant.dao.UserTenantMapper;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import org.springframework.beans.factory.annotation.Autowired;

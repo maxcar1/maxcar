@@ -27,6 +27,11 @@
 
 	<dubbo:service interface="com.maxcar.stock.service.OutMarketCarService" ref="outMarketCarService"  timeout="1200000"/>
 
+	<dubbo:service interface="com.maxcar.stock.service.SubmitApplicationsService" ref="submitApplicationsService" timeout="1200000"  />
+
+	<!--  -->
+	<dubbo:service interface="com.maxcar.stock.service.ReviewListService" ref="reviewListService" timeout="1200000"  />
+
 	<!-- 道闸黑白名单 -->
 	<dubbo:service interface="com.maxcar.barrier.service.BarrierControlCarService" ref="barrierControlCarService"  timeout="1200000"/>
 
@@ -46,6 +51,11 @@
 	<dubbo:reference interface="com.maxcar.kafka.service.MessageProducerService" id="messageProducerService" check="false" retries="0" timeout="20000" />
 
 	<dubbo:reference interface="com.maxcar.market.service.AreaService" id="areaService" check="false" retries="0" timeout="20000" />
+
+
+
+
+
 
 	<!--引入缓存-->
 

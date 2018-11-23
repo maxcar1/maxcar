@@ -5,7 +5,9 @@ import com.maxcar.stock.dao.CarReviewMapper;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.service.SubmitApplicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service("submitApplicationsService")
 public class SubmitApplicationsServiceImpl implements SubmitApplicationsService {
     @Autowired
     private CarReviewMapper carReviewMapper;
