@@ -1690,10 +1690,10 @@
         car t left join
         car_base cb on t.id = cb.id
         WHERE
-        t.stock_status in ('1','2','3') and
+        t.stock_status in ('1','2','3','4','5') and
         t.isvalid=1 and t.market_id = #{marketId}
         <include refid="car_vo_where"/>
-        order by t.register_time desc
+        order by t.register_time desc,t.stock_status desc
     </select>
 
 

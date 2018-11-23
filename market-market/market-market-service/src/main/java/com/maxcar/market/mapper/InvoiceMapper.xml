@@ -4388,4 +4388,13 @@ FROM
       </if>
     </if>
   </select>
+
+
+  <select id="selectPriceByCarId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from invoice
+    where car_id = #{carId,jdbcType=VARCHAR} limit 1
+  </select>
+
 </mapper>

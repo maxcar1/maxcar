@@ -1029,8 +1029,10 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
      */
     @Override
     public PageInfo<CarVo> getAllSalesManageCarList(CarVo carVo) {
-
-        return null;
+        PageHelper.startPage(carVo.getCurrentPage(),carVo.getPageSize());
+        List<CarVo> allSalesManageCarList = carMapper.getAllSalesManageCarList(carVo);
+        PageInfo pageInfo = new PageInfo(allSalesManageCarList);
+        return pageInfo;
     }
 
 
