@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/auditing")
-public class HisWarningController  extends BaseController {
+public class HisWarningController extends BaseController {
 
     @Autowired
     private ReviewListService reviewListService;
@@ -29,4 +29,5 @@ public class HisWarningController  extends BaseController {
         InterfaceResult interfaceResult = reviewListService.getHisWarningList(hisWarning);
         return interfaceResult;
     }
+
 }
