@@ -17,6 +17,7 @@ public class ReviewDetailServiceImpl implements ReviewDetailService {
 
     @Override
     public List<ReviewDetail> getReviewDetail(ReviewDetail reviewDetail) {
+        List<ReviewDetail> list = reviewDetailMapper.getReviewDetail(reviewDetail);
         return null;
     }
 

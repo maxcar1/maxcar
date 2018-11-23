@@ -1,6 +1,10 @@
 package com.maxcar.stock.pojo;
 
-public class ReviewStep {
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+public class ReviewStep implements Serializable {
     private Integer id;
 
     private String stepName;
@@ -15,9 +19,52 @@ public class ReviewStep {
 
     private Integer applyType;
 
-    private Integer isNeedReview;
+    private String apply;
 
     private String marketId;
+
+    private List<Map> userOrg;
+
+    private Integer isNeedReview;
+
+    private Integer reviewType;
+
+    public  Integer getReviewType(){return  reviewType;}
+
+    public  void setReviewType(){this.reviewType=reviewType;}
+
+    public  Integer getIsNeedReview(){return  isNeedReview;}
+
+    public  void setIsNeedReview(){this.isNeedReview=isNeedReview;}
+
+    public List<Map> getUserOrg(){return  userOrg;}
+
+    public void setUserOrg(List<Map> userOrg){
+        this.userOrg=userOrg;
+    }
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId == null ? null : marketId.trim();
+    }
+
+    public String getOrgld() {
+        return orgId;
+    }
+
+    public void setOrgld(String orgId) {
+        this.orgId = orgId == null ? null : orgId.trim();
+    }
+
+    public String getApply() {
+        return apply;
+    }
+
+    public void setApply(String apply) {
+        this.apply = apply == null ? null : apply.trim();
+    }
 
     public Integer getId() {
         return id;
@@ -73,21 +120,5 @@ public class ReviewStep {
 
     public void setApplyType(Integer applyType) {
         this.applyType = applyType;
-    }
-
-    public Integer getIsNeedReview() {
-        return isNeedReview;
-    }
-
-    public void setIsNeedReview(Integer isNeedReview) {
-        this.isNeedReview = isNeedReview;
-    }
-
-    public String getMarketId() {
-        return marketId;
-    }
-
-    public void setMarketId(String marketId) {
-        this.marketId = marketId == null ? null : marketId.trim();
     }
 }

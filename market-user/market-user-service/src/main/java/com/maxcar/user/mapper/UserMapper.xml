@@ -447,4 +447,30 @@
         role=values(role), status=values(status),version=values(version),
          insert_time=values(insert_time),update_time=values(update_time)
   </update>
+  <select id="getUserAndOrgByMarketId" resultType="java.util.Map" parameterType="String" >
+    SELECT
+        us.user_id,us.true_name , org.org_id , org.org_name
+    FROM
+        USER us
+    LEFT JOIN organizations
+    org ON
+    org .org_id = us.org_id
+    WHERE
+    org .market_id = #{marketId}
+
+  </select>
+  <select id="getUserOrgByReview" resultType="java.util.Map" parameterType="com.maxcar.stock.pojo.ReviewStep">
+    SELECT
+	us.user_id,
+	us.true_name,
+	org.org_id,
+	org.org_name
+  FROM
+      USER us
+  LEFT JOIN organizations org ON us.org_id = org.org_id
+  WHERE
+      us.user_id = #{reviewPersonId}
+  AND us.org_id = #{orgId}
+
+  </select>
 </mapper>

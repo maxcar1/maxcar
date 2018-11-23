@@ -209,4 +209,12 @@
       review_desc = #{reviewDesc,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" parameterMap="BaseResultMap">
+    SELECT * from review_detail
+    where 1=1
+    <if test="reviewId != null and reviewId != ''">
+      and review_id = #{reviewId}
+    </if>
+  </select>
 </mapper>

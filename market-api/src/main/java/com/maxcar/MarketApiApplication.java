@@ -3,6 +3,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 //@ServletComponentScan
 @SpringBootApplication
 @EnableAutoConfiguration
+@EnableScheduling
 @ComponentScan
 @PropertySource(value = {"classpath:dubbo.properties","classpath:dasouche.properties","classpath:file.properties", "classpath:redis-config.properties","classpath:kafka.properties","classpath:oos.properties"})
 @ImportResource("classpath:dubbo/dubbox-customer.xml")

@@ -9,4 +9,5 @@ public interface ReviewDetailService {
 
     boolean saveReviewDetail(ReviewDetail reviewDetail);
 
+
 }

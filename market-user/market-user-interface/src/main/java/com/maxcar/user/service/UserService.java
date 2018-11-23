@@ -2,6 +2,7 @@ package com.maxcar.user.service;
 
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
+import com.maxcar.stock.pojo.ReviewStep;
 import com.maxcar.user.entity.LoginLog;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.vo.ChangeUser;
@@ -88,6 +89,10 @@ public interface UserService extends BaseService<User,String> {
     public InterfaceResult changePassword(ChangeUser changeUser)throws Exception;
 
     public List<User> getUserList(User user);
+
+    List<Map> getUserAndOrgByMarketId(String marketId);
+
+    List<Map> getUserOrgByReview(ReviewStep review);
 
     /*getUser(User user)throws Exception;*/
 }
