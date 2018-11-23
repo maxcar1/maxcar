@@ -289,4 +289,13 @@
       is_valid = #{isValid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByMarketid" resultType="com.maxcar.stock.pojo.HisWarning" parameterType="java.lang.String">
+        select
+         back_time as backTime,out_reason as outReason,car_id as carId,is_pass as isPass
+        from car_review
+        where
+        is_valid = 1 and market_id = #{marketId,jdbcType=VARCHAR}
+            and is_pass = 1 and back_time > now()
+    </select>
 </mapper>
