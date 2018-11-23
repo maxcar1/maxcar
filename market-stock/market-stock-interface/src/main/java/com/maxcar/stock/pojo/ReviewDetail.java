@@ -1,8 +1,8 @@
 package com.maxcar.stock.pojo;
 
-import java.io.Serializable;
+import java.util.Date;
 
-public class ReviewDetail implements Serializable {
+public class ReviewDetail {
     private Integer id;
 
     private Integer reviewId;
@@ -12,6 +12,10 @@ public class ReviewDetail implements Serializable {
     private Integer reviewResult;
 
     private String reviewDesc;
+
+    private Integer level;
+
+    private Date insertTime;
 
     public Integer getId() {
         return id;
@@ -51,5 +55,21 @@ public class ReviewDetail implements Serializable {
 
     public void setReviewDesc(String reviewDesc) {
         this.reviewDesc = reviewDesc == null ? null : reviewDesc.trim();
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Date getInsertTime() {
+        return insertTime;
+    }
+
+    public void setInsertTime(Date insertTime) {
+        this.insertTime = insertTime;
     }
 }
