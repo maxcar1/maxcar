@@ -10,7 +10,9 @@ import com.maxcar.base.util.dasouche.HttpClientUtil;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.pojo.Area;
+import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.service.AreaService;
+import com.maxcar.market.service.InvoiceService;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
@@ -54,6 +56,8 @@ public class CarController extends BaseController {
     CarBaseService carBaseService;
     @Autowired
     CarPicService carPicService;
+    @Autowired
+    InvoiceService invoiceService;
     @Autowired
     CarRecordService carRecordService;
     @Autowired
@@ -861,12 +865,41 @@ public class CarController extends BaseController {
     }
 
 
-    @GetMapping(value = "/salesManage/list")
+    /**
+     * 出售管理列表信息
+     * @param carVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/list")
     @OperationAnnotation(title = "出售管理信息列表")
     public InterfaceResult getAllSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
-
-
+        User user = getCurrentUser(request);
+        if (null == user || user.getMarketId().isEmpty()) {
+            return getInterfaceResult("200", "无法确认用户市场");
+        }
+        carVo.setMarketId(user.getMarketId());
+        InterfaceResult result = new InterfaceResult();
+        carVo.setCarType(1);
+        carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
+        PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
+        List<CarVo> list = allSalesManageCarList.getList();
+        for (CarVo car : list) {
+            if (car != null && car.getTenant() != null) {
+                UserTenant tenant = userTenantService.selectByPrimaryKey(car.getTenant());
+                if (tenant != null) {
+                    car.setTenantName(tenant.getTenantName());
+                }
+                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
+                if (invoice != null){
+                    car.setInvoicePrice(invoice.getPrice());
+                }
+            }
+        }
+        allSalesManageCarList.setList(list);
+        interfaceResult.InterfaceResult200(allSalesManageCarList);
         return interfaceResult;
     }
 
