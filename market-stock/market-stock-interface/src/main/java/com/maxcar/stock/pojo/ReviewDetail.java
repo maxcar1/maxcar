@@ -1,8 +1,9 @@
 package com.maxcar.stock.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ReviewDetail {
+public class ReviewDetail implements Serializable {
     private Integer id;
 
     private Integer reviewId;
