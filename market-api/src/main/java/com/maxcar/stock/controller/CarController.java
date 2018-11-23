@@ -861,4 +861,15 @@ public class CarController extends BaseController {
     }
 
 
+    @GetMapping(value = "/salesManage/list")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult getAllSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+
+
+        return interfaceResult;
+    }
+
+
+
 }
