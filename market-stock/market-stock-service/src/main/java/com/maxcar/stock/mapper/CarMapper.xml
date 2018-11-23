@@ -1152,7 +1152,7 @@
             resultType="com.maxcar.stock.entity.Request.InventoryStatisticalResponse">
         SELECT
         IFNULL(COUNT(*),0) AS 'inventoryTotal',
-        COALESCE(SUM(cb.market_price),0) AS 'valuationTotal',
+        COALESCE(SUM(cb.market_price),0) AS 'valuationTotal'
         FROM
         car c
         LEFT JOIN car_base cb
