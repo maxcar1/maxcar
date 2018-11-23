@@ -490,7 +490,7 @@
 				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
 				<system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
 				<system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
-				<!-- 云端数据源配置datasource库存、交易-->
+				<!-- 云端数据源配置 datasource库存、交易-->
 				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
 				<system.jdbc.url.stock>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
 				<system.jdbc.user.stock>root</system.jdbc.user.stock>
