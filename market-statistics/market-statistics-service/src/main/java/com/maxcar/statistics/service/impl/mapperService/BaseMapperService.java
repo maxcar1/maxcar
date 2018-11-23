@@ -1,18 +1,6 @@
 package com.maxcar.statistics.service.impl.mapperService;
 
-import com.maxcar.base.pojo.Magic;
-import com.maxcar.base.util.StringUtil;
-import com.maxcar.base.util.ToolDataUtils;
-import com.maxcar.statistics.model.parameter.InsertCartypeDayParamter;
-import com.maxcar.statistics.model.response.GetCarInvoiceTypeInvoiceReportResponse;
-import com.maxcar.user.service.ConfigurationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class BaseMapperService {

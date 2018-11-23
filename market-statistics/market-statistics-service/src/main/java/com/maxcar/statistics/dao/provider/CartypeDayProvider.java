@@ -1,22 +1,23 @@
 package com.maxcar.statistics.dao.provider;
 
 import com.maxcar.base.util.StringUtil;
-import com.maxcar.statistics.model.parameter.GroupCartypeDayParameter;
-import com.maxcar.statistics.model.parameter.InsertCartypeDayParamter;
+import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
 import org.apache.ibatis.jdbc.SQL;
 
 public class CartypeDayProvider {
 
-    public String InsertCartypeDay(InsertCartypeDayParamter parameter) {
 
+    public String groupCartypeDayByMonth(String timeByMonth) {
         return new SQL() {{
-            INSERT_INTO("`maxcar_statistics_l`.`cartype_day`");
-            VALUES(parameter.getColumns(), parameter.getValues());
+            SELECT("market_id AS marketId,tenant_id AS tenantId,type_id AS typeId,IFNULL(SUM(sales_count), 0) AS invoiceCount,IFNULL(SUM(sales_price), 0) AS invoicePrice");
+            FROM(" `maxcar_statistics_l`.`cartype_day` ");
+            WHERE(" DATE_FORMAT(report_time, '%Y-%m') = DATE_FORMAT(#{timeByMonth}, '%Y-%m')");
+            GROUP_BY(" market_id,tenant_id,type_id");
         }}.toString();
     }
 
 
-    public String groupCartypeDay(GroupCartypeDayParameter parameter) {
+    public String groupCartypeDay(GroupCartypeDayRequest parameter) {
         return new SQL() {{
             SELECT("type_id AS typeId,IFNULL(SUM(sales_count),0) AS 'invoiceCount',IFNULL(SUM(sales_price),0) AS 'invoicePrice'");
             FROM("`maxcar_statistics_l`.`cartype_day`");
@@ -37,8 +38,8 @@ public class CartypeDayProvider {
                 WHERE("report_time <= #{endTime}");
             }
 
-            if (StringUtil.isNotEmpty(parameter.getType_id())) {
-                WHERE("type_id <= #{typeId}");
+            if (StringUtil.isNotEmpty(parameter.getTypeId())) {
+                WHERE("type_id = #{typeId}");
             }
 
             GROUP_BY("type_id");

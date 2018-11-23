@@ -4,10 +4,10 @@ package com.maxcar.statistics.controller;
 import com.maxcar.BaseController;
 
 import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.statistics.model.parameter.GroupCartypeDayParameter;
-import com.maxcar.statistics.model.request.GetCarInvoiceTypeInvoiceRankingRequest;
+import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
 import com.maxcar.statistics.model.request.GetInvoiceByCarInvoiceTypeReportRequest;
-import com.maxcar.statistics.service.ReportGroupCartypeDayService;
+import com.maxcar.statistics.model.request.GroupCartypeMonthRequest;
+import com.maxcar.statistics.service.ReportCartypeService;
 import com.maxcar.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -23,7 +23,7 @@ import javax.validation.Valid;
 public class ReportController extends BaseController {
 
     @Autowired
-    private ReportGroupCartypeDayService reportGroupCartypeDayService;
+    private ReportCartypeService reportCartypeService;
 
 
     /**
@@ -32,8 +32,8 @@ public class ReportController extends BaseController {
      * create_date:  lxy   2018/11/19  10:18
      **/
     @RequestMapping("/report/groupCartypeDay")
-    public InterfaceResult groupCartypeDay(@RequestBody @Valid GroupCartypeDayParameter parameter,
-                                                            BindingResult result, HttpServletRequest request) throws Exception {
+    public InterfaceResult groupCartypeDay(@RequestBody @Valid GroupCartypeDayRequest groupCartypeDayRequest,
+                                           BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
@@ -49,11 +49,11 @@ public class ReportController extends BaseController {
                 return getInterfaceResult("600", "账号异常");
             }
 
-            parameter.setMarketId(user.getMarketId());
+            groupCartypeDayRequest.setMarketId(user.getMarketId());
         }
 
 
-        return getInterfaceResult("200", reportGroupCartypeDayService.groupCartypeDay(parameter));
+        return getInterfaceResult("200", reportCartypeService.groupCartypeDay(groupCartypeDayRequest));
     }
 
 
@@ -62,9 +62,9 @@ public class ReportController extends BaseController {
      * describe:  某一类型 交易量与交易价值 按月分组
      * create_date:  lxy   2018/11/19  13:39
      **/
-    @RequestMapping("/report/getInvoiceByCarInvoiceTypeReportMonth")
-    public InterfaceResult getInvoiceByCarInvoiceTypeReportMonth(@RequestBody @Valid GetInvoiceByCarInvoiceTypeReportRequest getInvoiceByCarInvoiceTypeReportRequest,
-                                                                 BindingResult result, HttpServletRequest request) throws Exception {
+    @RequestMapping("/report/groupCartypeMonth")
+    public InterfaceResult groupCartypeMonth(@RequestBody @Valid GroupCartypeMonthRequest groupCartypeMonthRequest,
+                                             BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
@@ -74,15 +74,16 @@ public class ReportController extends BaseController {
 
         User user = getCurrentUser(request);
 
-        if (null == user || tIsEmpty(user.getMarketId())) {
-            return getInterfaceResult("600", "账号异常");
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            groupCartypeMonthRequest.setMarketId(user.getMarketId());
         }
 
-        if (!"001".equals(user.getMarketId())) {
-            getInvoiceByCarInvoiceTypeReportRequest.setMarketId(user.getMarketId());
-        }
-
-        return getInterfaceResult("200", reportGroupCartypeDayService.getInvoiceByCarInvoiceTypeReportMonth(getInvoiceByCarInvoiceTypeReportRequest));
+        return getInterfaceResult("200", reportCartypeService.groupCartypeMonth(groupCartypeMonthRequest));
     }
 
 

@@ -11,6 +11,7 @@ import java.util.Date;
 public class ToolDataUtils {
 
     public static SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
+    public static SimpleDateFormat sdfMonth = new SimpleDateFormat("yyyy-MM");
 
     /**
      * param:
@@ -53,6 +54,16 @@ public class ToolDataUtils {
     public static String getreportTimeByDay() {
 
         return sdfDay.format(new Date());
+    }
+
+    /**
+     * param:
+     * describe: 获取今天的 年月
+     * create_date:  lxy   2018/11/22  13:36
+     **/
+    public static String getreportTimeByMonth() {
+
+        return sdfMonth.format(new Date());
     }
 
     /**

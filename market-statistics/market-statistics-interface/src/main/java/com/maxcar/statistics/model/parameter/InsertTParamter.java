@@ -5,11 +5,13 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class InsertCartypeDayParamter implements Serializable {
+public class InsertTParamter implements Serializable {
 
     private String columns;
 
     private String values;
+
+    private String table;
 
     private String onUpdate;
 
