@@ -1051,7 +1051,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         InterfaceResult interfaceResult = new InterfaceResult();
         Car car = carMapper.selectByPrimaryKey(carSellVo.getCarId());
         if (car != null){
-            if (carSellVo.getDownTaoBao() == 1 && carSellVo.getTaobaoId() != null){
+            if (carSellVo.getDownTaoBao() == 1 && !"".equals(carSellVo.getTaobaoId())){
                 downTaoBaoByTBid(carSellVo.getTaobaoId());
             }
             car.setUpdateTime(new Date());
