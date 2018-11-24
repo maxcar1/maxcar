@@ -20,6 +20,7 @@ import com.maxcar.stock.entity.Response.ExportResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.*;
+import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
@@ -903,6 +904,55 @@ public class CarController extends BaseController {
         return interfaceResult;
     }
 
+    /**
+     * 导出出售管理列表信息 方便维护 和列表接口分开写
+     * @param carVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/export")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult exportSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        User user = getCurrentUser(request);
+        if (null == user || user.getMarketId().isEmpty()) {
+            return getInterfaceResult("200", "无法确认用户市场");
+        }
+        carVo.setMarketId(user.getMarketId());
+        InterfaceResult result = new InterfaceResult();
+        carVo.setCarType(1);
+        carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
+        PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
+        List<CarVo> list = allSalesManageCarList.getList();
+        for (CarVo car : list) {
+            if (car != null && car.getTenant() != null) {
+                UserTenant tenant = userTenantService.selectByPrimaryKey(car.getTenant());
+                if (tenant != null) {
+                    car.setTenantName(tenant.getTenantName());
+                }
+                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
+                if (invoice != null){
+                    car.setInvoicePrice(invoice.getPrice());
+                }
+            }
+        }
+        interfaceResult.InterfaceResult200(list);
+        return interfaceResult;
+    }
+
+    /**
+     * 出售车辆
+     * @param carSellVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/sell")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult sellCarAndDownTaoBao(@RequestBody CarSellVo carSellVo , HttpServletRequest request) throws Exception{
+        return carService.sellCarAndDownTaoBao(carSellVo);
+    }
 
 
 }

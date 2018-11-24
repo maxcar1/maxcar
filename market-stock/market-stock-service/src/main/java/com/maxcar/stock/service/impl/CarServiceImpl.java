@@ -26,10 +26,15 @@ import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.entity.Response.BarrierCarListResponse;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.CarService;
+import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.service.ConfigurationService;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.ItemUpdateDelistingRequest;
+import com.taobao.api.response.ItemUpdateDelistingResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1035,5 +1040,65 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return pageInfo;
     }
 
+
+    /**
+     * 出售车辆修改车辆状态并且下架淘宝
+     * @param carSellVo
+     * @return
+     */
+    @Override
+    public InterfaceResult sellCarAndDownTaoBao(CarSellVo carSellVo) {
+        InterfaceResult interfaceResult = new InterfaceResult();
+        Car car = carMapper.selectByPrimaryKey(carSellVo.getCarId());
+        if (car != null){
+            if (carSellVo.getDownTaoBao() == 1 && carSellVo.getTaobaoId() != null){
+                downTaoBaoByTBid(carSellVo.getTaobaoId());
+            }
+            car.setUpdateTime(new Date());
+            carSellVo.setStockStatus(car.getStockStatus());
+            // 出场状态售出改为售出已出场
+            if (carSellVo.getStockStatus() == 3){
+                car.setStockStatus(5);
+                updateByPrimaryKeySelective(car);
+                // 同步组装云端数据
+
+            }
+            // 在场状态售出改为售出已出场
+            if (carSellVo.getStockStatus() == 2 || carSellVo.getStockStatus() == 1){
+                car.setStockStatus(4);
+                updateByPrimaryKeySelective(car);
+                // 同步组装云端数据
+
+            }
+            interfaceResult.InterfaceResult200("出售成功");
+        }else {
+            interfaceResult.InterfaceResult600("出售失败");
+        }
+        return interfaceResult;
+    }
+
+    /**
+     * 下架淘宝
+     * @param taoBaoId
+     */
+    public void downTaoBaoByTBid(String taoBaoId){
+        Properties prop = new Properties();
+        try {
+            prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+            String APP_KEY = prop.getProperty("taobaoAppKey");
+            String SECRET = prop.getProperty("taobaosecret");
+            String API_URL = prop.getProperty("taobaoUploadUrl");
+            String sessionKey = prop.getProperty("sessionKey");
+
+            TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
+            ItemUpdateDelistingRequest req = new ItemUpdateDelistingRequest();
+            req.setNumIid(Long.valueOf(taoBaoId));
+
+            ItemUpdateDelistingResponse rsp = client.execute(req, sessionKey);
+            logger.info("下架淘宝返回结果：" + rsp.getBody());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

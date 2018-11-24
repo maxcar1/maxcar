@@ -9,46 +9,47 @@ import java.io.Serializable;
  */
 public class CarSellVo implements Serializable {
 
-    private String car_id;
-    private String market_id;
-    private String tenant_id;
+    private String carId;
+    private String marketId;
+    private String tenantId;
     private String vin;
     private Double price;
     private Integer downTaoBao; // 1下架  2不下架
-    private Integer stock_status;
-    private Integer car_type;
+    private Integer stockStatus;
+    private Integer carType;
     private String modelName;
+    private String taobaoId;
 
-    public String getModelName() {
-        return modelName;
+    public String getTaobaoId() {
+        return taobaoId;
     }
 
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
+    public void setTaobaoId(String taobaoId) {
+        this.taobaoId = taobaoId;
     }
 
-    public String getCar_id() {
-        return car_id;
+    public String getCarId() {
+        return carId;
     }
 
-    public void setCar_id(String car_id) {
-        this.car_id = car_id;
+    public void setCarId(String carId) {
+        this.carId = carId;
     }
 
-    public String getMarket_id() {
-        return market_id;
+    public String getMarketId() {
+        return marketId;
     }
 
-    public void setMarket_id(String market_id) {
-        this.market_id = market_id;
+    public void setMarketId(String marketId) {
+        this.marketId = marketId;
     }
 
-    public String getTenant_id() {
-        return tenant_id;
+    public String getTenantId() {
+        return tenantId;
     }
 
-    public void setTenant_id(String tenant_id) {
-        this.tenant_id = tenant_id;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getVin() {
@@ -75,19 +76,27 @@ public class CarSellVo implements Serializable {
         this.downTaoBao = downTaoBao;
     }
 
-    public Integer getStock_status() {
-        return stock_status;
+    public Integer getStockStatus() {
+        return stockStatus;
     }
 
-    public void setStock_status(Integer stock_status) {
-        this.stock_status = stock_status;
+    public void setStockStatus(Integer stockStatus) {
+        this.stockStatus = stockStatus;
     }
 
-    public Integer getCar_type() {
-        return car_type;
+    public Integer getCarType() {
+        return carType;
     }
 
-    public void setCar_type(Integer car_type) {
-        this.car_type = car_type;
+    public void setCarType(Integer carType) {
+        this.carType = carType;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 }
