@@ -951,7 +951,8 @@ public class CarController extends BaseController {
     @RequestMapping(value = "/sell")
     @OperationAnnotation(title = "出售管理信息列表")
     public InterfaceResult sellCarAndDownTaoBao(@RequestBody CarSellVo carSellVo , HttpServletRequest request) throws Exception{
-        return carService.sellCarAndDownTaoBao(carSellVo);
+        InterfaceResult interfaceResult = carService.sellCarAndDownTaoBao(carSellVo);
+        return interfaceResult;
     }
 
 
