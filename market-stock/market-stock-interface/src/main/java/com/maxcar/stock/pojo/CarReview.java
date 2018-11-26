@@ -26,6 +26,16 @@ public class CarReview implements Serializable {
 
     private Integer isValid;
 
+    private String desc;
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     public String getUserName() {
         return userName;
     }

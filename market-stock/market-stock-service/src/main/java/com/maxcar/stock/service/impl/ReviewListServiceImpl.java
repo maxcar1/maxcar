@@ -9,10 +9,13 @@ import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.ReviewListService;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
+import com.maxcar.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Service("reviewListService")
 public class ReviewListServiceImpl implements ReviewListService {
@@ -63,20 +66,17 @@ public class ReviewListServiceImpl implements ReviewListService {
                     }
                     hisWarning.setVin(car.getVin());
                 }
-
             }
-
-
         }
-
-
         PageInfo pageInfo = new PageInfo(list);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
     }
 
     @Override
-    public InterfaceResult carWarningExcel(CarWarningExcel carWarningExcel) throws Exception {
+    public List<Map> carWarningExcel(CarWarningExcel carWarningExcel) throws Exception {
+        
         return null;
     }
+
 }

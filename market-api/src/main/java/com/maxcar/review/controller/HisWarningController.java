@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -30,6 +32,14 @@ public class HisWarningController extends BaseController {
         InterfaceResult interfaceResult = reviewListService.getHisWarningList(hisWarning);
         return interfaceResult;
     }
+    @RequestMapping("carWarningExcel")
+    @OperationAnnotation(title = "导出告警Excel")
+    public InterfaceResult carWarningExcel(@RequestBody CarWarningExcel carWarningExcel , HttpServletRequest request)throws Exception {
 
+        InterfaceResult interfaceResult = new InterfaceResult();
+        List<Map> list = reviewListService.carWarningExcel(carWarningExcel);
+        interfaceResult.InterfaceResult200(list);
+        return interfaceResult;
+    }
 
 }
