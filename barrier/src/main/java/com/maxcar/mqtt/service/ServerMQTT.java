@@ -104,7 +104,7 @@ public class ServerMQTT extends Thread{
             MqttException {
         try {
             lock.lock();
-            logger.info("发送消息主体! "+topic+"内容"+message);
+            logger.info("发送消息主体!topic==>{},内容==>{}",topic,message);
             if (null == client){
                 ServerMQTT se = new ServerMQTT();
                 this.client = se.client;
@@ -147,13 +147,13 @@ public class ServerMQTT extends Thread{
         outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
         outParam = outParam.replaceAll("leng", PushCallback.toHexStringBy0(outParam.length()/2+2));
 
-        logger.info(outParam + "------发送数据");
+        logger.info("{}---未CRC校验----发送数据",outParam);
 
         String outHex = CRC16M.GetModBusCRC(outParam);
 
 
         outParam = outParam + outHex;
-        logger.info(outParam + "------发送数据2");
+        logger.info( "{}---CRC校验完成----发送数据2",outParam);
         send(outParam,"MQTT_YL_DZ0");
     }
 
@@ -201,7 +201,9 @@ public class ServerMQTT extends Thread{
     }
 
     @Override
-    public synchronized void run() {
-        this.send(data,topic);
+    public void run() {
+        synchronized (this){
+            this.send(data,topic);
+        }
     }
 }
