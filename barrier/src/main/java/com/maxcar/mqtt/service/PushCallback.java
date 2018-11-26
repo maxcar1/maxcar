@@ -125,9 +125,10 @@ public class PushCallback implements MqttCallback {
                             if (barrier != null && barrier.getMqttTopic() != null) {
                                 byte b[] = toBytes(outParam);
                                 if(!barrier.getStatus().equals("4")){
-                                    ServerMQTT serverMQTT = new ServerMQTT();
                                     logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                    serverMQTT.send(b, barrier.getMqttTopic());
+                                    ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
+                                    serverMQTT.start();
+                                //    serverMQTT.send(b, barrier.getMqttTopic());
                                 }
                             }
                             if (map.get("stockCarInfo") != null) {
