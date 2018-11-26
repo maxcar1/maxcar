@@ -74,7 +74,6 @@ public class RoleResourceServiceImpl extends BaseServiceImpl<RoleResource,String
 //                    andResourceTypeEqualTo(0);
 //            List<Resource> childRes =  resourceMapper.selectByExample(resourceExample);
             List<Resource> childRes = roleResourceMapper.findMenuByUserId(map);
-
             resource.setChildList(childRes);
             if(childRes!=null) {
                 getChildResources(childRes,userId);
@@ -82,6 +81,7 @@ public class RoleResourceServiceImpl extends BaseServiceImpl<RoleResource,String
         }
         return resources;
     }
+
 
 
 }

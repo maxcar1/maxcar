@@ -9,11 +9,11 @@
             <param name="ConversionPattern" value="%d [%p] %c{1} - %m%n" />  
         </layout>  
         <!--过滤器设置输出的级别 -->  
-        <filter class="com.maxcar.base.util.cuslogs.CustomerLogFilter">
+        <!--<filter class="com.maxcar.base.util.cuslogs.CustomerLogFilter">
             <param name="levelMin" value="DEBUG" />  
             <param name="levelMax" value="Customer" />  
             <param name="AcceptOnMatch" value="true" />  
-        </filter>  
+        </filter>  -->
     </appender>  
     
     <appender name="dailyRollingFile" class="org.apache.log4j.DailyRollingFileAppender">  
