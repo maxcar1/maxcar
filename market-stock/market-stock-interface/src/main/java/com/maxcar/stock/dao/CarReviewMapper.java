@@ -32,4 +32,6 @@ public interface CarReviewMapper {
 
     List<HisWarning> selectByMarketid(@Param("marketId") String marketId);
 
+    List<HisWarning> selectByHisWarning(HisWarning hisWarning);
+
 }
