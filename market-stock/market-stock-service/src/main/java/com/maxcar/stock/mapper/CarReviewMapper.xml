@@ -11,7 +11,7 @@
     <result column="is_pass" property="isPass" jdbcType="INTEGER" />
     <result column="is_pledge" property="isPledge" jdbcType="INTEGER" />
     <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
-    <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+    <result column="desc" property="desc" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -73,7 +73,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, car_id, market_id, user_id, out_reason, back_time, is_pass, is_pledge, insert_time, 
-    is_valid
+    is_valid,desc
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.CarReviewExample" >
     select
@@ -109,12 +109,12 @@
   <insert id="insert" parameterType="com.maxcar.stock.pojo.CarReview" >
     insert into car_review (id, car_id, market_id, 
       user_id, out_reason, back_time, 
-      is_pass, is_pledge, insert_time, 
+      is_pass, is_pledge, insert_time,desc,
       is_valid)
     values (#{id,jdbcType=INTEGER}, #{carId,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, 
       #{userId,jdbcType=VARCHAR}, #{outReason,jdbcType=VARCHAR}, #{backTime,jdbcType=TIMESTAMP}, 
       #{isPass,jdbcType=INTEGER}, #{isPledge,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, 
-      #{isValid,jdbcType=INTEGER})
+      #{isValid,jdbcType=INTEGER}, #{desc,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.CarReview" >
     insert into car_review
@@ -124,6 +124,9 @@
       </if>
       <if test="carId != null" >
         car_id,
+      </if>
+      <if test="desc != null" >
+        `desc`,
       </if>
       <if test="marketId != null" >
         market_id,
@@ -156,6 +159,9 @@
       </if>
       <if test="carId != null" >
         #{carId,jdbcType=VARCHAR},
+      </if>
+      <if test="desc != null" >
+        #{desc,jdbcType=VARCHAR},
       </if>
       <if test="marketId != null" >
         #{marketId,jdbcType=VARCHAR},
@@ -255,6 +261,9 @@
       <if test="userId != null" >
         user_id = #{userId,jdbcType=VARCHAR},
       </if>
+      <if test="desc != null" >
+        desc = #{desc,jdbcType=VARCHAR},
+      </if>
       <if test="outReason != null" >
         out_reason = #{outReason,jdbcType=VARCHAR},
       </if>
@@ -286,7 +295,8 @@
       is_pass = #{isPass,jdbcType=INTEGER},
       is_pledge = #{isPledge,jdbcType=INTEGER},
       insert_time = #{insertTime,jdbcType=TIMESTAMP},
-      is_valid = #{isValid,jdbcType=INTEGER}
+      is_valid = #{isValid,jdbcType=INTEGER},
+      desc = #{desc,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -298,4 +308,36 @@
         is_valid = 1 and market_id = #{marketId,jdbcType=VARCHAR}
             and is_pass = 1 and back_time > now()
     </select>
+
+
+  <select id="selectByHisWarning" resultType="com.maxcar.stock.pojo.HisWarning">
+    select cc.rfid,cc.vin,cc.carStatus,cc.tenant,cc.carId,cc.brandCode,cc.brandName,
+    cc.seriesCode,cc.seriesName,cr.user_id 'userId',cr.out_reason 'outReason',cr.back_time 'backTime',
+    cr.is_pass 'isPass',cr.reason_desc 'reasonDesc',cr.is_pledge 'isPledge',
+    cr.insert_time 'insertTime',cr.is_valid 'isValid' from car_review cr right join (
+select c.rfid,c.vin,c.car_status 'carStatus',c.tenant,c.id 'carId',cb.brand_code as 'brandCode',cb.brand_name as 'brandName',
+cb.series_code 'seriesCode',cb.series_name as 'seriesName'
+from car c left join car_base cb  on c.id = cb.id
+where
+market_id = #{marketId,jdbcType=INTEGER}
+    <if test="brandCode != null and brandCode != ''" >
+      and cb.brand_code = #{brandCode,jdbcType=VARCHAR}
+    </if>
+    <if test="seriesCode != null and seriesCode != ''" >
+      and cb.series_code = #{seriesCode,jdbcType=VARCHAR}
+    </if>
+    <if test="tenant != null and tenant != ''" >
+      and c.tenant = #{tenant,jdbcType=VARCHAR}
+    </if>
+    <if test="vin != null and vin != ''" >
+      and c.vin like concat(concat('%',#{vin}),'%')
+    </if>
+    <if test="rfid != null and rfid != ''" >
+      and c.rfid = #{rfid,jdbcType=VARCHAR}
+    </if>
+) cc on cc.carId = cr.car_id
+where cr.back_time > NOW()
+and cr.is_pass  = 1
+and cr.is_valid = 1
+  </select>
 </mapper>
