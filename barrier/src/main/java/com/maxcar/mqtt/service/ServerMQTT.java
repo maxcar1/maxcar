@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author luoshunfeng
  */
 
-public class ServerMQTT extends Thread{
+public class ServerMQTT {
 
     static Logger logger = LoggerFactory.getLogger(ServerMQTT.class);
     private MqttClient client;
@@ -102,8 +102,8 @@ public class ServerMQTT extends Thread{
      */
     public void publish(MqttMessage message,String topic) throws MqttPersistenceException,
             MqttException {
-        try {
-            lock.lock();
+        /*try {
+            lock.lock();*/
             logger.info("发送消息主体!topic==>{},内容==>{}",topic,message);
             if (null == client){
                 ServerMQTT se = new ServerMQTT();
@@ -116,9 +116,9 @@ public class ServerMQTT extends Thread{
             /*logger.info("服务端消息已经发送! "
                     + token.isComplete());*/
             logger.info("服务端消息已经发送!");
-        }finally {
+        /*}finally {
             lock.unlock();
-        }
+        }*/
     }
 
     /**
@@ -178,7 +178,7 @@ public class ServerMQTT extends Thread{
 
     public void send(byte[] data,String topic) {
         try {
-            lock.lock();
+        //    lock.lock();
 //            String TOPIC = (topic == null || topic.equals("")) ? TOPIC : topic;
 //            topic11 = client.getTopic((topic == null || topic.equals("")) ? TOPIC : topic);
             this.init(topic);
@@ -190,20 +190,15 @@ public class ServerMQTT extends Thread{
             logger.info(this.message.isRetained() + "------ratained状态");
         }catch (Exception ex){
             ex.printStackTrace();
-        }finally {
-            /*try {
-                client.close();
-            }catch (MqttException e){
-                e.printStackTrace();
-            }*/
+        }/*finally {
             lock.unlock();
-        }
+        }*/
     }
 
-    @Override
+   /* @Override
     public void run() {
         synchronized (this){
             this.send(data,topic);
         }
-    }
+    }*/
 }
