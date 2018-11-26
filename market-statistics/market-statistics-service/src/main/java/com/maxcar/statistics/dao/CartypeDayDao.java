@@ -1,24 +1,25 @@
 package com.maxcar.statistics.dao;
 
+import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CartypeDayProvider;
-import com.maxcar.statistics.model.parameter.GroupCartypeDayParameter;
-import com.maxcar.statistics.model.parameter.InsertCartypeDayParamter;
+import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
+import com.maxcar.statistics.model.response.GroupCartypeDayByMonthResponse;
 import com.maxcar.statistics.model.response.GroupCartypeDayResponse;
-import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
 
-public interface CartypeDayDao {
+public interface CartypeDayDao extends BaseDao {
+
 
     /**
      * param:
-     * describe: 批量插入车辆类型日表(处理好values再调用该方法)
-     * create_date:  lxy   2018/11/22  11:03 
+     * describe: 统计当前月的车辆类型日表集合
+     * create_date:  lxy   2018/11/23  11:34
      **/
-    @InsertProvider(type = CartypeDayProvider.class, method = "InsertCartypeDay")
-    boolean InsertCartypeDay(InsertCartypeDayParamter parameter);
+    @SelectProvider(type = CartypeDayProvider.class, method = "groupCartypeDayByMonth")
+    List<GroupCartypeDayByMonthResponse> groupCartypeDayByMonth(String timeByMonth);
 
     /**
      * param:
@@ -26,6 +27,7 @@ public interface CartypeDayDao {
      * create_date:  lxy   2018/11/22  17:13
      **/
     @SelectProvider(type = CartypeDayProvider.class, method = "groupCartypeDay")
-    List<GroupCartypeDayResponse> groupCartypeDay(GroupCartypeDayParameter parameter);
+    List<GroupCartypeDayResponse> groupCartypeDay(GroupCartypeDayRequest parameter);
+
 
 }

@@ -14,7 +14,7 @@
 
     <dubbo:service interface="com.maxcar.statistics.service.RankingService" ref="rankingService" timeout="1200000"/>
 
-    <dubbo:service interface="com.maxcar.statistics.service.ReportGroupCartypeDayService" ref="reportByCarInvoiceTypeService" timeout="1200000"/>
+    <dubbo:service interface="com.maxcar.statistics.service.ReportCartypeService" ref="reportByCarInvoiceTypeService" timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.statistics.service.TradingService" ref="tradingService" timeout="1200000"/>
 

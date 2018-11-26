@@ -1,11 +1,11 @@
-package com.maxcar.statistics.model.parameter;
+package com.maxcar.statistics.model.request;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class GroupCartypeDayParameter implements Serializable {
+public class GroupCartypeDayRequest implements Serializable {
 
     private String orderBy;
 
@@ -18,7 +18,7 @@ public class GroupCartypeDayParameter implements Serializable {
     private String tenantId;
 
     // 车辆类型
-    private String type_id;
+    private String typeId;
 
 
 }

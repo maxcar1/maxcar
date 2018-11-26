@@ -3,11 +3,13 @@ package com.maxcar.statistics.service.impl;
 import com.maxcar.base.util.StringUtil;
 import com.maxcar.statistics.dao.CartypeDayDao;
 import com.maxcar.statistics.model.parameter.GetInvoiceByCarInvoiceTypeReportParameter;
-import com.maxcar.statistics.model.parameter.GroupCartypeDayParameter;
+import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
 import com.maxcar.statistics.model.request.GetInvoiceByCarInvoiceTypeReportRequest;
+import com.maxcar.statistics.model.request.GroupCartypeMonthRequest;
 import com.maxcar.statistics.model.response.GetInvoiceByCarInvoiceTypeReportResponse;
 import com.maxcar.statistics.model.response.GroupCartypeDayResponse;
-import com.maxcar.statistics.service.ReportGroupCartypeDayService;
+import com.maxcar.statistics.model.response.GroupCartypeMonthResponse;
+import com.maxcar.statistics.service.ReportCartypeService;
 import com.maxcar.statistics.service.impl.mapperService.CartypeMapperService;
 import com.maxcar.statistics.service.impl.mapperService.ReportMapperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import java.util.List;
  * create_date: lxy 2018/11/19  11:56
  **/
 @Service("reportByCarInvoiceTypeService")
-public class ReportGroupCartypeDayServiceImpl implements ReportGroupCartypeDayService {
+public class ReportCartypeServiceImpl implements ReportCartypeService {
 
     @Autowired
     private ReportMapperService reportMapperService;
@@ -28,22 +30,30 @@ public class ReportGroupCartypeDayServiceImpl implements ReportGroupCartypeDaySe
     @Autowired
     private CartypeMapperService cartypeMapperService;
 
-    @Autowired
-    private CartypeDayDao cartypeDayDao;
-
     /**
      * param:
      * describe: 分组查询车辆类型日表
      * create_date:  lxy   2018/11/22  17:13
      **/
     @Override
-    public List<GroupCartypeDayResponse> groupCartypeDay(GroupCartypeDayParameter parameter) {
+    public List<GroupCartypeDayResponse> groupCartypeDay(GroupCartypeDayRequest request) {
 
-        if (StringUtil.isEmpty(parameter.getOrderBy())) {
-            parameter.setOrderBy("invoiceCount");
+        if (StringUtil.isEmpty(request.getOrderBy())) {
+            request.setOrderBy("invoiceCount");
         }
 
-        return cartypeDayDao.groupCartypeDay(parameter);
+        return cartypeMapperService.groupCartypeDay(request);
+    }
+
+    /**
+     * param:
+     * describe: 分组查询车辆类型月表
+     * create_date:  lxy   2018/11/22  17:13
+     **/
+    @Override
+    public List<GroupCartypeMonthResponse> groupCartypeMonth(GroupCartypeMonthRequest request) {
+
+        return cartypeMapperService.groupCartypeMonth(request);
     }
 
 
@@ -52,7 +62,6 @@ public class ReportGroupCartypeDayServiceImpl implements ReportGroupCartypeDaySe
      * describe:  某一类型 交易量与交易价值 按月分组
      * create_date:  lxy   2018/11/19  13:39
      **/
-    @Override
     public List<GetInvoiceByCarInvoiceTypeReportResponse> getInvoiceByCarInvoiceTypeReportMonth(GetInvoiceByCarInvoiceTypeReportRequest request) {
 
         GetInvoiceByCarInvoiceTypeReportParameter parameter = new GetInvoiceByCarInvoiceTypeReportParameter();
