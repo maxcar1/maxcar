@@ -148,6 +148,6 @@
     select <include refid="Base_Column_List" /> from car_brand where brand_code = #{brandCode,jdbcType=VARCHAR}
   </select>
   <select id="getAllBrand" resultMap="BaseResultMap" useCache="true">
-    select <include refid="Base_Column_List" /> from car_brand order by orderByCarIndex(car_index) ASC
+    select <include refid="Base_Column_List" /> from car_brand order by orderByCarIndex(car_index),id ASC
   </select>
 </mapper>

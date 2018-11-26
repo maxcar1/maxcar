@@ -2,6 +2,7 @@ package com.maxcar.user.service.impl;
 
 import com.maxcar.base.dao.BaseDao;
 import com.maxcar.base.service.impl.BaseServiceImpl;
+import com.maxcar.base.util.StringUtil;
 import com.maxcar.redis.service.SsoService;
 import com.maxcar.user.dao.ConfigurationMapper;
 import com.maxcar.user.entity.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("configurationService")
@@ -61,6 +61,11 @@ public class ConfigurationServiceImpl extends BaseServiceImpl<Configuration, Str
         return configurationMapper.selectByExample(configurationExample);
     }
 
+    /**
+     * param:
+     * describe: 用于配置列表搜索
+     * create_date:  lxy   2018/11/22  17:42
+     **/
     @Override
     public List<Configuration> searchConfiguration(Configuration configuration) throws Exception {
         ConfigurationExample configurationExample = new ConfigurationExample();
@@ -68,20 +73,26 @@ public class ConfigurationServiceImpl extends BaseServiceImpl<Configuration, Str
 
         ConfigurationExample.Criteria criteria = configurationExample.createCriteria();
         criteria.andIsvalidEqualTo(1);
-        /*if(configuration.getManagerFlag()!=null && configuration.getManagerFlag()==1) {
+
+        if(configuration.getManagerFlag()!=null && configuration.getManagerFlag()==1) {
             criteria.andMarketIdEqualTo(configuration.getMarketId());
-        }*/
+        }
+
+        if (StringUtil.isNotEmpty(configuration.getMarketId())){
+            criteria.andMarketIdEqualTo(configuration.getMarketId());
+        }
+
         if (StringUtils.isNotEmpty(configuration.getConfigurationKey())) {
             criteria.andConfigurationKeyEqualTo(configuration.getConfigurationKey());
         }
-        if (StringUtils.isNotEmpty(configuration.getMarketId())) {
-            // criteria.andMarketIdEqualTo(configuration.getMarketId());
-            List<String> list = new ArrayList<>();
-            list.add(configuration.getMarketId());
-            list.add("");
-            list.add(null);
-            criteria.andMarketIdIn(list);
-        }
+//        if (StringUtils.isNotEmpty(configuration.getMarketId())) {
+//             criteria.andMarketIdEqualTo(configuration.getMarketId());
+//            List<String> list = new ArrayList<>();
+//            list.add(configuration.getMarketId());
+//            list.add("");
+//            list.add(null);
+//            criteria.andMarketIdIn(list);
+//        }
         return configurationMapper.selectByExample(configurationExample);
     }
 

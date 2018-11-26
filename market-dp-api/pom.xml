@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.maxcar</groupId>
-    <artifactId>market-tenant-api</artifactId>
+    <artifactId>market-dp-api</artifactId>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>market-tenant-api</name>
-    <description>商户接口</description>
+    <name>dp-api</name>
+    <description>本地端接口</description>
+
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.1.RELEASE</version>
-        <relativePath/>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
@@ -103,20 +104,6 @@
     </distributionManagement>
 
     <dependencies>
-
-        <dependency>
-            <groupId>com.maxcar</groupId>
-            <artifactId>market-tenant-app-interface</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <!--排除使用util引起jar冲突问题-->
-                <exclusion>
-                    <groupId>com.maxcar</groupId>
-                    <artifactId>market-util</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!--引入权限-->
         <dependency>
             <groupId>com.maxcar</groupId>
@@ -211,6 +198,17 @@
             <artifactId>aliyun-sdk-mns</artifactId>
             <version>1.1.8.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -318,6 +316,7 @@
         </dependency>
 
         <!-- Jackson Json处理工具包 -->
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -420,11 +419,11 @@
             <version>${kafka-version}</version>
         </dependency>-->
         <!--mqtt道闸使用-->
-        <!--<dependency>
+        <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
             <version>1.2.0</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
 
@@ -434,36 +433,48 @@
         <profile>
             <id>dev</id>
             <properties>
+                <!--开发环境端口配置-->
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <!-- 测试环境 -->
-        <profile>
-            <id>test</id>
-            <properties>
-                <spring.profiles.active>test</spring.profiles.active>
-            </properties>
-            <activation>
+            <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
             </activation>
         </profile>
-        <!-- 生产环境 -->
+        <profile>
+            <id>local</id>
+            <properties>
+                <!--开发环境端口配置-->
+                <spring.profiles.active>local</spring.profiles.active>
+            </properties>
+            <activation><!-- 默认激活 -->
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+        <!--公司-->
+        <profile>
+            <id>test</id>
+            <properties>
+                <!--开发环境端口配置-->
+                <spring.profiles.active>test</spring.profiles.active>
+            </properties>
+            <activation><!-- 默认激活 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!-- 测试环境，默认不激活 -->
         <profile>
             <id>pro</id>
             <properties>
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
-            <activation>
+            <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
             </activation>
         </profile>
     </profiles>
 
     <build>
-        <finalName>market-tenant-api</finalName>
+        <finalName>market-dp-api</finalName>
         <plugins>
             <!--生成可执行jar-->
             <plugin>
@@ -504,10 +515,10 @@
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
+                    <include>**/application.yml</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
         </resources>
     </build>
-    
 </project>

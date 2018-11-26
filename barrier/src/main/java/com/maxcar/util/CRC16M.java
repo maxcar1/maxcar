@@ -7,11 +7,11 @@ public class CRC16M {
 
     private static int[] strToToHexInt(String hexString) {
         hexString = hexString.replace(" ", "");
-// 如果长度不是偶数，那么后面添加空格。
+        // 如果长度不是偶数，那么后面添加空格。
         if ((hexString.length() % 2) != 0) {
             hexString += " ";
         }
-// 定义数组，长度为待转换字符串长度的一半。
+        // 定义数组，长度为待转换字符串长度的一半。
         int[] returnBytes = new int[hexString.length() / 2];
         for (int i = 0; i < returnBytes.length; i++) {
             returnBytes[i] = (0xff & Integer.parseInt(hexString.substring(i * 2, i * 2 + 2), 16));
@@ -65,6 +65,8 @@ public class CRC16M {
     }
 
     public static void main(String args[]) {
-        System.out.print(GetModBusCRC("4d43003001870c05D4FF373438594D430353595bceb19c00010001FFFF000B87FF0CBDFBD6B9D6D8B8B4C8EBB3A1"));
+        String abc ="4d43002018B0c05DAFF373438594D430352395bf4cdfd00010001FFFF000B8B8008";
+        String str = GetModBusCRC(abc);
+        System.out.println(str);
     }
 }
