@@ -18,6 +18,12 @@
     <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
     <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
+  <resultMap id="ResponseResultMap" type="com.maxcar.statistics.model.response.TradingResponse" >
+    <id column="month" property="month" jdbcType="VARCHAR" />
+    <result column="count" property="tenantCount" jdbcType="INTEGER" />
+  </resultMap>
+
   <sql id="Base_Column_List" >
     id, market_id, tenant_id, report_time, stock_count, stock_price, stock_day_avg, out_library_count, 
     tenant_space, sales_count, sales_price, sales_avg_price, version, isvalid, register_time
@@ -209,4 +215,73 @@
       register_time = #{registerTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectAllMonth" resultMap="BaseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
+    select
+       report_time,
+      SUM(IFNULL(sales_count, 0)) AS sales_count,
+      SUM(IFNULL(sales_price, 0)) AS sales_price,
+      AVG(IFNULL(sales_avg_price,0)) AS sales_avg_price
+    FROM inventory_invoice_month
+  WHERE isvalid = 1
+    <if test="marketId != null and marketId != '' ">
+        AND  market_id = #{marketId}
+    </if>
+    <if test="timeStart != null and timeStart != '' ">
+      AND report_time BETWEEN #{timeStart} and #{timeEnd}
+    </if>
+    <if test="tenantId != null and tenantId != '' ">
+      AND tenant_id = #{tenantId}
+    </if>
+    GROUP BY report_time
+  </select>
+
+  <select id="getTenantDeal" resultMap="ResponseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
+    SELECT
+    report_time as month,
+    COUNT(tenant_id) AS count
+    FROM
+    `inventory_invoice_month`
+    WHERE isvalid = 1
+    <if test="marketId != null and marketId != '' ">
+      AND  market_id = #{marketId}
+    </if>
+    <if test="carNumType == 0">
+      AND out_library_count &lt; 5
+    </if>
+    <if test="carNumType == 1">
+      AND 4 &lt; out_library_count  and out_library_count &lt; 10
+    </if>
+    <if test="carNumType == 2">
+      AND 9 &lt; out_library_count  and out_library_count &lt; 15
+    </if>
+    <if test="carNumType == 3">
+      AND 14 &lt; out_library_count  and out_library_count &lt; 20
+    </if>
+    <if test="carNumType == 4">
+      AND 19 &lt; out_library_count  and out_library_count &lt; 25
+    </if>
+    <if test="carNumType == 5">
+      AND 24 &lt; out_library_count  and out_library_count &lt; 30
+    </if>
+    <if test="carNumType == 6">
+      AND 29 &lt; out_library_count  and out_library_count &lt; 35
+    </if>
+    <if test="carNumType == 7">
+      AND 24 &lt; out_library_count  and out_library_count &lt; 40
+    </if>
+    <if test="carNumType == 8">
+      AND 39 &lt; out_library_count  and out_library_count &lt; 45
+    </if>
+    <if test="carNumType == 9">
+      AND 44 &lt; out_library_count  and out_library_count &lt; 50
+    </if>
+    <if test="carNumType == 10">
+      AND 49 &lt; out_library_count  and out_library_count &lt; 55
+    </if>
+    <if test="timeStart != null and timeStart != '' ">
+      AND report_time BETWEEN #{timeStart} and #{timeEnd}
+    </if>
+    GROUP BY report_time
+  </select>
 </mapper>

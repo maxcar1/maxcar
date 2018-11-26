@@ -1,5 +1,6 @@
 package com.maxcar.statistics.service;
 
+import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
 
@@ -13,31 +14,19 @@ public interface TradingService {
      * @param tradingRequest
      * @return
      */
-    List getVolumeAndValue(TradingRequest tradingRequest);
+    List<InventoryInvoiceMonthEntity> getVolumeAndValue(TradingRequest tradingRequest);
 
     /**
-     * 增长率统计
-     * @param tradingRequest
-     * @return
-     */
-    List getIncreaseRate(TradingRequest tradingRequest);
-
-    /**
-     *   平均交易价格
-     * @param tradingRequest
-     * @return
-     */
-    Map<String, Object> getAvgPrice(TradingRequest tradingRequest);
-
-    /**
-     *     平均交易价格增长率
+     *   交易增长率
      * @param tradingRequest
      */
-    List<TradingResponse> getAvgPriceRate(TradingRequest tradingRequest) throws Exception;
+    List<TradingResponse> getIncreaseRate(TradingRequest tradingRequest) throws ParseException;
 
-    Map<String, Double> getTenantCount(TradingRequest tradingRequest);
+    Map<String , Object> getAvgPrice(TradingRequest tradingRequest);
 
-    List<TradingResponse> getTenantDeal(TradingRequest tradingRequest) throws Exception;
+    List<TradingResponse> getAvgPriceRate(TradingRequest tradingRequest);
 
-    void getCarPrice(TradingRequest tradingRequest);
+    Map<String,Double> getTenantCount(TradingRequest tradingRequest);
+
+    List<TradingResponse> getTenantDeal(TradingRequest tradingRequest);
 }

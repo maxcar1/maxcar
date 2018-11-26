@@ -209,4 +209,51 @@
       register_time = #{registerTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="sumMonth" resultMap="BaseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
+    SELECT
+      SUM(IFNULL(sales_count, 0)) AS sales_count,
+      SUM(IFNULL(sales_price, 0)) AS sales_price,
+      AVG(IFNULL(sales_avg_price,0)) AS sales_avg_price
+    FROM
+      inventory_invoice_day
+    WHERE isvalid = 1
+    <if test="marketId != null and marketId != '' ">
+      AND  market_id = #{marketId}
+    </if>
+    <if test="timeStart != null and timeStart != '' ">
+      AND  report_time  BETWEEN  #{timeStart}  and  #{timeEnd}
+    </if>
+    <if test="tenantId != null and tenantId != '' ">
+      AND tenant_id = #{tenantId}
+    </if>
+  </select>
+
+  <select id="tenantCarNum" resultType="java.util.Map" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
+    SELECT
+    IFNULL((SUM(aa.sales_count &lt; 10)),0) AS '10',
+    IFNULL((SUM(9 &lt; aa.sales_count AND aa.sales_count &lt; 20)),0) AS '20',
+    IFNULL((SUM(19 &lt; aa.sales_count AND aa.sales_count &lt; 30)),0) AS '30',
+    IFNULL((SUM(29 &lt; aa.sales_count AND aa.sales_count &lt; 40)),0) AS '40',
+    IFNULL((SUM(39 &lt; aa.sales_count AND aa.sales_count &lt; 50)),0) AS '50',
+    IFNULL((SUM(49 &lt; aa.sales_count)),0) AS '60'
+    FROM
+    (SELECT
+    tenant_id,
+    SUM(sales_count) AS sales_count
+    FROM `inventory_invoice_day`
+    WHERE isvalid = 1
+    <if test="marketId != null and marketId != '' ">
+      AND  market_id = #{marketId}
+    </if>
+    <if test="tenantTimeStart != null and tenantTimeStart != '' ">
+      AND  report_time  BETWEEN  #{tenantTimeStart}  and  #{tenantTimeEnd}
+    </if>
+    <if test="tenantId != null and tenantId != '' ">
+      AND tenant_id = #{tenantId}
+    </if>
+    GROUP BY tenant_id) aa
+  </select>
+
 </mapper>

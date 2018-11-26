@@ -1,8 +1,10 @@
 package com.maxcar.statistics.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class InventoryInvoiceMonthEntity {
+public class InventoryInvoiceMonthEntity implements Serializable {
+    private static final long serialVersionUID = 5737508073396259588L;
     private Integer id;
 
     private String marketId;
@@ -32,6 +34,26 @@ public class InventoryInvoiceMonthEntity {
     private Integer isvalid;
 
     private Date registerTime;
+
+    private Integer avgSalesCount;
+
+    private Double avgSalesPrice;
+
+    public Integer getAvgSalesCount() {
+        return avgSalesCount;
+    }
+
+    public void setAvgSalesCount(Integer avgSalesCount) {
+        this.avgSalesCount = avgSalesCount;
+    }
+
+    public Double getAvgSalesPrice() {
+        return avgSalesPrice;
+    }
+
+    public void setAvgSalesPrice(Double avgSalesPrice) {
+        this.avgSalesPrice = avgSalesPrice;
+    }
 
     public Integer getId() {
         return id;

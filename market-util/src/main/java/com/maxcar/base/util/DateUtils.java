@@ -1559,6 +1559,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 
         String agoYear = yearNum.toString();
         String agoMonth = monthNum.toString();
+        if(agoMonth.length() == 1){
+            agoMonth = "0" + agoMonth;
+        }
 
         String agoDate = agoYear + "-" + agoMonth + "-" + split[2];
 
