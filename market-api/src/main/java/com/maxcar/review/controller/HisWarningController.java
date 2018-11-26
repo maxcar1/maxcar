@@ -2,6 +2,7 @@ package com.maxcar.review.controller;
 
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.stock.pojo.CarWarningExcel;
 import com.maxcar.stock.pojo.HisWarning;
 import com.maxcar.stock.service.ReviewListService;
 import com.maxcar.user.entity.User;
@@ -29,5 +30,6 @@ public class HisWarningController extends BaseController {
         InterfaceResult interfaceResult = reviewListService.getHisWarningList(hisWarning);
         return interfaceResult;
     }
+
 
 }
