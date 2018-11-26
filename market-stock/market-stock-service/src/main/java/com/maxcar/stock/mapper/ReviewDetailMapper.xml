@@ -7,6 +7,8 @@
     <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
     <result column="review_result" property="reviewResult" jdbcType="INTEGER" />
     <result column="review_desc" property="reviewDesc" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -67,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, review_id, review_person_id, review_result, review_desc
+    id, review_id, review_person_id, review_result, review_desc, level, insert_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewDetailExample" >
     select
@@ -102,9 +104,11 @@
   </delete>
   <insert id="insert" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
     insert into review_detail (id, review_id, review_person_id, 
-      review_result, review_desc)
+      review_result, review_desc, level, 
+      insert_time)
     values (#{id,jdbcType=INTEGER}, #{reviewId,jdbcType=INTEGER}, #{reviewPersonId,jdbcType=VARCHAR}, 
-      #{reviewResult,jdbcType=INTEGER}, #{reviewDesc,jdbcType=VARCHAR})
+      #{reviewResult,jdbcType=INTEGER}, #{reviewDesc,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, 
+      #{insertTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
     insert into review_detail
@@ -124,6 +128,12 @@
       <if test="reviewDesc != null" >
         review_desc,
       </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="insertTime != null" >
+        insert_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -140,6 +150,12 @@
       </if>
       <if test="reviewDesc != null" >
         #{reviewDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -167,6 +183,12 @@
       <if test="record.reviewDesc != null" >
         review_desc = #{record.reviewDesc,jdbcType=VARCHAR},
       </if>
+      <if test="record.level != null" >
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.insertTime != null" >
+        insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -178,7 +200,9 @@
       review_id = #{record.reviewId,jdbcType=INTEGER},
       review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
       review_result = #{record.reviewResult,jdbcType=INTEGER},
-      review_desc = #{record.reviewDesc,jdbcType=VARCHAR}
+      review_desc = #{record.reviewDesc,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
+      insert_time = #{record.insertTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -198,6 +222,12 @@
       <if test="reviewDesc != null" >
         review_desc = #{reviewDesc,jdbcType=VARCHAR},
       </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -206,8 +236,9 @@
     set review_id = #{reviewId,jdbcType=INTEGER},
       review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
       review_result = #{reviewResult,jdbcType=INTEGER},
-      review_desc = #{reviewDesc,jdbcType=VARCHAR}
+      review_desc = #{reviewDesc,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
 </mapper>
