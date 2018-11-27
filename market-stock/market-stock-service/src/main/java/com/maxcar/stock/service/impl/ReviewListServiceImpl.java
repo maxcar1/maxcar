@@ -9,11 +9,12 @@ import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.ReviewListService;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
-import com.maxcar.user.entity.User;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,9 +75,38 @@ public class ReviewListServiceImpl implements ReviewListService {
     }
 
     @Override
-    public List<Map> carWarningExcel(CarWarningExcel carWarningExcel) throws Exception {
-        
-        return null;
+    public InterfaceResult carWarningExcel(HisWarning warning) throws Exception {
+
+        InterfaceResult interfaceResult = new InterfaceResult();
+        List<HisWarning> list = carReviewMapper.selectByHisWarning(warning);
+        List<CarWarningExcel> carWarningExcelList= new LinkedList<>();
+        for (HisWarning hisWarning : list) {
+            CarWarningExcel carWarningExcel=new CarWarningExcel();
+            Car car = carMapper.selectByPrimaryKey(hisWarning.getCarId());
+            if (null != car) {
+                CarBase carBase = carBaseMapper.selectByPrimaryKey(hisWarning.getCarId());
+                carWarningExcel.setBrandName(hisWarning.getBrandName()+"-"+hisWarning.getSeriesName());
+                carWarningExcel.setModelName(carBase.getModelName());
+                if (carBase != null && null != car.getTenant()) {
+                    UserTenant userTenant = userTenantService.selectByPrimaryKey(car.getTenant());
+                    carWarningExcel.setTenantName(userTenant.getTenantName());
+                    if (userTenant != null) {
+                        CarRecord carRecords = carRecordMapper.selectPlayingTime(car.getRfid(), car.getVin());
+                    }
+                }
+            }
+            carWarningExcel.setCarStatus(hisWarning.getCarStatus());
+            carWarningExcel.setOutReason(hisWarning.getOutReason());
+            carWarningExcel.setEvaluateRrice(hisWarning.getEvaluatePrice());
+            carWarningExcel.setInsertTime(hisWarning.getInsertTime());
+            carWarningExcel.setBackTime(hisWarning.getBackTime());
+            carWarningExcel.setVin(hisWarning.getVin());
+            carWarningExcelList.add(carWarningExcel);
+        }
+
+        interfaceResult.InterfaceResult200(carWarningExcelList);
+        return interfaceResult;
     }
+
 
 }
