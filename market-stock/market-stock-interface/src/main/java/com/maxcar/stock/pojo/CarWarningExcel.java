@@ -6,11 +6,13 @@ import java.util.Date;
 public class CarWarningExcel implements Serializable {
     private String brandName;//品牌
 
-    private String seriesName;//车型
+//    private String seriesName;//车型
+
+    private String modelName;
 
     private String tenantName;//商户
 
-    private int car_status;//车辆状态 1质押 2 非质押',
+    private int carStatus;//车辆状态 1质押 2 非质押',
 
     private String outReason;//出场原因
 
@@ -22,20 +24,20 @@ public class CarWarningExcel implements Serializable {
 
     private String vin;//vin
 
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
     public String getBrandName() {
         return brandName;
     }
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
-    }
-
-    public String getSeriesName() {
-        return seriesName;
-    }
-
-    public void setSeriesName(String seriesName) {
-        this.seriesName = seriesName;
     }
 
     public String getTenantName() {
@@ -46,12 +48,12 @@ public class CarWarningExcel implements Serializable {
         this.tenantName = tenantName;
     }
 
-    public int getCar_status() {
-        return car_status;
+    public int getCarStatus() {
+        return carStatus;
     }
 
-    public void setCar_status(int car_status) {
-        this.car_status = car_status;
+    public void setCarStatus(int carStatus) {
+        this.carStatus = carStatus;
     }
 
     public String getOutReason() {
