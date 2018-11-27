@@ -1684,11 +1684,13 @@
     <select id="getAllSalesManageCarList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
         SELECT
         t.*,
+        ut.tenant_name as tenantName,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>
         FROM
         car t left join
         car_base cb on t.id = cb.id
+        left join maxcar_tenant_l.user_tenant ut on t.tenant = ut.id
         WHERE
         t.stock_status in ('1','2','3','4','5') and
         t.isvalid=1 and t.market_id = #{marketId}
@@ -1696,5 +1698,35 @@
         order by t.register_time desc,t.stock_status desc
     </select>
 
+    <select id="exportAllSellCarList" resultType="com.maxcar.stock.entity.Response.SellCarListExportVo" parameterType="com.maxcar.stock.vo.CarVo">
+        SELECT
+        CONCAT(cb.brand_name,'-',cb.series_name) AS brandAndSeriesName,
+        cb.model_name as modelName,
+        ut.tenant_name as tenantName,
+        case when t.car_status =1 then '质押' else '非质押' end as carStatus,
+        case when t.stock_status = 1 then '在场'
+             when t.stock_status = 2 then '在场'
+             when t.stock_status = 3 then '出场'
+             when t.stock_status = 4 then '售出出场'
+             when t.stock_status = 5 then '售出在场'
+             end as stockStatus,
+        case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
+        date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
+        cb.mileage as mileage,
+        cb.evaluate_price as evaluatePrice,
+        cb.market_price as marketPrice,
+        invoice.price as invoicePrice,
+        t.vin as vin
+        FROM
+        car t left join
+        car_base cb on t.id = cb.id
+        left join maxcar_tenant_l.user_tenant ut on t.tenant = ut.id
+        left join maxcar_market_l.invoice invoice on t.id = invoice.car_id
+        WHERE
+        t.stock_status in ('1','2','3','4','5') and
+        t.isvalid=1 and t.market_id = #{marketId}
+        <include refid="car_vo_where"/>
+        order by t.register_time desc,t.stock_status desc
+    </select>
 
 </mapper>

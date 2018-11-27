@@ -12,6 +12,7 @@ import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.CarDataStatistics;
 import com.maxcar.stock.entity.Response.ExportReviewResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
+import com.maxcar.stock.entity.Response.SellCarListExportVo;
 import com.maxcar.stock.pojo.Car;
 import com.maxcar.stock.pojo.CarIcon;
 import com.maxcar.stock.pojo.CarInfo;
@@ -238,4 +239,6 @@ public interface CarService extends BaseService<Car, String> {
     PageInfo<CarVo> getAllSalesManageCarList(CarVo carVo);
 
     InterfaceResult sellCarAndDownTaoBao(CarSellVo carSellVo);
+
+    List<SellCarListExportVo> exportAllSellCarList(CarVo carVo);
 }

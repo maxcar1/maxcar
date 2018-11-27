@@ -14,6 +14,8 @@ import com.maxcar.base.service.DaSouCheService;
 import com.maxcar.base.service.impl.BaseServiceImpl;
 import com.maxcar.base.util.*;
 import com.maxcar.base.util.dasouche.Result;
+import com.maxcar.market.pojo.Invoice;
+import com.maxcar.market.service.InvoiceService;
 import com.maxcar.stock.dao.CarBaseMapper;
 import com.maxcar.stock.dao.CarMapper;
 import com.maxcar.stock.dao.CarPicMapper;
@@ -57,6 +59,8 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     CarBaseMapper carBaseMapper;
     @Autowired
     DaSouCheService daSouCheService;
+    @Autowired
+    InvoiceService invoiceService;
     @Autowired
     CarPicMapper carPicMapper;
     //@Autowired
@@ -1040,6 +1044,17 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return pageInfo;
     }
 
+    /**
+     * 导出出售管理列表
+     * @param carVo
+     * @return
+     */
+    @Override
+    public List<SellCarListExportVo> exportAllSellCarList(CarVo carVo) {
+        List<SellCarListExportVo> allSalesManageCarList = carMapper.exportAllSellCarList(carVo);
+        return allSalesManageCarList;
+    }
+
 
     /**
      * 出售车辆修改车辆状态并且下架淘宝
@@ -1051,28 +1066,37 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         InterfaceResult interfaceResult = new InterfaceResult();
         Car car = carMapper.selectByPrimaryKey(carSellVo.getCarId());
         if (car != null){
-            if (carSellVo.getDownTaoBao() == 1 && !"".equals(carSellVo.getTaobaoId())){
-                downTaoBaoByTBid(carSellVo.getTaobaoId());
-            }
+
+            Invoice invoice = new Invoice();
+            invoice.setId(UuidUtils.gettimeFormartyyyyMMddHHmmss());
+            invoice.setBillTime(new Date());
+            invoice.setPrice(carSellVo.getPrice());
+            invoice.setCarId(carSellVo.getCarId());
+            invoice.setTenantId(carSellVo.getTenantId());
+            invoice.setTenantName(car.getTenantName());
+            invoice.setMarketId(carSellVo.getMarketId());
+            invoice.setVin(carSellVo.getVin());
+            invoice.setType(carSellVo.getCarType());
+            invoice.setCarStockStatus(carSellVo.getStockStatus());
+            invoice.setTradingType(1);// 售出默认本地交易
+
+//            if (carSellVo.getDownTaoBao() == 1 && StringUtils.isNotBlank(carSellVo.getTaobaoId())){
+//                downTaoBaoByTBid(carSellVo.getTaobaoId());
+//            }
             car.setUpdateTime(new Date());
             carSellVo.setStockStatus(car.getStockStatus());
-            // 出场状态售出改为售出已出场
             if (carSellVo.getStockStatus() == 3){
                 car.setStockStatus(5);
                 updateByPrimaryKeySelective(car);
-                // 同步组装云端数据
-
-            }
-            // 在场状态售出改为售出已出场
-            if (carSellVo.getStockStatus() == 2 || carSellVo.getStockStatus() == 1){
+                invoiceService.insertSelective(invoice);
+            }else if (carSellVo.getStockStatus() == 1 || carSellVo.getStockStatus() == 2){
                 car.setStockStatus(4);
                 updateByPrimaryKeySelective(car);
-                // 同步组装云端数据
-
+                invoiceService.insertSelective(invoice);
             }
             interfaceResult.InterfaceResult200("出售成功");
         }else {
-            interfaceResult.InterfaceResult600("出售失败");
+            interfaceResult.InterfaceResult600("出售失败,车辆信息不存在");
         }
         return interfaceResult;
     }
