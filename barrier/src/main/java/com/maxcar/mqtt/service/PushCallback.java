@@ -114,11 +114,13 @@ public class PushCallback implements MqttCallback {
                             outParam = initDz(clientData, barrier);
                             if (barrier != null && barrier.getMqttTopic() != null) {
                                 byte b[] = toBytes(outParam);
-                                ServerMQTT serverMQTT = new ServerMQTT();
-                                /*ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
-                                serverMQTT.start();*/
+                            //    ServerMQTT serverMQTT = new ServerMQTT();
+                                ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
+                                serverMQTT.start();
+                                serverMQTT.exit = true;
+                                serverMQTT.join();
                                 logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                serverMQTT.send(b, barrier.getMqttTopic());
+                             //   serverMQTT.send(b, barrier.getMqttTopic());
                             }
                         } else if (codeType.equals("01")) {//请求开闸
                             BarrierValid barrierValid = new BarrierValid();
@@ -128,8 +130,11 @@ public class PushCallback implements MqttCallback {
                                 byte b[] = toBytes(outParam);
                                 if(!barrier.getStatus().equals("4")){
                                     logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                    ServerMQTT serverMQTT = new ServerMQTT();
-                                    serverMQTT.send(b, barrier.getMqttTopic());
+                                    ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
+                                    serverMQTT.start();
+                                    serverMQTT.exit = true;
+                                    serverMQTT.join();
+                                //    serverMQTT.send(b, barrier.getMqttTopic());
                                 }
                             }
                             if (map.get("stockCarInfo") != null) {
