@@ -771,6 +771,8 @@
         on a.tenant = c.id
         LEFT JOIN maxcar_stock_l.car_base d
         on a.id = d.id
+        LEFT JOIN maxcar_stock_l.review_detail e
+        on b.id = e.review_id
         where a.isvalid = 1
         and  b.is_pass = 0
         <if test="market != null and market != ''">
@@ -790,6 +792,9 @@
         </if>
         <if test="vin != null and vin != ''">
             and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+        </if>
+        <if test="reviewPersonId != null and reviewPersonId != ''">
+            and e.review_person_id= #{reviewPersonId}
         </if>
     </select>
 
