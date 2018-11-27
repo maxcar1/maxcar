@@ -11,5 +11,5 @@ public interface ReviewListService {
 
     InterfaceResult getHisWarningList(HisWarning hisWarning)throws Exception;
 
-    List<Map> carWarningExcel(CarWarningExcel carWarningExcel)throws Exception;
+    public InterfaceResult carWarningExcel(HisWarning hisWarning)throws Exception;
 }
