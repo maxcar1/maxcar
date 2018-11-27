@@ -34,12 +34,11 @@ public class HisWarningController extends BaseController {
     }
     @RequestMapping("carWarningExcel")
     @OperationAnnotation(title = "导出告警Excel")
-    public InterfaceResult carWarningExcel(@RequestBody CarWarningExcel carWarningExcel , HttpServletRequest request)throws Exception {
-
+    public InterfaceResult carWarningExcel(@RequestBody HisWarning hisWarning , HttpServletRequest request)throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        List<Map> list = reviewListService.carWarningExcel(carWarningExcel);
-        interfaceResult.InterfaceResult200(list);
+        User user = getCurrentUser(request);
+        hisWarning.setMarketId(user.getMarketId());
+        interfaceResult.InterfaceResult200(reviewListService.carWarningExcel(hisWarning));
         return interfaceResult;
     }
-
 }
