@@ -46,6 +46,16 @@ public class HisWarning extends PageBean implements Serializable {
 
     private Integer carStatus;
 
+    private String reasonDesc;
+
+    public String getReasonDesc() {
+        return reasonDesc;
+    }
+
+    public void setReasonDesc(String reasonDesc) {
+        this.reasonDesc = reasonDesc;
+    }
+
     public Integer getCarStatus() {
         return carStatus;
     }
