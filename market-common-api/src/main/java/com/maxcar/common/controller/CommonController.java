@@ -4,6 +4,9 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Province;
 import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.ProvinceService;
+import com.maxcar.common.gecco.JiangsuLicence;
+import com.maxcar.common.gecco.JiangsuResult;
+import com.maxcar.redis.service.SsoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,8 @@ public class CommonController {
     private ProvinceService provinceService;
     @Autowired
     private CityService cityService;
+    @Autowired
+    private  SsoService ssoService;
 
     /**
      * @Description: 获取上传凭证
@@ -107,6 +112,27 @@ public class CommonController {
     public InterfaceResult cityid(@PathVariable("id")Integer id,HttpServletRequest request)throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         interfaceResult.InterfaceResult200(cityService.getCityById(id));
+        return interfaceResult;
+    }
+
+    /**
+     * 获取营业执照接口
+     * @param org 机构id
+     * @param id
+     * @param seqId
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value={"/api/business/licence/{province}/{org}/{id}/{seqId}"})
+    public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,@PathVariable("id")String id,@PathVariable("seqId")String seqId,HttpServletRequest request)throws Exception {
+        InterfaceResult interfaceResult = new InterfaceResult();
+        switch (province){
+            case "jiangsu"://江苏省
+                JiangsuLicence.start(org,id,seqId);
+                break;
+        }
+        interfaceResult.InterfaceResult200(ssoService.getStringKey(org+"="+id+"="+seqId));
         return interfaceResult;
     }
     class OssBean{
