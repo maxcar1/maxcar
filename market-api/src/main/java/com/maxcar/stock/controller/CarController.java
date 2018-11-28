@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -917,6 +918,11 @@ public class CarController extends BaseController {
             carVo.setCarType(1);
             carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
             List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
+//            for (SellCarListExportVo vo: list) {
+//                if (vo.getInvoicePrice() != null && vo.getInvoicePrice() > 0){
+//                    vo.setInvoicePrice();
+//                }
+//            }
             interfaceResult.InterfaceResult200(list);
             return interfaceResult;
     }

@@ -38,12 +38,10 @@ public class RoleResourceOptionServiceImpl extends BaseServiceImpl<RoleResourceO
         return roleResourceOptionMapper.getResourceOptionaByRoleIdOrResourceId(map);
     }
 
-//    @Override
-//    public List<ResourceOption> getOptionByRoleIdAndResourceId(String roleId, String parentRoleId,String resourceId) throws Exception{
-//        Map map = new HashMap();
-//        map.put("roleId",roleId);
-//        map.put("resourceId",resourceId);
-//        map.put("parentRoleId",parentRoleId);
-//        return roleResourceOptionMapper.getResourceOptionaByRoleIdOrResourceId(map);
-//    }
+    @Override
+    public List<ResourceOption> getResourceOptionByUserIdAndResourceId(Map map){
+        return null;
+    }
+
+
 }

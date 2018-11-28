@@ -1,6 +1,7 @@
 package com.maxcar.stock.entity.Response;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -20,8 +21,6 @@ public class SellCarListExportVo implements Serializable {
     private Double mileage;
     private Double evaluatePrice;
     private Double marketPrice;
-    private Double invoicePrice;
-    private String vin;
 
     public Double getInvoicePrice() {
         return invoicePrice;
@@ -31,8 +30,10 @@ public class SellCarListExportVo implements Serializable {
         this.invoicePrice = invoicePrice;
     }
 
-    public String getBrandAndSeriesName() {
+    private Double invoicePrice;
+    private String vin;
 
+    public String getBrandAndSeriesName() {
         return brandAndSeriesName;
     }
 

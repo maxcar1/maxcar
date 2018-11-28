@@ -1717,10 +1717,10 @@
              end as stockStatus,
         case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
         date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
-        cb.mileage as mileage,
-        cb.evaluate_price as evaluatePrice,
-        cb.market_price as marketPrice,
-        invoice.price as invoicePrice,
+        IFNULL(CAST(cb.mileage/10000 AS decimal(16,2)),0) as mileage,
+        IFNULL(cb.evaluate_price,0) as evaluatePrice,
+        IFNULL(cb.market_price,0) as marketPrice,
+        IFNULL (CAST(invoice.price/10000 AS decimal(16,2)),0) as invoicePrice,
         t.vin as vin
         FROM
         car t left join
