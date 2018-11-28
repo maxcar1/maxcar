@@ -69,15 +69,15 @@ public class TradingMapperService {
         tradingRequest.setSelectFrom(selectForm);
 
         String selectCondition = " 1 = 1  ";
-        Integer carNumMin = tradingRequest.getCarNumMin();
-        Integer carNumMax = tradingRequest.getCarNumMax();
+//        Integer carNumMin = tradingRequest.getCarNumMin();
+//        Integer carNumMax = tradingRequest.getCarNumMax();
 
-        if (carNumMax != 0 && carNumMax != null) {
-            selectCondition += "  AND aa.num <  #{carNumMax}  ";
-        }
-        if (carNumMin != 0 && carNumMin != null) {
-            selectCondition += "  AND  aa.num > #{carNumMin}  or  aa.num =  #{carNumMin} ";
-        }
+//        if (carNumMax != 0 && carNumMax != null) {
+//            selectCondition += "  AND aa.num <  #{carNumMax}  ";
+//        }
+//        if (carNumMin != 0 && carNumMin != null) {
+//            selectCondition += "  AND  aa.num > #{carNumMin}  or  aa.num =  #{carNumMin} ";
+//        }
         tradingRequest.setSelectCondition(selectCondition);
 
         return tradingDao.countCarNum(tradingRequest);
@@ -97,14 +97,14 @@ public class TradingMapperService {
         if (StringUtil.isNotEmpty(tradingRequest.getTimeStart())) {
             selectCondition += " AND i.bill_time BETWEEN #{timeStart} AND #{timeEnd}  ";
         }
-        Integer carNumMin = tradingRequest.getCarNumMin();
-        Integer carNumMax = tradingRequest.getCarNumMax();
-        if (carNumMax != 0 && carNumMax != null) {
-            selectCondition += "  AND  i.num < #{carNumMax}  ";
-        }
-        if (carNumMin != 0 && carNumMin != null) {
-            selectCondition += "  AND i.num >  #{carNumMin}  OR i.num =  #{carNumMin}  ";
-        }
+//        Integer carNumMin = tradingRequest.getCarNumMin();
+//        Integer carNumMax = tradingRequest.getCarNumMax();
+//        if (carNumMax != 0 && carNumMax != null) {
+//            selectCondition += "  AND  i.num < #{carNumMax}  ";
+//        }
+//        if (carNumMin != 0 && carNumMin != null) {
+//            selectCondition += "  AND i.num >  #{carNumMin}  OR i.num =  #{carNumMin}  ";
+//        }
         tradingRequest.setSelectCondition(selectCondition);
 
         String groupByColumns = " DATE_FORMAT(i.bill_time, '%Y-%m') DESC  ";

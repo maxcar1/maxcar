@@ -17,9 +17,9 @@ public class TradingResponse implements Serializable {
     private Double priceMove;
     //  移动平均交易总量
     private Double countMove;
-    //  交易总价值同比增长率
+    //  交易总价值 同比/环比 增长率
     private Double priceRate;
-    //  交易总量同比增长率
+    //  交易总量 同比/环比 增长率
     private Double countRate;
     //  平均交易价格
     private Double avgPrice;
@@ -27,7 +27,20 @@ public class TradingResponse implements Serializable {
     private Double avgPriceYear;
     //  平均交易价格环比增长率
     private Double avgPriceMonth;
-    //  当月商户交易数量
+    //  当月商户成交量在条件中的数量
     private Double tenantCount;
-
+    //  当月商户成交量在条件中的数量  同比
+    private Double tenantCountYear;
+    //  当月商户成交量在条件中的数量  环比
+    private Double tenantCountMonth;
+    //  交易层次同比增长率
+    private Double dealPriceYear;
+    //  交易层次环比增长率
+    private Double dealPriceMonth;
+    //  价格区间类型
+    private String invoicePriceId;
+    //  库存数量
+    private Double stockAvgStocktime;
+    //  车商交易库存天数占比
+    private Double dayPercentage;
 }

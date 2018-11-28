@@ -1,5 +1,10 @@
 package com.maxcar.statistics.dao;
 import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
+import com.maxcar.statistics.model.request.TradingRequest;
+import com.maxcar.statistics.model.response.TradingResponse;
+
+import java.util.List;
+import java.util.Map;
 
 public interface InventoryInvoiceDayMapper {
     int deleteByPrimaryKey(Integer id);
@@ -13,4 +18,10 @@ public interface InventoryInvoiceDayMapper {
     int updateByPrimaryKeySelective(InventoryInvoiceDayEntity record);
 
     int updateByPrimaryKey(InventoryInvoiceDayEntity record);
+
+    InventoryInvoiceDayEntity sumMonth(TradingRequest tradingRequest);
+
+    Map tenantCarNum(TradingRequest tradingRequest);
+
+    List<TradingResponse> getTenantDealDay(TradingRequest tradingRequest);
 }

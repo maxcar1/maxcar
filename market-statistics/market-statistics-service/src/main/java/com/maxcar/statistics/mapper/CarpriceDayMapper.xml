@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.statistics.dao.CarpriceDayMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
+    <result column="report_time" property="reportTime" jdbcType="VARCHAR" />
+    <result column="invoice_price_id" property="invoicePriceId" jdbcType="VARCHAR" />
+    <result column="invoice_price_name" property="invoicePriceName" jdbcType="VARCHAR" />
+    <result column="sales_count" property="salesCount" jdbcType="INTEGER" />
+    <result column="stock_avg_stocktime" property="stockAvgStocktime" jdbcType="INTEGER" />
+    <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="ResponseResultMap" type="com.maxcar.statistics.model.response.TradingResponse">
+    <id column="month" property="month" jdbcType="VARCHAR"/>
+    <result column="count" property="count" jdbcType="INTEGER"/>
+    <result column="invoicePriceId" property="invoicePriceId" jdbcType="VARCHAR"/>
+    <result column="stock_avg_stocktime" property="stockAvgStocktime" jdbcType="DOUBLE"/>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, market_id, tenant_id, report_time, invoice_price_id, invoice_price_name, sales_count, 
+    stock_avg_stocktime, isvalid, version, register_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from carprice_day
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from carprice_day
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
+    insert into carprice_day (id, market_id, tenant_id, 
+      report_time, invoice_price_id, invoice_price_name, 
+      sales_count, stock_avg_stocktime, isvalid, 
+      version, register_time)
+    values (#{id,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, 
+      #{reportTime,jdbcType=VARCHAR}, #{invoicePriceId,jdbcType=VARCHAR}, #{invoicePriceName,jdbcType=VARCHAR}, 
+      #{salesCount,jdbcType=INTEGER}, #{stockAvgStocktime,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, 
+      #{version,jdbcType=INTEGER}, #{registerTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
+    insert into carprice_day
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="marketId != null" >
+        market_id,
+      </if>
+      <if test="tenantId != null" >
+        tenant_id,
+      </if>
+      <if test="reportTime != null" >
+        report_time,
+      </if>
+      <if test="invoicePriceId != null" >
+        invoice_price_id,
+      </if>
+      <if test="invoicePriceName != null" >
+        invoice_price_name,
+      </if>
+      <if test="salesCount != null" >
+        sales_count,
+      </if>
+      <if test="stockAvgStocktime != null" >
+        stock_avg_stocktime,
+      </if>
+      <if test="isvalid != null" >
+        isvalid,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="registerTime != null" >
+        register_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null" >
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        #{reportTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invoicePriceId != null" >
+        #{invoicePriceId,jdbcType=VARCHAR},
+      </if>
+      <if test="invoicePriceName != null" >
+        #{invoicePriceName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCount != null" >
+        #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="stockAvgStocktime != null" >
+        #{stockAvgStocktime,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null" >
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
+    update carprice_day
+    <set >
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null" >
+        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        report_time = #{reportTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invoicePriceId != null" >
+        invoice_price_id = #{invoicePriceId,jdbcType=VARCHAR},
+      </if>
+      <if test="invoicePriceName != null" >
+        invoice_price_name = #{invoicePriceName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCount != null" >
+        sales_count = #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="stockAvgStocktime != null" >
+        stock_avg_stocktime = #{stockAvgStocktime,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null" >
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
+    update carprice_day
+    set market_id = #{marketId,jdbcType=VARCHAR},
+      tenant_id = #{tenantId,jdbcType=VARCHAR},
+      report_time = #{reportTime,jdbcType=VARCHAR},
+      invoice_price_id = #{invoicePriceId,jdbcType=VARCHAR},
+      invoice_price_name = #{invoicePriceName,jdbcType=VARCHAR},
+      sales_count = #{salesCount,jdbcType=INTEGER},
+      stock_avg_stocktime = #{stockAvgStocktime,jdbcType=INTEGER},
+      isvalid = #{isvalid,jdbcType=INTEGER},
+      version = #{version,jdbcType=INTEGER},
+      register_time = #{registerTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="transactionLevel" resultMap="ResponseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
+    SELECT
+      DATE_FORMAT(report_time, '%Y-%m') AS MONTH,
+      SUM(sales_count) as count
+    FROM
+      `carprice_day`
+    WHERE isvalid = 1
+    <if test="timeStart != null and timeStart != '' ">
+      AND report_time BETWEEN #{timeStart} and #{timeEnd}
+    </if>
+    <if test="marketId != null and marketId != '' ">
+      AND market_id = #{marketId}
+    </if>
+    <if test="tenantId != null and tenantId != '' ">
+      AND tenant_id = #{tenantId}
+    </if>
+    <if test="carNumType != null and carNumType != ''  ">
+      AND invoice_price_id = #{carNumType}
+    </if>
+   GROUP BY report_time
+  </select>
+
+  <select id="stockAvgDay" resultMap="ResponseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
+SELECT
+    invoice_price_id as invoicePriceId,
+    AVG(stock_avg_stocktime) AS stock_avg_stocktime
+FROM
+  `carprice_day`
+WHERE isvalid = 1
+    <if test="marketId != null and marketId != '' ">
+      AND market_id = #{marketId}
+    </if>
+    <if test="tenantId != null and tenantId != '' ">
+      AND tenant_id = #{tenantId}
+    </if>
+    <if test="tenantTimeStart != null and tenantTimeStart != '' ">
+      AND report_time BETWEEN #{tenantTimeStart} and #{tenantTimeEnd}
+    </if>
+GROUP BY invoice_price_id
+  </select>
+</mapper>
