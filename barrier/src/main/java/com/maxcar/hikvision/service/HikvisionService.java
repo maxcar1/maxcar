@@ -52,7 +52,7 @@ public class HikvisionService {
             lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP,
                     iPort, UserName, new String(Password), m_strDeviceInfo);
             long userID = lUserID.longValue();
-            System.out.println(userID);
+            logger.info(String.valueOf(userID));
             //-1表示失败，其他值表示返回的用户ID值。返回UserID的取值范围为0~2047。
             if (userID == -1) {
                 //设备登录失败，数据上行请求，下行通知硬件并生成日志记录
