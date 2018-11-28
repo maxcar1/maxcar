@@ -30,4 +30,10 @@ public interface CarReviewMapper {
     int updateByPrimaryKey(CarReview record);
 
     List<CarRecordVo> getCarRecord (CarReview carReview);
+
+    /**
+     * 查询所有出场超时未归的车辆  不需要传条件  看sql
+     * @return
+     */
+    List<CarReview> selectAllTimeoutNotreturnCarReview();
 }

@@ -1080,9 +1080,9 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             invoice.setCarStockStatus(carSellVo.getStockStatus());
             invoice.setTradingType(1);// 售出默认本地交易
 
-//            if (carSellVo.getDownTaoBao() == 1 && StringUtils.isNotBlank(carSellVo.getTaobaoId())){
-//                downTaoBaoByTBid(carSellVo.getTaobaoId());
-//            }
+            if (carSellVo.getDownTaoBao() == 1 && StringUtils.isNotBlank(carSellVo.getTaobaoId())){
+                downTaoBaoByTBid(carSellVo.getTaobaoId());
+            }
             car.setUpdateTime(new Date());
             carSellVo.setStockStatus(car.getStockStatus());
             if (carSellVo.getStockStatus() == 3){

@@ -9,4 +9,8 @@ import java.util.List;
 public interface CarReviewService {
     CarReview getCarReview(CarVo carVo);
     List<CarRecordVo> getCarRecord (CarReview carReview);
+
+    List<CarReview> selectAllCarReviewByIsPass();
+
+    void updateTimeoutNotreturnCarStockStatus();
 }

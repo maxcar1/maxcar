@@ -919,8 +919,8 @@ public class CarController extends BaseController {
             carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
             List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
 //            for (SellCarListExportVo vo: list) {
-//                if (vo.getInvoicePrice() != null && vo.getInvoicePrice() > 0){
-//                    vo.setInvoicePrice();
+//                if (vo.getInvoicePrice() != null){
+//                    vo.setInvoicePrice(new BigDecimal(vo.getInvoicePrice()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 //                }
 //            }
             interfaceResult.InterfaceResult200(list);
