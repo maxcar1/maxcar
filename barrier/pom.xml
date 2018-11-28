@@ -361,6 +361,12 @@
             <artifactId>examples</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <!-- 申明不同环境调用不同数据库连接参数 -->

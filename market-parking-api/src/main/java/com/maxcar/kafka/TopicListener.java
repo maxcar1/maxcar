@@ -90,17 +90,8 @@ public class TopicListener {
                 String doPutJson = HttpClientUtil.get(url,null,null);
                 JSONObject fromObject = JSONObject.parseObject(doPutJson);
                 result =  JSONObject.toJavaObject(fromObject, InterfaceResult.class);
-            }  else if (StringUtils.equals("camera-get", method)) {
-                //摄像机请求单独处理
-                FileInputStream fis = (FileInputStream) postParam.getData();
-                String imageUrl = getImageUrl(fis);
-                JSONObject json = new JSONObject();
-                json.put("imageUrl",imageUrl);
-                String doPostJson = HttpClientUtils.doPostJson(url, json.toJSONString());
-                JSONObject fromObject = JSONObject.parseObject(doPostJson);
-                result = JSONObject.toJavaObject(fromObject, InterfaceResult.class);
             }else{
-                String doPostJson = HttpClientUtils.doPostJson(url, String.valueOf(postParam.getData()));
+                String doPostJson = HttpClientUtils.doPostJson(url, postParam.getData());
                 JSONObject fromObject = JSONObject.parseObject(doPostJson);
                 result =  JSONObject.toJavaObject(fromObject, InterfaceResult.class);
             }

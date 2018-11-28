@@ -53,6 +53,16 @@ public class PushCallback implements MqttCallback {
     @Value("${server.environment}")
     private String environment;
 
+    @Value("${sts.access.key.id}")
+    private String accessKeyId;
+    @Value("${sts.access.key.secret}")
+    private  String accessKeySecret;
+    @Value("${sts.bucket}")
+    private String bucket;
+    @Value("${sts.endpoint}")
+    private String endpoint;
+
+
     public PushCallback() {
 
     }
@@ -292,12 +302,14 @@ public class PushCallback implements MqttCallback {
             if (!map.isEmpty()){
                 boolean result = (Boolean) map.get("result");
                 if (result){
-                    File file = new File(String.valueOf(map.get("imageName")));
-                    FileInputStream fis = new FileInputStream(file);
-                    postParam.setData(fis);
+                    String imageFile = String.valueOf(map.get("imageName"));
+                    String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint,accessKeyId,bucket,accessKeySecret,imageFile,imageFile);
+                    JSONObject json = new JSONObject();
+                    json.put("imageUrl",imageUrl);
+                    postParam.setData(json.toJSONString());
                     postParam.setUrl(url.toString());
                     postParam.setOnlySend(false);
-                    postParam.setMethod("camera-get");
+                    postParam.setMethod("post");
                     postParam.setMessageTime(Canstats.dateformat.format(new Date()));
                     logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
                     messageProducerService.sendMessage("-2",
