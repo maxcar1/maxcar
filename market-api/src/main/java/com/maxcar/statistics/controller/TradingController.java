@@ -4,6 +4,7 @@ import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.StringUtil;
+import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
@@ -197,44 +198,60 @@ public class TradingController extends BaseController {
      */
     @PostMapping("/trading/carPrice")
     public InterfaceResult getCarPrice(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
-        getUserMarketAndSetTime(tradingRequest, request);
-
-//        tradingService.getCarPrice(tradingRequest);
-
-        InterfaceResult interfaceResult = new InterfaceResult();
-//        interfaceResult.InterfaceResult200(tenantDeal);
-        return interfaceResult;
-    }
-
-
-    /**
-     * 设置登入人的市场id和设置查询时间
-     *
-     * @param tradingRequest
-     * @param request
-     * @throws Exception
-     */
-    private void getUserMarketAndSetTime(TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
         User currentUser = getCurrentUser(request);
         if (!currentUser.equals("001")) {
             String marketId = currentUser.getMarketId();
             tradingRequest.setUserMaketId(marketId);
         }
-        //  设置查询开始时间的
-        String timeStart = tradingRequest.getTimeStart();
-        String timeEnd = tradingRequest.getTimeEnd();
-        if (StringUtil.isNotEmpty(timeStart)) {
-            timeStart += "-01";
-            tradingRequest.setTimeStart(timeStart);
+
+        Map<String, Object> carPrice = tradingService.getCarPrice(tradingRequest);
+
+        InterfaceResult interfaceResult = new InterfaceResult();
+        interfaceResult.InterfaceResult200(carPrice);
+        return interfaceResult;
+    }
+
+    /**
+     *   交易层次发展趋势
+     * @param tradingRequest
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/trading/transactionLevel")
+    public InterfaceResult transactionLevel(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
+        User currentUser = getCurrentUser(request);
+        if (!currentUser.equals("001")) {
+            String marketId = currentUser.getMarketId();
+            tradingRequest.setUserMaketId(marketId);
         }
-        //  获取查询结束时间月的最后一天 并设置为当月一天最后的时间
-        if (StringUtil.isNotEmpty(timeEnd)) {
-            timeEnd += "-01";
-            Date date = DateUtils.parseDate(timeEnd, DateUtils.DATE_FORMAT_DATEONLY);
-            Date maxTime = DateUtils.getMaxTime(date);
-            Date lastDayOfMonth = DateUtils.getLastDayOfMonth(maxTime);
-            String s = DateUtils.getSecondStr(lastDayOfMonth);
-            tradingRequest.setTimeEnd(s);
+
+        List<TradingResponse> carpriceDayEntities = tradingService.transactionLevel(tradingRequest);
+
+        InterfaceResult interfaceResult = new InterfaceResult();
+        interfaceResult.InterfaceResult200(carpriceDayEntities);
+        return interfaceResult;
+    }
+
+    /**
+     * 按交易价格分布的平均库存天数
+     * @param tradingRequest
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/trading/stockAvgDay")
+    public InterfaceResult stockAvgDay(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
+        User currentUser = getCurrentUser(request);
+        if (!currentUser.equals("001")) {
+            String marketId = currentUser.getMarketId();
+            tradingRequest.setUserMaketId(marketId);
         }
+
+        List<TradingResponse> carpriceDayEntity = tradingService.stockAvgDay(tradingRequest);
+
+        InterfaceResult interfaceResult = new InterfaceResult();
+        interfaceResult.InterfaceResult200(carpriceDayEntity);
+        return interfaceResult;
     }
 }

@@ -33,5 +33,14 @@ public class TradingResponse implements Serializable {
     private Double tenantCountYear;
     //  当月商户成交量在条件中的数量  环比
     private Double tenantCountMonth;
-
+    //  交易层次同比增长率
+    private Double dealPriceYear;
+    //  交易层次环比增长率
+    private Double dealPriceMonth;
+    //  价格区间类型
+    private String invoicePriceId;
+    //  库存数量
+    private Double stockAvgStocktime;
+    //  车商交易库存天数占比
+    private Double dayPercentage;
 }

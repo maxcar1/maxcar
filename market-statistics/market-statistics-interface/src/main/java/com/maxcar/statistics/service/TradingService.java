@@ -1,5 +1,6 @@
 package com.maxcar.statistics.service;
 
+import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
@@ -29,4 +30,10 @@ public interface TradingService {
     Map<String,Double> getTenantCount(TradingRequest tradingRequest);
 
     List<TradingResponse> getTenantDeal(TradingRequest tradingRequest);
+
+    Map<String,Object> getCarPrice(TradingRequest tradingRequest) throws ParseException;
+
+    List<TradingResponse> transactionLevel(TradingRequest tradingRequest) throws ParseException;
+
+    List<TradingResponse> stockAvgDay(TradingRequest tradingRequest);
 }

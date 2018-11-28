@@ -1,8 +1,10 @@
 package com.maxcar.statistics.service.impl;
 
 import com.maxcar.base.util.DateUtils;
+import com.maxcar.statistics.dao.CarpriceDayMapper;
 import com.maxcar.statistics.dao.InventoryInvoiceDayMapper;
 import com.maxcar.statistics.dao.InventoryInvoiceMonthMapper;
+import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
@@ -26,6 +28,9 @@ public class TradingServiceImpl implements TradingService {
 
     @Autowired
     private InventoryInvoiceDayMapper inventoryInvoiceDayMapper;
+
+    @Autowired
+    private CarpriceDayMapper carpriceDayMapper;
 
     @Override
     public List<InventoryInvoiceMonthEntity> getVolumeAndValue(TradingRequest tradingRequest) {
@@ -297,7 +302,12 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public List<TradingResponse> getTenantDeal(TradingRequest tradingRequest) {
         List<TradingResponse> list = inventoryInvoiceMonthMapper.getTenantDeal(tradingRequest);
-        for(TradingResponse response : list){
+        List<TradingResponse> listDay = inventoryInvoiceDayMapper.getTenantDealDay(tradingRequest);
+        if (listDay.size() > 0) {
+            TradingResponse trading = listDay.get(0);
+            list.add(trading);
+        }
+        for (TradingResponse response : list) {
             String month = response.getMonth();
             Double nowTenantCount = response.getTenantCount();
             month += "-01";
@@ -308,7 +318,7 @@ public class TradingServiceImpl implements TradingService {
             tradingRequest.setTimeEnd(agoMonth);
             double countMonth = 0.0;
             List<TradingResponse> agoMonthList = inventoryInvoiceMonthMapper.getTenantDeal(tradingRequest);
-            if(agoMonthList.size() > 0){
+            if (agoMonthList.size() > 0) {
                 TradingResponse response1 = agoMonthList.get(0);
                 Double agoMonthTenantCount = response1.getTenantCount();
                 countMonth = Math.round((nowTenantCount - agoMonthTenantCount) / agoMonthTenantCount * 100) / 100;
@@ -321,7 +331,7 @@ public class TradingServiceImpl implements TradingService {
             tradingRequest.setTimeEnd(yearAgoMonth);
             double countYear = 0.0;
             List<TradingResponse> agoYearList = inventoryInvoiceMonthMapper.getTenantDeal(tradingRequest);
-            if(agoYearList.size() > 0){
+            if (agoYearList.size() > 0) {
                 TradingResponse response1 = agoYearList.get(0);
                 Double agoYearTenantCount = response1.getTenantCount();
                 countYear = Math.round((nowTenantCount - agoYearTenantCount) / agoYearTenantCount * 100) / 100;
@@ -329,6 +339,80 @@ public class TradingServiceImpl implements TradingService {
             response.setTenantCountYear(countYear);
         }
         return list;
+    }
+
+    @Override
+    public Map<String, Object> getCarPrice(TradingRequest tradingRequest) {
+        Map<String, Object> map = inventoryInvoiceMonthMapper.countCarPriceDistribution(tradingRequest);
+        return map;
+    }
+
+    @Override
+    public List<TradingResponse> transactionLevel(TradingRequest tradingRequest) throws ParseException {
+        String timeStart = tradingRequest.getTimeStart();
+        timeStart += "-01";
+        tradingRequest.setTimeStart(timeStart);
+        String timeEnd = tradingRequest.getTimeEnd();
+        timeEnd += "-01";
+        Date date = DateUtils.parseDate(timeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        Date monthEnd = DateUtils.getMonthEnd(date);
+        String s = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        tradingRequest.setTimeEnd(s);
+        List<TradingResponse> list = carpriceDayMapper.transactionLevel(tradingRequest);
+        for (TradingResponse price : list) {
+            String month = price.getMonth();
+            month += "-01";
+            //  环比
+            String agoMonth = DateUtils.getAgoMonth(month);
+            Date date1 = DateUtils.parseDate(agoMonth, DateUtils.DATE_FORMAT_DATEONLY);
+            Date monthEnd1 = DateUtils.getMonthEnd(date1);
+            String s1 = DateUtils.formatDate(monthEnd1);
+            String substring = s1.substring(0, 10);
+            tradingRequest.setTimeStart(agoMonth);
+            tradingRequest.setTimeEnd(substring);
+            List<TradingResponse> listMonth = carpriceDayMapper.transactionLevel(tradingRequest);
+            Double count = price.getCount();
+            double dealPriceMonth = 0.0;
+            if (listMonth.size() > 0) {
+                TradingResponse response = listMonth.get(0);
+                Double agoCount = response.getCount();
+                dealPriceMonth = Math.round((count - agoCount) / agoCount * 100) / 100;
+            }
+            price.setDealPriceMonth(dealPriceMonth);
+
+            //  同比
+            double dealPriceYear = 0.0;
+            String yearAgoMonth = DateUtils.getYearAgoMonth(month);
+            date1 = DateUtils.parseDate(yearAgoMonth, DateUtils.DATE_FORMAT_DATEONLY);
+            monthEnd1 = DateUtils.getMonthEnd(date1);
+            s1 = DateUtils.formatDate(monthEnd1);
+            substring = s1.substring(0, 10);
+            tradingRequest.setTimeStart(yearAgoMonth);
+            tradingRequest.setTimeEnd(substring);
+            price.setDealPriceYear(dealPriceYear);
+            List<TradingResponse> listYear = carpriceDayMapper.transactionLevel(tradingRequest);
+            if (listYear.size() > 0) {
+                TradingResponse response = listYear.get(0);
+                Double agoCount = response.getCount();
+                dealPriceYear = Math.round((count - agoCount) / agoCount * 100) / 100;
+            }
+            price.setDealPriceYear(dealPriceYear);
+        }
+        return list;
+    }
+
+    @Override
+    public List<TradingResponse> stockAvgDay(TradingRequest tradingRequest) {
+        List<TradingResponse> carpriceDayEntityList = carpriceDayMapper.stockAvgDay(tradingRequest);
+        double count = 0;
+        for(TradingResponse response : carpriceDayEntityList){
+            count += response.getStockAvgStocktime();
+        }
+        for(TradingResponse response : carpriceDayEntityList){
+            Double stockAvgStocktime = response.getStockAvgStocktime();
+            response.setDayPercentage(stockAvgStocktime / count);
+        }
+        return carpriceDayEntityList;
     }
 //
 //    @Override

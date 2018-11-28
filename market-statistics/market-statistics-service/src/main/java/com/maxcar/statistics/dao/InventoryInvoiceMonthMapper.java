@@ -5,6 +5,7 @@ import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface InventoryInvoiceMonthMapper {
     int deleteByPrimaryKey(Integer id);
@@ -22,4 +23,6 @@ public interface InventoryInvoiceMonthMapper {
     List<InventoryInvoiceMonthEntity> selectAllMonth(TradingRequest tradingRequest);
 
     List<TradingResponse> getTenantDeal(TradingRequest tradingRequest);
+
+    Map<String,Object> countCarPriceDistribution(TradingRequest tradingRequest);
 }
