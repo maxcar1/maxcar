@@ -2,6 +2,7 @@ package com.maxcar.market.dao;
 
 import com.maxcar.base.dao.BaseDao;
 import com.maxcar.market.model.request.DealRequest;
+import com.maxcar.market.model.request.GetAllTransactionRequest;
 import com.maxcar.market.model.request.SelectInvoice;
 import com.maxcar.market.model.response.DealResponse;
 import com.maxcar.market.model.response.InvoicePerson;
@@ -102,7 +103,7 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
 
     DealResponse selectRanking(@Param("tenantId") String tenantId, @Param("marketId") String marketId);
 
-    List<TradeInformation> detailsExcel(Invoice invoice);
+    List<TradeInformation> detailsExcel(GetAllTransactionRequest request);
 
     List<Invoice> selectInvoice2(SelectInvoice invoice);
 

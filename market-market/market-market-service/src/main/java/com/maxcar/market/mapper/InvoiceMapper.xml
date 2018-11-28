@@ -2725,12 +2725,21 @@
       AND i.bill_time BETWEEN '2010-01-01' AND #{dealTimeEnd}		-- 交易时间
     </if>
     AND i.invoice_status = 2
+    <if test="tradingType != null and tradingType != ''">
+      AND i.trading_type = #{tradingType}
+   </if>
+  <if test="transferType != null and transferType != ''">
+      AND i.transfer_type = #{transferType}
+  </if>
     <if test="carSources != null and carSources != ''">
       AND i.car_sources = #{carSources}
     </if>
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+    <if test="contactName != null and contactName != ''">
+    WHERE  t.contact_name = #{contactName}
+    </if>
     ORDER BY ii.i_time DESC
     )  as  dd
   </select>
@@ -2989,12 +2998,21 @@
       AND i.bill_time BETWEEN '2010-01-01' AND #{dealTimeEnd}		-- 交易时间
     </if>
     AND i.invoice_status = 2
+    <if test="tradingType != null and tradingType != ''">
+        AND i.trading_type = #{tradingType}
+    </if>
+  <if test="transferType != null and transferType != ''">
+      AND i.transfer_type = #{transferType}
+  </if>
     <if test="carSources != null and carSources != ''">
       AND i.car_sources = #{carSources}
     </if>
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+    <if test="contactName != null and contactName != ''">
+    WHERE  t.contact_name = #{contactName}
+    </if>
     ORDER BY ii.i_time DESC
       ) as  dd
   </select>
@@ -4029,7 +4047,7 @@ FROM
   </select>
 
   <!--开票管理所有信息-->
-  <select id="detailsExcel" parameterType="com.maxcar.market.pojo.Invoice" resultMap="TradeInformationMap">
+  <select id="detailsExcel" parameterType="com.maxcar.market.model.request.GetAllTransactionRequest" resultMap="TradeInformationMap">
     SELECT
     iv.purchacer_name,
     (CASE iv.purchacer_type
@@ -4133,34 +4151,17 @@ FROM
       and i.market_id = #{marketId}
     </if>
     <if test="purchacerName != null and purchacerName != '' ">
-      and i.purchacer_name = #{purchacerName}
+      and i.purchacer_name like #{purchacerName}
     </if>
-      <if test="userId != null and userId != '' ">
-          and i.user_id = #{userId}
-      </if>
     <if test="sellerName != null and sellerName != '' ">
-      and i.seller_name = #{sellerName}
-    </if>
-    <if test="invoiceNo != null and invoiceNo != '' ">
-      and i.invoice_no = #{invoiceNo}
+      and i.seller_name like #{sellerName}
     </if>
     <if test="billTimeStart != null and billTimeStart !=''">
-      and <![CDATA[ date_format(#{billTimeStart},'%Y-%m-%d') <= i.bill_time]]>
-    </if>
-    <if test="billTimeEnd !=null and billTimeEnd !=''">
-        and <![CDATA[ date_format(#{billTimeEnd},'%Y-%m-%d') >= i.bill_time]]>
-    </if>
-    <if test="invoicePortof != null  ">
-      and i.invoice_portof = #{invoicePortof}
-    </if>
-    <if test="invoiceStatus != null">
-      and i.invoice_status = #{invoiceStatus}
-    </if>
-    <if test="carSources != null">
-      and i.car_sources = #{carSources}
+      and i.bill_time BETWEEN #{billTimeStart} and #{billTimeEnd}
     </if>
     ) iv LEFT JOIN maxcar_user_l.market m
     ON iv.market_id = m.market_no
+    order by iv.insert_time desc
   </select>
 
   <select id="selectByIdCard" resultType="com.maxcar.market.model.response.InvoicePerson"
