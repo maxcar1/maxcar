@@ -17,6 +17,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,11 +41,13 @@ import java.util.*;
  * 接收到已经发布的 QoS 1 或 QoS 2 消息的传递令牌时调用。
  * 由 MqttClient.connect 激活此回调。
  */
+@Component
 public class PushCallback implements MqttCallback {
 
     SimpleDateFormat fmt1= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    private String keepPath = "/data/parking/image";
+    @Value("${keep.image.path}")
+    private String keepPath;
 
     public PushCallback() {
 
@@ -268,7 +272,9 @@ public class PushCallback implements MqttCallback {
         if (null != barrierCameras && barrierCameras.size() > 0){
             BarrierCamera camera = barrierCameras.get(0);
             camera.setPath(keepPath);
+            //windows环境
             Map map = HikvisionService.requestDll(camera);
+            //Map map = HikvisionService.requestDll(camera);
             boolean result = (Boolean) map.get("result");
             if (result){
                 File file = new File(String.valueOf(map.get("imageName")));

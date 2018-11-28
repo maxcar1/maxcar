@@ -43,7 +43,7 @@ public class DownloadData {
                 String doPutJson = HttpClientUtil.get(url, null,null);
 //                result = JsonTools.toObj(doPutJson,InterfaceResult.class);
             } else{
-                String doPostJson = HttpClientUtils.doPostJson(url, postParam.getData());
+                String doPostJson = HttpClientUtils.doPostJson(url, String.valueOf(postParam.getData()));
                 logger.info("服务器返回结果--{}", doPostJson);
                 result = JsonTools.toObj(doPostJson.toString(),InterfaceResult.class);
             }
