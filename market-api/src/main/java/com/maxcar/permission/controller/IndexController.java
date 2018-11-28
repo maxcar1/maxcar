@@ -6,8 +6,10 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Province;
 import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.ProvinceService;
+import com.maxcar.base.util.JsonTools;
 import com.maxcar.base.util.UuidUtils;
 import com.maxcar.common.gecco.JiangsuLicence;
+import com.maxcar.common.gecco.JiangsuResult;
 import com.maxcar.redis.service.SsoService;
 import com.maxcar.user.entity.OperationRecord;
 import com.maxcar.user.entity.User;
@@ -247,6 +249,7 @@ public class IndexController extends BaseController{
         InterfaceResult interfaceResult = new InterfaceResult();
         interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
         if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
             return interfaceResult;
         }
         switch (province){
@@ -255,6 +258,9 @@ public class IndexController extends BaseController{
                 break;
         }
         interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
+        }
         return interfaceResult;
     }
     class OssBean{
