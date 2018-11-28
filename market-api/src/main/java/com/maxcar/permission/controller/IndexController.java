@@ -242,7 +242,7 @@ public class IndexController extends BaseController{
      * @return
      * @throws Exception
      */
-    @RequestMapping(value={"/api/business/licence/{province}/{org}/{id}/{seqId}"})
+    @RequestMapping(value={"/business/licence/{province}/{org}/{id}/{seqId}"})
     public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,@PathVariable("id")String id,@PathVariable("seqId")String seqId,HttpServletRequest request)throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
