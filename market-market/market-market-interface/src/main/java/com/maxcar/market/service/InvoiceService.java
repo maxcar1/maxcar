@@ -1,7 +1,6 @@
 package com.maxcar.market.service;
 
 import com.github.pagehelper.PageInfo;
-import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.market.model.request.GetAllTransactionRequest;
 import com.maxcar.market.model.response.InvoicePerson;
@@ -32,5 +31,5 @@ public interface InvoiceService extends BaseService<Invoice, String> {
 
     List<InvoicePerson> getInvoicePerson(String idCard, String marketId);
 
-
+    List deakManageExcel(Invoice invoice);
 }
