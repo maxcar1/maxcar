@@ -117,8 +117,6 @@ public class PushCallback implements MqttCallback {
                             //    ServerMQTT serverMQTT = new ServerMQTT();
                                 ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
                                 serverMQTT.start();
-                                serverMQTT.exit = true;
-                                serverMQTT.join();
                                 logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
                              //   serverMQTT.send(b, barrier.getMqttTopic());
                             }
@@ -132,8 +130,7 @@ public class PushCallback implements MqttCallback {
                                     logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
                                     ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
                                     serverMQTT.start();
-                                    serverMQTT.exit = true;
-                                    serverMQTT.join();
+
                                 //    serverMQTT.send(b, barrier.getMqttTopic());
                                 }
                             }

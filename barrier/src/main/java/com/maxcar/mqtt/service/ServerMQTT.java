@@ -33,8 +33,6 @@ public class ServerMQTT extends Thread{
     private byte[] data;
     private String topic;
 
-    public volatile boolean exit = false;
-
     private static Lock lock = new ReentrantLock();
 
     public ServerMQTT(String topic,byte[] data)throws MqttException{
@@ -199,8 +197,6 @@ public class ServerMQTT extends Thread{
 
     @Override
     public void run() {
-        while(!exit){
-            this.send(data,topic);
-        }
+        this.send(data,topic);
     }
 }
