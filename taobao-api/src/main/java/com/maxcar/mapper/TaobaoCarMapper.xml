@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.service.TaobaoCarMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.entity.TaobaoCar" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+    <result column="brand_pid" property="brandPid" jdbcType="VARCHAR" />
+    <result column="brand_vid" property="brandVid" jdbcType="VARCHAR" />
+    <result column="series_name" property="seriesName" jdbcType="VARCHAR" />
+    <result column="series_pid" property="seriesPid" jdbcType="VARCHAR" />
+    <result column="series_vid" property="seriesVid" jdbcType="VARCHAR" />
+    <result column="year_name" property="yearName" jdbcType="VARCHAR" />
+    <result column="year_pid" property="yearPid" jdbcType="VARCHAR" />
+    <result column="year_vid" property="yearVid" jdbcType="VARCHAR" />
+    <result column="model_name" property="modelName" jdbcType="VARCHAR" />
+    <result column="model_pid" property="modelPid" jdbcType="VARCHAR" />
+    <result column="model_vid" property="modelVid" jdbcType="VARCHAR" />
+    <result column="ali_value" property="aliValue" jdbcType="VARCHAR" />
+    <result column="ali_code" property="aliCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, brand_name, brand_pid, brand_vid, series_name, series_pid, series_vid, year_name, 
+    year_pid, year_vid, model_name, model_pid, model_vid, ali_value, ali_code
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from taobao_car
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from taobao_car
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.entity.TaobaoCar" >
+    insert into taobao_car (id, brand_name, brand_pid, 
+      brand_vid, series_name, series_pid, 
+      series_vid, year_name, year_pid, 
+      year_vid, model_name, model_pid, 
+      model_vid, ali_value, ali_code
+      )
+    values (#{id,jdbcType=INTEGER}, #{brandName,jdbcType=VARCHAR}, #{brandPid,jdbcType=VARCHAR}, 
+      #{brandVid,jdbcType=VARCHAR}, #{seriesName,jdbcType=VARCHAR}, #{seriesPid,jdbcType=VARCHAR}, 
+      #{seriesVid,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR}, #{yearPid,jdbcType=VARCHAR}, 
+      #{yearVid,jdbcType=VARCHAR}, #{modelName,jdbcType=VARCHAR}, #{modelPid,jdbcType=VARCHAR}, 
+      #{modelVid,jdbcType=VARCHAR}, #{aliValue,jdbcType=VARCHAR}, #{aliCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.entity.TaobaoCar" >
+    insert into taobao_car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="brandName != null" >
+        brand_name,
+      </if>
+      <if test="brandPid != null" >
+        brand_pid,
+      </if>
+      <if test="brandVid != null" >
+        brand_vid,
+      </if>
+      <if test="seriesName != null" >
+        series_name,
+      </if>
+      <if test="seriesPid != null" >
+        series_pid,
+      </if>
+      <if test="seriesVid != null" >
+        series_vid,
+      </if>
+      <if test="yearName != null" >
+        year_name,
+      </if>
+      <if test="yearPid != null" >
+        year_pid,
+      </if>
+      <if test="yearVid != null" >
+        year_vid,
+      </if>
+      <if test="modelName != null" >
+        model_name,
+      </if>
+      <if test="modelPid != null" >
+        model_pid,
+      </if>
+      <if test="modelVid != null" >
+        model_vid,
+      </if>
+      <if test="aliValue != null" >
+        ali_value,
+      </if>
+      <if test="aliCode != null" >
+        ali_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="brandName != null" >
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandPid != null" >
+        #{brandPid,jdbcType=VARCHAR},
+      </if>
+      <if test="brandVid != null" >
+        #{brandVid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesName != null" >
+        #{seriesName,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesPid != null" >
+        #{seriesPid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesVid != null" >
+        #{seriesVid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearName != null" >
+        #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="yearPid != null" >
+        #{yearPid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearVid != null" >
+        #{yearVid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null" >
+        #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelPid != null" >
+        #{modelPid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelVid != null" >
+        #{modelVid,jdbcType=VARCHAR},
+      </if>
+      <if test="aliValue != null" >
+        #{aliValue,jdbcType=VARCHAR},
+      </if>
+      <if test="aliCode != null" >
+        #{aliCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.entity.TaobaoCar" >
+    update taobao_car
+    <set >
+      <if test="brandName != null" >
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandPid != null" >
+        brand_pid = #{brandPid,jdbcType=VARCHAR},
+      </if>
+      <if test="brandVid != null" >
+        brand_vid = #{brandVid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesName != null" >
+        series_name = #{seriesName,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesPid != null" >
+        series_pid = #{seriesPid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesVid != null" >
+        series_vid = #{seriesVid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearName != null" >
+        year_name = #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="yearPid != null" >
+        year_pid = #{yearPid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearVid != null" >
+        year_vid = #{yearVid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null" >
+        model_name = #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelPid != null" >
+        model_pid = #{modelPid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelVid != null" >
+        model_vid = #{modelVid,jdbcType=VARCHAR},
+      </if>
+      <if test="aliValue != null" >
+        ali_value = #{aliValue,jdbcType=VARCHAR},
+      </if>
+      <if test="aliCode != null" >
+        ali_code = #{aliCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.entity.TaobaoCar" >
+    update taobao_car
+    set brand_name = #{brandName,jdbcType=VARCHAR},
+      brand_pid = #{brandPid,jdbcType=VARCHAR},
+      brand_vid = #{brandVid,jdbcType=VARCHAR},
+      series_name = #{seriesName,jdbcType=VARCHAR},
+      series_pid = #{seriesPid,jdbcType=VARCHAR},
+      series_vid = #{seriesVid,jdbcType=VARCHAR},
+      year_name = #{yearName,jdbcType=VARCHAR},
+      year_pid = #{yearPid,jdbcType=VARCHAR},
+      year_vid = #{yearVid,jdbcType=VARCHAR},
+      model_name = #{modelName,jdbcType=VARCHAR},
+      model_pid = #{modelPid,jdbcType=VARCHAR},
+      model_vid = #{modelVid,jdbcType=VARCHAR},
+      ali_value = #{aliValue,jdbcType=VARCHAR},
+      ali_code = #{aliCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+   <select id="getTaobaoCar" resultMap="BaseResultMap" parameterType="com.maxcar.entity.TaobaoCar" >
+    select 
+    <include refid="Base_Column_List" />
+    from taobao_car
+    where brand_pid = #{brandPid,jdbcType=VARCHAR}
+    <if test="brandName != null and brandName != '' ">
+    	and brand_name = #{brandName,jdbcType=VARCHAR}
+    </if>
+    <!-- <if test="seriesName != null and seriesName != '' ">
+    	and series_name = #{seriesName,jdbcType=VARCHAR}
+    </if> -->
+    <if test="seriesName != null and seriesName != '' ">
+    	and series_name like concat('%',#{seriesName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="yearName != null and yearName != '' ">
+    	and year_name like concat('%',#{yearName,jdbcType=VARCHAR},'%')
+    </if>
+    
+  </select>
+  <select id="selectPackageid" parameterType="String" resultType="String">
+  select taobao_shop_id from taobao_shop where taobao_shop_name like concat('%',#{string},'%') limit 0,1
+  </select>
+</mapper>
