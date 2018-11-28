@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.service.TaobaoItemValuesMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.entity.TaobaoItemValues" >
+    <id column="pid" property="pid" jdbcType="VARCHAR" />
+    <id column="vid" property="vid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pidname" property="pidname" jdbcType="VARCHAR" />
+    <result column="cid" property="cid" jdbcType="VARCHAR" />
+    <result column="isparent" property="isparent" jdbcType="BIT" />
+    <result column="parentvid" property="parentvid" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pid, vid, name, pidname, cid, isparent, parentvid, level
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.maxcar.entity.TaobaoItemValuesKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from taobao_item_values
+    where pid = #{pid,jdbcType=VARCHAR}
+      and vid = #{vid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.maxcar.entity.TaobaoItemValuesKey" >
+    delete from taobao_item_values
+    where pid = #{pid,jdbcType=VARCHAR}
+      and vid = #{vid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.entity.TaobaoItemValues" >
+    insert into taobao_item_values (pid, vid, name, 
+      pidname, cid, isparent, 
+      parentvid, level)
+    values (#{pid,jdbcType=VARCHAR}, #{vid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{pidname,jdbcType=VARCHAR}, #{cid,jdbcType=VARCHAR}, #{isparent,jdbcType=BIT}, 
+      #{parentvid,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.entity.TaobaoItemValues" >
+    insert into taobao_item_values
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="vid != null" >
+        vid,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="pidname != null" >
+        pidname,
+      </if>
+      <if test="cid != null" >
+        cid,
+      </if>
+      <if test="isparent != null" >
+        isparent,
+      </if>
+      <if test="parentvid != null" >
+        parentvid,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pid != null" >
+        #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="vid != null" >
+        #{vid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pidname != null" >
+        #{pidname,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null" >
+        #{cid,jdbcType=VARCHAR},
+      </if>
+      <if test="isparent != null" >
+        #{isparent,jdbcType=BIT},
+      </if>
+      <if test="parentvid != null" >
+        #{parentvid,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.entity.TaobaoItemValues" >
+    update taobao_item_values
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pidname != null" >
+        pidname = #{pidname,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null" >
+        cid = #{cid,jdbcType=VARCHAR},
+      </if>
+      <if test="isparent != null" >
+        isparent = #{isparent,jdbcType=BIT},
+      </if>
+      <if test="parentvid != null" >
+        parentvid = #{parentvid,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+    </set>
+    where pid = #{pid,jdbcType=VARCHAR}
+      and vid = #{vid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.entity.TaobaoItemValues" >
+    update taobao_item_values
+    set name = #{name,jdbcType=VARCHAR},
+      pidname = #{pidname,jdbcType=VARCHAR},
+      cid = #{cid,jdbcType=VARCHAR},
+      isparent = #{isparent,jdbcType=BIT},
+      parentvid = #{parentvid,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER}
+    where pid = #{pid,jdbcType=VARCHAR}
+      and vid = #{vid,jdbcType=VARCHAR}
+  </update>
+  <select id="getTaobaoItemValues" resultMap="BaseResultMap" parameterType="com.maxcar.entity.TaobaoItemValues" >
+    select 
+    <include refid="Base_Column_List" />
+    from taobao_item_values
+    where 1=1 
+    <if test="pid != null and pid !='' ">
+	    and pid = #{pid,jdbcType=VARCHAR}
+    </if>
+    <if test="vid != null and vid !=''">
+      and vid = #{vid,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null and name !=''">
+      and name like concat('%',#{name,jdbcType=VARCHAR},'%')
+    </if>
+    limit 1
+  </select>
+</mapper>
