@@ -41,7 +41,7 @@ public class JiangsuLicence implements HtmlBean {
     }
     public static void main(String[] rags) {
 //        JiangsuLicence jiangsuLicence = new JiangsuLicence();
-        JiangsuLicence.start("A0AB1ABD7CFAD0B643A5A419F4A97EB5","7063B11961E5FC38226091EE9BA57CDB","5A161887E1CAC8F545759E75360701AF");
+        JiangsuLicence.start("1","7063B11961E5FC38226091EE9BA57CDB","5A161887E1CAC8F545759E75360701AF");
     }
 
 
@@ -56,7 +56,7 @@ public class JiangsuLicence implements HtmlBean {
     /**
      * ajax获取商品价格
      */
-    @Ajax(url="http://www.jsgsj.gov.cn:58888/ecipplatform/publicInfoQueryServlet.json?pageView=true&org=A0AB1ABD7CFAD0B643A5A419F4A97EB5&id=7063B11961E5FC38226091EE9BA57CDB&seqId=5A161887E1CAC8F545759E75360701AF&abnormal=&activeTabId=&tmp=98")
+    @Ajax(url="http://www.jsgsj.gov.cn:58888/ecipplatform/publicInfoQueryServlet.json?pageView=true&org={org}&id={id}&seqId={seqId}&abnormal=&activeTabId=&tmp=98")
     private JiangsuResult result;
 
 

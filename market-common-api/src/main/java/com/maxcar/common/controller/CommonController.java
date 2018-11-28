@@ -127,12 +127,16 @@ public class CommonController {
     @RequestMapping(value={"/api/business/licence/{province}/{org}/{id}/{seqId}"})
     public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,@PathVariable("id")String id,@PathVariable("seqId")String seqId,HttpServletRequest request)throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
+        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            return interfaceResult;
+        }
         switch (province){
             case "jiangsu"://江苏省
                 JiangsuLicence.start(org,id,seqId);
                 break;
         }
-        interfaceResult.InterfaceResult200(ssoService.getStringKey(org+"="+id+"="+seqId));
+        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
         return interfaceResult;
     }
     class OssBean{
