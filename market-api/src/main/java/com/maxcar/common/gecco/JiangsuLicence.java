@@ -1,15 +1,14 @@
 package com.maxcar.common.gecco;
 
 import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.annotation.*;
+import com.geccocrawler.gecco.annotation.Ajax;
+import com.geccocrawler.gecco.annotation.Gecco;
+import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
-import com.maxcar.base.util.JsonTools;
-import com.maxcar.common.ApplicationContextHolder;
-import com.maxcar.common.gecco.JiangsuResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import  org.reflections.Reflections;
+
 /**
  * 江苏省
  * 开票获取营业执照接口，对外公开
@@ -41,7 +40,7 @@ public class JiangsuLicence implements HtmlBean {
     }
     public static void main(String[] rags) {
 //        JiangsuLicence jiangsuLicence = new JiangsuLicence();
-        JiangsuLicence.start("1","7063B11961E5FC38226091EE9BA57CDB","5A161887E1CAC8F545759E75360701AF");
+        JiangsuLicence.start("F535388F0BB960F95173C365A0D94436","6C8B64495B4985DB13D95E1209C8BEAF","CEC253DCFA04E08F78DCC26ED9EA4602");
     }
 
 

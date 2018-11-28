@@ -4,6 +4,7 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Province;
 import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.ProvinceService;
+import com.maxcar.base.util.JsonTools;
 import com.maxcar.common.gecco.JiangsuLicence;
 import com.maxcar.common.gecco.JiangsuResult;
 import com.maxcar.redis.service.SsoService;
@@ -127,12 +128,20 @@ public class CommonController {
     @RequestMapping(value={"/api/business/licence/{province}/{org}/{id}/{seqId}"})
     public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,@PathVariable("id")String id,@PathVariable("seqId")String seqId,HttpServletRequest request)throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
+        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
+            return interfaceResult;
+        }
         switch (province){
             case "jiangsu"://江苏省
                 JiangsuLicence.start(org,id,seqId);
                 break;
         }
-        interfaceResult.InterfaceResult200(ssoService.getStringKey(org+"="+id+"="+seqId));
+        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
+        }
         return interfaceResult;
     }
     class OssBean{
