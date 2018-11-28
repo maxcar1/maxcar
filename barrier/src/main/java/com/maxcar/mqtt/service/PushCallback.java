@@ -130,6 +130,7 @@ public class PushCallback implements MqttCallback {
                                     logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
                                     ServerMQTT serverMQTT = new ServerMQTT(barrier.getMqttTopic(),b);
                                     serverMQTT.start();
+
                                 //    serverMQTT.send(b, barrier.getMqttTopic());
                                 }
                             }

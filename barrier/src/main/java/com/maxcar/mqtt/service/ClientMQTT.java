@@ -66,7 +66,7 @@ public class ClientMQTT{
             //设置道闸在线
 //            isOnline = true;
             //订阅消息
-            int[] Qos = {Canstats.qos2};
+            int[] Qos = {Canstats.qos1};
             String[] topic1 = {topic};
             client.subscribe(topic1, Qos);
             logger.info("已建立连接，监听" + topic);

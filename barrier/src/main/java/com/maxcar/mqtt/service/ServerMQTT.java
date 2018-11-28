@@ -163,7 +163,7 @@ public class ServerMQTT extends Thread{
             ServerMQTT server = new ServerMQTT();
             server.init(topic);
             server.message = new MqttMessage();
-            server.message.setQos(Canstats.qos2);  //保证消息能到达一次
+            server.message.setQos(Canstats.qos1);  //保证消息能到达一次
             server.message.setRetained(false);//是否保持连接，客户端会适时发送
             server.message.setPayload(PushCallback.toBytes(outParam));
             logger.info(outParam + "------发送数据");
@@ -183,7 +183,7 @@ public class ServerMQTT extends Thread{
 //            topic11 = client.getTopic((topic == null || topic.equals("")) ? TOPIC : topic);
             this.init(topic);
             this.message = new MqttMessage();
-            this.message.setQos(Canstats.qos2);  //保证消息能到达一次
+            this.message.setQos(Canstats.qos1);  //保证消息能到达一次
             this.message.setRetained(false);//是否保持连接，客户端会适时发送
             this.message.setPayload(data);
             this.publish(this.message,topic);
@@ -191,19 +191,12 @@ public class ServerMQTT extends Thread{
         }catch (Exception ex){
             ex.printStackTrace();
         }finally {
-            /*try {
-                client.close();
-            }catch (MqttException e){
-                e.printStackTrace();
-            }*/
             lock.unlock();
         }
     }
 
     @Override
     public void run() {
-        synchronized (this){
-            this.send(data,topic);
-        }
+        this.send(data,topic);
     }
 }
