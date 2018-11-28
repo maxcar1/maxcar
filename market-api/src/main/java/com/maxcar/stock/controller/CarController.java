@@ -145,7 +145,19 @@ public class CarController extends BaseController {
             InventoryStatisticalRequest inventoryStatisticalRequest = new InventoryStatisticalRequest();
             inventoryStatisticalRequest.setMarketId(user.getMarketId());
             inventoryStatisticalRequest.setTenantId(carVo.getTenant());
-
+            String registerTimeStart = carVo.getRegisterTimeStart();
+            if(StringUtil.isNotEmpty(registerTimeStart)){
+                inventoryStatisticalRequest.setRegisterTimeStart(registerTimeStart);
+                String registerTimeEnd = carVo.getRegisterTimeEnd();
+                Date date = DateUtils.parseDate(registerTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+                Date dayEnd = DateUtils.getDayEnd(date);
+                String s = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATETIME);
+                inventoryStatisticalRequest.setRegisterTimeEnd(s);
+            }
+            Integer stockStatus = carVo.getStockStatus();
+            if(stockStatus != null && stockStatus != 0){
+                inventoryStatisticalRequest.setStockStatus(stockStatus);
+            }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
             m.put("InventoryStatisticalResponse", response);
         }
@@ -219,7 +231,7 @@ public class CarController extends BaseController {
                 response.setRegisterTime(Magic.NUll);
             } else {
                 // response.setStockDay(String.valueOf(DatePoor.getDatePoorDay(new Date(), x.getRegisterTime())));
-                response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
+                response.setRegisterTime(DatePoor.getStringForDateByFormat(x.getRegisterTime(),"yyyy-MM-dd"));
             }
 
             response.setStockDay(x.getStockDays().toString());
@@ -442,9 +454,11 @@ public class CarController extends BaseController {
         Properties prop = new Properties();
         CarInfo carInfo = new CarInfo();
 
-        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
+//        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
 
         prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+
+        String sell_cid = prop.getProperty("sellCid");
         String url = prop.getProperty("taobaoApiUrl");
         String taobaoUrl = prop.getProperty("taobaoUrl");
         String carId = params.getString("id");
@@ -458,11 +472,12 @@ public class CarController extends BaseController {
             interfaceResult.InterfaceResult600("查无此车");
             return interfaceResult;
         }
+        carInfo.setAttribution(prop.getProperty("cityNumByMarketId" + carInfo.getMarket_id()));
         sell_cid += "," + carInfo.getBrand_code();
-        if ("010".equals(carInfo.getMarket_id())) {
-            //针对玉林市场
-            carInfo.setAttribution("450900");
-        }
+//        if ("010".equals(carInfo.getMarket_id())) {
+//            //针对玉林市场
+//            carInfo.setAttribution("450900");
+//        }
         if (carInfo.getModel_name() != null && !"".equals(carInfo.getModel_name()) && carInfo.getModel_name().contains("款")) {
             //获取modelYear 为空不能上传
             carInfo.setModel_year(carInfo.getModel_name().substring(carInfo.getModel_name().indexOf("款") - 4, carInfo.getModel_name().indexOf("款") + 1));

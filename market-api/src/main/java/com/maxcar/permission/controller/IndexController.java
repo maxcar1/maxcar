@@ -6,9 +6,11 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Province;
 import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.ProvinceService;
+import com.maxcar.base.util.JsonTools;
 import com.maxcar.base.util.UuidUtils;
+import com.maxcar.common.gecco.JiangsuLicence;
+import com.maxcar.common.gecco.JiangsuResult;
 import com.maxcar.redis.service.SsoService;
-import com.maxcar.user.entity.Configuration;
 import com.maxcar.user.entity.OperationRecord;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.service.OperationRecordService;
@@ -230,6 +232,35 @@ public class IndexController extends BaseController{
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = super.getCurrentUser(request);
         interfaceResult.InterfaceResult200(cityService.getCityById(id));
+        return interfaceResult;
+    }
+
+    /**
+     * 获取营业执照接口
+     * @param org 机构id
+     * @param id
+     * @param seqId
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value={"/business/licence/{province}/{org}/{id}/{seqId}"})
+    public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,@PathVariable("id")String id,@PathVariable("seqId")String seqId,HttpServletRequest request)throws Exception {
+        InterfaceResult interfaceResult = new InterfaceResult();
+        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
+            return interfaceResult;
+        }
+        switch (province){
+            case "jiangsu"://江苏省
+                JiangsuLicence.start(org,id,seqId);
+                break;
+        }
+        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
+            interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
+        }
         return interfaceResult;
     }
     class OssBean{
