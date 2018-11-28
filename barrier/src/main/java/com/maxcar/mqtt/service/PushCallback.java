@@ -1,15 +1,10 @@
 package com.maxcar.mqtt.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.maxcar.barrier.pojo.Barrier;
-import com.maxcar.barrier.pojo.Car;
-import com.maxcar.barrier.pojo.CarRecord;
-import com.maxcar.barrier.pojo.InterfaceResult;
-import com.maxcar.barrier.service.ApplicationContextHolder;
-import com.maxcar.barrier.service.BarrierService;
-import com.maxcar.barrier.service.CarRecordService;
-import com.maxcar.barrier.service.CarService;
+import com.maxcar.barrier.pojo.*;
+import com.maxcar.barrier.service.*;
 import com.maxcar.base.util.StringUtils;
+import com.maxcar.hikvision.service.HikvisionService;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.util.CRC16M;
 import com.maxcar.util.Canstats;
@@ -23,11 +18,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 发布消息的回调类
@@ -48,6 +42,8 @@ import java.util.Map;
 public class PushCallback implements MqttCallback {
 
     SimpleDateFormat fmt1= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+    private String keepPath = "/data/parking/image";
 
     public PushCallback() {
 
@@ -134,19 +130,33 @@ public class PushCallback implements MqttCallback {
                             }
                         } else if (codeType.equals("07")) {//ic卡处理
                             //截取卡号10位数
-                            //4d43002701 070c05d4ff 373438594d 430353595b 851b5e0001 0001ffff00 060704 006f 1e23 7327
-                            //4d43002801070c05d4ff373438594d430353595ba1b84200010001ffff00060705 0007275536 3139
-                            //05d4ff3734
                             String cardNo16 = clientData.substring(66, 76);
-                            //    Integer cardNo = Integer.valueOf(cardNo16, 16);
-                            //    String cardNoStr = String.format("%0" + 10 + "d", cardNo);
                             logger.info("道闸发送的卡号:{}", cardNo16);
-                            uploadRequestCloud(barrier, cardNo16);
-                            /*outParam = openDzByCardNo(clientData,result);
-                            byte b[] = toBytes(outParam);
-                            ServerMQTT serverMQTT = new ServerMQTT();
-                            logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                            serverMQTT.send(b, barrier.getMqttTopic());*/
+                            doCard(barrier,cardNo16);
+                         //   uploadRequestCloud(barrier, cardNo16);
+                        }else if (codeType.equals("08")){
+                            //微信unionid处理
+                            //根据硬件发过来的判断
+                            String key = clientData.substring(64,66);
+                            Integer keyLen = Integer.valueOf(key,16) * 2;
+                            String id = clientData.substring(66,66 + keyLen);
+                            logger.info("道闸发送的unionid或者key:{}", HexUtils.convertHexToString(id));
+                            switch (barrier.getInOutType()){
+                                case 0:
+                                    uploadRequestCloudIn(barrier, id,1);
+                                    break;
+                                case 1:
+                                    uploadRequestCloudOut(barrier,id,1);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }else if (codeType.equals("09")){
+                            //刷卡出场回执asc ii码
+                            String key1 = clientData.substring(64,66);
+                            Integer keyLen1 = Integer.valueOf(key1,16) * 2;
+                            String cardNo = clientData.substring(66,66 + keyLen1);
+                            doCard(barrier,HexUtils.convertHexToString(cardNo));
                         }
                     }
                 }else {
@@ -191,6 +201,94 @@ public class PushCallback implements MqttCallback {
             ex.printStackTrace();
         }
     }
+
+
+    private void doCard(Barrier barrier,String cardNo16) throws Exception{
+        logger.info("道闸发送的卡号:{}", cardNo16);
+        switch (barrier.getInOutType()){
+            case 0:
+                //入口
+                uploadRequestCloudIn(barrier, cardNo16,0);
+                break;
+            case 1:
+                //出口
+                uploadRequestCloudOut(barrier, cardNo16,0);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void uploadRequestCloudOut(Barrier barrier, String key,int type) throws Exception {
+        //刷卡开闸,扫码上行
+        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
+        //组装云端参数
+        PostParam postParam = new PostParam();
+        postParam.setMarket(barrier.getMarketId());
+        StringBuilder url = new StringBuilder();
+        url.append("/api-p/wx/out/");
+        url.append(key);
+        url.append("/");
+        url.append(barrier.getBarrierId());
+        url.append("/");
+        //0 刷卡  1 微信上行的key
+        url.append(type);
+        url.append("/");
+        url.append(barrier.getMarketId());
+        postParam.setUrl(url.toString());
+        postParam.setOnlySend(false);
+        postParam.setMethod("get");
+        postParam.setMessageTime(Canstats.dateformat.format(new Date()));
+        logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
+        messageProducerService.sendMessage("-2",
+                JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+    }
+
+    private void uploadRequestCloudIn(Barrier barrier, String cardNo,int type) throws Exception{
+        //上传数据到云端
+        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
+        //组装云端参数
+        PostParam postParam = new PostParam();
+        postParam.setMarket(barrier.getMarketId());
+        StringBuilder url = new StringBuilder();
+        url.append("/api-p/wx/in/");
+        url.append(barrier.getMarketId());
+        url.append("/");
+        url.append(cardNo);
+        url.append("/");
+        url.append(barrier.getBarrierId());
+        url.append("/");
+        //0 刷卡  1 unionId
+        url.append(type);
+        BarrierCameraService barrierCameraService = ApplicationContextHolder.getBean("barrierCameraService");
+        BarrierCamera barrierCamera = new BarrierCamera();
+        barrierCamera.setBarrierId(barrier.getBarrierId());
+        barrierCamera.setMarketId(barrier.getMarketId());
+        List<BarrierCamera> barrierCameras = barrierCameraService.selectCameraByBarrierId(barrierCamera);
+        if (null != barrierCameras && barrierCameras.size() > 0){
+            BarrierCamera camera = barrierCameras.get(0);
+            camera.setPath(keepPath);
+            Map map = HikvisionService.requestDll(camera);
+            boolean result = (Boolean) map.get("result");
+            if (result){
+                File file = new File(String.valueOf(map.get("imageName")));
+                FileInputStream fis = new FileInputStream(file);
+                postParam.setData(fis);
+                postParam.setUrl(url.toString());
+                postParam.setOnlySend(false);
+                postParam.setMethod("camera-get");
+                postParam.setMessageTime(Canstats.dateformat.format(new Date()));
+                logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
+                messageProducerService.sendMessage("-2",
+                        JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+            }else{
+                logger.info("====摄像机抓拍失败====");
+            }
+        }else{
+            logger.info("======请检查摄像机配置表====");
+        }
+    }
+
     //刷卡开闸
     private String openDzByCardNo(String clientData,InterfaceResult result) throws Exception {
         //拼接欢迎词

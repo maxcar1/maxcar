@@ -419,7 +419,8 @@ public class WeiXinServiceImpl implements WeiXinService {
         return urlStr.toString();
     }
 
-    private String cacheTokenInRedis(String appId, String appSecret, String key) throws Exception {
+    @Override
+    public String cacheTokenInRedis(String appId, String appSecret, String key) throws Exception {
         String aToken = "";
         String accessToken = redisService.get(appId + "_" + key);
         logger.info("accessToken==>{}", accessToken);
@@ -576,8 +577,8 @@ public class WeiXinServiceImpl implements WeiXinService {
         }
     }
 
-
-    private UserInfo getUserInfo(String openId, String appId, String appSecret, String key) throws Exception {
+    @Override
+    public UserInfo getUserInfo(String openId, String appId, String appSecret, String key) throws Exception {
         String token = cacheTokenInRedis(appId, appSecret, key);
         StringBuilder userUrl = new StringBuilder(userInfoUrl);
         if (StringUtils.isNotBlank(token)) {
@@ -853,7 +854,8 @@ public class WeiXinServiceImpl implements WeiXinService {
         return result;
     }
 
-    private String doResponseByPaiBo(ReceiveXmlEntity receiveXmlEntity, int type, JSONObject parking) throws Exception {
+    @Override
+    public String doResponseByPaiBo(ReceiveXmlEntity receiveXmlEntity, int type, JSONObject parking) throws Exception {
         StringBuilder word = new StringBuilder();
         //派勃公众号出场,文本消息
         if (null != parking) {

@@ -2,7 +2,9 @@ package com.maxcar.weixin.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.base.util.wechat.ReceiveXmlEntity;
 import com.maxcar.base.util.wechat.WeiXinUtils;
+import com.maxcar.weixin.model.UserInfo;
 
 public interface WeiXinService {
     /**
@@ -42,4 +44,10 @@ public interface WeiXinService {
     InterfaceResult getJsApi() throws Exception;
 
     InterfaceResult escapeHatch(String marketId,String barrierId) throws Exception;
+
+    UserInfo getUserInfo(String openId, String appId, String appSecret, String key) throws Exception;
+
+    String doResponseByPaiBo(ReceiveXmlEntity receiveXmlEntity, int type, JSONObject parking) throws Exception;
+
+    String cacheTokenInRedis(String appId, String appSecret, String key) throws Exception;
 }

@@ -11,6 +11,9 @@ import com.maxcar.base.service.impl.BaseServiceImpl;
 import com.maxcar.base.util.*;
 import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.base.util.kafka.PostParam;
+import com.maxcar.base.util.wechat.ReceiveXmlEntity;
+import com.maxcar.base.util.wechat.ReceiveXmlProcess;
+import com.maxcar.base.util.wechat.WeiXinUtils;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.dao.ParkingFeeDetailMapper;
 import com.maxcar.market.dao.ParkingFeeIntegralMapper;
@@ -32,6 +35,10 @@ import com.maxcar.user.entity.User;
 import com.maxcar.user.service.OrganizationsService;
 import com.maxcar.user.service.StaffService;
 import com.maxcar.user.service.UserService;
+import com.maxcar.weixin.model.TargetMessage;
+import com.maxcar.weixin.model.Text;
+import com.maxcar.weixin.model.UserInfo;
+import com.maxcar.weixin.service.WeiXinService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +89,14 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
 
     @Autowired
     private BarrierService barrierService;
+
+    @Autowired
+    private WeiXinService weiXinService;
+    @Value("${paibo_app_id}")
+    private String paiboAppId;
+
+    @Value("${paibo_app_secret_weixin}")
+    private String paiboAppSecret;
 
     @Value("${kafka.producer.topic}")
     public String producerTopic;
@@ -369,28 +384,263 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
     }
 
     @Override
-    public InterfaceResult saveInParking(String marketId, String cardNo,String barrierId) throws Exception {
+    public InterfaceResult updateParkingDetail(String marketId, String key, String barrierId, Integer type) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        Barrier barrier = barrierService.selectByBarrierId(barrierId);
+        ParkingFeeDetail parkingFeeDetail = new ParkingFeeDetail();
+        parkingFeeDetail.setMarketId(marketId);
+        JSONObject json = new JSONObject();
+        switch (type){
+            case 0:
+                //刷卡
+                parkingFeeDetail.setCardNo(key);
+                ParkingFeeDetail parkingFeeDe = doCard(marketId,barrier,parkingFeeDetail);
+                json = (JSONObject)JSONObject.toJSON(parkingFeeDe);
+                json.put("type",5);
+                break;
+            case 1:
+                doWeixinEvent(key,barrier);
+                json.put("type",6);
+                break;
+            default:
+                break;
+        }
+        result.InterfaceResult200(json);
+        return result;
+    }
+
+    private ParkingFeeDetail doCard(String marketId,Barrier barrier,ParkingFeeDetail parkingFeeDetail) throws Exception{
+        Date endDate = Calendar.getInstance().getTime();
+        //获取当前卡号最早的一条记录
+        ParkingFeeDetail parkingFeeDe = parkingFeeDetailMapper.getRecordByCardNoOrUnionId(parkingFeeDetail);
+        parkingFeeDe.setAfterTime(endDate);
+        if (null != parkingFeeDe) {
+            // 判断该记录是否是会员记录
+            if (parkingFeeDe.getIsVip() == 1 && StringUtils.equals(marketId,"007")){
+                long l = endDate.getTime() - parkingFeeDe.getBeforeTime().getTime();
+                // 四小时以内直接开闸
+                if (l <= Constants.VIP_PARK_TIMEOUT){
+                    String hmsToString = DateUtils.getHMSToString(endDate, parkingFeeDe.getBeforeTime());
+                    BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
+                            parkingFeeDe.getBeforeTime(), endDate, marketId, 2);
+                    parkingFeeDe.setPrice(null == totalFee ? 0 : totalFee.intValue());
+                    parkingFeeDe.setReduction(totalFee.intValue());// 四小时以内会员减免和正常停车费用相同
+                    parkingFeeDe.setIntegral(0);
+                    parkingFeeDe.setAlreadyPaid(0);
+                    parkingFeeDe.setChargeFee(0);
+                    parkingFeeDe.setOverTimeFee(0);
+                    parkingFeeDe.setParkingTime(hmsToString);
+                    //0元开闸
+                    sendMessage(marketId, barrier, -1);
+                    return parkingFeeDe;
+                }else {
+                    // 超过四小时免费时间,缴过费
+                    if (null != parkingFeeDe.getPayTime()){
+                        long time = parkingFeeDe.getPayTime().getTime() + 15*60*1000 - endDate.getTime();
+                        ParkingFeeIntegral feeIntegral = parkingFeeIntegralMapper.selectIntegralByDetailId(parkingFeeDe.getId());
+                        if (time <= 0){
+                            // 未超出15分钟免费停留时间
+                            String hmsToString = DateUtils.getHMSToString(parkingFeeDe.getPayTime(), parkingFeeDe.getBeforeTime());
+                            BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
+                                    parkingFeeDe.getBeforeTime(), parkingFeeDe.getPayTime(), marketId, 2);
+                            parkingFeeDe.setPrice(null == totalFee ? 0 : totalFee.intValue());// 正常停车费
+                            parkingFeeDe.setParkingTime(hmsToString);
+                            parkingFeeDe.setReduction(20);
+                            if (null != feeIntegral){
+                                parkingFeeDe.setIntegral(null == feeIntegral.getIntegral()? 0 : feeIntegral.getIntegral());
+                                parkingFeeDe.setAlreadyPaid(null == feeIntegral.getPrice()? 0 : feeIntegral.getPrice());
+                            }
+                            parkingFeeDe.setChargeFee(0);
+                            parkingFeeDe.setOverTimeFee(0);
+                            //0元开闸
+                            sendMessage(marketId, barrier, -1);
+                            return parkingFeeDe;
+                        }else {
+                            // 超出15分钟免费停留时间
+                            String hmsToString = DateUtils.getHMSToString(endDate, parkingFeeDe.getBeforeTime());
+                            // 第一阶段产生的费用
+                            BigDecimal totalFee1 = parkingFeeRuleService.figureOutParkingFee(
+                                    parkingFeeDe.getBeforeTime(), parkingFeeDe.getPayTime(), marketId, 2);
+                            // 第二阶段产生的费用
+                            BigDecimal totalFee2 = parkingFeeRuleService.figureOutParkingFee(
+                                    parkingFeeDe.getBeforeTime(), parkingFeeDe.getPayTime(), marketId, 2,2);
+                            parkingFeeDe.setParkingTime(hmsToString);
+                            parkingFeeDe.setPrice(totalFee1.intValue()+totalFee2.intValue());
+                            parkingFeeDe.setReduction(20);
+                            if (null != feeIntegral){
+                                parkingFeeDe.setIntegral(null == feeIntegral.getIntegral()? 0 : feeIntegral.getIntegral());
+                                parkingFeeDe.setAlreadyPaid(null == feeIntegral.getPrice()? 0 : feeIntegral.getPrice());
+                            }
+                            // 超时时间
+                            Calendar c = Calendar.getInstance();
+                            c.setTimeInMillis(parkingFeeDe.getPayTime().getTime()+15*60*1000);
+                            parkingFeeDe.setOverTime(DateUtils.getHMSToString(endDate, c.getTime()));
+                            parkingFeeDe.setOverTimeFee(totalFee2.intValue());
+                            parkingFeeDe.setChargeFee(totalFee2.intValue());
+                            int type1 = parkingFeeDe.getChargeFee() == 0 ? -1 : parkingFeeDe.getChargeFee();
+                            //0元开闸
+                            sendMessage(marketId, barrier, type1);
+                            return parkingFeeDe;
+                        }
+                    }else {
+                        // 未缴过费
+                        String hmsToString = DateUtils.getHMSToString(endDate, parkingFeeDe.getBeforeTime());
+                        BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
+                                parkingFeeDe.getBeforeTime(), endDate, marketId, 2);
+                        parkingFeeDe.setPrice(null == totalFee ? 0 : totalFee.intValue());
+                        parkingFeeDe.setReduction(0);
+                        parkingFeeDe.setIntegral(0);
+                        parkingFeeDe.setAlreadyPaid(0);
+                        parkingFeeDe.setChargeFee(totalFee.intValue());
+                        parkingFeeDe.setOverTimeFee(0);
+                        parkingFeeDe.setParkingTime(hmsToString);
+                        int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
+                        //0元开闸
+                        sendMessage(marketId, barrier, type1);
+                        return parkingFeeDe;
+                    }
+
+                }
+
+            }else {
+                // 非会员
+                //取规则计算
+                BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
+                        parkingFeeDe.getBeforeTime(), endDate, marketId, 0);
+
+//            StringBuilder sb = new StringBuilder();
+//            Map map1 = DateUtils.getHMS(parkingFeeDe.getAfterTime(), parkingFeeDe.getBeforeTime());
+//            sb.append(map1.get("hour"));
+//            sb.append("小时");
+//            sb.append(map1.get("minute"));
+//            sb.append("分");
+//            sb.append(map1.get("second"));
+//            sb.append("秒");
+                String hmsToString = DateUtils.getHMSToString(parkingFeeDe.getAfterTime(), parkingFeeDe.getBeforeTime());
+                parkingFeeDe.setPrice(null == totalFee ? 0 : totalFee.intValue());// 正常停车费
+                parkingFeeDe.setParkingTime(hmsToString);
+                parkingFeeDe.setReduction(0);// 四小时以内会员减免和正常停车费用相同
+                parkingFeeDe.setIntegral(0);
+                parkingFeeDe.setAlreadyPaid(0);
+                parkingFeeDe.setChargeFee(totalFee.intValue());// 应收费用
+                parkingFeeDe.setOverTimeFee(0);
+                int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
+                //0元开闸
+                sendMessage(marketId, barrier, type1);
+            }
+        }
+        return parkingFeeDe;
+    }
+
+
+    private void doWeixinEvent(String key,Barrier barrier) throws Exception{
+        //扫码上行的key,根据key查询微信信息
+        String  returnXml = String.valueOf(redisService.get(key));
+        // 将xml数据转换为map
+        ReceiveXmlEntity receiveXmlEntity = ReceiveXmlProcess.getMsgEntity(returnXml);
+        ParkingFeeDetail detail = new ParkingFeeDetail();
+        String openId = receiveXmlEntity.getFromUserName();
+
+        UserInfo userInfo = weiXinService.getUserInfo(openId, paiboAppId, paiboAppSecret, "paibo");
+        String mark = receiveXmlEntity.getEventKey().replace("qrscene_", "").trim();
+        String[] market = mark.split("-");
+        detail.setUnionId(userInfo.getUnionid());
+        detail.setMarketId(market[0]);
+        ParkingFeeDetail parkingFeeDetail = selectInParkingRecord(detail);
+        if (null != parkingFeeDetail) {
+            //找到入场记录
+            Date afterTime = Calendar.getInstance().getTime();
+            parkingFeeDetail.setPayType(3);
+            //计算
+            BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
+                    parkingFeeDetail.getBeforeTime(), afterTime, parkingFeeDetail.getMarketId(), 0);
+
+            parkingFeeDetail.setPrice(null == totalFee ? 0 : totalFee.intValue());
+            parkingFeeDetail.setChargePrice(null == totalFee ? 0 : totalFee.intValue());
+            parkingFeeDetail.setAfterTime(afterTime);
+
+            if (parkingFeeDetail.getPrice() == 0){
+                //金额为0，更新所有数据
+                updateAfterTime(parkingFeeDetail);
+            }
+            //金额时间更新成功后,先微信对话框推送,再websocket推送
+
+            Map map1 = DateUtils.getHMS(parkingFeeDetail.getAfterTime(), parkingFeeDetail.getBeforeTime());
+            JSONObject parking = (JSONObject) JSONObject.toJSON(parkingFeeDetail);
+            parking.put("beforeTime", parkingFeeDetail.getBeforeTime().getTime());
+            parking.put("afterTime", parkingFeeDetail.getAfterTime().getTime());
+            parking.put("barrierId", barrier.getBarrierId());
+            parking.put("hour", map1.get("hour"));
+            parking.put("minute", map1.get("minute"));
+            parking.put("second", map1.get("second"));
+            String result = weiXinService.doResponseByPaiBo(receiveXmlEntity, 2, parking);
+            String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+            String accessToken = weiXinService.cacheTokenInRedis(paiboAppId,paiboAppSecret,"paibo");
+            String httpUrl = url.replace("ACCESS_TOKEN",accessToken);
+            Text text = new Text();
+            text.setContent(result);
+            TargetMessage targetMessage = new TargetMessage();
+            targetMessage.setMsgtype("text");
+            targetMessage.setTouser(openId);
+            targetMessage.setText(text);
+            String res = HttpClientUtils.sendPost(httpUrl,JSONObject.toJSONString(targetMessage));
+            logger.info("客服消息请求响应:{}",res);
+        }
+    }
+
+    @Override
+    public InterfaceResult saveInParking(JSONObject params) throws Exception {
+        String marketId = params.getString("marketId");
+        String num = params.getString("cardNo");
+        String barrierId = params.getString("barrierId");
+        String imageUrl = params.getString("imageUrl");
+        Integer type = params.getInteger("type");
         InterfaceResult result = new InterfaceResult();
         ParkingFeeDetail feeDetail = new ParkingFeeDetail();
         feeDetail.setMarketId(marketId);
-        feeDetail.setCardNo(cardNo);
+        String orderNo = WeiXinUtils.createOrderNo();
+        switch (type) {
+            case 0:
+                feeDetail.setCardNo(num);
+                break;
+            case 1:
+                feeDetail.setUnionId(num);
+                feeDetail.setCardNo(orderNo);
+                break;
+            default:
+                break;
+        }
         List<ParkingFeeDetail> details = parkingFeeDetailMapper.selectParkingFee(feeDetail);
         Barrier ba = barrierService.selectByBarrierId(barrierId);
-        if (null == details || details.size() == 0){
+        if (null == details || details.size() == 0) {
             ParkingFeeDetail detail = new ParkingFeeDetail();
             detail.setId(UuidUtils.generateIdentifier());
             detail.setBeforeTime(Calendar.getInstance().getTime());
-            detail.setCardNo(cardNo);
+
+            switch (type) {
+                case 0:
+                    detail.setInType(1);
+                    detail.setCardNo(num);
+                    break;
+                case 1:
+                    detail.setInType(0);
+                    detail.setCardNo(orderNo);
+                    detail.setUnionId(num);
+                    break;
+                default:
+                    break;
+            }
             detail.setMarketId(marketId);
+            detail.setBeforeImage(imageUrl);
             detail.setInsertTime(Calendar.getInstance().getTime());
             int code = parkingFeeDetailMapper.insertSelective(detail);
             if (code == 1) {
                 //下发欢迎光临
-                sendMessage(marketId,ba,-2);
+                sendMessage(marketId, ba, -2);
             }
-        }else{
+        } else {
             //下发禁止重复入场
-            sendMessage(marketId,ba,-3);
+            sendMessage(marketId, ba, -3);
         }
         return result;
     }

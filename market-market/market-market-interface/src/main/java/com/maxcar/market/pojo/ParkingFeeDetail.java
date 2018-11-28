@@ -20,6 +20,8 @@ public class ParkingFeeDetail extends PageBean implements Serializable {
 
     private String cardNo;
 
+    private Integer inType;
+
     private Integer chargePrice;
 
     private Integer parkingVolume;
@@ -55,5 +57,17 @@ public class ParkingFeeDetail extends PageBean implements Serializable {
     private String parkingTime;
 
     private String hms;
+
+    private Integer reduction;//会员减免
+
+    private Integer integral;// 积分兑换
+
+    private Integer alreadyPaid;// 公众号已经支付
+
+    private String overTime;// 超时时间
+
+    private Integer overTimeFee;// 超时停车费
+
+    private Integer chargeFee;//应收费用
 
 }

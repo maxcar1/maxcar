@@ -1554,6 +1554,25 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
         return list;
     }
 
+    /**
+     * 计算俩日期之间时分秒
+     *  返回字符串
+     * @param end
+     * @param start
+     * @return
+     */
+    public static String getHMSToString(Date end,Date start){
+        Map hms = getHMS(end, start);
+        StringBuilder sb = new StringBuilder();
+        sb.append(hms.get("hour"));
+        sb.append("小时");
+        sb.append(hms.get("minute"));
+        sb.append("分");
+        sb.append(hms.get("second"));
+        sb.append("秒");
+        return sb.toString();
+    }
+
     public static void main(String[] args) throws Exception{
         /*Date date3 = DateUtils.addMinutes(new Date(), 5);
         System.out.println(new Date().after(DateUtils.addMinute(new Date(), -10)));

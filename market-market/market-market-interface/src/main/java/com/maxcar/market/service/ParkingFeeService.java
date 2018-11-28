@@ -84,7 +84,7 @@ public interface ParkingFeeService extends BaseService<ParkingFee, String> {
 
     InterfaceResult charge(JSONObject params)  throws Exception;
 
-    InterfaceResult saveInParking(String marketId,String cardNo,String barrierId) throws Exception;
+    InterfaceResult saveInParking(JSONObject params) throws Exception;
 
     ParkingFeeDetail selectDetail(ParkingFeeDetail detail);
 
@@ -131,4 +131,6 @@ public interface ParkingFeeService extends BaseService<ParkingFee, String> {
      * @return
      */
     InterfaceResult updateParkingFeeIntegralAndDetail(ParkingFeeIntegral parkingFeeIntegral) throws ParseException, Exception;
+
+    InterfaceResult updateParkingDetail(String marketId,String key,String barrierId,Integer type) throws Exception;
 }
