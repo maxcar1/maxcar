@@ -1,6 +1,7 @@
 package com.maxcar.stock.service;
 
 import com.maxcar.stock.entity.Response.ReviewVo;
+import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.FlowStep;
 import com.maxcar.stock.pojo.ReviewStep;
 
@@ -27,4 +28,9 @@ public interface ReviewStepService {
 
     int selectMarketCode(FlowStep flowStep);
 
+    List<ReviewStep> selectStepListByLevel(ReviewStep reviewStep);
+
+    FlowStep selectReviewManageByReviewStep(ReviewStep reviewStep);
+
+    int carOutApply(CarReview carReview);
 }

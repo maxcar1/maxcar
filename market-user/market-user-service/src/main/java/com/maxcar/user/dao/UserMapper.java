@@ -34,5 +34,5 @@ public interface UserMapper extends BaseDao<User,String>{
 
     List<Map> getUserAndOrgByMarketId(String marketId);
 
-    List<Map> getUserOrgByReview(ReviewStep review);
+    Map getUserOrgByReview(ReviewStep review);
 }

@@ -25,7 +25,14 @@ public class CarReview implements Serializable {
     private Date insertTime;
 
     private Integer isValid;
+    private String reasonDesc;
+    public String getReasonDesc() {
+        return reasonDesc;
+    }
 
+    public void setReasonDesc(String reasonDesc) {
+        this.reasonDesc = reasonDesc;
+    }
     public String getUserName() {
         return userName;
     }

@@ -92,7 +92,7 @@ public interface UserService extends BaseService<User,String> {
 
     List<Map> getUserAndOrgByMarketId(String marketId);
 
-    List<Map> getUserOrgByReview(ReviewStep review);
+    Map getUserOrgByReview(ReviewStep review);
 
     /*getUser(User user)throws Exception;*/
 }

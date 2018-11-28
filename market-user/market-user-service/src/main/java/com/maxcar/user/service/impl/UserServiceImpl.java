@@ -319,7 +319,7 @@ public class UserServiceImpl extends BaseServiceImpl<User,String> implements Use
     }
 
     @Override
-    public List<Map> getUserOrgByReview(ReviewStep review) {
+    public Map getUserOrgByReview(ReviewStep review) {
         return userMapper.getUserOrgByReview(review);
     }
 

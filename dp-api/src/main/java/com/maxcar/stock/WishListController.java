@@ -49,7 +49,7 @@ public class WishListController {
      * @param wishList
      * @return
      */
-    @RequestMapping(value="getWishList",method= RequestMethod.GET)
+    @RequestMapping(value="/getWishList",method= RequestMethod.GET)
     public InterfaceResult getWishList(WishList wishList){
         InterfaceResult result = new InterfaceResult();
         try {
@@ -77,7 +77,7 @@ public class WishListController {
      * 心愿单按钮点击跳转
      * @return
      */
-    @RequestMapping(value="wishListButton",method= RequestMethod.GET)
+    @RequestMapping(value="/wishListButton",method= RequestMethod.GET)
     public ModelAndView wishListButton(HttpServletRequest request){
         String userId = null;
         try {
@@ -96,7 +96,7 @@ public class WishListController {
         }catch (Exception e ){
             e.printStackTrace();
         }
-        ModelAndView view = new ModelAndView("redirect:http://xfz-t.maxcar.com.cn/carWish?userId="+userId+"&marketId=007");
+        ModelAndView view = new ModelAndView("redirect:http://xfz.maxcar.com.cn/carWish?userId="+userId+"&marketId=007");
 
         return  view;
     }

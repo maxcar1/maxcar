@@ -27,4 +27,8 @@ public interface CarReviewMapper {
     int updateByPrimaryKeySelective(CarReview record);
 
     int updateByPrimaryKey(CarReview record);
+
+    int carOutApply(CarReview carReview);
+
+    int insertCarReview(CarReview carReview);
 }

@@ -94,7 +94,6 @@ public class CarController extends BaseController {
         carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
         carVo.setCarNo((carVo.getCarNo() == null || carVo.getCarNo().isEmpty()) ? null : carVo.getCarNo().trim());
 
-
         PageInfo pageInfo = carService.listCarVo(carVo);
         List<CarVo> listCarVo = pageInfo.getList();
         Map m = new HashMap();

@@ -2,6 +2,7 @@ package com.maxcar.stock.service.impl;
 
 import com.maxcar.base.dao.BaseDao;
 import com.maxcar.base.service.impl.BaseServiceImpl;
+import com.maxcar.stock.dao.CarReviewMapper;
 import com.maxcar.stock.dao.ReviewStepMapper;
 import com.maxcar.stock.dao.WishListMapper;
 import com.maxcar.stock.entity.Response.ReviewVo;
@@ -18,7 +19,8 @@ import java.util.Map;
 public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> implements ReviewStepService {
     @Autowired
     ReviewStepMapper reviewStepMapper ;
-
+    @Autowired
+    private CarReviewMapper carReviewMapper;
     @Override
     public BaseDao<ReviewStep, String> getBaseMapper() {
         return null;
@@ -66,6 +68,21 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
     @Override
     public int selectMarketCode(FlowStep flowStep) {
         return reviewStepMapper.selectMarketCode(flowStep);
+    }
+
+    @Override
+    public List<ReviewStep> selectStepListByLevel(ReviewStep reviewStep) {
+        return reviewStepMapper.selectStepListByLevel(reviewStep);
+    }
+
+    @Override
+    public FlowStep selectReviewManageByReviewStep(ReviewStep reviewStep) {
+        return reviewStepMapper.selectReviewManageByReviewStep(reviewStep);
+    }
+
+    @Override
+    public int carOutApply(CarReview carReview) {
+        return reviewStepMapper.insertCarReview(carReview);
     }
 
     @Override

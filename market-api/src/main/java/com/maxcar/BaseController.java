@@ -291,7 +291,7 @@ public class BaseController {
      * describe: 新增合同入参判断 是否不合法
      * create_date:  lxy   2018/10/18  11:27
      **/
-    public InterfaceResult isAddContractRequest(AddContractRequest request) {
+    /*public InterfaceResult isAddContractRequest(AddContractRequest request) {
         // 商户数据不存在 参数不合法
         if (null == request.getUserTenantPack() || null == request.getPropertyContract()) {
             return getInterfaceResult("600", "请填写合同信息和商户信息");
@@ -313,7 +313,7 @@ public class BaseController {
         }
 
         return getInterfaceResult("200", "请填写物业类型");
-    }
+    }*/
 
     /**
      * param:

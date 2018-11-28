@@ -1,8 +1,12 @@
 package com.maxcar.review.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.dasouche.Result;
+import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.FlowStep;
 import com.maxcar.stock.pojo.ReviewStep;
 import com.maxcar.stock.service.ReviewStepService;
@@ -12,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -37,18 +38,31 @@ public class ReviewStepManageController extends BaseController {
     @RequestMapping(value = "/reviewStepList", method = RequestMethod.POST)
     public InterfaceResult reviewStepList( @RequestBody ReviewStep reviewStep) {
         InterfaceResult result = new InterfaceResult();
+        Map map =new HashMap();
         try{
-            List<ReviewStep> reviewStepList  = reviewStepService.selectStepList(reviewStep);
-            for (ReviewStep review:reviewStepList ) {
-                List<Map> list = userService.getUserOrgByReview(review);
-                review.setUserOrg(list);
+        FlowStep step = reviewStepService.selectReviewManageByReviewStep(reviewStep);
+            List<ReviewStep> reviewStepListLevel  = reviewStepService.selectStepListByLevel(reviewStep);
+            logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
+            for (ReviewStep reviewLevel:reviewStepListLevel) {
+                String apply ="";
+                List<ReviewStep> reviewStepList = reviewStepService.selectStepList(reviewLevel);
+                logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
+                List list = new ArrayList();
+                for (ReviewStep review:reviewStepList) {
+                    Map user = userService.getUserOrgByReview(review);
+                    apply += user.get("true_name")+"("+user.get("org_name")+")";
+                    list.add(user);
+                }
+                reviewLevel.setApply(apply);
+                reviewLevel.setUserOrg(list);
             }
-            result.setData(reviewStepList);
+                map.put("list",reviewStepListLevel);
+
+            map.put("step" ,step);
+
+            result.setData(map);
             result.setCode("200");
         }catch (Exception e){
-            result.setMsg("服务器错误");
-            result.setCode("500");
-            e.printStackTrace();
         }
         return result;
     }
@@ -90,9 +104,7 @@ public class ReviewStepManageController extends BaseController {
             result.setData(list);
             result.setCode("200");
         }catch (Exception e){
-            result.setMsg("服务器错误");
-            result.setCode("500");
-            e.printStackTrace();
+
         }
 
         return result;
@@ -150,9 +162,7 @@ public class ReviewStepManageController extends BaseController {
             result.setData(list);
             result.setCode("200");
         } catch (Exception e) {
-            result.setCode("500");
-            result.setMsg("服务器错误");
-            e.printStackTrace();
+
         }
         return result;
     }
@@ -182,9 +192,7 @@ public class ReviewStepManageController extends BaseController {
                 }
             }
         } catch (Exception e) {
-            result.setCode("500");
-            result.setMsg("服务器错误");
-            e.printStackTrace();
+
         }
         return result;
     }
@@ -194,8 +202,8 @@ public class ReviewStepManageController extends BaseController {
      * @param reviewStep
      * @return
      */
-    @RequestMapping(value = "/deleteStep", method = RequestMethod.GET)
-    public InterfaceResult deleteStep(ReviewStep reviewStep) {
+    @RequestMapping(value = "/deleteStep", method = RequestMethod.POST)
+    public InterfaceResult deleteStep(@RequestBody  ReviewStep reviewStep) {
         InterfaceResult result = new InterfaceResult();
         int delFlag = 0;
         try {
@@ -208,51 +216,56 @@ public class ReviewStepManageController extends BaseController {
                 result.setMsg("删除失败");
             }
         } catch (Exception e) {
-            result.setCode("500");
-            result.setMsg("服务器错误");
-            e.printStackTrace();
+
         }
         return result;
     }
 
     /**
      * 保存步骤信息
-     * @param reviewSteps
+     * @param json
      * @return
      */
-    @RequestMapping(value = "/saveStepList", method = RequestMethod.GET)
-    public InterfaceResult saveStepList(List<ReviewStep> reviewSteps) {
+    @RequestMapping(value = "/saveStepList", method = RequestMethod.POST)
+    public InterfaceResult saveStepList(@RequestBody net.sf.json.JSONObject json) {
+        logger.info("保存步骤=========="+json);
         InterfaceResult result = new InterfaceResult();
-        int flag = 0;
-        if(reviewSteps==null&&reviewSteps.isEmpty()){
-            result.setCode("600");
-            result.setMsg("请核对参数");
-            return result;
-        }
-        //根据申请类型删除
-        reviewStepService.deleteByReview(reviewSteps.get(0));
-        //更新flow_step
         FlowStep flowStep = new FlowStep();
-        flowStep.setCode(reviewSteps.get(0).getApplyType());
-        flowStep.setIsNeedReview(reviewSteps.get(0).getIsNeedReview());
-        flowStep.setReviewType(reviewSteps.get(0).getReviewType());
-        flowStep.setMarketId(reviewSteps.get(0).getMarketId());
+        int flag = 0;
+        try {
+
+        flowStep.setCode(json.getInt("code"));
+        flowStep.setMarketId(json.getString("marketId"));
+        flowStep.setReviewType(json.getInt("reviewType"));
+        flowStep.setIsNeedReview(json.getInt("isNeedReview"));
         reviewStepService.updateFlowStep(flowStep);
-        for (ReviewStep reviewStep:reviewSteps ) {
-            List<String> list = Arrays.asList(reviewStep.getApply().split(","));
-            for (String orgUser : list) {
-                String[] ou = orgUser.split(":");
-                reviewStep.setOrgld(ou[0].toString());
-                reviewStep.setOrgld(ou[1].toString());
-                flag = reviewStepService.saveReviewStep(reviewStep);
-                logger.info("编辑返回=====" + flag);
-                if (flag > 0) {
-                    result.setCode("200");
-                } else {
-                    result.setCode("600");
-                    result.setMsg("请核对参数");
+            String jsonStr = json.getString("tableData");
+            logger.info("========"+jsonStr);
+            JSONArray jsonArray = JSONArray.parseArray(jsonStr);
+            for (Iterator iterator = jsonArray.iterator(); iterator.hasNext();) {
+                ReviewStep  review= new ReviewStep();
+                JSONObject jsonObject = (JSONObject) iterator.next();
+                review.setStepName(jsonObject.getString("stepName"));
+                review.setType(jsonObject.getInteger("type"));
+                review.setLevel(jsonObject.getInteger("level"));
+                JSONArray jsonAr = JSONArray.parseArray(jsonObject.getString("userOrg"));
+                for (Iterator iter = jsonAr.iterator(); iter.hasNext();) {
+                    JSONObject jsonOb = (JSONObject) iter.next();
+                    review.setOrgld(jsonOb.get("org_id").toString());
+                    review.setReviewPersonId(jsonOb.get("user_id").toString());
+                     flag = reviewStepService.saveReviewStep(review);
                 }
             }
+
+
+        if(flag>0){
+            result.setCode("200");
+        }else {
+            result.setCode("600");
+            result.setMsg("请检查参数");
+        }
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -264,16 +277,35 @@ public class ReviewStepManageController extends BaseController {
         try{
             List<ReviewStep> reviewStepList  = reviewStepService.selectStepList(reviewStep);
             for (ReviewStep review:reviewStepList ) {
-                List<Map> list = userService.getUserOrgByReview(review);
-                review.setUserOrg(list);
+                Map list = userService.getUserOrgByReview(review);
+                //review.setUserOrg(list);
             }
             result.setData(reviewStepList);
             result.setCode("200");
         }catch (Exception e){
-            result.setMsg("服务器错误");
-            result.setCode("500");
-            e.printStackTrace();
+
         }
         return result;
     }
+
+    /**
+     * 提交出厂申请
+     * @param carReview
+     * @return
+     */
+    @RequestMapping(value = "/carOutApply", method = RequestMethod.POST)
+    public InterfaceResult carOutApply(@RequestBody CarReview carReview) {
+        InterfaceResult result = new InterfaceResult();
+        carReview.setInsertTime(new Date());
+        carReview.setIsValid(1);
+        int flag = reviewStepService.carOutApply(carReview);
+        if(flag>0){
+            result.setCode("200");
+        }else {
+            result.setCode("600");
+            result.setMsg("请检查参数");
+        }
+        return  result;
+    }
+
 }

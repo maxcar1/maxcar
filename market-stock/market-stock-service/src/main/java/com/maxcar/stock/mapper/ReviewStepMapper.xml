@@ -125,15 +125,13 @@
   </delete>
   <delete id="deleteByReview" parameterType="com.maxcar.stock.pojo.ReviewStep" >
     delete from review_step
-    where
+    where market_id = #{marketId}
     <if test="level != null" >
-      level = #{level}
+      and level = #{level}
     </if>
-    <if test="marketId != null" >
-      market_id = #{marketId}
-    </if>
+
     <if test="applyType != null" >
-      apply_type = #{applyType}
+     and  apply_type = #{applyType}
     </if>
   </delete>
   <delete id="deleteByExample" parameterType="com.maxcar.stock.pojo.ReviewStepExample" >
@@ -143,11 +141,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.maxcar.stock.pojo.ReviewStep" >
-    insert into review_step ( step_name, review_person_id,
-      level, type, apply_type,org_id
+    insert into review_step ( step_name,review_person_id,
+      level, type, apply_type,org_id,market_id
       )
-    values ( #{stepName,jdbcType=VARCHAR}, #{reviewPersonId,jdbcType=INTEGER},
-      #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER},#{orgId,jdbcType=VARCHAR}
+    values ( #{stepName,jdbcType=VARCHAR},#{reviewPersonId},
+      #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER},#{orgId,jdbcType=VARCHAR},
+      #{marketId}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.ReviewStep" >
@@ -322,10 +321,30 @@
       and b.review_id = #{reviewId}
     </if>
   </select>
+
   <select id="selectStepList" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="BaseResultMap">
-  select id ,step_name ,  market_id ,is_need_review ,apply_type from review_step where 1=1
+    select * from review_step where
     <if test="marketId != null" >
-     and market_id = #{marketId}
+      market_id = #{marketId}
+    </if>
+    <if test="applyType != null" >
+      and apply_type = #{applyType}
+    </if>
+    <if test="level != null" >
+      and level = #{level}
+    </if>
+    <!--
+
+    <if test="id != null" >
+      and id = #{id}
+    </if>
+-->
+
+  </select>
+  <select id="selectStepListByLevel" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="BaseResultMap">
+  select * from review_step where
+    <if test="marketId != null" >
+      market_id = #{marketId}
     </if>
     <if test="applyType != null" >
       and apply_type = #{applyType}
@@ -367,4 +386,13 @@ and is_valid=1
   <select id="selectMarketCode" parameterType="com.maxcar.stock.pojo.FlowStep" resultType="java.lang.Integer">
     select count(1) from flow_step where market_id = #{marketId} and code = #{code}
   </select>
+  <select id="selectReviewManageByReviewStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="FlowStepResultMap">
+    select * from flow_step where market_id = #{marketId} and code = #{applyType}
+
+  </select>
+  <insert id="insertCarReview" parameterType="com.maxcar.stock.pojo.CarReview">
+    insert  into car_review (car_id,market_id,user_id,out_reason,back_time,reason_desc,is_pledge,insert_time,is_valid)
+    values(#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid})
+
+  </insert>
 </mapper>
