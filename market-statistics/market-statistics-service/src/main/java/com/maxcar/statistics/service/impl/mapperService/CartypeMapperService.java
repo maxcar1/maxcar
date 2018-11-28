@@ -121,13 +121,13 @@ public class CartypeMapperService {
         parameter.setStartTime(dayTime);
         parameter.setEndTime(dayTime);
 
-        List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceDayList = reportMapperService.getCarInvoiceTypeInvoiceReport(parameter);
+        List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCartypeDayList = reportMapperService.getCarInvoiceTypeInvoiceReport(parameter);
 
-        if (null == InvoiceDayList || InvoiceDayList.isEmpty()) {
+        if (null == InvoiceCartypeDayList || InvoiceCartypeDayList.isEmpty()) {
             return false;
         }
 
-        return cartypeDayDao.InsertT(getInsertCartypeDayColumnsAndValues(InvoiceDayList));
+        return cartypeDayDao.InsertT(getInsertCartypeDayColumnsAndValues(InvoiceCartypeDayList));
     }
 
     /**
@@ -164,7 +164,7 @@ public class CartypeMapperService {
      * describe: 车辆类型日表INSERT sql
      * create_date:  lxy   2018/11/22  15:21
      **/
-    private InsertTParamter getInsertCartypeDayColumnsAndValues(List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceList) {
+    private InsertTParamter getInsertCartypeDayColumnsAndValues(List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCartypeDayList) {
 
         InsertTParamter insertTParamter = new InsertTParamter();
 
@@ -175,7 +175,7 @@ public class CartypeMapperService {
 
         StringBuffer stringBuffer = new StringBuffer(128);
 
-        for (GetCarInvoiceTypeInvoiceReportResponse invoice : InvoiceList) {
+        for (GetCarInvoiceTypeInvoiceReportResponse invoice : InvoiceCartypeDayList) {
 
             stringBuffer.append("(");
 

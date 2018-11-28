@@ -1,11 +1,12 @@
 package com.maxcar.statistics.service.impl;
 
+import com.maxcar.base.util.StringUtil;
 import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
 import com.maxcar.statistics.model.parameter.GetInventoryReportParameter;
-import com.maxcar.statistics.model.request.GetInventoryByBrandNameReportRequest;
-import com.maxcar.statistics.model.request.GetInvoiceByBrandNameReportRequest;
-import com.maxcar.statistics.model.response.GetCarInvoiceTypeInvoiceReportResponse;
-import com.maxcar.statistics.model.response.GetInventoryReportResponse;
+import com.maxcar.statistics.model.request.*;
+import com.maxcar.statistics.model.response.*;
+import com.maxcar.statistics.service.ReportByCarbrandService;
+import com.maxcar.statistics.service.impl.mapperService.CarbrandMapperService;
 import com.maxcar.statistics.service.impl.mapperService.ReportMapperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,65 @@ import java.util.List;
  * create_date: lxy 2018/11/20  14:35
  **/
 
-@Service
-public class ReportByBrandNameServiceImpl {
+@Service("reportByCarbrandService")
+public class ReportByCarbrandServiceImpl implements ReportByCarbrandService {
 
     @Autowired
     private ReportMapperService reportMapperService;
+
+    @Autowired
+    private CarbrandMapperService carbrandMapperService;
+
+
+    /**
+     * param:
+     * describe: 分组查询车辆品牌日表 交易
+     * create_date:  lxy   2018/11/22  17:13
+     **/
+    @Override
+    public List<GroupCarbrandInvoiceDayResponse> groupCarbrandInvoiceDay(GroupCarbrandInvoiceDayRequest parameter) {
+
+        return carbrandMapperService.groupCarbrandInvoiceDay(parameter);
+    }
+
+
+    /**
+     * param:
+     * describe: 根据结束日期查询 库存量与库存价值
+     * create_date:  lxy   2018/11/26  14:28
+     **/
+    @Override
+    public List<GroupCarbrandInventoryDayResponse> groupCarbrandInventoryDay(GroupCarbrandInventoryDayRequest parameter) {
+
+        return carbrandMapperService.groupCarbrandInventoryDay(parameter);
+    }
+
+
+    /**
+     * param:
+     * describe: 分组查询车辆品牌月表 交易
+     * create_date:  lxy   2018/11/26  15:04
+     **/
+    @Override
+    public List<GroupCarbrandInvoiceMonthResponse> groupCarbrandInvoiceMonth(GroupCarbrandInvoiceMonthRequest parameter){
+
+        return carbrandMapperService.groupCarbrandInvoiceMonth(parameter);
+    }
+
+    /**
+     * param:
+     * describe: 分组查询车辆品牌月表 库存
+     * create_date:  lxy   2018/11/26  15:29
+     **/
+    @Override
+    public List<GroupCarbrandInventoryMonthResponse>  groupCarbrandInventoryMonth(GroupCarbrandInventoryMonthRequest parameter){
+
+        return carbrandMapperService.groupCarbrandInventoryMonth(parameter);
+    }
+
+
+
+// 以下待删除
 
     /**
      * param:
