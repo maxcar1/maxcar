@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.maxcar.barrier.pojo.*;
 import com.maxcar.barrier.service.*;
 import com.maxcar.base.util.StringUtils;
+import com.maxcar.hikvision.service.HikvisionLinuxService;
 import com.maxcar.hikvision.service.HikvisionService;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.util.CRC16M;
@@ -48,6 +49,9 @@ public class PushCallback implements MqttCallback {
 
     @Value("${keep.image.path}")
     private String keepPath;
+
+    @Value("${server.environment}")
+    private String environment;
 
     public PushCallback() {
 
@@ -272,26 +276,40 @@ public class PushCallback implements MqttCallback {
         if (null != barrierCameras && barrierCameras.size() > 0){
             BarrierCamera camera = barrierCameras.get(0);
             camera.setPath(keepPath);
-            //windows环境
-            Map map = HikvisionService.requestDll(camera);
-            //Map map = HikvisionService.requestDll(camera);
-            boolean result = (Boolean) map.get("result");
-            if (result){
-                File file = new File(String.valueOf(map.get("imageName")));
-                FileInputStream fis = new FileInputStream(file);
-                postParam.setData(fis);
-                postParam.setUrl(url.toString());
-                postParam.setOnlySend(false);
-                postParam.setMethod("camera-get");
-                postParam.setMessageTime(Canstats.dateformat.format(new Date()));
-                logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
-                messageProducerService.sendMessage("-2",
-                        JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+            Map map = new HashMap();
+            switch (environment){
+                case "windows":
+                    //windows环境
+                    map = HikvisionService.requestDll(camera);
+                    break;
+                case "linux":
+                    //linux环境
+                    map = HikvisionLinuxService.requestDll(camera);
+                    break;
+                default:
+                    break;
+            }
+            if (!map.isEmpty()){
+                boolean result = (Boolean) map.get("result");
+                if (result){
+                    File file = new File(String.valueOf(map.get("imageName")));
+                    FileInputStream fis = new FileInputStream(file);
+                    postParam.setData(fis);
+                    postParam.setUrl(url.toString());
+                    postParam.setOnlySend(false);
+                    postParam.setMethod("camera-get");
+                    postParam.setMessageTime(Canstats.dateformat.format(new Date()));
+                    logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
+                    messageProducerService.sendMessage("-2",
+                            JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+                }else{
+                    logger.info("====摄像机抓拍失败====");
+                }
             }else{
-                logger.info("====摄像机抓拍失败====");
+                logger.info("====请选择服务环境====");
             }
         }else{
-            logger.info("======请检查摄像机配置表====");
+            logger.info("====请检查摄像机配置表====");
         }
     }
 

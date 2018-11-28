@@ -396,6 +396,7 @@
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
                 <!-- datasource通用-->
+                <server.environment>windows</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>true</activeByDefault>
@@ -429,6 +430,8 @@
                 <mqtt.push.topic>MQTT_WF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -462,6 +465,8 @@
                 <mqtt.push.topic>MQTT_QCT_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -494,6 +499,8 @@
                 <mqtt.push.topic>MQTT_YL_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -526,6 +533,8 @@
                 <mqtt.push.topic>MQTT_NT_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -558,6 +567,8 @@
                 <mqtt.push.topic>MQTT_WF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -591,6 +602,8 @@
                 <mqtt.push.topic>MQTT_CZ_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -623,6 +636,8 @@
                 <mqtt.push.topic>MQTT_WX_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -656,6 +671,8 @@
                 <mqtt.push.topic>MQTT_HH_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -689,6 +706,8 @@
                 <mqtt.push.topic>MQTT_LF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -721,6 +740,8 @@
                 <mqtt.push.topic>MQTT_PZH_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
