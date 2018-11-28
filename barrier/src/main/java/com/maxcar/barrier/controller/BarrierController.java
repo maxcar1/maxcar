@@ -126,6 +126,7 @@ public class BarrierController {
 
     /**
      * 查询道闸列表
+     *
      * @return
      */
     @RequestMapping(value = "/selectBarrierList", method = RequestMethod.POST)
