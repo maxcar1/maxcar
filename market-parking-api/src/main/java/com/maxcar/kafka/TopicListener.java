@@ -7,6 +7,8 @@ package com.maxcar.kafka;
 import com.alibaba.fastjson.JSONObject;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.StringUtils;
+import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
@@ -18,6 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class TopicListener {
@@ -82,8 +90,17 @@ public class TopicListener {
                 String doPutJson = HttpClientUtil.get(url,null,null);
                 JSONObject fromObject = JSONObject.parseObject(doPutJson);
                 result =  JSONObject.toJavaObject(fromObject, InterfaceResult.class);
-            } else{
-                String doPostJson = HttpClientUtils.doPostJson(url, postParam.getData());
+            }  else if (StringUtils.equals("camera-get", method)) {
+                //摄像机请求单独处理
+                FileInputStream fis = (FileInputStream) postParam.getData();
+                String imageUrl = getImageUrl(fis);
+                JSONObject json = new JSONObject();
+                json.put("imageUrl",imageUrl);
+                String doPostJson = HttpClientUtils.doPostJson(url, json.toJSONString());
+                JSONObject fromObject = JSONObject.parseObject(doPostJson);
+                result = JSONObject.toJavaObject(fromObject, InterfaceResult.class);
+            }else{
+                String doPostJson = HttpClientUtils.doPostJson(url, String.valueOf(postParam.getData()));
                 JSONObject fromObject = JSONObject.parseObject(doPostJson);
                 result =  JSONObject.toJavaObject(fromObject, InterfaceResult.class);
             }
@@ -96,6 +113,46 @@ public class TopicListener {
 //            return ResponseContent.error(3, "处理失败");
         }
         return result;
+    }
+
+    public static String getImageUrl(FileInputStream fis) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String fileName = sdf1.format(Calendar.getInstance().getTime());
+        String imageName = sdf.format(Calendar.getInstance().getTime()) + UuidUtils.getRandByNum(3);
+        StringBuilder path = new StringBuilder("/data/parking/image");
+        path.append(File.separator);
+        path.append(fileName);
+        File f = new File(path.toString());
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        path.append(File.separator);
+        path.append(imageName);
+        path.append(".jpg");
+        File file = new File(path.toString());
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            // 每次读取的字节长度
+            int n = 0;
+            // 存储每次读取的内容
+            byte[] bb = new byte[1024];
+            while ((n = fis.read(bb)) != -1) {
+                // 将读取的内容，写入到输出流当中
+                fos.write(bb, 0, n);
+            }
+        } finally {
+            if (null != fos) {
+                fos.close();
+            }
+            if (null != fis) {
+                fis.close();
+            }
+        }
+        String yuming = "http://wxsf-t.maxcar.com.cn/";
+        return yuming+"/"+fileName+"/"+imageName+".jpg";
+
     }
 
     public static void main(String[] args){

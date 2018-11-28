@@ -13,7 +13,7 @@ public class PostParam implements Serializable{
     private String url;//请求地址
     private String market;//市场
     private String messageTime;//数据时间
-    private String data;//shuju
+    private Object data;//shuju
     public boolean isOnlySend() {
         return onlySend;
     }
@@ -75,11 +75,11 @@ public class PostParam implements Serializable{
         this.messageTime = messageTime;
     }
 
-    public String getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }
