@@ -15,7 +15,7 @@ public class GroupCarstocktimeInvoiceDayResponse implements Serializable{
 
     private Double invoicePrice;
 
-    private Integer maleCount;
+   /* private Integer maleCount;
 
     private Integer femaleCount;
 
@@ -31,5 +31,5 @@ public class GroupCarstocktimeInvoiceDayResponse implements Serializable{
 
     private Integer age45Count;
 
-    private Integer age50Count;
+    private Integer age50Count;*/
 }

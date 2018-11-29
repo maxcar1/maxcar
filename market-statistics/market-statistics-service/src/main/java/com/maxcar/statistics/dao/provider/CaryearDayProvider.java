@@ -56,7 +56,7 @@ public class CaryearDayProvider {
                     "  IFNULL(SUM(stock_count), 0) AS 'inventoryCount',\n" +
                     "  IFNULL(SUM(stock_price), 0) AS 'inventoryPrice'");
 
-            FROM("`maxcar_statistics_l`.`carbrand_day`");
+            FROM("`maxcar_statistics_l`.`caryear_day`");
 
             if (StringUtil.isNotEmpty(parameter.getMarketId())) {
                 WHERE("market_id = #{marketId}");

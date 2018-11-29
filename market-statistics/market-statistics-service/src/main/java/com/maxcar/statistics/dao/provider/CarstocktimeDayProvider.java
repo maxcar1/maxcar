@@ -10,7 +10,7 @@ public class CarstocktimeDayProvider {
 
     public String groupCarstocktimeInvoiceDay(GroupCarstocktimeInvoiceDayRequest parameter) {
         return new SQL() {{
-            SELECT(" stocktime_id AS 'stocktimeId',\n" +
+           /* SELECT(" stocktime_id AS 'stocktimeId',\n" +
                     "  IFNULL(SUM(sales_count), 0) AS 'invoiceCount',\n" +
                     "  IFNULL(SUM(sales_price), 0) AS 'invoicePrice',\n" +
                     "  IFNULL(SUM(male_count), 0) AS 'maleCount',\n" +
@@ -21,7 +21,12 @@ public class CarstocktimeDayProvider {
                     "  IFNULL(SUM(age35_count), 0) AS 'age35Count',\n" +
                     "  IFNULL(SUM(age40_count), 0) AS 'age40Count',\n" +
                     "  IFNULL(SUM(age45_count), 0) AS 'age45Count',\n" +
-                    "  IFNULL(SUM(age50_count), 0) AS 'age50Count'");
+                    "  IFNULL(SUM(age50_count), 0) AS 'age50Count'");*/
+
+            SELECT(" stocktime_id AS 'stocktimeId',\n" +
+                    "  IFNULL(SUM(sales_count), 0) AS 'invoiceCount',\n" +
+                    "  IFNULL(SUM(sales_price), 0) AS 'invoicePrice'");
+
             FROM("`maxcar_statistics_l`.`carstocktime_day`");
 
             if (StringUtil.isNotEmpty(parameter.getMarketId())) {
