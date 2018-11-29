@@ -24,6 +24,8 @@
 
     <dubbo:reference interface="com.maxcar.market.service.ParkingFeeService" id="parkingFeeService" timeout="1200000" check="false"/>
 
+    <dubbo:reference interface="com.maxcar.market.service.OpenBarrierRecordService" id="openBarrierRecordService" timeout="1200000" check="false"/>
+
     <dubbo:reference interface="com.maxcar.market.service.ParkingFeeRuleService" id="parkingFeeRuleService" timeout="1200000" check="false"/>
 
     <dubbo:reference interface="com.maxcar.user.service.MarketService" id="marketService" timeout="1200000"
