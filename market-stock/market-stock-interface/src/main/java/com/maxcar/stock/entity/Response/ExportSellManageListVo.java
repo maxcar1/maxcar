@@ -4,12 +4,11 @@ import java.io.Serializable;
 
 /**
  * @Author sunyazhou
- * @Date 2018/11/26 13:53
- * @desc 售出管理导出车辆信息列表
+ * @Date 2018/11/29 10:12
+ * @desc
  */
-public class SellCarListExportVo implements Serializable {
+public class ExportSellManageListVo implements Serializable {
 
-    private String carId;
     private String brandAndSeriesName;
     private String modelName;
     private String tenantName;
@@ -23,22 +22,6 @@ public class SellCarListExportVo implements Serializable {
     private double invoicePrice;
 
     private String vin;
-
-    public String getCarId() {
-        return carId;
-    }
-
-    public void setCarId(String carId) {
-        this.carId = carId;
-    }
-
-    public String getBrandAndSeriesName() {
-        return brandAndSeriesName;
-    }
-
-    public void setBrandAndSeriesName(String brandAndSeriesName) {
-        this.brandAndSeriesName = brandAndSeriesName;
-    }
 
     public String getModelName() {
         return modelName;
@@ -126,5 +109,14 @@ public class SellCarListExportVo implements Serializable {
 
     public void setVin(String vin) {
         this.vin = vin;
+    }
+
+    public String getBrandAndSeriesName() {
+
+        return brandAndSeriesName;
+    }
+
+    public void setBrandAndSeriesName(String brandAndSeriesName) {
+        this.brandAndSeriesName = brandAndSeriesName;
     }
 }

@@ -34,6 +34,6 @@ public interface InvoiceService extends BaseService<Invoice, String> {
      * 根据车辆id查询该车辆的实际售价
      * @return
      */
-    Invoice selectPriceByCarId(String carId);
+    double selectPriceByCarId(String carId);
 
 }

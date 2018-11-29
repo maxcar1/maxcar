@@ -29,6 +29,7 @@ import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.ExportResponse;
+import com.maxcar.stock.entity.Response.ExportSellManageListVo;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.entity.Response.SellCarListExportVo;
 import com.maxcar.stock.pojo.Car;
@@ -944,10 +945,10 @@ public class CarController extends BaseController {
         PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
         List<CarVo> list = allSalesManageCarList.getList();
         for (CarVo car : list) {
-                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
-                if (invoice != null){
-                    car.setInvoicePrice(invoice.getPrice()/10000);
-                }
+//                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
+//                if (invoice != null){
+//                    car.setInvoicePrice(invoice.getPrice()/10000);
+//                }
         }
         allSalesManageCarList.setList(list);
         interfaceResult.InterfaceResult200(allSalesManageCarList);
@@ -973,18 +974,36 @@ public class CarController extends BaseController {
             carVo.setCarType(1);
             carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
             List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
-
+            List<ExportSellManageListVo> exportList = new ArrayList<>();
             for (SellCarListExportVo vo: list) {
-                String price = redisService.get(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()));
-                if (StringUtils.isNotBlank(price)) {
-                    vo.setInvoicePrice(Double.parseDouble(price));
-                } else {
-                    Invoice invoice = invoiceService.selectPriceByCarId(vo.getCarId());
-                    if (invoice != null && invoice.getPrice() != null) {
-                        vo.setInvoicePrice(invoice.getPrice());
-                        redisService.set(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()), String.valueOf(invoice.getPrice()));
-                    }
-                }
+
+                double priceByCarId = invoiceService.selectPriceByCarId(vo.getCarId());
+                vo.setInvoicePrice(priceByCarId);
+//                String price = redisService.get(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()));
+//                if (StringUtils.isNotBlank(price)) {
+//                    vo.setInvoicePrice(Double.parseDouble(price));
+//                } else {
+//                    double priceByCarId = invoiceService.selectPriceByCarId(vo.getCarId());
+//                    if (invoice != null && invoice.getPrice() != null) {
+//                        vo.setInvoicePrice(invoice.getPrice());
+//                        redisService.set(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()), String.valueOf(invoice.getPrice()));
+//                    }
+//                }
+//
+//                ExportSellManageListVo listVo = new ExportSellManageListVo();
+//                listVo.setBrandAndSeriesName(vo.getBrandAndSeriesName());
+//                listVo.setCarStatus(vo.getCarStatus());
+//                listVo.setEvaluatePrice(vo.getEvaluatePrice());
+//                listVo.setInvoicePrice(vo.getInvoicePrice());
+//                listVo.setIsNewCar(vo.getIsNewCar());
+//                listVo.setMarketPrice(vo.getMarketPrice());
+//                listVo.setTenantName(vo.getTenantName());
+//                listVo.setMileage(vo.getMileage());
+//                listVo.setModelName(vo.getModelName());
+//                listVo.setVin(vo.getVin());
+//                listVo.setRegisterTime(vo.getRegisterTime());
+//                listVo.setStockStatus(vo.getStockStatus());
+//                exportList.add(listVo);
 
             }
 

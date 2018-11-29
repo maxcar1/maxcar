@@ -4390,11 +4390,11 @@ FROM
   </select>
 
 
-  <select id="selectPriceByCarId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="selectPriceByCarId" resultType="java.lang.Double" parameterType="java.lang.String">
     select
-    <include refid="Base_Column_List"/>
+    ifnull(price,0)
     from invoice
-    where car_id = #{carId,jdbcType=VARCHAR} limit 1
+    where car_id = #{carId,jdbcType=VARCHAR} limit 1,1000
   </select>
 
 </mapper>
