@@ -669,10 +669,9 @@ public class InvoiceController extends BaseController {
 //        String marketId = "010";   //   ------------------------------------------------------------------这里市场写死了\
 
         request.setMarketId(marketId);
-        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(request);
 
-//        List<Map> invoices = transactionService.getAllTransactionExcel(request);
-        interfaceResult.InterfaceResult200(tradeInformations);
+        List<Map> invoices = transactionService.getAllTransactionExcel(request);
+        interfaceResult.InterfaceResult200(invoices);
 
         return interfaceResult;
     }
@@ -724,9 +723,9 @@ public class InvoiceController extends BaseController {
         User user = super.getCurrentUser(request);
         invoice.setUserId(user.getUserId());
         invoice.setMarketId(user.getMarketId());
-//        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
+        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
 
-//        interfaceResult.InterfaceResult200(tradeInformations);
+        interfaceResult.InterfaceResult200(tradeInformations);
 
         return interfaceResult;
     }

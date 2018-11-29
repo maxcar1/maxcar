@@ -9,7 +9,6 @@ import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.market.dao.InvoiceMapper;
-import com.maxcar.market.model.request.GetAllTransactionRequest;
 import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.pojo.InvoiceExample;
@@ -21,8 +20,6 @@ import com.maxcar.tenant.pojo.UserTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,42 +116,27 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     }
 
     @Override
-    public List<TradeInformation> detailsExcel(GetAllTransactionRequest request) throws ParseException {
-        if (StringUtil.isNotEmpty(request.getSellerName())) {
-           request.setSellerName("%" + request.getSellerName() + "%");
-        }
-        if (StringUtil.isNotEmpty(request.getPurchacerName())) {
-            request.setPurchacerName("%" + request.getPurchacerName() + "%");
-        }
-        String end = request.getBillTimeEnd();
-
-        if (StringUtil.isNotEmpty(end)) {
-            Date date = DateUtils.parseDate(end, "yyyy-MM-dd");
-            Date dayEnd = DateUtils.getDayEnd(date);
-            String s = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATETIME);
-            request.setBillTimeEnd(s);
-        }
-
-        List<TradeInformation> tradeInformations = invoiceMapper.detailsExcel(request);
-//        for(TradeInformation t : tradeInformations){
-//            String billTime = t.getBillTime();
-//            billTime = billTime.substring(0, 10);
-//            billTime = billTime.replace("-", "/");
-//            t.setBillTime(billTime);
-//            t.setDealTime(billTime);
-////            String dealTime = t.getDealTime();
-////            if(StringUtil.isNotEmpty(dealTime)){
-////                dealTime = dealTime.substring(0,10);
-////                dealTime = dealTime.replace("-", "/");
-////                t.setDealTime(dealTime);
-////            }
-//            String initialLicenceTime = t.getInitialRegistrationDate();
-//            if(StringUtil.isNotEmpty(initialLicenceTime)){
-//                initialLicenceTime = initialLicenceTime.substring(0,10);
-//                initialLicenceTime = initialLicenceTime.replace("-", "/");
-//                t.setInitialRegistrationDate(initialLicenceTime);
+    public List<TradeInformation> detailsExcel(Invoice invoice) {
+        List<TradeInformation> tradeInformations = invoiceMapper.detailsExcel(invoice);
+        for(TradeInformation t : tradeInformations){
+            String billTime = t.getBillTime();
+            billTime = billTime.substring(0, 10);
+            billTime = billTime.replace("-", "/");
+            t.setBillTime(billTime);
+            t.setDealTime(billTime);
+//            String dealTime = t.getDealTime();
+//            if(StringUtil.isNotEmpty(dealTime)){
+//                dealTime = dealTime.substring(0,10);
+//                dealTime = dealTime.replace("-", "/");
+//                t.setDealTime(dealTime);
 //            }
-//        }
+            String initialLicenceTime = t.getInitialRegistrationDate();
+            if(StringUtil.isNotEmpty(initialLicenceTime)){
+                initialLicenceTime = initialLicenceTime.substring(0,10);
+                initialLicenceTime = initialLicenceTime.replace("-", "/");
+                t.setInitialRegistrationDate(initialLicenceTime);
+            }
+        }
         return tradeInformations;
     }
 
