@@ -16,6 +16,8 @@
         <result column="before_image" property="beforeImage" jdbcType="VARCHAR"/>
         <result column="after_image" property="afterImage" jdbcType="VARCHAR"/>
         <result column="is_valid" property="isValid" jdbcType="INTEGER"/>
+        <result column="is_vip" property="isVip" jdbcType="INTEGER"/>
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP"/>
         <result column="remark" property="remark" jdbcType="VARCHAR"/>
         <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
@@ -28,7 +30,7 @@
     <sql id="Base_Column_List">
     id, market_id, parking_fee_id,union_id,card_no, charge_price, parking_volume, pay_type, price,
     before_time, after_time, before_image, after_image, is_valid, remark, insert_time,
-    update_time, insert_operator, update_operator,reason,in_type
+    update_time, insert_operator, update_operator,is_vip,pay_time,reason,in_type
   </sql>
 
     <!-- 根据UnionId 或者卡号 获取最近入场记录信息  -->
@@ -42,6 +44,22 @@
         </if>
         <if test="cardNo !=null">
             and card_no = #{cardNo,jdbcType=VARCHAR}
+        </if>
+        order by insert_time DESC
+        limit 0,1
+    </select>
+
+    <!-- 根据UnionId 或者卡号 获取最近入场记录信息  -->
+    <select id="selectOneByCardNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_fee_detail
+        where is_valid = 1
+        <if test="cardNo !=null">
+            and card_no = #{cardNo,jdbcType=VARCHAR}
+        </if>
+        <if test="isVip !=null">
+            and is_vip = #{isVip,jdbcType=VARCHAR}
         </if>
         order by insert_time DESC
         limit 0,1
@@ -129,7 +147,7 @@
     pay_type, price, before_time,
     after_time, before_image, after_image,
     is_valid, remark, insert_time,
-    update_time, insert_operator, update_operator,reason,in_type
+    update_time, insert_operator, update_operator,is_vip,pay_time,reason,in_type
     )
     values (#{id,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, #{parkingFeeId,jdbcType=VARCHAR},
     #{cardNo,jdbcType=VARCHAR}, #{chargePrice,jdbcType=INTEGER}, #{parkingVolume,jdbcType=INTEGER},
@@ -137,6 +155,7 @@
     #{afterTime,jdbcType=TIMESTAMP}, #{beforeImage,jdbcType=VARCHAR}, #{afterImage,jdbcType=VARCHAR},
     #{isValid,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{insertTime,jdbcType=TIMESTAMP},
     #{updateTime,jdbcType=TIMESTAMP}, #{insertOperator,jdbcType=VARCHAR}, #{updateOperator,jdbcType=VARCHAR},
+    #{isVip,jdbcType=INTEGER},#{payTime,jdbcType=TIMESTAMP},
     #{reason,jdbcType=VARCHAR},#{inType,jdbcType=INTEGER}
     )
   </insert>
@@ -200,6 +219,12 @@
             </if>
             <if test="updateOperator != null">
                 update_operator,
+            </if>
+            <if test="isVip != null">
+                is_vip,
+            </if>
+            <if test="payTime != null">
+                pay_time,
             </if>
             <if test="inType != null">
                 in_type,
@@ -266,6 +291,12 @@
             <if test="updateOperator != null">
                 #{updateOperator,jdbcType=VARCHAR},
             </if>
+            <if test="isVip != null">
+                #{isVip,jdbcType=INTEGER},
+            </if>
+            <if test="payTime != null">
+                #{payTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="inType != null">
                 #{inType,jdbcType=INTEGER},
             </if>
@@ -331,6 +362,12 @@
             <if test="updateOperator != null">
                 update_operator = #{updateOperator,jdbcType=VARCHAR},
             </if>
+            <if test="isVip != null">
+                is_vip = #{isVip,jdbcType=INTEGER},
+            </if>
+            <if test="payTime != null">
+                pay_time = #{payTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="reason != null">
                 reason = #{reason,jdbcType=VARCHAR},
             </if>
@@ -359,6 +396,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       insert_operator = #{insertOperator,jdbcType=VARCHAR},
       update_operator = #{updateOperator,jdbcType=VARCHAR},
+      is_vip = #{isVip,jdbcType=INTEGER},
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
       reason = #{reason,jdbcType=VARCHAR},
       in_type = #{inType,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
@@ -412,69 +451,16 @@
         </where>
     </select>
 
-    <sql id="getParkingFreeList_Column_List">
-    a.id as id,a.card_no as cardNo, a.charge_price as chargePrice, a.pay_type as payType, a.price,
-    a.before_time as beforeTime, a.after_time as afterTime, a.in_type as inType,
-    b.employees_id as employeesId ,b.brake_id as brakeId
-  </sql>
-
-    <select id="getParkingFreeList" resultType="com.maxcar.market.model.response.ParkingFeeDetailListResponse"
-            parameterType="com.maxcar.market.model.request.ParkingFeeDetailListRequest">
-        select <include refid="getParkingFreeList_Column_List"/>
-        from parking_fee_detail a
-        left join parking_fee b on a.parking_fee_id=b.id
-        <where>
-            a.is_valid = 1
-            and a.after_time is not null
-            <include refid="getParkingFreeList_where" />
-            order by a.insert_time DESC
-        </where>
-    </select>
-
-    <select id="getParkingFreePaySum" resultType="com.maxcar.market.model.response.ParkingFeePayDetailResponse"
-            parameterType="com.maxcar.market.model.request.ParkingFeeDetailListRequest">
-        select
-        COUNT(*) AS 'carCount',
-        IFNULL(SUM(price),0) AS 'paySum',
-        IFNULL(SUM(IF(pay_type = 0, price, 0)),0) AS 'aliPay',
-        IFNULL(SUM(IF(pay_type = 1, price, 0)),0) AS 'weChatPay',
-        IFNULL(SUM(IF(pay_type = 2, price, 0)),0) AS 'cashPay',
-        IFNULL(SUM(IF(pay_type = 3, price, 0)),0) AS 'publicPay'
-        from parking_fee_detail a
-        left join parking_fee b on a.parking_fee_id=b.id
-        <where>
-            a.is_valid = 1
-            and a.after_time is not null
-            <include refid="getParkingFreeList_where" />
-            order by a.insert_time DESC
-        </where>
-    </select>
-
-    <sql id="getParkingFreeList_where">
-        <if test=" marketId != null and marketId != '' ">
-            and a.market_id = #{marketId,jdbcType=VARCHAR}
-        </if>
-        <if test="barrierId !=null and barrierId !='' ">
-            and b.brake_id = #{barrierId,jdbcType=VARCHAR}
-        </if>
-        <if test="userId !=null and userId !='' ">
-            and b.employees_id = #{userId,jdbcType=VARCHAR}
-        </if>
-        <if test="payType !=null ">
-            and a.pay_type = #{payType,jdbcType=INTEGER}
-        </if>
-        <if test=" beforeTimeStart !=null and beforeTimeStart !='' ">
-            <![CDATA[ and a.before_time  >= #{beforeTimeStart}  ]]>
-        </if>
-        <if test=" beforeTimeEnd !=null and beforeTimeEnd !='' ">
-            <![CDATA[ and a.before_time < #{beforeTimeEnd}  ]]>
-        </if>
-        <if test=" afterTimeStart !=null and afterTimeStart !='' ">
-            <![CDATA[ and a.after_time  >= #{afterTimeStart}  ]]>
-        </if>
-        <if test=" afterTimeEnd !=null and afterTimeEnd !='' ">
-            <![CDATA[ and a.after_time < #{afterTimeEnd}  ]]>
-        </if>
-    </sql>
+    <!--<update id="updateIsVipByPrimaryKey" parameterType="com.maxcar.market.pojo.ParkingFeeDetail">-->
+        <!--update parking_fee_detail-->
+          <!--set -->
+        <!--<if test="isVip != null">-->
+            <!--is_vip = #{isVip,jdbcType=INTEGER},-->
+        <!--</if>-->
+        <!--<if test="payTime != null">-->
+            <!--pay_time = #{payTime,jdbcType=TIMESTAMP},-->
+        <!--</if>-->
+          <!--where id = #{id,jdbcType=VARCHAR}-->
+    <!--</update>-->
 
 </mapper>
