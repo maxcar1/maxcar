@@ -9,7 +9,6 @@ import java.io.Serializable;
  */
 public class SellCarListExportVo implements Serializable {
 
-    private String carId;
     private String brandAndSeriesName;
     private String modelName;
     private String tenantName;
@@ -21,16 +20,8 @@ public class SellCarListExportVo implements Serializable {
     private double evaluatePrice;
     private double marketPrice;
     private double invoicePrice;
-
     private String vin;
 
-    public String getCarId() {
-        return carId;
-    }
-
-    public void setCarId(String carId) {
-        this.carId = carId;
-    }
 
     public String getBrandAndSeriesName() {
         return brandAndSeriesName;

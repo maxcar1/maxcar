@@ -4394,7 +4394,7 @@ FROM
     select
     ifnull(price,0)
     from invoice
-    where car_id = #{carId,jdbcType=VARCHAR} limit 1,1000
+    where car_id = #{carId,jdbcType=VARCHAR} limit 1
   </select>
 
 </mapper>

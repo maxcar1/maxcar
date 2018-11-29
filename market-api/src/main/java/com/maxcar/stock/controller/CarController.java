@@ -20,16 +20,13 @@ import com.maxcar.base.util.dasouche.HttpClientUtil;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.pojo.Area;
-import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.service.AreaService;
 import com.maxcar.market.service.InvoiceService;
 import com.maxcar.redis.service.RedisService;
-import com.maxcar.redis.util.CacheKey;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.ExportResponse;
-import com.maxcar.stock.entity.Response.ExportSellManageListVo;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.entity.Response.SellCarListExportVo;
 import com.maxcar.stock.pojo.Car;
@@ -73,7 +70,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -974,11 +970,7 @@ public class CarController extends BaseController {
             carVo.setCarType(1);
             carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
             List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
-            List<ExportSellManageListVo> exportList = new ArrayList<>();
-            for (SellCarListExportVo vo: list) {
-
-                double priceByCarId = invoiceService.selectPriceByCarId(vo.getCarId());
-                vo.setInvoicePrice(priceByCarId);
+//            for (SellCarListExportVo vo: list) {
 //                String price = redisService.get(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()));
 //                if (StringUtils.isNotBlank(price)) {
 //                    vo.setInvoicePrice(Double.parseDouble(price));
@@ -989,24 +981,7 @@ public class CarController extends BaseController {
 //                        redisService.set(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()), String.valueOf(invoice.getPrice()));
 //                    }
 //                }
-//
-//                ExportSellManageListVo listVo = new ExportSellManageListVo();
-//                listVo.setBrandAndSeriesName(vo.getBrandAndSeriesName());
-//                listVo.setCarStatus(vo.getCarStatus());
-//                listVo.setEvaluatePrice(vo.getEvaluatePrice());
-//                listVo.setInvoicePrice(vo.getInvoicePrice());
-//                listVo.setIsNewCar(vo.getIsNewCar());
-//                listVo.setMarketPrice(vo.getMarketPrice());
-//                listVo.setTenantName(vo.getTenantName());
-//                listVo.setMileage(vo.getMileage());
-//                listVo.setModelName(vo.getModelName());
-//                listVo.setVin(vo.getVin());
-//                listVo.setRegisterTime(vo.getRegisterTime());
-//                listVo.setStockStatus(vo.getStockStatus());
-//                exportList.add(listVo);
-
-            }
-
+//            }
             interfaceResult.InterfaceResult200(list);
             return interfaceResult;
     }
