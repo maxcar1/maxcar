@@ -70,4 +70,6 @@ public class ParkingFeeDetail extends PageBean implements Serializable {
 
     private Integer chargeFee;//应收费用
 
+    private String reason;
+
 }

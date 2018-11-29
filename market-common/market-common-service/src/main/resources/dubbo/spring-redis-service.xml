@@ -38,5 +38,7 @@
 
 	<dubbo:service interface="com.maxcar.base.service.OpenApiConfigService" ref="openApiConfigService" timeout="1200000"/>
 
+	<dubbo:service interface="com.maxcar.base.service.TopicService" ref="topicService" timeout="1200000"/>
+
 
 </beans>
