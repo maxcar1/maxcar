@@ -5,7 +5,17 @@ import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Magic;
 import com.maxcar.base.service.DaSouCheService;
-import com.maxcar.base.util.*;
+import com.maxcar.base.util.CollectionUtil;
+import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.DatePoor;
+import com.maxcar.base.util.DateUtils;
+import com.maxcar.base.util.HttpClientUtils;
+import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.JsonUtils;
+import com.maxcar.base.util.MD5Util;
+import com.maxcar.base.util.StringUtil;
+import com.maxcar.base.util.StringUtils;
+import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
@@ -13,14 +23,29 @@ import com.maxcar.market.pojo.Area;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.service.AreaService;
 import com.maxcar.market.service.InvoiceService;
+import com.maxcar.redis.service.RedisService;
+import com.maxcar.redis.util.CacheKey;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.ExportResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.entity.Response.SellCarListExportVo;
-import com.maxcar.stock.pojo.*;
-import com.maxcar.stock.service.*;
+import com.maxcar.stock.pojo.Car;
+import com.maxcar.stock.pojo.CarBase;
+import com.maxcar.stock.pojo.CarChannelRel;
+import com.maxcar.stock.pojo.CarCheck;
+import com.maxcar.stock.pojo.CarInfo;
+import com.maxcar.stock.pojo.CarPic;
+import com.maxcar.stock.pojo.CarRecord;
+import com.maxcar.stock.pojo.CheckWZ;
+import com.maxcar.stock.pojo.TaoBaoCar;
+import com.maxcar.stock.service.CarBaseService;
+import com.maxcar.stock.service.CarChannelService;
+import com.maxcar.stock.service.CarCheckService;
+import com.maxcar.stock.service.CarPicService;
+import com.maxcar.stock.service.CarRecordService;
+import com.maxcar.stock.service.CarService;
 import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
@@ -36,13 +61,25 @@ import com.taobao.api.response.ItemUpdateDelistingResponse;
 import com.taobao.api.response.ItemUpdateListingResponse;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author huangxu
@@ -77,6 +114,9 @@ public class CarController extends BaseController {
     private ConfigurationService configurationService;
     @Autowired
     private AreaService areaService;
+
+    @Autowired
+    private RedisService redisService;
 
 
     /**
@@ -933,11 +973,21 @@ public class CarController extends BaseController {
             carVo.setCarType(1);
             carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
             List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
-//            for (SellCarListExportVo vo: list) {
-//                if (vo.getInvoicePrice() != null){
-//                    vo.setInvoicePrice(new BigDecimal(vo.getInvoicePrice()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
-//                }
-//            }
+
+            for (SellCarListExportVo vo: list) {
+                String price = redisService.get(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()));
+                if (StringUtils.isNotBlank(price)) {
+                    vo.setInvoicePrice(Double.parseDouble(price));
+                } else {
+                    Invoice invoice = invoiceService.selectPriceByCarId(vo.getCarId());
+                    if (invoice != null && invoice.getPrice() != null) {
+                        vo.setInvoicePrice(invoice.getPrice());
+                        redisService.set(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()), String.valueOf(invoice.getPrice()));
+                    }
+                }
+
+            }
+
             interfaceResult.InterfaceResult200(list);
             return interfaceResult;
     }
