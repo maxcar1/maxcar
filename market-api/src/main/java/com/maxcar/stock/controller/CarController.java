@@ -152,6 +152,9 @@ public class CarController extends BaseController {
                 inventoryStatisticalRequest.setStockStatus(stockStatus);
             }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
+            InventoryStatisticalResponse responseAccumulative = carService.accumulativeCar(inventoryStatisticalRequest);
+            response.setValuationTotal(responseAccumulative.getValuationTotal());
+            response.setInventoryTotal(responseAccumulative.getInventoryTotal());
             m.put("InventoryStatisticalResponse", response);
         }
         m.put("listCarVo", pageInfo);
