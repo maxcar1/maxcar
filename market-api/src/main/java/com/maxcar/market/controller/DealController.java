@@ -190,8 +190,10 @@ public class DealController extends BaseController {
                 } else if ("1".equals(transferType)) {
                     dealMap.put("transferType", "卖出过户");
                 }
-                deals.add(dealMap);
+            }else{
+                dealMap.put("transferType", "");
             }
+                deals.add(dealMap);
         }
 
 //        for (DealResponse backDeal : list) {
