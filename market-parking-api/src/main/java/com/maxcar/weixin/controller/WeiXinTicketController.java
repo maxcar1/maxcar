@@ -31,7 +31,7 @@ public class WeiXinTicketController {
      * @return
      */
     @GetMapping("/ticket/{codeType}/{sceneId}/{publicNum}")
-    public Object generorTicket(@PathVariable("codeType")Integer codeType,
+    public InterfaceResult generorTicket(@PathVariable("codeType")Integer codeType,
                                 @PathVariable("sceneId")String sceneId,
                                 @PathVariable("publicNum")String publicNum){
         InterfaceResult interfaceResult = new InterfaceResult();
@@ -58,7 +58,7 @@ public class WeiXinTicketController {
     }
 
     @GetMapping("/pay/{productId}")
-    public Object getPayQRCode(@PathVariable("productId") String productId){
+    public InterfaceResult getPayQRCode(@PathVariable("productId") String productId){
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             interfaceResult = weiXinService.getPayQRCode(productId);
@@ -71,23 +71,12 @@ public class WeiXinTicketController {
 
     /**
      * 刷卡进场，unionId上行通知
-     * post请求兼容get，post读取imageUrl
-     * @param marketId
-     * @param cardNo
      * @return
      * @throws Exception
      */
-    @PostMapping("/in/{marketId}/{cardNo}/{barrierId}/{type}")
-    public Object saveInParking(@PathVariable("marketId") String marketId,
-                                @PathVariable("cardNo") String cardNo,
-                                @PathVariable("barrierId") String barrierId,
-                                @PathVariable("type") Integer type,
-                                @RequestBody JSONObject params){
+    @PostMapping("/in")
+    public InterfaceResult saveInParking(@RequestBody JSONObject params){
         try {
-            params.put("marketId",marketId);
-            params.put("cardNo",cardNo);
-            params.put("barrierId",barrierId);
-            params.put("type",type);
             InterfaceResult result = parkingFeeService.saveInParking(params);
             return result;
         }catch (Exception e){
@@ -98,23 +87,16 @@ public class WeiXinTicketController {
 
     /**
      * 刷卡出场，扫码上行
-     * @param marketId
-     * @param key
-     * @param barrierId
-     * @param type
      * @return
      * @throws Exception
      */
-    @GetMapping("/out/{cardNo}/{barrierId}/{type}/{marketId}")
-    public Object updateParkingDetail(@PathVariable("marketId") String marketId,
-                                      @PathVariable("key") String key,
-                                      @PathVariable("barrierId") String barrierId,
-                                      @PathVariable("type") Integer type) throws Exception{
-        InterfaceResult result = parkingFeeService.updateParkingDetail(marketId,key,barrierId,type);
+    @PostMapping("/out")
+    public InterfaceResult updateParkingDetail(@RequestBody JSONObject params) throws Exception{
+        String barrierId = params.getString("barrierId");
+        InterfaceResult result = parkingFeeService.updateParkingDetail(params);
         if (StringUtils.equals(result.getCode(),"200")){
             JSONObject json = (JSONObject)JSONObject.toJSON(result.getData());
             //推送刷卡出场信息
-
             WebSocketServer.sendInfo(JSON.toJSONString(json),barrierId);
         }
         return result;

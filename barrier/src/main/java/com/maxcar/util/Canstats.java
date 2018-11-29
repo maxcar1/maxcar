@@ -62,6 +62,9 @@ public class Canstats {
 
     public static String dzClose = "81FF";//开闸命令
 
+    public static String dgMark_union_id = "88"; //unionId获取地感的标识
+
+    public static String dgMark_card = "89"; //卡号获取地感的标识
 
 
     public static final  Integer deleteType = -1;//在场

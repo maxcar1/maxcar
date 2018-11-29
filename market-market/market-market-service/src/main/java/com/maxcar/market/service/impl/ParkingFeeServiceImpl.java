@@ -285,7 +285,12 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
     }
 
     @Override
-    public InterfaceResult updateParkingDetail(String marketId, String key, String barrierId, Integer type) throws Exception {
+    public InterfaceResult updateParkingDetail(JSONObject params) throws Exception {
+        String key = params.getString("key");
+        String barrierId = params.getString("barrierId");
+        String marketId = params.getString("marketId");
+        Integer type = params.getInteger("type");
+        String imageUrl = params.getString("imageUrl");
         InterfaceResult result = new InterfaceResult();
         Barrier barrier = barrierService.selectByBarrierId(barrierId);
         ParkingFeeDetail parkingFeeDetail = new ParkingFeeDetail();
@@ -296,11 +301,13 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 //刷卡
                 parkingFeeDetail.setCardNo(key);
                 ParkingFeeDetail parkingFeeDe = doCard(marketId,barrier,parkingFeeDetail);
+                parkingFeeDe.setAfterImage(imageUrl);
                 json = (JSONObject)JSONObject.toJSON(parkingFeeDe);
                 json.put("type",5);
                 break;
             case 1:
                 doWeixinEvent(key,barrier);
+                json.put("imageUrl",imageUrl);
                 json.put("type",6);
                 break;
             default:
@@ -492,7 +499,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
     @Override
     public InterfaceResult saveInParking(JSONObject params) throws Exception {
         String marketId = params.getString("marketId");
-        String num = params.getString("cardNo");
+        String num = params.getString("key");
         String barrierId = params.getString("barrierId");
         String imageUrl = params.getString("imageUrl");
         Integer type = params.getInteger("type");

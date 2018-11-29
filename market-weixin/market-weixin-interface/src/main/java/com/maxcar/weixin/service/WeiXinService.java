@@ -43,7 +43,7 @@ public interface WeiXinService {
 
     InterfaceResult getJsApi() throws Exception;
 
-    InterfaceResult escapeHatch(String marketId,String barrierId) throws Exception;
+    InterfaceResult escapeHatch(JSONObject params) throws Exception;
 
     UserInfo getUserInfo(String openId, String appId, String appSecret, String key) throws Exception;
 

@@ -242,6 +242,68 @@ public class BarrierController {
         return interfaceResult;
     }
 
+    /**
+     * 微信公众号unionid下发，刷卡出场校验地感
+     * @param topic
+     * @param dzId
+     * @param type
+     * @param id
+     * @return
+     */
+    @GetMapping("/check/{topic}/{dzId}/{type}/{id}")
+    public InterfaceResult checkGroundSense(@PathVariable("topic")String topic,
+                                            @PathVariable("dzId")String dzId,
+                                            @PathVariable("type")Integer type,
+                                            @PathVariable("id")String id){
+        InterfaceResult result = new InterfaceResult();
+        try {
+            String outParam = "";
+            String value1 = Canstats.headerBody;
+            //字符串长度/2
+            String value2 = "leng";//44字节
+            //协议版本
+            String value3 = Canstats.headerVersion;
+            String value4 = "";//下发数据
+            int time = (int)(System.currentTimeMillis()/1000);
+            String timeStamp = PushCallback.toHexString(time);
+            //id长度+id号+时间戳+设备类型+程序版本+设备电量
+            String value5 = PushCallback.toHexString(dzId.length()/2)+dzId+timeStamp+Canstats.dzType+Canstats.dzVersion+Canstats.dzPower;
+            String value6 = "000B";
+            String value7 = "";
+            String value8 = "";//欢迎词
+            if (type == -5){
+                //卡号
+                value4 = Canstats.dgMark_card;
+            }else if(type == -4){
+                //unionId
+                value4 = Canstats.dgMark_union_id;
+            }
+            //-4标识下发检测是否压地感
+            value8  = id;
+            byte[] b = value8.getBytes("gbk");
+            value7 = value4 + Integer.toHexString(b.length).toUpperCase();
+            byte[] v6_length = (value7+value8).getBytes("gbk");
+            String v6_len = Integer.toHexString(v6_length.length).toUpperCase();
+            StringBuilder sb = new StringBuilder();
+            for (int i=0;i<4-v6_len.length();i++){
+                sb.append("0");
+            }
+            value6 = sb.toString()+v6_len;
+            outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
+            outParam = outParam.replaceAll("leng", PushCallback.toHexStringBy0(outParam.length()/2+2));
+            logger.info(outParam + "------发送数据");
+            String outHex = CRC16M.GetModBusCRC(outParam);
+
+            outParam = outParam + outHex;
+            logger.info(outParam + "------发送数据2");
+            ServerMQTT.send(outParam,topic);
+        }catch (Exception e){
+            result.InterfaceResult500("保存失败");
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //道闸黑白名单配置
     @RequestMapping(value = "/addBarrierControlCar")
     public InterfaceResult addBarrierControlCar(@RequestBody BarrierControlCar controlCar, HttpServletRequest request) throws Exception{

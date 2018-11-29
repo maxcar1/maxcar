@@ -119,11 +119,12 @@ public class ParkingFeeController extends BaseController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/kz/{barrierId}")
-    public Object escapeHatch(HttpServletRequest request,@PathVariable("barrierId") String barrierId)
+    @PostMapping("/kz")
+    public Object escapeHatch(HttpServletRequest request,@RequestBody JSONObject params)
             throws Exception{
         User user = getCurrentUser(request);
-        InterfaceResult result = weiXinService.escapeHatch(user.getMarketId(),barrierId);
+        params.put("marketId",user.getMarketId());
+        InterfaceResult result = weiXinService.escapeHatch(params);
         return  result;
     }
 }
