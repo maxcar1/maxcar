@@ -148,6 +148,7 @@ public class InvoiceController extends BaseController {
         invoice.setUserId(currentUser.getUserId());
         PageInfo pageInfo = invoiceService.getInvoiceList(invoice);
         interfaceResult.InterfaceResult200(pageInfo);
+
         return interfaceResult;
     }
 
