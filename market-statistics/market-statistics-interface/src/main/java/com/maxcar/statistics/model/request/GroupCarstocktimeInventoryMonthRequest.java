@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class GroupCartypeDayRequest implements Serializable {
+public class GroupCarstocktimeInventoryMonthRequest implements Serializable {
 
-    private String orderBy;
     @NotNull(message = "起始时间不能为null")
     private String startTime;
+
     @NotNull(message = "结束时间不能为null")
     private String endTime;
 
@@ -19,7 +19,8 @@ public class GroupCartypeDayRequest implements Serializable {
     private String tenantId;
 
     // 车辆类型
-    private String typeId;
+    //  @NotNull(message = "车辆类型不能为null")
+    private String stocktimeId;
 
-
+    private String selectCondition;
 }

@@ -1,15 +1,11 @@
 package com.maxcar.statistics.service.impl;
 
 import com.maxcar.base.util.StringUtil;
-import com.maxcar.statistics.dao.CartypeDayDao;
-import com.maxcar.statistics.model.parameter.GetInvoiceByCarInvoiceTypeReportParameter;
 import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
-import com.maxcar.statistics.model.request.GetInvoiceByCarInvoiceTypeReportRequest;
 import com.maxcar.statistics.model.request.GroupCartypeMonthRequest;
-import com.maxcar.statistics.model.response.GetInvoiceByCarInvoiceTypeReportResponse;
 import com.maxcar.statistics.model.response.GroupCartypeDayResponse;
 import com.maxcar.statistics.model.response.GroupCartypeMonthResponse;
-import com.maxcar.statistics.service.ReportCartypeService;
+import com.maxcar.statistics.service.ReportByCartypeService;
 import com.maxcar.statistics.service.impl.mapperService.CartypeMapperService;
 import com.maxcar.statistics.service.impl.mapperService.ReportMapperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +18,7 @@ import java.util.List;
  * create_date: lxy 2018/11/19  11:56
  **/
 @Service("reportByCarInvoiceTypeService")
-public class ReportCartypeServiceImpl implements ReportCartypeService {
+public class ReportByCartypeServiceImpl implements ReportByCartypeService {
 
     @Autowired
     private ReportMapperService reportMapperService;
@@ -62,7 +58,7 @@ public class ReportCartypeServiceImpl implements ReportCartypeService {
      * describe:  某一类型 交易量与交易价值 按月分组
      * create_date:  lxy   2018/11/19  13:39
      **/
-    public List<GetInvoiceByCarInvoiceTypeReportResponse> getInvoiceByCarInvoiceTypeReportMonth(GetInvoiceByCarInvoiceTypeReportRequest request) {
+   /* public List<GetInvoiceByCarInvoiceTypeReportResponse> getInvoiceByCarInvoiceTypeReportMonth(GetInvoiceByCarInvoiceTypeReportRequest request) {
 
         GetInvoiceByCarInvoiceTypeReportParameter parameter = new GetInvoiceByCarInvoiceTypeReportParameter();
 
@@ -94,7 +90,7 @@ public class ReportCartypeServiceImpl implements ReportCartypeService {
         parameter.setSelectCondition(stringBuffer.toString());
 
         return reportMapperService.getInvoiceByCarInvoiceTypeReport(parameter);
-    }
+    }*/
 
 
 }

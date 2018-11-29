@@ -9,7 +9,7 @@ import com.maxcar.statistics.model.response.GroupCartypeMonthResponse;
 
 import java.util.List;
 
-public interface ReportCartypeService {
+public interface ReportByCartypeService {
 
 
     /**

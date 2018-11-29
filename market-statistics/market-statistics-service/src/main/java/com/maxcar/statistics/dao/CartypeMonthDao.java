@@ -14,7 +14,7 @@ public interface CartypeMonthDao extends BaseDao {
 
     /**
      * param:
-     * describe: 分组查询车辆类型日表
+     * describe: 分组查询车辆类型月表
      * create_date:  lxy   2018/11/22  17:13
      **/
     @SelectProvider(type = CartypeMonthProvider.class, method = "groupCartypeMonth")
