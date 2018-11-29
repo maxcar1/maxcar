@@ -311,14 +311,42 @@
 
 
   <select id="selectByHisWarning" resultType="com.maxcar.stock.pojo.HisWarning">
-    select cc.rfid,cc.vin,cc.carStatus,cc.tenant,cc.carId,cc.brandCode,cc.brandName,
-    cc.seriesCode,cc.seriesName,cr.user_id 'userId',cr.out_reason 'outReason',cr.back_time 'backTime',
-    cr.is_pass 'isPass',cr.reason_desc 'reasonDesc',cr.is_pledge 'isPledge',
-    cr.insert_time 'insertTime',cr.is_valid 'isValid' from car_review cr right join (
-select c.rfid,c.vin,c.car_status 'carStatus',c.tenant,c.id 'carId',cb.brand_code as 'brandCode',cb.brand_name as 'brandName',
-cb.series_code 'seriesCode',cb.series_name as 'seriesName'
-from car c left join car_base cb  on c.id = cb.id
-where
+    SELECT
+    cc.rfid,
+    cc.vin,
+    cc.carStatus,
+    cc.tenant,
+    cc.carId,
+    cc.brandCode,
+    cc.brandName,
+    cc.seriesCode,
+    cc.seriesName,
+    cr.user_id 'userId',
+    cr.out_reason 'outReason',
+    cr.id,
+    cr.back_time 'backTime',
+    cr.is_pass 'isPass',
+    cr.reason_desc 'reasonDesc',
+    cr.is_pledge 'isPledge',
+    cr.insert_time 'insertTime',
+    cr.is_valid 'isValid'
+    FROM
+    car_review cr
+    RIGHT JOIN (
+    SELECT
+    c.rfid,
+    c.vin,
+    c.car_status 'carStatus',
+    c.tenant,
+    c.id 'carId',
+    cb.brand_code AS 'brandCode',
+    cb.brand_name AS 'brandName',
+    cb.series_code 'seriesCode',
+    cb.series_name AS 'seriesName'
+    FROM
+    car c
+    LEFT JOIN car_base cb ON c.id = cb.id
+    WHERE
 market_id = #{marketId,jdbcType=INTEGER}
     <if test="brandCode != null and brandCode != ''" >
       and cb.brand_code = #{brandCode,jdbcType=VARCHAR}
@@ -340,4 +368,5 @@ where cr.back_time > NOW()
 and cr.is_pass  = 1
 and cr.is_valid = 1
   </select>
+
 </mapper>
