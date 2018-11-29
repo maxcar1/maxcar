@@ -138,14 +138,15 @@ public class InvoiceController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         User currentUser = getCurrentUser(request);
         String userId = currentUser.getUserId();
-        if (null != currentUser.getMarketId() && currentUser.getMarketId() != "") {
+        if (null != currentUser.getMarketId() &&  !"".equals(currentUser.getMarketId())) {
             invoice.setMarketId(currentUser.getMarketId());
         }
         User user = userService.selectByPrimaryKey(userId);
         if(user.getManagerFlag() == 0){
             invoice.setMarketId(null);
+        }else {
+            invoice.setUserId(currentUser.getUserId());
         }
-        invoice.setUserId(currentUser.getUserId());
         PageInfo pageInfo = invoiceService.getInvoiceList(invoice);
         interfaceResult.InterfaceResult200(pageInfo);
 
