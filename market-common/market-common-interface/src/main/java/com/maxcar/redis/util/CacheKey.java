@@ -38,4 +38,10 @@ public interface CacheKey {
      */
     String STAFF_TOKEN_MARK = "kv:{0}:mark";
 
+    /**
+     * 车开票价格
+     * kv:carId:price
+     */
+    String CAR_INVOICE_PRICE = "kv:{0}:price";
+
 }

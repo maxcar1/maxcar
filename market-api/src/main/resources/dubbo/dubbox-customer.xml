@@ -254,7 +254,10 @@
 					 check="false" retries="0" timeout="20000"/>
 
 	<dubbo:reference interface="com.maxcar.stock.service.ReviewListService"
-					 id="reviewListService"
+					 id="reviewListService"/>
+
+	<dubbo:reference interface="com.maxcar.redis.service.RedisService"
+					 id="redisService"
 					 check="false" retries="0" timeout="20000"/>
 
 </beans>

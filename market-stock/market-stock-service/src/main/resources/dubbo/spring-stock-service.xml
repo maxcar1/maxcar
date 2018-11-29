@@ -51,10 +51,7 @@
 	<dubbo:reference interface="com.maxcar.market.service.AreaService" id="areaService" check="false" retries="0" timeout="20000" />
 
 
-
-
-
-
+	<dubbo:reference interface="com.maxcar.market.service.InvoiceService" id="invoiceService" check="false" retries="0" timeout="20000" />
 	<!--引入缓存-->
 
 	<!--引入字典 com.maxcar.user.service -->

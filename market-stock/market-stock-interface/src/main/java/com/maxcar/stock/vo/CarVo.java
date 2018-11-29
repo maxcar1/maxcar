@@ -171,6 +171,16 @@ public class CarVo extends PageBean implements Serializable {
     private String displacement1;
     private String displacement2;
 
+    private Double invoicePrice;// 实际售价
+
+    public Double getInvoicePrice() {
+        return invoicePrice;
+    }
+
+    public void setInvoicePrice(Double invoicePrice) {
+        this.invoicePrice = invoicePrice;
+    }
+
     public Integer getReviewId() {
         return reviewId;
     }

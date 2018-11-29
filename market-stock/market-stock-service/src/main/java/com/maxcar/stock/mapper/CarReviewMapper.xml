@@ -9,9 +9,17 @@
     <result column="out_reason" property="outReason" jdbcType="VARCHAR" />
     <result column="back_time" property="backTime" jdbcType="TIMESTAMP" />
     <result column="is_pass" property="isPass" jdbcType="INTEGER" />
+    <result column="reason_desc" property="reasonDesc" jdbcType="VARCHAR" />
     <result column="is_pledge" property="isPledge" jdbcType="INTEGER" />
     <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
     <result column="desc" property="desc" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="CarRecordVoMap" type="com.maxcar.stock.entity.Response.CarRecordVo">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="review_id" property="reviewId" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="barrier_position" property="barrierPosition" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -72,9 +80,17 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, car_id, market_id, user_id, out_reason, back_time, is_pass, is_pledge, insert_time, 
+    id, car_id, market_id, user_id, out_reason, back_time, is_pass, is_pledge, insert_time,
     is_valid,desc
+
   </sql>
+
+  <sql id="CarReviewVo_Column_List" >
+    cr.id, cr.car_id as carId, cr.market_id as marketId, cr.user_id as userId, cr.out_reason as outReason,
+    cr.back_time as backTime, cr.is_pass as isPass, cr.reason_desc as reasonDesc, cr.is_pledge as isPledge,
+    cr.insert_time as insertTime, cr.is_valid as isValid,c.stock_status as stockStatus
+  </sql>
+
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.CarReviewExample" >
     select
     <if test="distinct" >
@@ -143,6 +159,9 @@
       <if test="isPass != null" >
         is_pass,
       </if>
+      <if test="reasonDesc != null" >
+        reason_desc,
+      </if>
       <if test="isPledge != null" >
         is_pledge,
       </if>
@@ -177,6 +196,9 @@
       </if>
       <if test="isPass != null" >
         #{isPass,jdbcType=INTEGER},
+      </if>
+      <if test="reasonDesc != null" >
+        #{reasonDesc,jdbcType=VARCHAR},
       </if>
       <if test="isPledge != null" >
         #{isPledge,jdbcType=INTEGER},
@@ -219,6 +241,9 @@
       <if test="record.isPass != null" >
         is_pass = #{record.isPass,jdbcType=INTEGER},
       </if>
+      <if test="record.reasonDesc != null" >
+        reason_desc = #{record.reasonDesc,jdbcType=VARCHAR},
+      </if>
       <if test="record.isPledge != null" >
         is_pledge = #{record.isPledge,jdbcType=INTEGER},
       </if>
@@ -242,6 +267,7 @@
       out_reason = #{record.outReason,jdbcType=VARCHAR},
       back_time = #{record.backTime,jdbcType=TIMESTAMP},
       is_pass = #{record.isPass,jdbcType=INTEGER},
+      reason_desc = #{record.reasonDesc,jdbcType=VARCHAR},
       is_pledge = #{record.isPledge,jdbcType=INTEGER},
       insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
       is_valid = #{record.isValid,jdbcType=INTEGER}
@@ -273,6 +299,9 @@
       <if test="isPass != null" >
         is_pass = #{isPass,jdbcType=INTEGER},
       </if>
+      <if test="reasonDesc != null" >
+        reason_desc = #{reasonDesc,jdbcType=VARCHAR},
+      </if>
       <if test="isPledge != null" >
         is_pledge = #{isPledge,jdbcType=INTEGER},
       </if>
@@ -293,6 +322,7 @@
       out_reason = #{outReason,jdbcType=VARCHAR},
       back_time = #{backTime,jdbcType=TIMESTAMP},
       is_pass = #{isPass,jdbcType=INTEGER},
+      reason_desc = #{reasonDesc,jdbcType=VARCHAR},
       is_pledge = #{isPledge,jdbcType=INTEGER},
       insert_time = #{insertTime,jdbcType=TIMESTAMP},
       is_valid = #{isValid,jdbcType=INTEGER},
@@ -371,4 +401,33 @@ and market_id = #{marketId,jdbcType=INTEGER}
 
   </select>
 
+
+  <select id="getCarRecord" parameterType="com.maxcar.stock.pojo.CarReview" resultMap="CarRecordVoMap">
+    SELECT a.id as review_id,c.insert_time as time,c.type,d.barrier_position
+    from car_review a
+    LEFT JOIN car b
+    on a.car_id = b.id
+    LEFT JOIN car_record c
+    on b.vin = c.vin
+    left join barrier d
+    on c.channel = d.barrier_id
+    WHERE a.is_valid = 1
+    and c.insert_time&gt;=a.insert_time  and   c.insert_time&lt;=a.back_time
+    <if test="id != null and id != '' ">
+      and a.id = #{id}
+    </if>
+    <if test="carId != null and carId != '' ">
+      and a.car_id = #{carId}
+    </if>
+  </select>
+
+  <select id="selectAllTimeoutNotreturnCarReview" resultType="com.maxcar.stock.vo.CarReviewVo">
+    SELECT
+    <include refid="CarReviewVo_Column_List" />
+    FROM
+    car_review cr
+    LEFT JOIN car c ON cr.car_id = c.id
+    WHERE
+    cr.is_pass = 1 AND cr.is_valid = 1 AND now() >= cr.back_time AND c.stock_status = 3
+  </select>
 </mapper>

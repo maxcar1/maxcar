@@ -4171,10 +4171,10 @@ FROM
     seller_name sellerName,seller_address sellerAddress, seller_mobile sellerMobile
     from Invoice
     <where>
-      <if test="marketId != null">
+      <if test="marketId != null and marketId != ''  ">
         and market_id = #{marketId}
       </if>
-      <if test="idCard != null">
+      <if test="idCard != null and idCard != ''  ">
         and (seller_id_card like concat(concat('%',#{idCard}),'%') or purchacer_id_card like
         concat(concat('%',#{idCard}),'%'))
       </if>
@@ -4388,4 +4388,13 @@ FROM
       </if>
     </if>
   </select>
+
+
+  <select id="selectPriceByCarId" resultType="java.lang.Double" parameterType="java.lang.String">
+    select
+    ifnull(price,0)
+    from invoice
+    where car_id = #{carId,jdbcType=VARCHAR} limit 1,1000
+  </select>
+
 </mapper>

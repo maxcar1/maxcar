@@ -5,14 +5,8 @@ import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.stock.entity.CarParams;
-import com.maxcar.stock.entity.Response.CarDataStatistics;
-import com.maxcar.stock.entity.Response.CarDetails;
-import com.maxcar.stock.entity.Response.ExportReviewResponse;
-import com.maxcar.stock.entity.Response.ReviewVo;
-import com.maxcar.stock.pojo.Car;
-import com.maxcar.stock.pojo.CarBase;
-import com.maxcar.stock.pojo.CarReview;
-import com.maxcar.stock.pojo.ReviewDetail;
+import com.maxcar.stock.entity.Response.*;
+import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.*;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.service.UserTenantService;
@@ -28,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auditing")
@@ -57,12 +48,13 @@ public class AuditingController extends BaseController {
     @RequestMapping("/checkPendinglist")
     @OperationAnnotation(title = "车辆出场审核待审核列表")
     public InterfaceResult getCarReview(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
+        User user = getCurrentUser(request);
+        carParams.setReviewPersonId(user.getUserId());
         InterfaceResult interfaceResult = new InterfaceResult();
         PageInfo pageInfo = carService.listReview(carParams);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
     }
-
 
     @RequestMapping("/carReviewDetail/{reviewId}")
     @OperationAnnotation(title = "车辆出场审核详情")
@@ -159,6 +151,7 @@ public class AuditingController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = getCurrentUser(request);
         reviewDetail.setReviewPersonId(user.getUserId());
+        reviewDetail.setInsertTime(new Date());
         boolean b = reviewDetailService.saveReviewDetail(reviewDetail);
         interfaceResult.InterfaceResult200(b);
         return interfaceResult;
@@ -203,15 +196,16 @@ public class AuditingController extends BaseController {
     }
 
 
-    @RequestMapping("/detail/{reviewId}")
+    @RequestMapping("/detail/{reviewId}/{carId}")
     @OperationAnnotation(title = "审核结果")
-    public InterfaceResult carReviewDetailList(@PathVariable Integer reviewId,HttpServletRequest request ) throws Exception{
+    public InterfaceResult carReviewDetailList(@PathVariable Integer reviewId,@PathVariable String carId, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        User u = getCurrentUser(request);
         Map<String,Object> map = new HashMap<>();
         ReviewDetail r =  new ReviewDetail();
         r.setReviewId(reviewId);
         List<ReviewDetail> list = reviewDetailService.getReviewDetail(r);
-        if(list != null && list.size()>0){
+         if(list != null && list.size()>0){
             for(ReviewDetail reviewDetail:list){
                 if(reviewDetail.getReviewResult() !=1){
                     map.put("reviewDetail","审核不通过");
@@ -221,10 +215,43 @@ public class AuditingController extends BaseController {
                 }
             }
         }
-
+        CarVo carVo = new CarVo();
+        carVo.setReviewId(reviewId);
+        CarReview carReview = carReviewService.getCarReview(carVo);
+        if(carReview != null){
+            User user = new User();
+            user.setUserId(carReview.getUserId());
+            List<User> userList = userService.getUserList(user);
+            carReview.setUserName(userList.get(0).getTrueName());
+            map.put("carReview",carReview);
+        }
+        ReviewDetail reviewDetail = new ReviewDetail();
+        reviewDetail.setReviewId(reviewId);
+        List<ReviewDetail> reviewDetaillist = reviewDetailService.getReviewDetail(reviewDetail);
+        ReviewStep reviewStep = new ReviewStep();
+        reviewStep.setMarketId(u.getMarketId());
+        reviewStep.setOrgId(u.getOrgId());
+        List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
+        for(ReviewDetail rd:reviewDetaillist){
+            if(rd.getReviewPersonId().equals(u.getUserId()) && rd.getLevel() == reviewStepList.get(0).getLevel()){
+                map.put("reviewDetails",rd);
+            }
+        }
+        interfaceResult.InterfaceResult200(map);
         return interfaceResult;
     }
 
 
+    @RequestMapping("/carRecord/{reviewId}/{carId}")
+    @OperationAnnotation(title = "车辆出入场记录")
+    public InterfaceResult carRecord(@PathVariable Integer reviewId,@PathVariable String carId,HttpServletRequest request ) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        CarReview carReview =  new CarReview();
+        carReview.setId(reviewId);
+        carReview.setCarId(carId);
+        List<CarRecordVo> list = carReviewService.getCarRecord(carReview);
+        interfaceResult.InterfaceResult200(list);
+        return interfaceResult;
+    }
 
 }

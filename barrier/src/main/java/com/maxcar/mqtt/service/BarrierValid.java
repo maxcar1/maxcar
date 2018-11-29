@@ -65,6 +65,35 @@ public class BarrierValid {
                 outParam = outParam + outHex;
                 logger.info("车辆进场记录已生成");
                 if(barrier.getInOutType() == 0) {//入口
+                    switch (stockCarInfo.getStockStatus()){
+                        case -1://删除车
+                            break;
+                        case 5://售出车
+                            break;
+                        case 4://售出未出厂
+                            break;
+                        default:
+                            stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
+                            break;
+                    }
+                }else{
+                    if (stockCarInfo.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
+                        stockCarInfo.setStockStatus(Canstats.saleOutType);
+                    else{
+                        stockCarInfo.setStockStatus((stockCarInfo.getStockStatus()==Canstats.deleteType || stockCarInfo.getStockStatus()==Canstats.saleOutType)?stockCarInfo.getStockStatus():Canstats.outType);
+                    }
+                }
+                initCarStatus(stockCarInfo, barrier);
+                map.put("stockCarInfo", stockCarInfo);
+                break;
+            case "4"://不需要硬件回复，走不限制逻辑
+                value7 = Canstats.yxcc;//允许开闸
+                value8 = barrier.getStaticSpeech();
+                outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
+                outHex = CRC16M.GetModBusCRC(outParam);
+                outParam = outParam + outHex;
+                logger.info("车辆进场记录已生成");
+                if(barrier.getInOutType() == 0) {//入口
                     stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
                 }else{
                     if (stockCarInfo.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场

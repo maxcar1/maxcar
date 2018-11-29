@@ -565,6 +565,76 @@ public class CarReviewExample {
             return (Criteria) this;
         }
 
+        public Criteria andReasonDescIsNull() {
+            addCriterion("reason_desc is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescIsNotNull() {
+            addCriterion("reason_desc is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescEqualTo(String value) {
+            addCriterion("reason_desc =", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescNotEqualTo(String value) {
+            addCriterion("reason_desc <>", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescGreaterThan(String value) {
+            addCriterion("reason_desc >", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescGreaterThanOrEqualTo(String value) {
+            addCriterion("reason_desc >=", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescLessThan(String value) {
+            addCriterion("reason_desc <", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescLessThanOrEqualTo(String value) {
+            addCriterion("reason_desc <=", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescLike(String value) {
+            addCriterion("reason_desc like", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescNotLike(String value) {
+            addCriterion("reason_desc not like", value, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescIn(List<String> values) {
+            addCriterion("reason_desc in", values, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescNotIn(List<String> values) {
+            addCriterion("reason_desc not in", values, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescBetween(String value1, String value2) {
+            addCriterion("reason_desc between", value1, value2, "reasonDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andReasonDescNotBetween(String value1, String value2) {
+            addCriterion("reason_desc not between", value1, value2, "reasonDesc");
+            return (Criteria) this;
+        }
+
         public Criteria andIsPledgeIsNull() {
             addCriterion("is_pledge is null");
             return (Criteria) this;

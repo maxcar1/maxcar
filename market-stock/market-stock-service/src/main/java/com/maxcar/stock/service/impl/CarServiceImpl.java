@@ -12,8 +12,18 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.DaSouCheService;
 import com.maxcar.base.service.impl.BaseServiceImpl;
-import com.maxcar.base.util.*;
+import com.maxcar.base.util.CollectionUtil;
+import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.DateUtils;
+import com.maxcar.base.util.HttpClientUtils;
+import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.MD5Util;
+import com.maxcar.base.util.StringUtil;
+import com.maxcar.base.util.StringUtils;
+import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.Result;
+import com.maxcar.market.pojo.Invoice;
+import com.maxcar.market.service.InvoiceService;
 import com.maxcar.stock.dao.CarBaseMapper;
 import com.maxcar.stock.dao.CarMapper;
 import com.maxcar.stock.dao.CarPicMapper;
@@ -22,20 +32,42 @@ import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
-import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.entity.Response.BarrierCarListResponse;
-import com.maxcar.stock.pojo.*;
+import com.maxcar.stock.entity.Response.CarDataStatistics;
+import com.maxcar.stock.entity.Response.GetCarListByMarketIdAndTenantResponse;
+import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
+import com.maxcar.stock.entity.Response.SellCarListExportVo;
+import com.maxcar.stock.pojo.Car;
+import com.maxcar.stock.pojo.CarBase;
+import com.maxcar.stock.pojo.CarBaseWithBLOBs;
+import com.maxcar.stock.pojo.CarExample;
+import com.maxcar.stock.pojo.CarIcon;
+import com.maxcar.stock.pojo.CarInfo;
+import com.maxcar.stock.pojo.CarPic;
+import com.maxcar.stock.pojo.CarPicExample;
+import com.maxcar.stock.pojo.CarVehicle;
+import com.maxcar.stock.pojo.DpCar;
+import com.maxcar.stock.pojo.TaoBaoCar;
 import com.maxcar.stock.service.CarService;
+import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.service.ConfigurationService;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.ItemUpdateDelistingRequest;
+import com.taobao.api.response.ItemUpdateDelistingResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author huangxu
@@ -52,6 +84,8 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     CarBaseMapper carBaseMapper;
     @Autowired
     DaSouCheService daSouCheService;
+    @Autowired
+    InvoiceService invoiceService;
     @Autowired
     CarPicMapper carPicMapper;
     //@Autowired
@@ -867,7 +901,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             for (int i = 0; i < lists.size(); i++) {
                 CarPicExample carPicExample = new CarPicExample();
                 String id = lists.get(i).getId() + "";
-                carPicExample.createCriteria().andCarIdEqualTo(id).andTypeEqualTo(0);
+                carPicExample.createCriteria().andCarIdEqualTo(id).andTypeEqualTo(1);
                 List<CarPic> carPicList = carPicMapper.selectByExample(carPicExample);
                 if (CollectionUtil.listIsNotEmpty(carPicList)) {
                     lists.get(i).setSrc(carPicList.get(0).getSrc());
@@ -895,7 +929,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
 
         CarBase carBase = carBaseMapper.selectByPrimaryKey(id);
         CarPicExample carPicExample = new CarPicExample();
-        carPicExample.createCriteria().andCarIdEqualTo(id);
+        carPicExample.createCriteria().andCarIdEqualTo(id).andTypeNotEqualTo(0);
         List<CarPic> carPicList = carPicMapper.selectByExample(carPicExample);
         map.put("car", car);
         JSONObject json = new JSONObject();
@@ -1022,5 +1056,98 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return carMapper.carData(tenantId);
     }
 
+    /**
+     * 出售管理列表
+     * @param carVo
+     * @return
+     */
+    @Override
+    public PageInfo<CarVo> getAllSalesManageCarList(CarVo carVo) {
+        PageHelper.startPage(carVo.getCurrentPage(),carVo.getPageSize());
+        List<CarVo> allSalesManageCarList = carMapper.getAllSalesManageCarList(carVo);
+        PageInfo pageInfo = new PageInfo(allSalesManageCarList);
+        return pageInfo;
+    }
+
+    /**
+     * 导出出售管理列表
+     * @param carVo
+     * @return
+     */
+    @Override
+    public List<SellCarListExportVo> exportAllSellCarList(CarVo carVo) {
+        List<SellCarListExportVo> allSalesManageCarList = carMapper.exportAllSellCarList(carVo);
+        return allSalesManageCarList;
+    }
+
+
+    /**
+     * 出售车辆修改车辆状态并且下架淘宝
+     * @param carSellVo
+     * @return
+     */
+    @Override
+    public InterfaceResult sellCarAndDownTaoBao(CarSellVo carSellVo) {
+        InterfaceResult interfaceResult = new InterfaceResult();
+        Car car = carMapper.selectByPrimaryKey(carSellVo.getCarId());
+        if (car != null){
+
+            Invoice invoice = new Invoice();
+            invoice.setId(UuidUtils.gettimeFormartyyyyMMddHHmmss());
+            invoice.setBillTime(new Date());
+            invoice.setPrice(carSellVo.getPrice());
+            invoice.setCarId(carSellVo.getCarId());
+            invoice.setTenantId(carSellVo.getTenantId());
+            invoice.setTenantName(car.getTenantName());
+            invoice.setMarketId(carSellVo.getMarketId());
+            invoice.setVin(carSellVo.getVin());
+            invoice.setType(carSellVo.getCarType());
+            invoice.setCarStockStatus(carSellVo.getStockStatus());
+            invoice.setTradingType(1);// 售出默认本地交易
+
+            if (carSellVo.getDownTaoBao() == 1 && StringUtils.isNotBlank(carSellVo.getTaobaoId())){
+                downTaoBaoByTBid(carSellVo.getTaobaoId());
+            }
+            car.setUpdateTime(new Date());
+            carSellVo.setStockStatus(car.getStockStatus());
+            if (carSellVo.getStockStatus() == 3){
+                car.setStockStatus(5);
+                updateByPrimaryKeySelective(car);
+                invoiceService.insertSelective(invoice);
+            }else if (carSellVo.getStockStatus() == 1 || carSellVo.getStockStatus() == 2){
+                car.setStockStatus(4);
+                updateByPrimaryKeySelective(car);
+                invoiceService.insertSelective(invoice);
+            }
+            interfaceResult.InterfaceResult200("出售成功");
+        }else {
+            interfaceResult.InterfaceResult600("出售失败,车辆信息不存在");
+        }
+        return interfaceResult;
+    }
+
+    /**
+     * 下架淘宝
+     * @param taoBaoId
+     */
+    public void downTaoBaoByTBid(String taoBaoId){
+        Properties prop = new Properties();
+        try {
+            prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+            String APP_KEY = prop.getProperty("taobaoAppKey");
+            String SECRET = prop.getProperty("taobaosecret");
+            String API_URL = prop.getProperty("taobaoUploadUrl");
+            String sessionKey = prop.getProperty("sessionKey");
+
+            TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
+            ItemUpdateDelistingRequest req = new ItemUpdateDelistingRequest();
+            req.setNumIid(Long.valueOf(taoBaoId));
+
+            ItemUpdateDelistingResponse rsp = client.execute(req, sessionKey);
+            logger.info("下架淘宝返回结果：" + rsp.getBody());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
