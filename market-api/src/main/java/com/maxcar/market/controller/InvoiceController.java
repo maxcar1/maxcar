@@ -85,6 +85,7 @@ public class InvoiceController extends BaseController {
 
     @Autowired
     private StaffService staffService;
+
     /**
      * currentTime 默认传当日，当月，当年
      * status :1:按日查询，2：按月，3：按年
@@ -136,12 +137,18 @@ public class InvoiceController extends BaseController {
     public InterfaceResult getInvoiceList(@RequestBody Invoice invoice, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         User currentUser = getCurrentUser(request);
+        String userId = currentUser.getUserId();
         if (null != currentUser.getMarketId() && currentUser.getMarketId() != "") {
             invoice.setMarketId(currentUser.getMarketId());
+        }
+        User user = userService.selectByPrimaryKey(userId);
+        if (user.getManagerFlag() == 0) {
+            invoice.setMarketId(null);
         }
         invoice.setUserId(currentUser.getUserId());
         PageInfo pageInfo = invoiceService.getInvoiceList(invoice);
         interfaceResult.InterfaceResult200(pageInfo);
+
         return interfaceResult;
     }
 
@@ -160,9 +167,9 @@ public class InvoiceController extends BaseController {
         if (invoice != null) {
             String userId = invoice.getUserId();
             User user = userService.selectByPrimaryKey(userId);
-            if(user != null){
+            if (user != null) {
                 Staff staff = staffService.selectByPrimaryId(user.getStaffId());
-                if(staff != null){
+                if (staff != null) {
                     String staffName = staff.getStaffName();
                     invoice.setOperatorName(staffName);
                 }
