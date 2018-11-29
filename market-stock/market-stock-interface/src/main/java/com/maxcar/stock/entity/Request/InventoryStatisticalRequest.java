@@ -9,6 +9,36 @@ public class InventoryStatisticalRequest implements Serializable {
 
     private String tenantId;
 
+    private String registerTimeStart;
+
+    private String registerTimeEnd;
+
+    private Integer stockStatus;
+
+    public Integer getStockStatus() {
+        return stockStatus;
+    }
+
+    public void setStockStatus(Integer stockStatus) {
+        this.stockStatus = stockStatus;
+    }
+
+    public String getRegisterTimeStart() {
+        return registerTimeStart;
+    }
+
+    public void setRegisterTimeStart(String registerTimeStart) {
+        this.registerTimeStart = registerTimeStart;
+    }
+
+    public String getRegisterTimeEnd() {
+        return registerTimeEnd;
+    }
+
+    public void setRegisterTimeEnd(String registerTimeEnd) {
+        this.registerTimeEnd = registerTimeEnd;
+    }
+
     public String getMarketId() {
         return marketId;
     }

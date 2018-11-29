@@ -1,0 +1,1004 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    <groupId>maxcar-util</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  <artifactId>maxcar-util</artifactId>
+  <properties>
+        <spring.version>4.3.9.RELEASE</spring.version>
+        <java-jdk.version>1.8</java-jdk.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+        <toolbox.version>2.0</toolbox.version>
+        <jackson.version>2.5.0</jackson.version>
+        <velocity.version>1.7</velocity.version>
+        <aspectj.version>1.6.11</aspectj.version> 
+        <redis.version>2.9.0</redis.version> 
+        <!-- TODO 其它依赖库版本 -->
+    </properties>
+
+	<!--仓库地址-->
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>public</id>
+			<name>public</name>
+			<url>http://nexus.maxcar.com.cn/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+	<!-- 加载的是maven生命周期插件的jar包 -->
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>public</id>
+			<name>public</name>
+			<url>http://nexus.maxcar.com.cn/nexus/content/groups/public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- 配置部署的远程仓库 -->
+	<distributionManagement>
+		<!-- 正式版方式 -->
+		<repository>
+			<id>releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://nexus.maxcar.com.cn/nexus/content/repositories/release/</url>
+		</repository>
+		<!-- 快照版方式 -->
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://nexus.maxcar.com.cn/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<dependencies>
+        <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+<!-- 			<scope>test</scope> -->
+		</dependency>
+		
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.18.2-GA</version>
+		</dependency>
+		<dependency>
+	  	<groupId>com.taobao</groupId>
+	  		<artifactId>taoBaoApi</artifactId>
+	  		<version>2.0.0</version>
+	  	</dependency>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		 <!--配置aop切面编程需要引入的包-->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>1.8.4</version>
+    </dependency>
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <version>1.0</version>
+    </dependency>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.18</version>
+		</dependency>
+		<dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.2.5</version>
+    </dependency>
+			<!-- mybatis 包 -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.2.8</version>
+		</dependency>
+
+		<!--mybatis spring 插件 -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+		<!-- mysql连接 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.34</version>
+		</dependency>
+
+		<!-- 数据源 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.4</version>
+		</dependency>
+		<dependency>
+		<groupId>com.aliyun.oss</groupId>
+		<artifactId>aliyun-sdk-oss</artifactId>
+		<version>3.0.0</version>
+	</dependency>
+		<!-- log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<!-- servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>3.0-alpha-1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<!-- json -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.24</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>5.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<!-- commons -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils-core</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+		
+		  <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${velocity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>${toolbox.version}</version>
+        </dependency>
+        <!-- 阿里云相关 -->
+		<dependency>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.aliyun</groupId>
+		  <artifactId>aliyun-java-sdk-sts</artifactId>
+		  <version>2.1.6</version>
+		</dependency>
+		<dependency>    
+            <groupId>org.quartz-scheduler</groupId>    
+            <artifactId>quartz</artifactId>    
+            <version>2.2.1</version>
+        </dependency>
+      		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.4.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-net</groupId>
+		    <artifactId>commons-net</artifactId>
+		    <version>3.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sourceforge.jexcelapi</groupId>
+		    <artifactId>jxl</artifactId>
+		    <version>2.6.12</version>
+		</dependency>
+		<!-- freemarker -->
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <version>2.3.23</version>
+		</dependency>
+		<!-- MQTT推送 -->
+		<dependency>
+	        <groupId>org.eclipse.paho</groupId>
+	        <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+	        <version>1.1.0</version>
+    	</dependency>
+    	
+    	<!-- redis -->
+    	<dependency>
+		   <groupId>redis.clients</groupId>
+		   <artifactId>jedis</artifactId>
+		   <version>${redis.version}</version>
+	   </dependency>
+    	<!-- dubbo -->
+  	   <dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>4.3.1.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.aliyun.mns</groupId>
+			<artifactId>aliyun-sdk-mns</artifactId>
+			<version>1.1.8.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-core</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+  	<!-- zookeepr 用于分布式管理 -->
+  	 <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>3.4.9</version>
+    </dependency>
+  	  	<!-- dubbo 需要的jar start -->
+	  	<dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.8.4</version>
+  		</dependency>
+<!--         <dependency> -->
+<!--             <groupId>com.alibaba</groupId> -->
+<!--             <artifactId>dubbo-rpc-rest</artifactId> -->
+<!--             <version>2.8.4</version> -->
+<!--         </dependency> -->
+<!--         <dependency> -->
+<!--             <groupId>com.alibaba</groupId> -->
+<!--             <artifactId>dubbo-rpc-webservice</artifactId> -->
+<!--             <version>2.8.4</version> -->
+<!--         </dependency> -->
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.2</version>
+        </dependency>
+		<!-- dubbo 需要的jar end -->
+  		<!--<dependency>-->
+		   <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+		   <!--<artifactId>jackson-databind</artifactId>-->
+		   <!--<version>2.5.1</version>-->
+		<!--</dependency>-->
+		
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>16.0.1</version>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.6.2.RELEASE</version>
+        </dependency>
+    </dependencies>
+	<!--<repositories>-->
+		<!--&lt;!&ndash; MQTT java SDK &ndash;&gt;-->
+		<!--<repository>-->
+			<!--<id>Eclipse Paho Repo</id>-->
+			<!--<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>-->
+		<!--</repository>-->
+		<!--<repository>-->
+			<!--<id>snapshots-repo</id>-->
+			<!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+			<!--<releases>-->
+				<!--<enabled>false</enabled>-->
+			<!--</releases>-->
+			<!--<snapshots>-->
+				<!--<enabled>true</enabled>-->
+			<!--</snapshots>-->
+		<!--</repository>-->
+	<!--</repositories>-->
+     <profiles>
+		 <!-- 申明不同环境调用不同数据库连接参数 -->
+		 <!-- 开发，默认激活 -->
+		 <!-- 测试环境，默认不激活 -->
+		 <profile>
+			 <id>dev</id>
+			 <properties>
+				 <!-- dubbo -->
+				 <dubbo.registry.address>zookeeper://localhost:2181</dubbo.registry.address>
+				 <!-- datasource通用-->
+				 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+				 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+				 <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+				 <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+				 <!-- 云端数据源配置datasource基础服务表-->
+				 <system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
+				 <system.jdbc.url.base>jdbc:mysql://192.168.3.58:3306/maxcar_base?characterEncoding=utf-8</system.jdbc.url.base>
+				 <system.jdbc.user.base>root</system.jdbc.user.base>
+				 <system.jdbc.password.base>Maxcar#2018d</system.jdbc.password.base>
+				 <!-- 云端数据源配置datasourceCustomer-->
+				 <system.jdbc.driver.customer>com.mysql.jdbc.Driver</system.jdbc.driver.customer>
+				 <system.jdbc.url.customer>jdbc:mysql://192.168.3.58:3306/maxcar_customer?characterEncoding=utf-8</system.jdbc.url.customer>
+				 <system.jdbc.user.customer>root</system.jdbc.user.customer>
+				 <system.jdbc.password.customer>Maxcar#2018d</system.jdbc.password.customer>
+				 <!-- 云端数据源配置datasourceSystem-->
+				 <system.jdbc.driver.system>com.mysql.jdbc.Driver</system.jdbc.driver.system>
+				 <system.jdbc.url.system>jdbc:mysql://192.168.3.58:3306/maxcar_system?characterEncoding=utf-8</system.jdbc.url.system>
+				 <system.jdbc.user.system>root</system.jdbc.user.system>
+				 <system.jdbc.password.system>Maxcar#2018d</system.jdbc.password.system>
+				 <!-- 云端数据源配置datasource统计报表-->
+				 <system.jdbc.driver.statistics>com.mysql.jdbc.Driver</system.jdbc.driver.statistics>
+				 <system.jdbc.url.statistics>jdbc:mysql://192.168.3.58:3306/maxcar_statistics?characterEncoding=utf-8</system.jdbc.url.statistics>
+				 <system.jdbc.user.statistics>root</system.jdbc.user.statistics>
+				 <system.jdbc.password.statistics>Maxcar#2018d</system.jdbc.password.statistics>
+				 <!-- 云端数据源配置datasource库存-->
+				 <system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
+				 <system.jdbc.url.stock>jdbc:mysql://192.168.3.58:3306/maxcar_stock?characterEncoding=utf-8</system.jdbc.url.stock>
+				 <system.jdbc.user.stock>root</system.jdbc.user.stock>
+				 <system.jdbc.password.stock>Maxcar#2018d</system.jdbc.password.stock>
+				 <!-- 云端数据源配置datasource市场-->
+				 <system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
+				 <system.jdbc.url.market>jdbc:mysql://192.168.3.58:3306/maxcar_market?characterEncoding=utf-8</system.jdbc.url.market>
+				 <system.jdbc.user.market>root</system.jdbc.user.market>
+				 <system.jdbc.password.market>Maxcar#2018d</system.jdbc.password.market>
+
+				 <!-- 云端数据源配置datasource用户-->
+				 <system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
+				 <system.jdbc.url.user>jdbc:mysql://192.168.3.58:3306/maxcar_user?characterEncoding=utf-8</system.jdbc.url.user>
+				 <system.jdbc.user.user>root</system.jdbc.user.user>
+				 <system.jdbc.password.user>Maxcar#2018d</system.jdbc.password.user>
+				 <!-- 云端数据源配置datasource审批-->
+				 <system.jdbc.driver.activity>com.mysql.jdbc.Driver</system.jdbc.driver.activity>
+				 <system.jdbc.url.activity>jdbc:mysql://192.168.3.58:3306/maxcar_activity?characterEncoding=utf-8</system.jdbc.url.activity>
+				 <system.jdbc.user.activity>root</system.jdbc.user.activity>
+				 <system.jdbc.password.activity>Maxcar#2018d</system.jdbc.password.activity>
+				 <!-- 云端数据源配置datasource会员-->
+				 <system.jdbc.driver.member>com.mysql.jdbc.Driver</system.jdbc.driver.member>
+				 <system.jdbc.url.member>jdbc:mysql://192.168.3.58:3306/maxcar_member?characterEncoding=utf-8</system.jdbc.url.member>
+				 <system.jdbc.user.member>root</system.jdbc.user.member>
+				 <system.jdbc.password.member>Maxcar#2018d</system.jdbc.password.member>
+				 <!-- 云端数据源配置datasource商户app-->
+				 <system.jdbc.driver.app>com.mysql.jdbc.Driver</system.jdbc.driver.app>
+				 <system.jdbc.url.app>jdbc:mysql://192.168.3.58:3306/maxcar_app?characterEncoding=utf-8</system.jdbc.url.app>
+				 <system.jdbc.user.app>root</system.jdbc.user.app>
+				 <system.jdbc.password.app>Maxcar#2018d</system.jdbc.password.app>
+				 <!-- redis相关配置最大连接数：能够同时建立的“最大链接个数”  ，#最大空闲数：空闲链接数大于maxIdle时，将进行回收，#最小空闲数：低于minIdle时，将创建新的链接， #最大等待时间：单位ms  #使用连接时，检测连接是否成功 redis.pool.testOnReturn=true  #返回连接时，检测连接是否成功  -->
+				 <redisMaxActive>200</redisMaxActive>
+				 <redisMaxIdle>20</redisMaxIdle>
+				 <redisMinIdle>5</redisMinIdle>
+				 <redisMaxWait>100000</redisMaxWait>
+				 <redisTestOnBorrow>true</redisTestOnBorrow>
+				 <redisTestOnReturn>true</redisTestOnReturn>
+				 <redisHost>localhost</redisHost>
+				 <redis.password></redis.password>
+				 <redisPort>6379</redisPort>
+				 <redisName>maxcar-redis</redisName>
+				 <!--微信回调地址-->
+				 <wx.pay.callback>http://47.96.31.127/wx/pay/callback</wx.pay.callback>
+				 <!--卡夫卡-->
+				 <kafka.consumer.zookeeper.connect>zookeeper://localhost:2181</kafka.consumer.zookeeper.connect>
+				 <kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>
+				 <kafka.producer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.producer.servers>
+				 <kafka.consumer.topic>sync_upload_data_test</kafka.consumer.topic>
+				 <kafka.producer.topic006>sync_download_data_006_test</kafka.producer.topic006>
+				 <kafka.producer.topic007>sync_download_data_007_test</kafka.producer.topic007>
+				 <kafka.producer.topic008>sync_download_data_008_test</kafka.producer.topic008>
+				 <kafka.producer.topic010>sync_download_data_010_test</kafka.producer.topic010>
+				 <!-- 大搜车接口配置 -->
+				 <app.key>84304e368d4153cfd0dbafc967187729</app.key>
+				 <app.secret>43f4d794f3b5c95239a092a66bcbede8</app.secret>
+				 <base.url>https://api.souche.com/v1/vin_code/car_model_candidates?</base.url>
+				 <url>https://api.souche.com</url>
+				 <detail.url>https://api.souche.com/v1/car_model/detail_info?</detail.url>
+				 <brands.url>https://api.souche.com/v1/car_model/brands?</brands.url>
+				 <sc.brand.code.url>https://api.souche.com/v1/car_model/brands/xxx/series?</sc.brand.code.url>
+				 <sc.series.code.url>https://api.souche.com/v1/car_model/series/xxx/models?</sc.series.code.url>
+				 <sc.model.code.url>https://api.souche.com/v1/car_model/models/xxx?</sc.model.code.url>
+				 <brand.dictionaries.url>https://api.souche.com/v1/car_model/brand_dictionaries?</brand.dictionaries.url>
+				 <price.url>https://api.souche.com/v1/car_model/price?</price.url>
+				 <used.car.price>https://api.souche.com/v1/car_model/used_car_price?</used.car.price>
+				 <areas>https://api.souche.com/v1/dictionary/areas?</areas>
+
+			 </properties>
+			 <activation><!-- 默认激活 -->
+				 <activeByDefault>true</activeByDefault>
+			 </activation>
+	 	</profile>
+
+		<!-- 测试环境，默认不激活 -->
+		<profile>
+			<id>test</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.registry.address>zookeeper://192.168.3.45:2181?backup=192.168.3.50:2181,192.168.3.51:2181</dubbo.registry.address>
+				<!-- datasource通用-->
+				<system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+				<system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+				<system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+				<!-- 云端数据源配置datasource基础服务表-->
+				<system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
+				<system.jdbc.url.base>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_base?characterEncoding=utf-8</system.jdbc.url.base>
+				<system.jdbc.user.base>root</system.jdbc.user.base>
+				<system.jdbc.password.base>Maxcar#2017</system.jdbc.password.base>
+				<!-- 云端数据源配置datasourceCustomer-->
+				<system.jdbc.driver.customer>com.mysql.jdbc.Driver</system.jdbc.driver.customer>
+				<system.jdbc.url.customer>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_customer?characterEncoding=utf-8</system.jdbc.url.customer>
+				<system.jdbc.user.customer>root</system.jdbc.user.customer>
+				<system.jdbc.password.customer>Maxcar#2017</system.jdbc.password.customer>
+				<!-- 云端数据源配置datasourceSystem-->
+				<system.jdbc.driver.system>com.mysql.jdbc.Driver</system.jdbc.driver.system>
+				<system.jdbc.url.system>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_system?characterEncoding=utf-8</system.jdbc.url.system>
+				<system.jdbc.user.system>root</system.jdbc.user.system>
+				<system.jdbc.password.system>Maxcar#2017</system.jdbc.password.system>
+				<!-- 云端数据源配置datasource统计报表-->
+				<system.jdbc.driver.statistics>com.mysql.jdbc.Driver</system.jdbc.driver.statistics>
+				<system.jdbc.url.statistics>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_statistics?characterEncoding=utf-8</system.jdbc.url.statistics>
+				<system.jdbc.user.statistics>root</system.jdbc.user.statistics>
+				<system.jdbc.password.statistics>Maxcar#2017</system.jdbc.password.statistics>
+				<!-- 云端数据源配置datasource库存-->
+				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
+				<system.jdbc.url.stock>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_stock?characterEncoding=utf-8</system.jdbc.url.stock>
+				<system.jdbc.user.stock>root</system.jdbc.user.stock>
+				<system.jdbc.password.stock>Maxcar#2017</system.jdbc.password.stock>
+				<!-- 云端数据源配置datasource市场-->
+				<system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
+				<system.jdbc.url.market>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_market?characterEncoding=utf-8</system.jdbc.url.market>
+				<system.jdbc.user.market>root</system.jdbc.user.market>
+				<system.jdbc.password.market>Maxcar#2017</system.jdbc.password.market>
+
+				<!-- 云端数据源配置datasource用户-->
+				<system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
+				<system.jdbc.url.user>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_user?characterEncoding=utf-8</system.jdbc.url.user>
+				<system.jdbc.user.user>root</system.jdbc.user.user>
+				<system.jdbc.password.user>Maxcar#2017</system.jdbc.password.user>
+				<!-- 云端数据源配置datasource审批-->
+				<system.jdbc.driver.activity>com.mysql.jdbc.Driver</system.jdbc.driver.activity>
+				<system.jdbc.url.activity>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_activity?characterEncoding=utf-8</system.jdbc.url.activity>
+				<system.jdbc.user.activity>root</system.jdbc.user.activity>
+				<system.jdbc.password.activity>Maxcar#2017</system.jdbc.password.activity>
+				<!-- 云端数据源配置datasource会员-->
+				<system.jdbc.driver.member>com.mysql.jdbc.Driver</system.jdbc.driver.member>
+				<system.jdbc.url.member>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_member?characterEncoding=utf-8</system.jdbc.url.member>
+				<system.jdbc.user.member>root</system.jdbc.user.member>
+				<system.jdbc.password.member>Maxcar#2017</system.jdbc.password.member>
+				<!-- redis相关配置最大连接数：能够同时建立的“最大链接个数”  ，#最大空闲数：空闲链接数大于maxIdle时，将进行回收，#最小空闲数：低于minIdle时，将创建新的链接， #最大等待时间：单位ms  #使用连接时，检测连接是否成功 redis.pool.testOnReturn=true  #返回连接时，检测连接是否成功  -->
+				<redisMaxActive>200</redisMaxActive>
+				<redisMaxIdle>20</redisMaxIdle>
+				<redisMinIdle>5</redisMinIdle>
+				<redisMaxWait>100000</redisMaxWait>
+				<redisTestOnBorrow>true</redisTestOnBorrow>
+				<redisTestOnReturn>true</redisTestOnReturn>
+				<redisHost>yredist.maxcar.com.cn</redisHost>
+				<redis.password>ymaxcar2017t</redis.password>
+				<redisPort>4881</redisPort>
+				<redisName>maxcar-redis</redisName>
+				<!--微信回调地址-->
+				<wx.pay.callback>http://47.96.31.127/wx/pay/callback</wx.pay.callback>
+				<!--卡夫卡-->
+				<kafka.consumer.zookeeper.connect>zookeeper://192.168.3.45:2181?backup=192.168.3.50:2181,192.168.3.51:2181</kafka.consumer.zookeeper.connect>
+				<kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>
+				<kafka.producer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.producer.servers>
+				<kafka.consumer.topic>sync_upload_data_test</kafka.consumer.topic>
+				<kafka.producer.topic006>sync_download_data_006_test</kafka.producer.topic006>
+				<kafka.producer.topic007>sync_download_data_007_test</kafka.producer.topic007>
+				<kafka.producer.topic008>sync_download_data_008_test</kafka.producer.topic008>
+				<kafka.producer.topic010>sync_download_data_010_test</kafka.producer.topic010>
+				<!-- 大搜车接口配置 -->
+				<app.key>bf752aa331aef0cca1e532a37d93d7c2</app.key>
+				<app.secret>42da706a93793334e5f281104c367636</app.secret>
+				<base.url>http://api-stable.proxy.dasouche.com//v1/vin_code/car_model_candidates?</base.url>
+				<url>http://api-stable.proxy.dasouche.com/</url>
+				<detail.url>http://api-stable.proxy.dasouche.com//v1/car_model/detail_info?</detail.url>
+				<brands.url>http://api-stable.proxy.dasouche.com//v1/car_model/brands?</brands.url>
+				<sc.brand.code.url>http://api-stable.proxy.dasouche.com//v1/car_model/brands/xxx/series?</sc.brand.code.url>
+				<sc.series.code.url>http://api-stable.proxy.dasouche.com//v1/car_model/series/xxx/models?</sc.series.code.url>
+				<sc.model.code.url>http://api-stable.proxy.dasouche.com//v1/car_model/models/xxx?</sc.model.code.url>
+				<brand.dictionaries.url>http://api-stable.proxy.dasouche.com//v1/car_model/brand_dictionaries?</brand.dictionaries.url>
+				<price.url>http://api-stable.proxy.dasouche.com//v1/car_model/price?</price.url>
+				<used.car.price>http://api-stable.proxy.dasouche.com//v1/car_model/used_car_price?</used.car.price>
+				<areas>http://api-stable.proxy.dasouche.com//v1/dictionary/areas?</areas>
+			</properties>
+			<activation><!-- 默认激活 -->
+				<activeByDefault>false</activeByDefault>
+			</activation>
+		</profile>
+
+		 <!-- 本地环境，默认不激活 -->
+		 <profile>
+			 <id>local</id>
+			 <properties>
+				 <!-- dubbo -->
+				 <dubbo.registry.address>zookeeper://localhost:2181</dubbo.registry.address>
+				 <!-- datasource通用-->
+				 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+				 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+				 <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+				 <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+				 <!-- 云端数据源配置datasource基础服务表-->
+				 <system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
+				 <system.jdbc.url.base>jdbc:mysql://127.0.0.1:3306/maxcar_base?characterEncoding=utf-8</system.jdbc.url.base>
+				 <system.jdbc.user.base>root</system.jdbc.user.base>
+				 <system.jdbc.password.base>123456</system.jdbc.password.base>
+				 <!-- 云端数据源配置datasourceCustomer-->
+				 <system.jdbc.driver.customer>com.mysql.jdbc.Driver</system.jdbc.driver.customer>
+				 <system.jdbc.url.customer>jdbc:mysql://127.0.0.1:3306/maxcar_customer?characterEncoding=utf-8</system.jdbc.url.customer>
+				 <system.jdbc.user.customer>root</system.jdbc.user.customer>
+				 <system.jdbc.password.customer>123456</system.jdbc.password.customer>
+				 <!-- 云端数据源配置datasourceSystem-->
+				 <system.jdbc.driver.system>com.mysql.jdbc.Driver</system.jdbc.driver.system>
+				 <system.jdbc.url.system>jdbc:mysql://127.0.0.1:3306/maxcar_system?characterEncoding=utf-8</system.jdbc.url.system>
+				 <system.jdbc.user.system>root</system.jdbc.user.system>
+				 <system.jdbc.password.system>123456</system.jdbc.password.system>
+				 <!-- 云端数据源配置datasource统计报表-->
+				 <system.jdbc.driver.statistics>com.mysql.jdbc.Driver</system.jdbc.driver.statistics>
+				 <system.jdbc.url.statistics>jdbc:mysql://127.0.0.1:3306/maxcar_statistics?characterEncoding=utf-8</system.jdbc.url.statistics>
+				 <system.jdbc.user.statistics>root</system.jdbc.user.statistics>
+				 <system.jdbc.password.statistics>123456</system.jdbc.password.statistics>
+				 <!-- 云端数据源配置datasource库存-->
+				 <system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
+				 <system.jdbc.url.stock>jdbc:mysql://127.0.0.1:3306/maxcar_stock?characterEncoding=utf-8</system.jdbc.url.stock>
+				 <system.jdbc.user.stock>root</system.jdbc.user.stock>
+				 <system.jdbc.password.stock>123456</system.jdbc.password.stock>
+				 <!-- 云端数据源配置datasource市场-->
+				 <system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
+				 <system.jdbc.url.market>jdbc:mysql://127.0.0.1:3306/maxcar_market?characterEncoding=utf-8</system.jdbc.url.market>
+				 <system.jdbc.user.market>root</system.jdbc.user.market>
+				 <system.jdbc.password.market>123456</system.jdbc.password.market>
+
+				 <!-- 云端数据源配置datasource用户-->
+				 <system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
+				 <system.jdbc.url.user>jdbc:mysql://127.0.0.1:3306/maxcar_user?characterEncoding=utf-8</system.jdbc.url.user>
+				 <system.jdbc.user.user>root</system.jdbc.user.user>
+				 <system.jdbc.password.user>123456</system.jdbc.password.user>
+				 <!-- 云端数据源配置datasource审批-->
+				 <system.jdbc.driver.activity>com.mysql.jdbc.Driver</system.jdbc.driver.activity>
+				 <system.jdbc.url.activity>jdbc:mysql://127.0.0.1:3306/maxcar_activity?characterEncoding=utf-8</system.jdbc.url.activity>
+				 <system.jdbc.user.activity>root</system.jdbc.user.activity>
+				 <system.jdbc.password.activity>123456</system.jdbc.password.activity>
+				 <!-- 云端数据源配置datasource会员-->
+				 <system.jdbc.driver.member>com.mysql.jdbc.Driver</system.jdbc.driver.member>
+				 <system.jdbc.url.member>jdbc:mysql://127.0.0.1:3306/maxcar_member?characterEncoding=utf-8</system.jdbc.url.member>
+				 <system.jdbc.user.member>root</system.jdbc.user.member>
+				 <system.jdbc.password.member>123456</system.jdbc.password.member>
+				 <!-- redis相关配置最大连接数：能够同时建立的“最大链接个数”  ，#最大空闲数：空闲链接数大于maxIdle时，将进行回收，#最小空闲数：低于minIdle时，将创建新的链接， #最大等待时间：单位ms  #使用连接时，检测连接是否成功 redis.pool.testOnReturn=true  #返回连接时，检测连接是否成功  -->
+				 <redisMaxActive>200</redisMaxActive>
+				 <redisMaxIdle>20</redisMaxIdle>
+				 <redisMinIdle>5</redisMinIdle>
+				 <redisMaxWait>100000</redisMaxWait>
+				 <redisTestOnBorrow>true</redisTestOnBorrow>
+				 <redisTestOnReturn>true</redisTestOnReturn>
+				 <redisHost>localhost</redisHost>
+				 <redis.password></redis.password>
+				 <redisPort>6379</redisPort>
+				 <redisName>maxcar-redis</redisName>
+				 <!--微信回调地址-->
+				 <wx.pay.callback>http://47.96.31.127/wx/pay/callback</wx.pay.callback>
+				 <!--卡夫卡-->
+				 <kafka.consumer.zookeeper.connect>47.96.22.140:2181</kafka.consumer.zookeeper.connect>
+				 <kafka.consumer.servers>47.96.22.140:9092</kafka.consumer.servers>
+				 <kafka.producer.servers>47.96.22.140:9092</kafka.producer.servers>
+				 <kafka.consumer.topic>sync_upload_data</kafka.consumer.topic>
+				 <!-- 大搜车接口配置 -->
+				 <app.key>bf752aa331aef0cca1e532a37d93d7c2</app.key>
+				 <app.secret>42da706a93793334e5f281104c367636</app.secret>
+				 <base.url>http://api-stable.proxy.dasouche.com//v1/vin_code/car_model_candidates?</base.url>
+				 <url>http://api-stable.proxy.dasouche.com/</url>
+				 <detail.url>http://api-stable.proxy.dasouche.com//v1/car_model/detail_info?</detail.url>
+				 <brands.url>http://api-stable.proxy.dasouche.com//v1/car_model/brands?</brands.url>
+				 <sc.brand.code.url>http://api-stable.proxy.dasouche.com//v1/car_model/brands/xxx/series?</sc.brand.code.url>
+				 <sc.series.code.url>http://api-stable.proxy.dasouche.com//v1/car_model/series/xxx/models?</sc.series.code.url>
+				 <sc.model.code.url>http://api-stable.proxy.dasouche.com//v1/car_model/models/xxx?</sc.model.code.url>
+				 <brand.dictionaries.url>http://api-stable.proxy.dasouche.com//v1/car_model/brand_dictionaries?</brand.dictionaries.url>
+				 <price.url>http://api-stable.proxy.dasouche.com//v1/car_model/price?</price.url>
+				 <used.car.price>http://api-stable.proxy.dasouche.com//v1/car_model/used_car_price?</used.car.price>
+				 <areas>http://api-stable.proxy.dasouche.com//v1/dictionary/areas?</areas>
+			 </properties>
+			 <activation><!-- 默认激活 -->
+				 <activeByDefault>false</activeByDefault>
+			 </activation>
+		 </profile>
+
+
+
+		 <!-- 预发布环境，默认不激活 -->
+		 <profile>
+			 <id>pro</id>
+			 <properties>
+				 <!-- dubbo -->
+				 <dubbo.registry.address>zookeeper://172.16.110.103:2181</dubbo.registry.address>
+				 <!-- datasource通用-->
+				 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+				 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+				 <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+				 <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+				 <!-- 云端数据源配置datasource基础服务表-->
+				 <system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
+				 <system.jdbc.url.base>jdbc:mysql://47.96.31.127:3306/maxcar_base?characterEncoding=utf-8</system.jdbc.url.base>
+				 <system.jdbc.user.base>root</system.jdbc.user.base>
+				 <system.jdbc.password.base>Maxcar#2017</system.jdbc.password.base>
+				 <!-- 云端数据源配置datasourceCustomer-->
+				 <system.jdbc.driver.customer>com.mysql.jdbc.Driver</system.jdbc.driver.customer>
+				 <system.jdbc.url.customer>jdbc:mysql://47.96.31.127:3306/maxcar_customer?characterEncoding=utf-8</system.jdbc.url.customer>
+				 <system.jdbc.user.customer>root</system.jdbc.user.customer>
+				 <system.jdbc.password.customer>Maxcar#2017</system.jdbc.password.customer>
+				 <!-- 云端数据源配置datasourceSystem-->
+				 <system.jdbc.driver.system>com.mysql.jdbc.Driver</system.jdbc.driver.system>
+				 <system.jdbc.url.system>jdbc:mysql://47.96.31.127:3306/maxcar_system?characterEncoding=utf-8</system.jdbc.url.system>
+				 <system.jdbc.user.system>root</system.jdbc.user.system>
+				 <system.jdbc.password.system>Maxcar#2017</system.jdbc.password.system>
+				 <!-- 云端数据源配置datasource统计报表-->
+				 <system.jdbc.driver.statistics>com.mysql.jdbc.Driver</system.jdbc.driver.statistics>
+				 <system.jdbc.url.statistics>jdbc:mysql://47.96.31.127:3306/maxcar_statistics?characterEncoding=utf-8</system.jdbc.url.statistics>
+				 <system.jdbc.user.statistics>root</system.jdbc.user.statistics>
+				 <system.jdbc.password.statistics>Maxcar#2017</system.jdbc.password.statistics>
+				 <!-- 云端数据源配置datasource库存-->
+				 <system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
+				 <system.jdbc.url.stock>jdbc:mysql://47.96.31.127:3306/maxcar_stock?characterEncoding=utf-8</system.jdbc.url.stock>
+				 <system.jdbc.user.stock>root</system.jdbc.user.stock>
+				 <system.jdbc.password.stock>Maxcar#2017</system.jdbc.password.stock>
+				 <!-- 云端数据源配置datasource市场-->
+				 <system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
+				 <system.jdbc.url.market>jdbc:mysql://47.96.31.127:3306/maxcar_market?characterEncoding=utf-8</system.jdbc.url.market>
+				 <system.jdbc.user.market>root</system.jdbc.user.market>
+				 <system.jdbc.password.market>Maxcar#2017</system.jdbc.password.market>
+
+				 <!-- 云端数据源配置datasource用户-->
+				 <system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
+				 <system.jdbc.url.user>jdbc:mysql://47.96.31.127:3306/maxcar_user?characterEncoding=utf-8</system.jdbc.url.user>
+				 <system.jdbc.user.user>root</system.jdbc.user.user>
+				 <system.jdbc.password.user>Maxcar#2017</system.jdbc.password.user>
+				 <!-- 云端数据源配置datasource审批-->
+				 <system.jdbc.driver.activity>com.mysql.jdbc.Driver</system.jdbc.driver.activity>
+				 <system.jdbc.url.activity>jdbc:mysql://47.96.31.127:3306/maxcar_activity?characterEncoding=utf-8</system.jdbc.url.activity>
+				 <system.jdbc.user.activity>root</system.jdbc.user.activity>
+				 <system.jdbc.password.activity>Maxcar#2017</system.jdbc.password.activity>
+				 <!-- 云端数据源配置datasource会员-->
+				 <system.jdbc.driver.member>com.mysql.jdbc.Driver</system.jdbc.driver.member>
+				 <system.jdbc.url.member>jdbc:mysql://47.96.31.127:3306/maxcar_member?characterEncoding=utf-8</system.jdbc.url.member>
+				 <system.jdbc.user.member>root</system.jdbc.user.member>
+				 <system.jdbc.password.member>Maxcar#2017</system.jdbc.password.member>
+				 <!-- redis相关配置最大连接数：能够同时建立的“最大链接个数”  ，#最大空闲数：空闲链接数大于maxIdle时，将进行回收，#最小空闲数：低于minIdle时，将创建新的链接， #最大等待时间：单位ms  #使用连接时，检测连接是否成功 redis.pool.testOnReturn=true  #返回连接时，检测连接是否成功  -->
+				 <redisMaxActive>200</redisMaxActive>
+				 <redisMaxIdle>20</redisMaxIdle>
+				 <redisMinIdle>5</redisMinIdle>
+				 <redisMaxWait>100000</redisMaxWait>
+				 <redisTestOnBorrow>true</redisTestOnBorrow>
+				 <redisTestOnReturn>true</redisTestOnReturn>
+				 <redisHost>localhost</redisHost>
+				 <redis.password></redis.password>
+				 <redisPort>6379</redisPort>
+				 <redisName>maxcar-redis</redisName>
+				 <!--微信回调地址-->
+				 <wx.pay.callback>http://47.96.31.127/wx/pay/callback</wx.pay.callback>
+				 <!--卡夫卡-->
+				 <kafka.consumer.zookeeper.connect>47.96.22.140:2181</kafka.consumer.zookeeper.connect>
+				 <kafka.consumer.servers>47.96.22.140:9092</kafka.consumer.servers>
+				 <kafka.producer.servers>47.96.22.140:9092</kafka.producer.servers>
+				 <kafka.consumer.topic>sync_upload_data</kafka.consumer.topic>
+				 <!-- 大搜车接口配置 -->
+				 <app.key>84304e368d4153cfd0dbafc967187729</app.key>
+				 <app.secret>43f4d794f3b5c95239a092a66bcbede8</app.secret>
+				 <base.url>https://api.souche.com/v1/vin_code/car_model_candidates?</base.url>
+				 <url>https://api.souche.com</url>
+				 <detail.url>https://api.souche.com/v1/car_model/detail_info?</detail.url>
+				 <brands.url>https://api.souche.com/v1/car_model/brands?</brands.url>
+				 <sc.brand.code.url>https://api.souche.com/v1/car_model/brands/xxx/series?</sc.brand.code.url>
+				 <sc.series.code.url>https://api.souche.com/v1/car_model/series/xxx/models?</sc.series.code.url>
+				 <sc.model.code.url>https://api.souche.com/v1/car_model/models/xxx?</sc.model.code.url>
+				 <brand.dictionaries.url>https://api.souche.com/v1/car_model/brand_dictionaries?</brand.dictionaries.url>
+				 <price.url>https://api.souche.com/v1/car_model/price?</price.url>
+				 <used.car.price>https://api.souche.com/v1/car_model/used_car_price?</used.car.price>
+				 <areas>https://api.souche.com/v1/dictionary/areas?</areas>
+			 </properties>
+			 <activation><!-- 默认激活 -->
+				 <activeByDefault>false</activeByDefault>
+			 </activation>
+		 </profile>
+
+
+		 <!--生产环境-->
+		 <profile>
+			 <id>online</id>
+			 <properties>
+				 <!-- dubbo -->
+				 <dubbo.registry.address>zookeeper://172.16.110.102:2181</dubbo.registry.address>
+				 <!-- datasource通用-->
+				 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
+				 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
+				 <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
+				 <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
+				 <!-- 云端数据源配置datasource基础服务表-->
+				 <system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
+				 <system.jdbc.url.base>jdbc:mysql://121.196.209.229:3306/maxcar_base?characterEncoding=utf-8</system.jdbc.url.base>
+				 <system.jdbc.user.base>root</system.jdbc.user.base>
+				 <system.jdbc.password.base>maxcar2017</system.jdbc.password.base>
+				 <!-- 云端数据源配置datasourceCustomer-->
+				 <system.jdbc.driver.customer>com.mysql.jdbc.Driver</system.jdbc.driver.customer>
+				 <system.jdbc.url.customer>jdbc:mysql://121.196.209.229:3306/maxcar_customer?characterEncoding=utf-8</system.jdbc.url.customer>
+				 <system.jdbc.user.customer>root</system.jdbc.user.customer>
+				 <system.jdbc.password.customer>maxcar2017</system.jdbc.password.customer>
+				 <!-- 云端数据源配置datasourceSystem-->
+				 <system.jdbc.driver.system>com.mysql.jdbc.Driver</system.jdbc.driver.system>
+				 <system.jdbc.url.system>jdbc:mysql://121.196.209.229:3306/maxcar_system?characterEncoding=utf-8</system.jdbc.url.system>
+				 <system.jdbc.user.system>root</system.jdbc.user.system>
+				 <system.jdbc.password.system>maxcar2017</system.jdbc.password.system>
+				 <!-- 云端数据源配置datasource统计报表-->
+				 <system.jdbc.driver.statistics>com.mysql.jdbc.Driver</system.jdbc.driver.statistics>
+				 <system.jdbc.url.statistics>jdbc:mysql://121.196.209.229:3306/maxcar_statistics?characterEncoding=utf-8</system.jdbc.url.statistics>
+				 <system.jdbc.user.statistics>root</system.jdbc.user.statistics>
+				 <system.jdbc.password.statistics>maxcar2017</system.jdbc.password.statistics>
+				 <!-- 云端数据源配置datasource库存-->
+				 <system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
+				 <system.jdbc.url.stock>jdbc:mysql://121.196.209.229:3306/maxcar_stock?characterEncoding=utf-8</system.jdbc.url.stock>
+				 <system.jdbc.user.stock>root</system.jdbc.user.stock>
+				 <system.jdbc.password.stock>maxcar2017</system.jdbc.password.stock>
+				 <!-- 云端数据源配置datasource市场-->
+				 <system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
+				 <system.jdbc.url.market>jdbc:mysql://121.196.209.229:3306/maxcar_market?characterEncoding=utf-8</system.jdbc.url.market>
+				 <system.jdbc.user.market>root</system.jdbc.user.market>
+				 <system.jdbc.password.market>maxcar2017</system.jdbc.password.market>
+
+				 <!-- 云端数据源配置datasource用户-->
+				 <system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
+				 <system.jdbc.url.user>jdbc:mysql://121.196.209.229:3306/maxcar_user?characterEncoding=utf-8</system.jdbc.url.user>
+				 <system.jdbc.user.user>root</system.jdbc.user.user>
+				 <system.jdbc.password.user>maxcar2017</system.jdbc.password.user>
+				 <!-- 云端数据源配置datasource审批-->
+				 <system.jdbc.driver.activity>com.mysql.jdbc.Driver</system.jdbc.driver.activity>
+				 <system.jdbc.url.activity>jdbc:mysql://121.196.209.229:3306/maxcar_activity?characterEncoding=utf-8</system.jdbc.url.activity>
+				 <system.jdbc.user.activity>root</system.jdbc.user.activity>
+				 <system.jdbc.password.activity>maxcar2017</system.jdbc.password.activity>
+				 <!-- 云端数据源配置datasource会员-->
+				 <system.jdbc.driver.member>com.mysql.jdbc.Driver</system.jdbc.driver.member>
+				 <system.jdbc.url.member>jdbc:mysql://121.196.209.229:3306/maxcar_member?characterEncoding=utf-8</system.jdbc.url.member>
+				 <system.jdbc.user.member>root</system.jdbc.user.member>
+				 <system.jdbc.password.member>maxcar2017</system.jdbc.password.member>
+				 <!-- redis相关配置最大连接数：能够同时建立的“最大链接个数”  ，#最大空闲数：空闲链接数大于maxIdle时，将进行回收，#最小空闲数：低于minIdle时，将创建新的链接， #最大等待时间：单位ms  #使用连接时，检测连接是否成功 redis.pool.testOnReturn=true  #返回连接时，检测连接是否成功  -->
+				 <redisMaxActive>200</redisMaxActive>
+				 <redisMaxIdle>20</redisMaxIdle>
+				 <redisMinIdle>5</redisMinIdle>
+				 <redisMaxWait>100000</redisMaxWait>
+				 <redisTestOnBorrow>true</redisTestOnBorrow>
+				 <redisTestOnReturn>true</redisTestOnReturn>
+				 <redisHost>localhost</redisHost>
+				 <redis.password>maxcar2017</redis.password>
+				 <redisPort>6379</redisPort>
+				 <redisName>maxcar-redis</redisName>
+				 <!--微信回调地址-->
+				 <wx.pay.callback>http://47.96.31.127/wx/pay/callback</wx.pay.callback>
+				 <!--卡夫卡-->
+				 <kafka.consumer.zookeeper.connect>47.96.22.140:2181</kafka.consumer.zookeeper.connect>
+				 <kafka.consumer.servers>47.96.22.140:9092</kafka.consumer.servers>
+				 <kafka.producer.servers>47.96.22.140:9092</kafka.producer.servers>
+				 <kafka.consumer.topic>sync_upload_data</kafka.consumer.topic>
+				 <!-- 大搜车接口配置 -->
+				 <app.key>84304e368d4153cfd0dbafc967187729</app.key>
+				 <app.secret>43f4d794f3b5c95239a092a66bcbede8</app.secret>
+				 <base.url>https://api.souche.com/v1/vin_code/car_model_candidates?</base.url>
+				 <url>https://api.souche.com</url>
+				 <detail.url>https://api.souche.com/v1/car_model/detail_info?</detail.url>
+				 <brands.url>https://api.souche.com/v1/car_model/brands?</brands.url>
+				 <sc.brand.code.url>https://api.souche.com/v1/car_model/brands/xxx/series?</sc.brand.code.url>
+				 <sc.series.code.url>https://api.souche.com/v1/car_model/series/xxx/models?</sc.series.code.url>
+				 <sc.model.code.url>https://api.souche.com/v1/car_model/models/xxx?</sc.model.code.url>
+				 <brand.dictionaries.url>https://api.souche.com/v1/car_model/brand_dictionaries?</brand.dictionaries.url>
+				 <price.url>https://api.souche.com/v1/car_model/price?</price.url>
+				 <used.car.price>https://api.souche.com/v1/car_model/used_car_price?</used.car.price>
+				 <areas>https://api.souche.com/v1/dictionary/areas?</areas>
+
+			 </properties>
+			 <activation><!-- 默认激活 -->
+				 <activeByDefault>false</activeByDefault>
+			 </activation>
+		 </profile>
+
+
+		 <profile>
+            <id>jdk1.8</id>  
+            <activation>  
+                <activeByDefault>true</activeByDefault>  
+                <jdk>1.8</jdk>  
+            </activation>  
+            <properties>  
+                <maven.compiler.source>1.8</maven.compiler.source>  
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>  
+            </properties>  
+        </profile>  
+    </profiles>
+
+
+	<build>
+		<!--<finalName>maxcar-util</finalName>-->
+		<!-- 如果不添加此节点mybatis的mapper.xml文件都会被漏掉。 -->
+		<resources>
+			<!-- 如果不添加此节点mybatis的mapper.xml文件都会被漏掉。 -->
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+
+			<resource>
+				<targetPath>${project.build.directory}/classes</targetPath>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<!--使用IDEA时，导入的Maven项目默认的LanguageLevel和JavaCompiler都是1.5，1.5的情况下连最简单的@Override注解都不支持，所以项目可能出现一堆错。-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

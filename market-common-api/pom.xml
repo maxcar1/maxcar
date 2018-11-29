@@ -120,6 +120,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<!--爬虫-->
+		<dependency>
+			<groupId>com.geccocrawler</groupId>
+			<artifactId>gecco</artifactId>
+			<version>1.3.0</version>
+		</dependency>
 		<!--如果引用，排除里面的servlet3.0jar-->
 		<dependency>
 			<groupId>com.maxcar</groupId>
@@ -436,7 +442,7 @@
 	</profiles>
 
 	<build>
-		<finalName>maxcar-common-api</finalName>
+		<finalName>market-common-api</finalName>
 		<plugins>
 			<!--生成可执行jar-->
 			<plugin>

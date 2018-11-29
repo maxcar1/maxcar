@@ -12,7 +12,15 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.DaSouCheService;
 import com.maxcar.base.service.impl.BaseServiceImpl;
-import com.maxcar.base.util.*;
+import com.maxcar.base.util.CollectionUtil;
+import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.DateUtils;
+import com.maxcar.base.util.HttpClientUtils;
+import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.MD5Util;
+import com.maxcar.base.util.StringUtil;
+import com.maxcar.base.util.StringUtils;
+import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.service.InvoiceService;
@@ -24,9 +32,22 @@ import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
-import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.entity.Response.BarrierCarListResponse;
-import com.maxcar.stock.pojo.*;
+import com.maxcar.stock.entity.Response.CarDataStatistics;
+import com.maxcar.stock.entity.Response.GetCarListByMarketIdAndTenantResponse;
+import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
+import com.maxcar.stock.entity.Response.SellCarListExportVo;
+import com.maxcar.stock.pojo.Car;
+import com.maxcar.stock.pojo.CarBase;
+import com.maxcar.stock.pojo.CarBaseWithBLOBs;
+import com.maxcar.stock.pojo.CarExample;
+import com.maxcar.stock.pojo.CarIcon;
+import com.maxcar.stock.pojo.CarInfo;
+import com.maxcar.stock.pojo.CarPic;
+import com.maxcar.stock.pojo.CarPicExample;
+import com.maxcar.stock.pojo.CarVehicle;
+import com.maxcar.stock.pojo.DpCar;
+import com.maxcar.stock.pojo.TaoBaoCar;
 import com.maxcar.stock.service.CarService;
 import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
@@ -42,7 +63,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author huangxu
@@ -876,7 +901,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             for (int i = 0; i < lists.size(); i++) {
                 CarPicExample carPicExample = new CarPicExample();
                 String id = lists.get(i).getId() + "";
-                carPicExample.createCriteria().andCarIdEqualTo(id).andTypeEqualTo(0);
+                carPicExample.createCriteria().andCarIdEqualTo(id).andTypeEqualTo(1);
                 List<CarPic> carPicList = carPicMapper.selectByExample(carPicExample);
                 if (CollectionUtil.listIsNotEmpty(carPicList)) {
                     lists.get(i).setSrc(carPicList.get(0).getSrc());
@@ -904,7 +929,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
 
         CarBase carBase = carBaseMapper.selectByPrimaryKey(id);
         CarPicExample carPicExample = new CarPicExample();
-        carPicExample.createCriteria().andCarIdEqualTo(id);
+        carPicExample.createCriteria().andCarIdEqualTo(id).andTypeNotEqualTo(0);
         List<CarPic> carPicList = carPicMapper.selectByExample(carPicExample);
         map.put("car", car);
         JSONObject json = new JSONObject();
