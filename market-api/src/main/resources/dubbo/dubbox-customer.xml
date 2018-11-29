@@ -44,9 +44,7 @@
 	check="false" retries="0" timeout="20000" />
 
 
-	<dubbo:reference interface="com.maxcar.stock.service.SubmitApplicationsService"
-					 id="submitApplicationsService"
-					 check="false" retries="0" timeout="20000" />
+
 	<!-- 商户开票统计和开票详情 -->
 	<dubbo:reference
 			interface="com.maxcar.tenant.service.TenantInvoiceService"

@@ -329,7 +329,8 @@
     cr.reason_desc 'reasonDesc',
     cr.is_pledge 'isPledge',
     cr.insert_time 'insertTime',
-    cr.is_valid 'isValid'
+    cr.is_valid 'isValid',
+    cr.market_id 'matketId'
     FROM
     car_review cr
     RIGHT JOIN (
@@ -346,8 +347,7 @@
     FROM
     car c
     LEFT JOIN car_base cb ON c.id = cb.id
-    WHERE
-market_id = #{marketId,jdbcType=INTEGER}
+    WHERE 1=1
     <if test="brandCode != null and brandCode != ''" >
       and cb.brand_code = #{brandCode,jdbcType=VARCHAR}
     </if>
@@ -367,6 +367,8 @@ market_id = #{marketId,jdbcType=INTEGER}
 where cr.back_time > NOW()
 and cr.is_pass  = 1
 and cr.is_valid = 1
+and market_id = #{marketId,jdbcType=INTEGER}
+
   </select>
 
 </mapper>

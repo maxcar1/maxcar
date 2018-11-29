@@ -27,8 +27,6 @@
 
 	<dubbo:service interface="com.maxcar.stock.service.OutMarketCarService" ref="outMarketCarService"  timeout="1200000"/>
 
-	<dubbo:service interface="com.maxcar.stock.service.SubmitApplicationsService" ref="submitApplicationsService" timeout="1200000"  />
-
 	<!--  -->
 	<dubbo:service interface="com.maxcar.stock.service.ReviewListService" ref="reviewListService" timeout="1200000"  />
 
