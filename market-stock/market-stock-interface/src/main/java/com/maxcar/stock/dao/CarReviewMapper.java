@@ -34,4 +34,5 @@ public interface CarReviewMapper {
 
     List<HisWarning> selectByHisWarning(HisWarning hisWarning);
 
+
 }
