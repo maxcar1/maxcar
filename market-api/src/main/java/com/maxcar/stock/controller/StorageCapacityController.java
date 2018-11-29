@@ -107,10 +107,15 @@ public class StorageCapacityController extends BaseController {
                 String symbol = configurationValue.substring(0, 1);
                 String num = configurationValue.substring(1, configurationValue.length());
                 int carNum = Integer.parseInt(num);
+                //  看市场有多少个商户  来计算出浮动车位数
+                if(tenantCount != 1){
+                    carNum = carNum * tenantCount;
+                }
                 // 如果截取出来的加号
                 if("+".equals(symbol)){
                     parkCount += carNum;
                 }
+
             }
         }
 
