@@ -1,11 +1,13 @@
 package com.maxcar.stock.dao;
 
+import com.maxcar.base.dao.BaseDao;
+import com.maxcar.stock.pojo.HisWarning;
 import com.maxcar.stock.pojo.ReviewList;
 import com.maxcar.stock.pojo.ReviewListExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-public interface ReviewListMapper {
+public interface ReviewListMapper{
     int countByExample(ReviewListExample example);
 
     int deleteByExample(ReviewListExample example);
@@ -27,4 +29,7 @@ public interface ReviewListMapper {
     int updateByPrimaryKeySelective(ReviewList record);
 
     int updateByPrimaryKey(ReviewList record);
+
+    ReviewList selectByCarId(@Param("carId") String carId);
+
 }

@@ -25,9 +25,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 */
 //@ServletComponentScan
 @SpringBootApplication
-@EnableAutoConfiguration
+
 @EnableScheduling
-@ComponentScan
 @PropertySource(value = {"classpath:dubbo.properties","classpath:dasouche.properties","classpath:file.properties", "classpath:redis-config.properties","classpath:kafka.properties","classpath:oos.properties"})
 @ImportResource("classpath:dubbo/dubbox-customer.xml")
 public class MarketApiApplication {
