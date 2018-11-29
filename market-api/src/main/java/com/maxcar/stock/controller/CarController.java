@@ -793,11 +793,15 @@ public class CarController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/downCar", method = RequestMethod.POST)
-    public InterfaceResult downCar(@RequestBody com.alibaba.fastjson.JSONObject params) {
+    public InterfaceResult downCar(@RequestBody com.alibaba.fastjson.JSONObject params, HttpServletRequest request) {
         InterfaceResult result = new InterfaceResult();
         Properties prop = new Properties();
         CarChannelRel carChannelRel = new CarChannelRel();
         try {
+            User user = getCurrentUser(request);
+            if (null == user || user.getMarketId().isEmpty()) {
+                return getInterfaceResult("200", "无法确认用户市场");
+            }
             prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
             com.alibaba.fastjson.JSONArray carids = params.getJSONArray("carIds");
             com.alibaba.fastjson.JSONArray numIds = params.getJSONArray("taobaoIds");
@@ -807,7 +811,7 @@ public class CarController extends BaseController {
             String APP_KEY = prop.getProperty("taobaoAppKey");
             String SECRET = prop.getProperty("taobaosecret");
             String API_URL = prop.getProperty("taobaoUploadUrl");
-            String sessionKey = prop.getProperty("sessionKey");
+            String sessionKey = prop.getProperty("marketIdSessionKey" + user.getMarketId());
 
 
             TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
