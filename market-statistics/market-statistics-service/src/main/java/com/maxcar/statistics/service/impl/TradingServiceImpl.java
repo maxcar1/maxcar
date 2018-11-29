@@ -166,8 +166,8 @@ public class TradingServiceImpl implements TradingService {
                 agoSalesCount = inventoryInvoiceMonthEntity.getSalesCount();
                 agoSalesPrice = inventoryInvoiceMonthEntity.getSalesPrice();
             }
-            double salesCount = Math.round((nowSalesCount - agoSalesCount) / (agoSalesCount == 0 ? 1 : agoSalesCount) * 100) / 100;
-            double salesPrice = Math.round((nowSalesPrice - agoSalesPrice) / (agoSalesPrice == 0 ? 1 : agoSalesPrice) * 100) / 100;
+            double salesCount = Math.round((nowSalesCount - agoSalesCount) / (agoSalesCount == 0 ? 1 : agoSalesCount) * 100) / 100.0;
+            double salesPrice = Math.round((nowSalesPrice - agoSalesPrice) / (agoSalesPrice == 0 ? 1 : agoSalesPrice) * 100) / 100.0;
 
             tradingResponse.setCountRate(salesCount);
             tradingResponse.setPriceRate(salesPrice);
@@ -243,7 +243,7 @@ public class TradingServiceImpl implements TradingService {
         }
 
 
-        double avgYearPrice = Math.round((avgSalesPrice == 0 ? 1 : avgSalesPrice) / 12 * 100) / 100;
+        double avgYearPrice = Math.round((avgSalesPrice == 0 ? 1 : avgSalesPrice) / 12 * 100) / 100.0;
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);
         map.put("avgYearPrice", avgYearPrice);
@@ -271,7 +271,7 @@ public class TradingServiceImpl implements TradingService {
             if (agoList.size() > 0) {
                 InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity1 = agoList.get(0);
                 Double agoSalesAvgPrice = inventoryInvoiceMonthEntity1.getSalesAvgPrice();
-                avgPriceMonth = Math.round((nowSalesAvgPrice - agoSalesAvgPrice) / agoSalesAvgPrice * 100) / 100;
+                avgPriceMonth = Math.round((nowSalesAvgPrice - agoSalesAvgPrice) / agoSalesAvgPrice * 100) / 100.0;
                 tradingResponse.setAvgPriceMonth(avgPriceMonth);
             }
 
@@ -285,7 +285,7 @@ public class TradingServiceImpl implements TradingService {
             if (agoYearList.size() > 0) {
                 InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity1 = agoList.get(0);
                 Double agoSalesAvgPrice = inventoryInvoiceMonthEntity1.getSalesAvgPrice();
-                avgPriceYear = Math.round((nowSalesAvgPrice - agoSalesAvgPrice) / agoSalesAvgPrice * 100) / 100;
+                avgPriceYear = Math.round((nowSalesAvgPrice - agoSalesAvgPrice) / agoSalesAvgPrice * 100) / 100.0;
                 tradingResponse.setAvgPriceMonth(avgPriceYear);
             }
             tradingResponses.add(tradingResponse);
@@ -321,7 +321,7 @@ public class TradingServiceImpl implements TradingService {
             if (agoMonthList.size() > 0) {
                 TradingResponse response1 = agoMonthList.get(0);
                 Double agoMonthTenantCount = response1.getTenantCount();
-                countMonth = Math.round((nowTenantCount - agoMonthTenantCount) / agoMonthTenantCount * 100) / 100;
+                countMonth = Math.round((nowTenantCount - agoMonthTenantCount) / agoMonthTenantCount * 100) / 100.0;
             }
             response.setTenantCountMonth(countMonth);
             //  同比
@@ -334,7 +334,7 @@ public class TradingServiceImpl implements TradingService {
             if (agoYearList.size() > 0) {
                 TradingResponse response1 = agoYearList.get(0);
                 Double agoYearTenantCount = response1.getTenantCount();
-                countYear = Math.round((nowTenantCount - agoYearTenantCount) / agoYearTenantCount * 100) / 100;
+                countYear = Math.round((nowTenantCount - agoYearTenantCount) / agoYearTenantCount * 100) / 100.0;
             }
             response.setTenantCountYear(countYear);
         }
@@ -376,7 +376,7 @@ public class TradingServiceImpl implements TradingService {
             if (listMonth.size() > 0) {
                 TradingResponse response = listMonth.get(0);
                 Double agoCount = response.getCount();
-                dealPriceMonth = Math.round((count - agoCount) / agoCount * 100) / 100;
+                dealPriceMonth = Math.round((count - agoCount) / agoCount * 100) / 100.0;
             }
             price.setDealPriceMonth(dealPriceMonth);
 
@@ -394,7 +394,7 @@ public class TradingServiceImpl implements TradingService {
             if (listYear.size() > 0) {
                 TradingResponse response = listYear.get(0);
                 Double agoCount = response.getCount();
-                dealPriceYear = Math.round((count - agoCount) / agoCount * 100) / 100;
+                dealPriceYear = Math.round((count - agoCount) / agoCount * 100) / 100.0;
             }
             price.setDealPriceYear(dealPriceYear);
         }

@@ -25,6 +25,7 @@
 
     <dubbo:service interface="com.maxcar.statistics.service.TradingService" ref="tradingService" timeout="1200000"/>
 
+    <dubbo:service interface="com.maxcar.statistics.service.StockService" ref="stockService" timeout="1200000"/>
 
 
 

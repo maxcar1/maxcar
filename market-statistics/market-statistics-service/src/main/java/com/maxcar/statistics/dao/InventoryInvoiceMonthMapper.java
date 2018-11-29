@@ -1,7 +1,9 @@
 package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
+import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.request.TradingRequest;
+import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.model.response.TradingResponse;
 
 import java.util.List;
@@ -25,4 +27,8 @@ public interface InventoryInvoiceMonthMapper {
     List<TradingResponse> getTenantDeal(TradingRequest tradingRequest);
 
     Map<String,Object> countCarPriceDistribution(TradingRequest tradingRequest);
+
+    List<StockResponse> getCountAndValue(StockRequest stockRequest);
+
+    List<StockResponse> getParkingSaturability(StockRequest stockRequest);
 }

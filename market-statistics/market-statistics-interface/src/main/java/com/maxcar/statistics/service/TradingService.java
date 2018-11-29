@@ -1,6 +1,5 @@
 package com.maxcar.statistics.service;
 
-import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
