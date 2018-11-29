@@ -9,6 +9,7 @@ import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.ReviewListService;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
+import com.maxcar.user.entity.ConfigurationExample;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,6 @@ public class ReviewListServiceImpl implements ReviewListService {
                 CarBase carBase = carBaseMapper.selectByPrimaryKey(hisWarning.getCarId());
                 if (carBase != null && null != car.getTenant()) {
                     UserTenant userTenant = userTenantService.selectByPrimaryKey(car.getTenant());
-                    hisWarning.setTenantName(userTenant.getTenantName());
                     CarRecord carRecords = null;
                     if (userTenant != null) {
                         carRecords = carRecordMapper.selectPlayingTime(car.getRfid(), car.getVin());
@@ -55,6 +55,7 @@ public class ReviewListServiceImpl implements ReviewListService {
                     if (StringUtils.isNotBlank(carBase.getEvaluatePrice())) {
                         hisWarning.setInsertTime(carRecords.getInsertTime());
                     }
+                    hisWarning.setTenantName(userTenant.getTenantName());
                     hisWarning.setTenant(car.getTenant());
                     hisWarning.setModleName(carBase.getModelName());
                     hisWarning.setBrandCode(carBase.getBrandCode());
@@ -76,7 +77,6 @@ public class ReviewListServiceImpl implements ReviewListService {
 
     @Override
     public InterfaceResult carWarningExcel(HisWarning warning) throws Exception {
-
         InterfaceResult interfaceResult = new InterfaceResult();
         List<HisWarning> list = carReviewMapper.selectByHisWarning(warning);
         List<CarWarningExcel> carWarningExcelList= new LinkedList<>();
@@ -93,9 +93,14 @@ public class ReviewListServiceImpl implements ReviewListService {
                     if (userTenant != null) {
                         CarRecord carRecords = carRecordMapper.selectPlayingTime(car.getRfid(), car.getVin());
                     }
+
                 }
             }
-            carWarningExcel.setCarStatus(hisWarning.getCarStatus());
+            if (hisWarning.getCarStatus() == 1){
+                carWarningExcel.setCarStatus("质押车" );
+            }else {
+                carWarningExcel.setCarStatus("非质押车" );
+            }
             carWarningExcel.setOutReason(hisWarning.getOutReason());
             carWarningExcel.setEvaluateRrice(hisWarning.getEvaluatePrice());
             carWarningExcel.setInsertTime(hisWarning.getInsertTime());
@@ -107,6 +112,4 @@ public class ReviewListServiceImpl implements ReviewListService {
         interfaceResult.InterfaceResult200(carWarningExcelList);
         return interfaceResult;
     }
-
-
 }
