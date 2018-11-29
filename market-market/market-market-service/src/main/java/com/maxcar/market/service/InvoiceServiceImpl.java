@@ -3,20 +3,29 @@ package com.maxcar.market.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maxcar.base.dao.BaseDao;
+import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.impl.BaseServiceImpl;
 import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.StringUtil;
+import com.maxcar.base.util.StringUtils;
 import com.maxcar.market.dao.InvoiceMapper;
 import com.maxcar.market.model.request.GetAllTransactionRequest;
 import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.pojo.InvoiceExample;
+import com.maxcar.market.pojo.InvoicePurchase;
 import com.maxcar.market.pojo.TradeInformation;
+import com.maxcar.stock.pojo.Car;
+import com.maxcar.stock.service.CarService;
+import com.maxcar.tenant.pojo.UserTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chiyanlong on 2018/8/24.
@@ -26,7 +35,6 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
 
     @Autowired
     private InvoiceMapper invoiceMapper;
-
     @Override
     public BaseDao<Invoice, String> getBaseMapper() {
         return invoiceMapper;
@@ -113,7 +121,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     @Override
     public List<TradeInformation> detailsExcel(GetAllTransactionRequest request) throws ParseException {
         if (StringUtil.isNotEmpty(request.getSellerName())) {
-            request.setSellerName("%" + request.getSellerName() + "%");
+           request.setSellerName("%" + request.getSellerName() + "%");
         }
         if (StringUtil.isNotEmpty(request.getPurchacerName())) {
             request.setPurchacerName("%" + request.getPurchacerName() + "%");
@@ -153,155 +161,6 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     @Override
     public List<InvoicePerson> getInvoicePerson(String idCard, String marketId) {
         return invoiceMapper.selectByIdCard(idCard, marketId);
-    }
-
-    @Override
-    public List deakManageExcel(Invoice invoice) {
-        InvoiceExample invoiceExample = new InvoiceExample();
-        InvoiceExample.Criteria criteria = invoiceExample.createCriteria();
-        if (null != invoice.getRemark() && invoice.getRemark() == 2) {//查询开票申请列表
-            criteria.andInvoicePortofNotEqualTo(2);//非窗口列表
-            criteria.andInvoiceStatusNotEqualTo(0);//非作废状态
-        }
-        if (null != invoice.getRemark() && invoice.getRemark() == 1) {//查询开具发票列表
-            criteria.andInvoiceStatusNotEqualTo(1);//查询为已处理和作废状态
-            criteria.andUserIdEqualTo(invoice.getUserId());
-        }
-        if (null != invoice.getMarketId() && !invoice.getMarketId().equals("")) {
-            criteria.andMarketIdEqualTo(invoice.getMarketId());
-        }
-        if (null != invoice.getPurchacerName() && !invoice.getPurchacerName().equals("")) {
-            criteria.andPurchacerNameLike("%" + invoice.getPurchacerName() + "%");
-        }
-        if (null != invoice.getSellerName() && !invoice.getSellerName().equals("")) {
-            criteria.andSellerNameLike("%" + invoice.getSellerName() + "%");
-        }
-        if (null != invoice.getInvoiceNo() && !invoice.getInvoiceNo().equals("")) {
-            criteria.andInvoiceNoLike("%" + invoice.getInvoiceNo() + "%");
-        }
-        if (null != invoice.getBillTimeStart() && null != invoice.getBillTimeEnd()) {
-            criteria.andBillTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeStart(), "yyyy-MM-dd"));
-            criteria.andBillTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeEnd(), "yyyy-MM-dd"));
-        }
-        if (null != invoice.getSyncTimeStart() && null != invoice.getSyncTimeEnd()) {
-            criteria.andSyncTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeStart(), "yyyy-MM-dd"));
-            criteria.andSyncTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeEnd(), "yyyy-MM-dd"));
-        }
-        if (null != invoice.getInvoicePortof()) {
-            criteria.andInvoicePortofEqualTo(invoice.getInvoicePortof());
-        }
-        if (null != invoice.getInvoiceStatus()) {
-            criteria.andInvoiceStatusEqualTo(invoice.getInvoiceStatus());
-        }
-        if (null != invoice.getCarSources()) {
-            criteria.andCarSourcesEqualTo(invoice.getCarSources());
-        }
-        if (null != invoice.getCurrentNo() && invoice.getCurrentNo() != "") {
-            criteria.andCurrentNoEqualTo(invoice.getCurrentNo());
-        }
-        invoiceExample.setOrderByClause("insert_time desc");
-        List<Invoice> lists = invoiceMapper.selectByExample(invoiceExample);
-        List list = new ArrayList();
-        for (Invoice invoice1 : lists) {
-            Map<String, Object> map = new LinkedHashMap<>();
-            //  发票代码
-            String invoiceCode = invoice1.getInvoiceCode();
-            if (StringUtil.isNotEmpty(invoiceCode)) {
-                map.put("invoiceCode", invoiceCode);
-            } else {
-                map.put("invoiceCode", "");
-            }
-            //  发票号码
-            String invoiceNo = invoice1.getInvoiceNo();
-            if (StringUtil.isNotEmpty(invoiceNo)) {
-                map.put("invoiceNo", invoiceNo);
-            } else {
-                map.put("invoiceNo", "");
-            }
-            //  开票时间
-            Date billTime = invoice1.getBillTime();
-            if (billTime != null) {
-                map.put("billTime", billTime);
-            } else {
-                map.put("billTime", "");
-            }
-            //  买方
-            String purchacerName = invoice1.getPurchacerName();
-            if (StringUtil.isNotEmpty(purchacerName)) {
-                map.put("purchacerName", purchacerName);
-            } else {
-                map.put("purchacerName", "");
-            }
-            //  卖方
-            String sellerName = invoice1.getSellerName();
-            if (StringUtil.isNotEmpty(sellerName)) {
-                map.put("sellerName", sellerName);
-            } else {
-                map.put("sellerName", "");
-            }
-            //  车价合计
-            Double price = invoice1.getPrice();
-            if (price != null) {
-                map.put("price", price);
-            } else {
-                map.put("price", "");
-            }
-            //  开票端口
-            Integer invoicePortof = invoice1.getInvoicePortof();
-            if (invoicePortof != null) {
-                switch (invoicePortof) {
-                    case 0:
-                        map.put("invoicePortof", "自助交易终端");
-                        break;
-                    case 1:
-                        map.put("invoicePortof", "商户app");
-                        break;
-                    case 2:
-                        map.put("invoicePortof", "窗口");
-                        break;
-                }
-            } else {
-                map.put("invoicePortof", "");
-            }
-            //  车辆来源
-            Integer carSources = invoice1.getCarSources();
-            if (carSources != null) {
-                switch (carSources) {
-                    case 1:
-                        map.put("carSources", "商品车");
-                        break;
-                    case 2:
-                        map.put("carSources", "挂靠车");
-                        break;
-                    case 3:
-                        map.put("carSources", "代办");
-                        break;
-                    case 4:
-                        map.put("carSources", "散户");
-                        break;
-                }
-            } else {
-                map.put("carSources", "");
-            }
-            Integer invoiceStatus = invoice1.getInvoiceStatus();
-            if (invoiceStatus != null) {
-                switch (invoiceStatus) {
-                    case 0:
-                        map.put("invoiceStatus", "作废");
-                        break;
-                    case 1:
-                        map.put("invoiceStatus", "未处理");
-                        break;
-                    case 2:
-                        map.put("invoiceStatus", "已处理");
-                        break;
-                }
-            } else {
-                map.put("invoiceStatus", "");
-            }
-            list.add(map);
-        }
-        return list;
     }
 
 //    @Override

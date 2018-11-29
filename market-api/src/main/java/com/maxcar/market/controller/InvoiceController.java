@@ -724,11 +724,9 @@ public class InvoiceController extends BaseController {
         User user = super.getCurrentUser(request);
         invoice.setUserId(user.getUserId());
         invoice.setMarketId(user.getMarketId());
-
-        List list = invoiceService.deakManageExcel(invoice);
 //        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
 
-        interfaceResult.InterfaceResult200(invoiceService);
+//        interfaceResult.InterfaceResult200(tradeInformations);
 
         return interfaceResult;
     }
