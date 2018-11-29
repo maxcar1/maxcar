@@ -247,4 +247,16 @@
         order by insert_time desc
         limit 0,1
     </select>
+    <select id="selectEmployeeNewRecord" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from parking_fee
+        <where>
+            is_valid =1
+            and brake_id = #{brakeId,jdbcType=VARCHAR}
+            and employees_id = #{employeesId,jdbcType=VARCHAR}
+            and market_id = #{marketId,jdbcType=VARCHAR}
+            and leave_time is null
+        </where>
+        order by insert_time desc
+        limit 0,1
+    </select>
 </mapper>

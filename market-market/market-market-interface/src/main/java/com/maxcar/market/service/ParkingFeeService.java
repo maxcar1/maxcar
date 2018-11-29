@@ -133,4 +133,10 @@ public interface ParkingFeeService extends BaseService<ParkingFee, String> {
     InterfaceResult updateParkingFeeIntegralAndDetail(ParkingFeeIntegral parkingFeeIntegral) throws ParseException, Exception;
 
     InterfaceResult updateParkingDetail(JSONObject params) throws Exception;
+
+    InterfaceResult goToWork(JSONObject params)  throws Exception;
+
+    InterfaceResult goOffWork(JSONObject params)  throws Exception;
+
+    InterfaceResult workDetail(JSONObject params)  throws Exception;
 }

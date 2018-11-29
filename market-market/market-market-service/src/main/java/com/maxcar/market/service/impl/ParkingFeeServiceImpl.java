@@ -557,20 +557,34 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
     public InterfaceResult charge(JSONObject params) throws Exception {
         InterfaceResult result = new InterfaceResult();
         if (null != params && !params.isEmpty()) {
-            if (!params.containsKey("barrierId")) {
-                result.InterfaceResult600("请选择道闸!");
-                return result;
-            }
+            String userId = params.getString("userId");
             String barrierId = params.getString("barrierId");
-
             ParkingFeeDetail detail = JSONObject.toJavaObject(params, ParkingFeeDetail.class);
-
-            ParkingFee parkingFee = parkingFeeMapper.getCurrentNewRecord(barrierId, detail.getMarketId());
-            detail.setParkingFeeId(null == parkingFee ? "" : parkingFee.getId());
             Barrier ba = barrierService.selectByBarrierId(barrierId);
+            ParkingFee parking = new ParkingFee();
+            parking.setMarketId(detail.getMarketId());
+            parking.setBrakeId(ba.getBarrierId());
+            parking.setEmployeesId(userId);
+            ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
+
+            detail.setParkingFeeId(null == parkingFee ? "" : parkingFee.getId());
             int code = parkingFeeDetailMapper.updateByPrimaryKeySelective(detail);
             if (code == 1) {
-                sendMessage(detail.getMarketId(),ba,-1);
+                sendMessage(detail.getMarketId(), ba, -1);
+                ParkingFeeDetail parkingFeeDetail = new ParkingFeeDetail();
+                parkingFeeDetail.setParkingFeeId(parking.getId());
+                parkingFeeDetail.setMarketId(detail.getMarketId());
+                List<ParkingFeeDetail> parkingFeeDetails = parkingFeeDetailMapper.getThisShiftRecord(parkingFeeDetail);
+                int total = 0;
+                for(ParkingFeeDetail detail1:parkingFeeDetails){
+                    total +=detail1.getChargePrice();
+                };
+                JSONObject json = new JSONObject();
+                json.put("money",total);
+                json.put("barrierId",ba.getBarrierId());
+                //前端推送识别 2为刷卡推送
+                json.put("type",2);
+                result.InterfaceResult200(json);
             } else {
                 result.InterfaceResult600("收费失败!");
             }
@@ -1128,5 +1142,160 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         return result;
     }
 
+
+    @Override
+    public InterfaceResult goToWork(JSONObject params) throws Exception{
+        InterfaceResult result = new InterfaceResult();
+        String userId = params.getString("userId");
+        String marketId = params.getString("marketId");
+        String barrierId = params.getString("barrierId");
+        JSONObject json = new JSONObject();
+        ParkingFee fee = new ParkingFee();
+        //根据mac地址读取道闸id
+        Barrier barrier = barrierService.selectByBarrierId(barrierId);
+        if (null != barrier){
+            fee.setBrakeId(barrier.getBarrierId());
+            fee.setEmployeesId(userId);
+            fee.setMarketId(marketId);
+            //先查询用户是否有未下班记录
+            User user = userService.selectByPrimaryKey(userId);
+            Staff staff = staffService.selectByPrimaryId(user.getStaffId());
+            ParkingFee parking = parkingFeeMapper.selectEmployeeNewRecord(fee);
+            boolean flag = false;
+            if (null == parking) {
+                parking = new ParkingFee();
+                parking.setId(UuidUtils.generateIdentifier());
+                parking.setShift(WeiXinUtils.gettimeFormart());
+                parking.setEmployeesId(userId);
+                parking.setMarketId(marketId);
+                parking.setInsertOperator(userId);
+                parking.setArrivalTime(Calendar.getInstance().getTime());
+                parking.setBrakeId(barrier.getBarrierId());
+                parkingFeeMapper.insertSelective(parking);
+                flag = true;
+            }
+            Map map = DateUtils.getHMS(Calendar.getInstance().getTime(), parking.getArrivalTime());
+            json.put("hour", map.get("hour"));
+            json.put("minute", map.get("minute"));
+            json.put("second", map.get("second"));
+            json.put("staffName",staff.getStaffName());
+            json.put("position",barrier.getBarrierPosition());
+            if (flag){
+                json.put("money","0");
+            }else{
+                ParkingFeeDetail detail = new ParkingFeeDetail();
+                detail.setParkingFeeId(parking.getId());
+                detail.setMarketId(marketId);
+                List<ParkingFeeDetail> parkingFeeDetails = parkingFeeDetailMapper.getThisShiftRecord(detail);
+                int total = 0;
+                for(ParkingFeeDetail parkingFeeDetail:parkingFeeDetails){
+                    total +=parkingFeeDetail.getChargePrice();
+                };
+                json.put("money",total);
+            }
+            result.InterfaceResult200(json);
+        }else{
+            result.InterfaceResult600("道闸配置错误!");
+        }
+        return result;
+    }
+
+    @Override
+    public InterfaceResult workDetail(JSONObject params) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        JSONObject json = new JSONObject();
+        String marketId = params.getString("marketId");
+        String userId = params.getString("userId");
+        String barrierId = params.getString("barrierId");
+        Integer pageNum = params.getInteger("pageNum");
+        Integer pageSize = params.getInteger("pageSize");
+
+        Barrier barrier = barrierService.selectByBarrierId(barrierId);
+        ParkingFee parking = new ParkingFee();
+        parking.setEmployeesId(userId);
+        parking.setMarketId(marketId);
+        parking.setBrakeId(barrier.getBarrierId());
+        ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
+        if (null != parkingFee){
+            Date systemTime = Calendar.getInstance().getTime();
+            json.put("arrivalTime",DateUtils.LONG_DATE_FORMAT.format(parkingFee.getArrivalTime()));
+            json.put("systemTime",DateUtils.LONG_DATE_FORMAT.format(systemTime));
+            Map map1 = DateUtils.getHMS(systemTime, parkingFee.getArrivalTime());
+            StringBuilder sb = new StringBuilder();
+            sb.append(map1.get("hour"));
+            sb.append("时");
+            sb.append(map1.get("minute"));
+            sb.append("分");
+            sb.append(map1.get("second"));
+            sb.append("秒");
+            json.put("parkingTime",sb.toString());
+            ParkingFeeDetail detail = new ParkingFeeDetail();
+            detail.setParkingFeeId(parkingFee.getId());
+            detail.setMarketId(marketId);
+            PageHelper.startPage(pageNum,pageSize);
+            List<ParkingFeeDetail> parkingFeeDetails = parkingFeeDetailMapper.getThisShiftRecord(detail);
+            int totalMoney = 0;
+            //现金
+            int totalCash = 0;
+            //公众号
+            int totalPublic = 0;
+            //微信
+            int totalWeixin = 0;
+            //支付宝
+            int totalIpay = 0;
+            for(ParkingFeeDetail parkingFeeDetail:parkingFeeDetails){
+                totalMoney +=parkingFeeDetail.getChargePrice();
+                Map map2 = DateUtils.getHMS(parkingFeeDetail.getAfterTime(), parkingFeeDetail.getBeforeTime());
+                StringBuilder sb1 = new StringBuilder();
+                sb1.append(map2.get("hour"));
+                sb1.append("时");
+                sb1.append(map2.get("minute"));
+                sb1.append("分");
+                sb1.append(map2.get("second"));
+                sb1.append("秒");
+                parkingFeeDetail.setParkingTime(sb1.toString());
+                switch (parkingFeeDetail.getPayType()){
+                    case 0:
+                        totalIpay += parkingFeeDetail.getChargePrice();
+                        break;
+                    case 1:
+                        totalWeixin += parkingFeeDetail.getChargePrice();
+                        break;
+                    case 2:
+                        totalCash += parkingFeeDetail.getChargePrice();
+                        break;
+                    case 3:
+                        totalPublic += parkingFeeDetail.getChargePrice();
+                        break;
+                }
+            };
+            json.put("totalIpay",totalIpay);
+            json.put("totalWeixin",totalWeixin);
+            json.put("totalCash",totalCash);
+            json.put("totalPublic",totalPublic);
+            json.put("totalMoney",totalMoney);
+            PageInfo parkingPage = new PageInfo<>(parkingFeeDetails);
+            json.put("parkingList",parkingPage);
+            result.InterfaceResult200(json);
+        }
+        return result;
+    }
+
+    @Override
+    public InterfaceResult goOffWork(JSONObject params) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        ParkingFee parking = new ParkingFee();
+        String marketId = params.getString("marketId");
+        String userId = params.getString("userId");
+        String barrierId = params.getString("barrierId");
+        Barrier barrier = barrierService.selectByBarrierId(barrierId);
+        parking.setEmployeesId(userId);
+        parking.setMarketId(marketId);
+        parking.setBrakeId(barrier.getBarrierId());
+        ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
+        parkingFee.setLeaveTime(Calendar.getInstance().getTime());
+        parkingFeeMapper.updateByPrimaryKeySelective(parkingFee);
+        return result;
+    }
 
 }
