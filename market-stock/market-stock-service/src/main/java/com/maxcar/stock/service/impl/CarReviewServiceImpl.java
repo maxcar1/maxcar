@@ -11,6 +11,7 @@ import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.CarReviewExample;
 import com.maxcar.stock.service.CarReviewService;
 import com.maxcar.stock.service.CarService;
+import com.maxcar.stock.vo.CarReviewVo;
 import com.maxcar.stock.vo.CarVo;
 import org.apache.velocity.runtime.directive.Foreach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,8 +150,8 @@ public class CarReviewServiceImpl implements CarReviewService {
      * @return
      */
     @Override
-    public List<CarReview> selectAllCarReviewByIsPass() {
-        List<CarReview> carReviews = carReviewMapper.selectAllTimeoutNotreturnCarReview();
+    public List<CarReviewVo> selectAllCarReviewByIsPass() {
+        List<CarReviewVo> carReviews = carReviewMapper.selectAllTimeoutNotreturnCarReview();
         return carReviews;
     }
 
@@ -158,176 +159,180 @@ public class CarReviewServiceImpl implements CarReviewService {
      * 定时扫描
      */
     @Override
-    public void updateTimeoutNotreturnCarStockStatus(){
-        List<CarReview> carReviews = selectAllCarReviewByIsPass();
-        if (null != carReviews && carReviews.size() > 0){
-            for (CarReview cr: carReviews) {
-                Car car= new Car();
+    public void updateTimeoutNotreturnCarStockStatus() throws Exception{
+        List<CarReviewVo> carReviews = selectAllCarReviewByIsPass();
+        if (carReviews.size() > 0) {
+            for (CarReviewVo cr : carReviews) {
+                Car car = new Car();
                 car.setId(cr.getCarId());
-                car.setStockStatus(6);// 出场超时状态
-                carService.updateByPrimaryKeySelective(car);
-                String topic = consumerTopic8;
-                switch (cr.getMarketId()) {
-                    case "006":
-                        topic = consumerTopic6;
-                        break;
-                    case "007":
-                        topic = consumerTopic7;
-                        break;
-                    case "008":
-                        topic = consumerTopic8;
-                        break;
-                    case "009":
-                        topic = consumerTopic9;
-                        break;
-                    case "010":
-                        topic = consumerTopic10;
-                        break;
-                    case "011":
-                        topic = consumerTopic11;
-                        break;
-                    case "012":
-                        topic = consumerTopic12;
-                        break;
-                    case "013":
-                        topic = consumerTopic13;
-                        break;
-                    case "014":
-                        topic = consumerTopic14;
-                        break;
-                    case "015":
-                        topic = consumerTopic15;
-                        break;
-                    case "016":
-                        topic = consumerTopic16;
-                        break;
-                    case "017":
-                        topic = consumerTopic17;
-                        break;
-                    case "018":
-                        topic = consumerTopic18;
-                        break;
-                    case "019":
-                        topic = consumerTopic19;
-                        break;
-                    case "020":
-                        topic = consumerTopic20;
-                        break;
-                    case "021":
-                        topic = consumerTopic21;
-                        break;
-                    case "022":
-                        topic = consumerTopic22;
-                        break;
-                    case "023":
-                        topic = consumerTopic23;
-                        break;
-                    case "024":
-                        topic = consumerTopic24;
-                        break;
-                    case "025":
-                        topic = consumerTopic25;
-                        break;
-                    case "026":
-                        topic = consumerTopic26;
-                        break;
-                    case "027":
-                        topic = consumerTopic27;
-                        break;
-                    case "028":
-                        topic = consumerTopic28;
-                        break;
-                    case "029":
-                        topic = consumerTopic29;
-                        break;
-                    case "030":
-                        topic = consumerTopic30;
-                        break;
-                    case "031":
-                        topic = consumerTopic31;
-                        break;
-                    case "032":
-                        topic = consumerTopic32;
-                        break;
-                    case "033":
-                        topic = consumerTopic33;
-                        break;
-                    case "034":
-                        topic = consumerTopic34;
-                        break;
-                    case "035":
-                        topic = consumerTopic35;
-                        break;
-                    case "036":
-                        topic = consumerTopic36;
-                        break;
-                    case "037":
-                        topic = consumerTopic37;
-                        break;
-                    case "038":
-                        topic = consumerTopic38;
-                        break;
-                    case "039":
-                        topic = consumerTopic39;
-                        break;
-                    case "040":
-                        topic = consumerTopic40;
-                        break;
-                    case "041":
-                        topic = consumerTopic41;
-                        break;
-                    case "042":
-                        topic = consumerTopic42;
-                        break;
-                    case "043":
-                        topic = consumerTopic43;
-                        break;
-                    case "044":
-                        topic = consumerTopic44;
-                        break;
-                    case "045":
-                        topic = consumerTopic45;
-                        break;
-                    case "046":
-                        topic = consumerTopic46;
-                        break;
-                    case "047":
-                        topic = consumerTopic47;
-                        break;
-                    case "048":
-                        topic = consumerTopic48;
-                        break;
-                    case "049":
-                        topic = consumerTopic49;
-                        break;
-                    case "050":
-                        topic = consumerTopic50;
-                        break;
-                    case "051":
-                        topic = consumerTopic51;
-                        break;
-                    case "052":
-                        topic = consumerTopic52;
-                        break;
-                    case "053":
-                        topic = consumerTopic53;
-                        break;
-                    case "054":
-                        topic = consumerTopic54;
-                        break;
-                    case "055":
-                        topic = consumerTopic55;
-                        break;
-                }
-                PostParam postParam = new PostParam();
-                postParam.setData(JsonTools.toJson(car));
-                postParam.setMarket(cr.getMarketId());
-                postParam.setUrl("/barrier/car/saveCar");
-                postParam.setOnlySend(false);
-                postParam.setMessageTime(Constants.dateformat.format(new Date()));
-                messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+                car.setMarketId(cr.getMarketId());
+                car.setStockStatus(6);// 出场超时
+                updateCarStockStatus(car);
             }
         }
     }
 
+    private void updateCarStockStatus(Car car){
+            carService.updateByPrimaryKeySelective(car);
+            String topic = consumerTopic8;
+            switch (car.getMarketId()) {
+                case "006":
+                    topic = consumerTopic6;
+                    break;
+                case "007":
+                    topic = consumerTopic7;
+                    break;
+                case "008":
+                    topic = consumerTopic8;
+                    break;
+                case "009":
+                    topic = consumerTopic9;
+                    break;
+                case "010":
+                    topic = consumerTopic10;
+                    break;
+                case "011":
+                    topic = consumerTopic11;
+                    break;
+                case "012":
+                    topic = consumerTopic12;
+                    break;
+                case "013":
+                    topic = consumerTopic13;
+                    break;
+                case "014":
+                    topic = consumerTopic14;
+                    break;
+                case "015":
+                    topic = consumerTopic15;
+                    break;
+                case "016":
+                    topic = consumerTopic16;
+                    break;
+                case "017":
+                    topic = consumerTopic17;
+                    break;
+                case "018":
+                    topic = consumerTopic18;
+                    break;
+                case "019":
+                    topic = consumerTopic19;
+                    break;
+                case "020":
+                    topic = consumerTopic20;
+                    break;
+                case "021":
+                    topic = consumerTopic21;
+                    break;
+                case "022":
+                    topic = consumerTopic22;
+                    break;
+                case "023":
+                    topic = consumerTopic23;
+                    break;
+                case "024":
+                    topic = consumerTopic24;
+                    break;
+                case "025":
+                    topic = consumerTopic25;
+                    break;
+                case "026":
+                    topic = consumerTopic26;
+                    break;
+                case "027":
+                    topic = consumerTopic27;
+                    break;
+                case "028":
+                    topic = consumerTopic28;
+                    break;
+                case "029":
+                    topic = consumerTopic29;
+                    break;
+                case "030":
+                    topic = consumerTopic30;
+                    break;
+                case "031":
+                    topic = consumerTopic31;
+                    break;
+                case "032":
+                    topic = consumerTopic32;
+                    break;
+                case "033":
+                    topic = consumerTopic33;
+                    break;
+                case "034":
+                    topic = consumerTopic34;
+                    break;
+                case "035":
+                    topic = consumerTopic35;
+                    break;
+                case "036":
+                    topic = consumerTopic36;
+                    break;
+                case "037":
+                    topic = consumerTopic37;
+                    break;
+                case "038":
+                    topic = consumerTopic38;
+                    break;
+                case "039":
+                    topic = consumerTopic39;
+                    break;
+                case "040":
+                    topic = consumerTopic40;
+                    break;
+                case "041":
+                    topic = consumerTopic41;
+                    break;
+                case "042":
+                    topic = consumerTopic42;
+                    break;
+                case "043":
+                    topic = consumerTopic43;
+                    break;
+                case "044":
+                    topic = consumerTopic44;
+                    break;
+                case "045":
+                    topic = consumerTopic45;
+                    break;
+                case "046":
+                    topic = consumerTopic46;
+                    break;
+                case "047":
+                    topic = consumerTopic47;
+                    break;
+                case "048":
+                    topic = consumerTopic48;
+                    break;
+                case "049":
+                    topic = consumerTopic49;
+                    break;
+                case "050":
+                    topic = consumerTopic50;
+                    break;
+                case "051":
+                    topic = consumerTopic51;
+                    break;
+                case "052":
+                    topic = consumerTopic52;
+                    break;
+                case "053":
+                    topic = consumerTopic53;
+                    break;
+                case "054":
+                    topic = consumerTopic54;
+                    break;
+                case "055":
+                    topic = consumerTopic55;
+                    break;
+            }
+            PostParam postParam = new PostParam();
+            postParam.setData(JsonTools.toJson(car));
+            postParam.setMarket(car.getMarketId());
+            postParam.setUrl("/barrier/car/saveCar");
+            postParam.setOnlySend(false);
+            postParam.setMessageTime(Constants.dateformat.format(new Date()));
+            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+        }
 }
