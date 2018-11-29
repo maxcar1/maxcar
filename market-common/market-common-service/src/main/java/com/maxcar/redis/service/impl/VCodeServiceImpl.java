@@ -35,7 +35,7 @@ public class VCodeServiceImpl implements VCodeService{
         String code = SmsUtil.getMobileCode();
 //        String code = "1234";
         vars.put("code", code);
-        SmsUtil.sendSMS(phoneNum, "SMS_151515138", vars);
+       SmsUtil.sendSMS(phoneNum, "SMS_151515138", vars);
 
         String key = MessageFormat.format(CacheKey.LOGIN_PHONE_CODE, phoneNum);
         jedisSingleDao.set(key, code);
