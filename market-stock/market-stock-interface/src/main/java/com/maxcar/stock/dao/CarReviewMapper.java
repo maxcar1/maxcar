@@ -4,6 +4,8 @@ import com.maxcar.stock.entity.Response.CarRecordVo;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.CarReviewExample;
 import java.util.List;
+
+import com.maxcar.stock.vo.CarReviewVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface CarReviewMapper {
@@ -34,4 +36,10 @@ public interface CarReviewMapper {
     int insertCarReview(CarReview carReview);
 
     List<CarRecordVo> getCarRecord (CarReview carReview);
+
+    /**
+     * 查询所有出场超时未归的车辆  不需要传条件  看sql
+     * @return
+     */
+    List<CarReviewVo> selectAllTimeoutNotreturnCarReview();
 }

@@ -1,6 +1,7 @@
 package com.maxcar.market.quartz;
 import com.maxcar.market.service.PropertyContractPayService;
 import com.maxcar.market.service.PropertyContractService;
+import com.maxcar.stock.service.CarReviewService;
 import com.maxcar.stock.service.OutMarketCarService;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -31,6 +32,9 @@ public class SyncCenter extends QuartzJobBean {
     @Autowired
     private OutMarketCarService outMarketCarService;
 
+    @Autowired
+    private CarReviewService carReviewService;
+
     @Override
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {
 
@@ -41,6 +45,7 @@ public class SyncCenter extends QuartzJobBean {
             propertyContractService.endPropertyContract();
             outMarketCarService.delCarByOutMarketTime();
             outMarketCarService.downTaoBao();
+            carReviewService.updateTimeoutNotreturnCarStockStatus();
         }catch (Exception ex){
             ex.printStackTrace();
         }

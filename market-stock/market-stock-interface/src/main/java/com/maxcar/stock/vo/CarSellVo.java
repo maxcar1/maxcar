@@ -12,6 +12,7 @@ public class CarSellVo implements Serializable {
     private String carId;
     private String marketId;
     private String tenantId;
+    private String tenantName;
     private String vin;
     private Double price;
     private Integer downTaoBao; // 1下架  2不下架
@@ -22,6 +23,14 @@ public class CarSellVo implements Serializable {
 
     public String getTaobaoId() {
         return taobaoId;
+    }
+
+    public String getTenantName() {
+        return tenantName;
+    }
+
+    public void setTenantName(String tenantName) {
+        this.tenantName = tenantName;
     }
 
     public void setTaobaoId(String taobaoId) {

@@ -151,4 +151,11 @@ public interface CarMapper extends BaseDao<Car, String> {
      * @return
      */
     List<CarVo> getAllSalesManageCarList(CarVo carVo);
+
+    /**
+     * 导出出售管理列表
+     * @param carVo
+     * @return
+     */
+    List<SellCarListExportVo> exportAllSellCarList(CarVo carVo);
 }

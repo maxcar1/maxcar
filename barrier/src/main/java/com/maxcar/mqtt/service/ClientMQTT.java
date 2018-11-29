@@ -31,7 +31,8 @@ public class ClientMQTT{
     @PostConstruct
     public void init() {
         /*clientId = LoadProperties.getProperties_3("../../../application.properties","clientid");*/
-        clientId = UuidUtils.getRandByNum(6);
+        long timestamps = System.currentTimeMillis();
+        clientId = String.valueOf(timestamps)+UuidUtils.getRandByNum(4);
         mqttServerHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.host");
         topic = LoadProperties.getProperties_3("../../../application.properties","mqtt.push.topic");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");

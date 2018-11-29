@@ -382,7 +382,7 @@
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
                 <mqtt.server.host>tcp://192.168.3.220:1883</mqtt.server.host>
-                <mqtt.push.topic>MQTT_YL_UP_DEV</mqtt.push.topic>
+                <mqtt.push.topic>MQTT_YL_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
                 <!-- datasource通用-->
@@ -411,12 +411,12 @@
                 <kafka.producer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.producer.servers>
                 <kafka.producer.topic>sync_upload_data_test</kafka.producer.topic>
                 <kafka.producer.parking.topic>sync_upload_data_parking_test</kafka.producer.parking.topic>
-                <kafka.consumer.topic>sync_download_008_data_test</kafka.consumer.topic>
+                <kafka.consumer.topic>sync_download_016_data_test</kafka.consumer.topic>
                 <local.servers.address>http://localhost:8082</local.servers.address>
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
                 <mqtt.server.host>tcp://192.168.3.17:1883</mqtt.server.host>
-                <mqtt.push.topic>MQTT_WF_UP</mqtt.push.topic>
+                <mqtt.push.topic>MQTT_LF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
             </properties>

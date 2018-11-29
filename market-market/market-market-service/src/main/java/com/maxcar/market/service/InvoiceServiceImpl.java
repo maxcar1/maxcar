@@ -146,8 +146,8 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     }
 
     @Override
-    public Invoice selectPriceByCarId(String carId) {
-        return invoiceMapper.selectPriceByCarId(carId);
+    public double selectPriceByCarId(String carId) {
+        return invoiceMapper.selectPriceByCarId(carId) == null ? 0 : invoiceMapper.selectPriceByCarId(carId);
     }
 
 //    @Override

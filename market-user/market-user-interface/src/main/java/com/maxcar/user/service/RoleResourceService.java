@@ -38,5 +38,5 @@ public interface RoleResourceService extends BaseService<RoleResource,String> {
      * @param resources
      * @return
      */
-    public List<Resource> getChildResources(List<Resource> resources,String userId);
+    public List<Resource> getChildResources(List<Resource> resources,String userId) throws Exception;
 }

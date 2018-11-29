@@ -5,6 +5,7 @@ import com.maxcar.user.entity.ResourceOption;
 import com.maxcar.user.entity.RoleResourceOption;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: maxcar-util
@@ -22,7 +23,14 @@ public interface RoleResourceOptionService extends BaseService<RoleResourceOptio
     */
     public List<ResourceOption> getResourceOptionByRoleIdAndResourceId(String roleId,String parentRoleId, String resourceId)throws Exception;
 
+    /**
+     * 根据用户id和资源
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    List<ResourceOption> getResourceOptionByUserIdAndResourceId(Map map);
 
-//    public List<ResourceOption> getOptionByRoleIdAndResourceId(String roleId, String parentRoleId,String resourceId) throws Exception;
+
 
     }

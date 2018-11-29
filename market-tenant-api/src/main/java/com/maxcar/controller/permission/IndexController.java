@@ -113,8 +113,10 @@ public class IndexController extends BaseController {
             }
 
             // 苹果审核账号
-            if ("18669981100".equals(staffLoginBean.getPhoneNum()) && "1256".equals(staffLoginBean.getVcode())) {
-                return staffLoginService.login(staffLoginBean.getPhoneNum());
+            String phoneNum = staffLoginBean.getPhoneNum();
+            if (("18669981100".equals(phoneNum) || "18669981122".equals(phoneNum))
+                    && "1256".equals(staffLoginBean.getVcode())) {
+                return staffLoginService.login(phoneNum);
             }
 
             String cacheCode = redisService.get(MessageFormat.format(CacheKey.LOGIN_PHONE_CODE, staffLoginBean.getPhoneNum()));
