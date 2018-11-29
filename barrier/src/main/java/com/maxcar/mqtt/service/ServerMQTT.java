@@ -30,31 +30,13 @@ public class ServerMQTT extends Thread{
     private String username;
     private String password;
 
-    private byte[] data;
-    private String topic;
-
-    private static Lock lock = new ReentrantLock();
-
-    public ServerMQTT(String topic,byte[] data)throws MqttException{
-        this.topic = topic;
-        this.data = data;
-        long timestamps = System.currentTimeMillis();
-        clientId = String.valueOf(timestamps)+UuidUtils.getRandByNum(4);
-        mqttClientHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.client.host");
-        username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
-        password = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.password");
-        //host为主机名,test为clientid即连接MQTT的客户端ID,一般以客户端唯一标识符表示,MemoryPersistence设置clientid的保存形式,默认为以内存保存
-        client = new MqttClient(mqttClientHost, clientId, new MemoryPersistence());
-    }
-
     /**
      * 构造函数
      * @throws MqttException
      */
     public ServerMQTT()throws MqttException{
         /*clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");*/
-        long timestamps = System.currentTimeMillis();
-        clientId = String.valueOf(timestamps)+UuidUtils.getRandByNum(4);
+        clientId = UuidUtils.getUUID();
         mqttClientHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.client.host");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
         password = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.password");
@@ -102,8 +84,6 @@ public class ServerMQTT extends Thread{
      */
     public void publish(MqttMessage message,String topic) throws MqttPersistenceException,
             MqttException {
-        try {
-            lock.lock();
             logger.info("发送消息主体!topic==>{},内容==>{}",topic,message);
             if (null == client){
                 ServerMQTT se = new ServerMQTT();
@@ -116,9 +96,6 @@ public class ServerMQTT extends Thread{
             /*logger.info("服务端消息已经发送! "
                     + token.isComplete());*/
             logger.info("服务端消息已经发送!");
-        }finally {
-            lock.unlock();
-        }
     }
 
     /**
@@ -178,7 +155,6 @@ public class ServerMQTT extends Thread{
 
     public void send(byte[] data,String topic) {
         try {
-            lock.lock();
 //            String TOPIC = (topic == null || topic.equals("")) ? TOPIC : topic;
 //            topic11 = client.getTopic((topic == null || topic.equals("")) ? TOPIC : topic);
             this.init(topic);
@@ -188,15 +164,9 @@ public class ServerMQTT extends Thread{
             this.message.setPayload(data);
             this.publish(this.message,topic);
             logger.info(this.message.isRetained() + "------ratained状态");
-        }catch (Exception ex){
+        }catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
-            lock.unlock();
         }
     }
 
-    @Override
-    public void run() {
-        this.send(data,topic);
-    }
 }
