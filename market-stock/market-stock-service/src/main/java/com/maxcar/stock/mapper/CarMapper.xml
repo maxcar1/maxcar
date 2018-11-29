@@ -717,18 +717,18 @@
         where vin = #{vin,jdbcType=VARCHAR}
     </update>
     <select id="listCarVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
-        SELECT
-        t.*,cr.id as review_id
+       SELECT
+        t.*,cr.is_valid as review_id,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>
         FROM
         car t left join
         car_base cb on t.id = cb.id
-        left join car_review cr on cr.id=cb.id
+        left join car_review cr on cr.car_id = cb.id
         WHERE
         t.stock_status in ('1','2','3') and
         t.isvalid=1 and t.market_id = #{marketId}
-        and cr.is_valid=1
+
         <include refid="car_vo_where"/>
         order by t.register_time desc
     </select>

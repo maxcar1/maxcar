@@ -10,7 +10,9 @@ import com.maxcar.base.util.dasouche.HttpClientUtil;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.pojo.Area;
+import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.service.AreaService;
+import com.maxcar.market.service.InvoiceService;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
@@ -18,6 +20,7 @@ import com.maxcar.stock.entity.Response.ExportResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.*;
+import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
@@ -54,6 +57,8 @@ public class CarController extends BaseController {
     CarBaseService carBaseService;
     @Autowired
     CarPicService carPicService;
+    @Autowired
+    InvoiceService invoiceService;
     @Autowired
     CarRecordService carRecordService;
     @Autowired
@@ -856,6 +861,96 @@ public class CarController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         List<String> allBrandNameByTenant = carService.getAllBrandNameByTenant(tenantId);
         interfaceResult.InterfaceResult200(allBrandNameByTenant);
+        return interfaceResult;
+    }
+
+
+    /**
+     * 出售管理列表信息
+     * @param carVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/list")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult getAllSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        User user = getCurrentUser(request);
+        if (null == user || user.getMarketId().isEmpty()) {
+            return getInterfaceResult("200", "无法确认用户市场");
+        }
+        carVo.setMarketId(user.getMarketId());
+        InterfaceResult result = new InterfaceResult();
+        carVo.setCarType(1);
+        carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
+        PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
+        List<CarVo> list = allSalesManageCarList.getList();
+        for (CarVo car : list) {
+            if (car != null && car.getTenant() != null) {
+                UserTenant tenant = userTenantService.selectByPrimaryKey(car.getTenant());
+                if (tenant != null) {
+                    car.setTenantName(tenant.getTenantName());
+                }
+                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
+                if (invoice != null){
+                    car.setInvoicePrice(invoice.getPrice());
+                }
+            }
+        }
+        allSalesManageCarList.setList(list);
+        interfaceResult.InterfaceResult200(allSalesManageCarList);
+        return interfaceResult;
+    }
+
+    /**
+     * 导出出售管理列表信息 方便维护 和列表接口分开写
+     * @param carVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/export")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult exportSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        User user = getCurrentUser(request);
+        if (null == user || user.getMarketId().isEmpty()) {
+            return getInterfaceResult("200", "无法确认用户市场");
+        }
+        carVo.setMarketId(user.getMarketId());
+        InterfaceResult result = new InterfaceResult();
+        carVo.setCarType(1);
+        carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
+        PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
+        List<CarVo> list = allSalesManageCarList.getList();
+        for (CarVo car : list) {
+            if (car != null && car.getTenant() != null) {
+                UserTenant tenant = userTenantService.selectByPrimaryKey(car.getTenant());
+                if (tenant != null) {
+                    car.setTenantName(tenant.getTenantName());
+                }
+                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
+                if (invoice != null){
+                    car.setInvoicePrice(invoice.getPrice());
+                }
+            }
+        }
+        interfaceResult.InterfaceResult200(list);
+        return interfaceResult;
+    }
+
+    /**
+     * 出售车辆
+     * @param carSellVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/sell")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult sellCarAndDownTaoBao(@RequestBody CarSellVo carSellVo , HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = carService.sellCarAndDownTaoBao(carSellVo);
         return interfaceResult;
     }
 

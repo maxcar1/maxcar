@@ -395,4 +395,7 @@ and is_valid=1
     values(#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid})
 
   </insert>
+  <select id="checkCarReview" parameterType="com.maxcar.stock.pojo.CarReview" resultType="java.lang.Integer">
+    select count(1) from car_review where car_id = #{carId} and is_valid = 1
+  </select>
 </mapper>

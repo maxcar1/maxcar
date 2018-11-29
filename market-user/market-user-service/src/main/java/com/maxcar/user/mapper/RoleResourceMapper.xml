@@ -213,7 +213,6 @@
     ORDER BY ind ,resourceLevel asc
   </select>
 
-
   <select id="findMenuByRoleId" parameterType="Map" resultType="com.maxcar.user.entity.Resource">
     select
     aaa.*,

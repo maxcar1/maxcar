@@ -18,6 +18,7 @@ import com.maxcar.stock.pojo.CarInfo;
 import com.maxcar.stock.pojo.CarPic;
 import com.maxcar.stock.pojo.DpCar;
 import com.maxcar.stock.pojo.TaoBaoCar;
+import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -228,4 +229,13 @@ public interface CarService extends BaseService<Car, String> {
     CarDataStatistics getCarDataStatistics(String tenantId);
 
     CarDataStatistics carData(String tenantId);
+
+    /**
+     * 出售管理列表
+     * @param carVo
+     * @return
+     */
+    PageInfo<CarVo> getAllSalesManageCarList(CarVo carVo);
+
+    InterfaceResult sellCarAndDownTaoBao(CarSellVo carSellVo);
 }

@@ -20,19 +20,14 @@ public class CarReview implements Serializable {
 
     private Integer isPass;
 
+    private String reasonDesc;
+
     private Integer isPledge;
 
     private Date insertTime;
 
     private Integer isValid;
-    private String reasonDesc;
-    public String getReasonDesc() {
-        return reasonDesc;
-    }
 
-    public void setReasonDesc(String reasonDesc) {
-        this.reasonDesc = reasonDesc;
-    }
     public String getUserName() {
         return userName;
     }
@@ -95,6 +90,14 @@ public class CarReview implements Serializable {
 
     public void setIsPass(Integer isPass) {
         this.isPass = isPass;
+    }
+
+    public String getReasonDesc() {
+        return reasonDesc;
+    }
+
+    public void setReasonDesc(String reasonDesc) {
+        this.reasonDesc = reasonDesc == null ? null : reasonDesc.trim();
     }
 
     public Integer getIsPledge() {

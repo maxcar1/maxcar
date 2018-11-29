@@ -145,6 +145,11 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         return invoiceMapper.selectByIdCard(idCard, marketId);
     }
 
+    @Override
+    public Invoice selectPriceByCarId(String carId) {
+        return invoiceMapper.selectPriceByCarId(carId);
+    }
+
 //    @Override
 //    public InterfaceResult insertInvoice(Invoice invoice) {
 //        InterfaceResult interfaceResult = new InterfaceResult();

@@ -1,5 +1,6 @@
 package com.maxcar.stock.dao;
 
+import com.maxcar.stock.entity.Response.CarRecordVo;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.CarReviewExample;
 import java.util.List;
@@ -31,4 +32,6 @@ public interface CarReviewMapper {
     int carOutApply(CarReview carReview);
 
     int insertCarReview(CarReview carReview);
+
+    List<CarRecordVo> getCarRecord (CarReview carReview);
 }

@@ -10,6 +10,8 @@ import java.util.List;
 public interface ReviewStepService {
     List<ReviewStep> getReviewStep(ReviewStep reviewStep);
 
+    List<ReviewStep> reviewStepList(ReviewStep reviewStep);
+
     List<ReviewVo> reviewVolist(ReviewVo reviewVo);
 
     int saveReviewStep(ReviewStep reviewStep);
@@ -33,4 +35,6 @@ public interface ReviewStepService {
     FlowStep selectReviewManageByReviewStep(ReviewStep reviewStep);
 
     int carOutApply(CarReview carReview);
+
+    int checkCarReview(CarReview carReview);
 }

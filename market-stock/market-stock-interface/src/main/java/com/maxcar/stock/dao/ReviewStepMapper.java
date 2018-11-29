@@ -58,4 +58,6 @@ public interface ReviewStepMapper {
     int carOutApply(CarReview carReview);
 
     int insertCarReview(CarReview carReview);
+
+    int checkCarReview(CarReview carReview);
 }

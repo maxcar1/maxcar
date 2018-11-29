@@ -296,9 +296,16 @@ public class ReviewStepManageController extends BaseController {
     @RequestMapping(value = "/carOutApply", method = RequestMethod.POST)
     public InterfaceResult carOutApply(@RequestBody CarReview carReview) {
         InterfaceResult result = new InterfaceResult();
+        int flag = 0;
+        flag  = reviewStepService.checkCarReview(carReview);
+        if(flag>0){
+            result.setCode("600");
+            result.setMsg("该车已经提交过申请，不能重复提交");
+            return result;
+        }
         carReview.setInsertTime(new Date());
         carReview.setIsValid(1);
-        int flag = reviewStepService.carOutApply(carReview);
+         flag = reviewStepService.carOutApply(carReview);
         if(flag>0){
             result.setCode("200");
         }else {
