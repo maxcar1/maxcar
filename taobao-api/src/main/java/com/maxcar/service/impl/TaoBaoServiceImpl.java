@@ -1,24 +1,19 @@
 package com.maxcar.service.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
+import com.maxcar.controller.RedisUtil;
+import com.maxcar.core.exception.ResultCode;
+import com.maxcar.core.utils.*;
+import com.maxcar.entity.*;
+import com.maxcar.service.*;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.FileItem;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.internal.util.WebUtils;
+import com.taobao.api.request.*;
+import com.taobao.api.response.*;
+import net.coobird.thumbnailator.Thumbnails;
+import net.sf.json.JSONObject;
 import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,58 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.maxcar.controller.RedisUtil;
-import com.maxcar.core.exception.ResultCode;
-import com.maxcar.core.utils.BeanUtils;
-import com.maxcar.core.utils.CollectionUtil;
-import com.maxcar.core.utils.EditDistanceUtil;
-import com.maxcar.core.utils.FileUtils;
-import com.maxcar.core.utils.FreeMarkUtil;
-import com.maxcar.core.utils.HttpClientUtil;
-import com.maxcar.core.utils.JsonTools;
-import com.maxcar.core.utils.MD5Util;
-import com.maxcar.core.utils.Result;
-import com.maxcar.core.utils.StringUtils;
-import com.maxcar.core.utils.TimeStampUtils;
-import com.maxcar.entity.CarEntity;
-import com.maxcar.entity.CarPicture;
-import com.maxcar.entity.CheckResult;
-import com.maxcar.entity.CheckWZ;
-import com.maxcar.entity.City;
-import com.maxcar.entity.Province;
-import com.maxcar.entity.TaobaoCar;
-import com.maxcar.entity.TaobaoItemValues;
-import com.maxcar.service.CityService;
-import com.maxcar.service.DaSouCheService;
-import com.maxcar.service.ProvinceService;
-import com.maxcar.service.TaoBaoService;
-import com.maxcar.service.TaobaoCarService;
-import com.maxcar.service.TaobaoItemValuesService;
-import com.taobao.api.ApiException;
-import com.taobao.api.DefaultTaobaoClient;
-import com.taobao.api.FileItem;
-import com.taobao.api.TaobaoClient;
-import com.taobao.api.internal.util.WebUtils;
-import com.taobao.api.request.ItemAddRequest;
-import com.taobao.api.request.ItemDeleteRequest;
-import com.taobao.api.request.ItemImgDeleteRequest;
-import com.taobao.api.request.ItemImgUploadRequest;
-import com.taobao.api.request.ItemSkuUpdateRequest;
-import com.taobao.api.request.ItemUpdateDelistingRequest;
-import com.taobao.api.request.ItemUpdateRequest;
-import com.taobao.api.request.ItempropsGetRequest;
-import com.taobao.api.request.PictureUploadRequest;
-import com.taobao.api.response.ItemAddResponse;
-import com.taobao.api.response.ItemDeleteResponse;
-import com.taobao.api.response.ItemImgUploadResponse;
-import com.taobao.api.response.ItemSkuUpdateResponse;
-import com.taobao.api.response.ItemUpdateDelistingResponse;
-import com.taobao.api.response.ItemUpdateResponse;
-import com.taobao.api.response.ItempropsGetResponse;
-import com.taobao.api.response.PictureUploadResponse;
-
-import net.coobird.thumbnailator.Thumbnails;
-import net.sf.json.JSONObject;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 淘宝接口
@@ -138,9 +87,13 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 
 	private static String API_URL = "http://gw.api.taobao.com/router/rest";
 	private final static Long TAOBAO_CID = 50050566L;
-	private static City city = new City();
+	private static City city;
+	private static Province province;
 	public Result addCar(CarEntity car, List<CarPicture> getPicList) {
+		city = new City();
+		province = new Province();
 		city = cityService.getCityById(Integer.parseInt(car.getAttribution()));
+		province = provinceService.getProvinceById(city.getProvince());
 		TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
 		ItemAddRequest request = new ItemAddRequest();
 		request.setCid(TAOBAO_CID);// 叶子类目id
@@ -167,8 +120,10 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		request.setSkuOuterIds("3782914410043,3782914410044");
 		//设置上传到仓库
 		request.setApproveStatus("instock");
-		request.setLocationState("江苏");// 所在省
-		request.setLocationCity("无锡");
+
+		request.setLocationState(province.getName());// 所在省
+		request.setLocationCity(city.getName());
+
 		request.setValidThru(7L);// 有效期
 		request.setHasWarranty(true);//是否有保修。可选值:true,false;默认值:false(不保修)
 		request.setSellPromise(true);//是否承诺退换货服务!虚拟商品无须设置此项!
@@ -234,7 +189,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 			map.put("listIcon", listIcon(car.getModelCode()));
 		}
 		// 获取车辆检测信息
-		String vin = car.getVin();
+//		String vin = car.getVin();
 		String datas = "{\"BaseConfiguration\":[{\"Value\":\"两厢车\",\"Key\":\"车身结构\"},{\"Value\":\"MT(手动)\",\"Key\":\"变速箱\"},{\"Value\":\"5\",\"Key\":\"档位数\"},{\"Value\":\"自然吸气\",\"Key\":\"进气形式\"},{\"Value\":\"承载式车身\",\"Key\":\"车体结构\"},{\"Value\":\"前置前驱\",\"Key\":\"驱动方式\"},{\"Value\":\"机械液压助力\",\"Key\":\"助力类型\"},{\"Value\":\"L直列\",\"Key\":\"气缸排列\"},{\"Value\":\"4\",\"Key\":\"气缸数\"},{\"Value\":\"麦弗逊\",\"Key\":\"前悬挂类型\"},{\"Value\":\"独立\",\"Key\":\"后悬挂类型\"},{\"Value\":\"棕\",\"Key\":\"内饰颜色\"}],\"LicenseInfo\":[{\"Value\":\"-\",\"Key\":\"车主类型\"},{\"Value\":\"\",\"Key\":\"商业险有效期\"},{\"Value\":\"川\",\"Key\":\"车牌首字母\"},{\"Value\":\"AT6W63\",\"Key\":\"车牌号码\"},{\"Value\":\"\",\"Key\":\"车主姓名\"},{\"Value\":\"\",\"Key\":\"法人代码/身份证号码\"},{\"Value\":\"未知\",\"Key\":\"使用性质\"},{\"Value\":\"无\",\"Key\":\"机动车登记证书\"},{\"Value\":\"无\",\"Key\":\"机动车行驶证\"},{\"Value\":\"无\",\"Key\":\"购置税完税证明\"},{\"Value\":\"无\",\"Key\":\"购车发票\"},{\"Value\":\"\",\"Key\":\"交强险截止日期\"},{\"Value\":\"\",\"Key\":\"年审时间\"},{\"Value\":\"\",\"Key\":\"首次上牌时间\"},{\"Value\":\"-\",\"Key\":\"过户次数\"},{\"Value\":\"\",\"Key\":\"最后过户时间\"}],\"CarInfo\":[{\"Value\":\"轿车\",\"Key\":\"车辆类型\"},{\"Value\":\"橙\",\"Key\":\"车身颜色\"},{\"Value\":\"福特\",\"Key\":\"车辆品牌\"},{\"Value\":\"长安福特\",\"Key\":\"生产厂家\"},{\"Value\":\"2017-11\",\"Key\":\"车辆生产时间\"},{\"Value\":\"福克斯\",\"Key\":\"车系\"},{\"Value\":\"福克斯2017款两厢1.6L手动风尚型智行版\",\"Key\":\"车型\"},{\"Value\":\"LYLYLYLYLYLYLYLYL\",\"Key\":\"VIN码\"},{\"Value\":\"国V\",\"Key\":\"排放标准\"},{\"Value\":\"666\",\"Key\":\"发动机号码\"},{\"Value\":\"66666\",\"Key\":\"表显里程(公里)\"},{\"Value\":\"1.6\",\"Key\":\"发动机排量(L)\"},{\"Value\":\"汽油\",\"Key\":\"燃料种类\"}],\"Advantage\":[\"发动机启动良好，怠速稳定\",\"内饰整洁，无异味，无破损\",\"电器功能良好\"],\"InspectionGrade\":[{\"Value\":\"90\",\"Key\":\"技术状况\"},{\"Value\":\"84\",\"Key\":\"车身外观\"},{\"Value\":\"94\",\"Key\":\"内饰\"},{\"Value\":\"B\",\"Key\":\"事故等级\"}],\"FreeComments\":\"\",\"PictureInfo\":[{\"Describe\":\"左前45度\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftFront45Degree_5168_112108_1.jpg\",\"Type\":\"外观\",\"Name\":\"LeftFront45Degree_5168_112108.jpg\"},{\"Describe\":\"右后45度\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RightRear45Degree_5169_112722_1.jpg\",\"Type\":\"外观\",\"Name\":\"RightRear45Degree_5169_112722.jpg\"},{\"Describe\":\"正后（后备箱打开）\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RIghtBack_5175_112455_1.jpg\",\"Type\":\"外观\",\"Name\":\"RIghtBack_5175_112455.jpg\"},{\"Describe\":\"轮胎\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/Wheel_5177_112225_1.jpg\",\"Type\":\"外观\",\"Name\":\"Wheel_5177_112225.jpg\"},{\"Describe\":\"主驾驶舱\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/DrivingCabin_5170_112152_1.jpg\",\"Type\":\"外观\",\"Name\":\"DrivingCabin_5170_112152.jpg\"},{\"Describe\":\"仪表板公里数\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/Millage_5171_123033_1.jpg\",\"Type\":\"外观\",\"Name\":\"Millage_5171_123033.jpg\"},{\"Describe\":\"方向盘\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/DriveWheel_5172_112251_1.jpg\",\"Type\":\"外观\",\"Name\":\"DriveWheel_5172_112251.jpg\"},{\"Describe\":\"仪表台\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/DashboardPic_5174_112240_1.jpg\",\"Type\":\"外观\",\"Name\":\"DashboardPic_5174_112240.jpg\"},{\"Describe\":\"中控台\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/ConsoleDashboard_5173_112303_1.jpg\",\"Type\":\"外观\",\"Name\":\"ConsoleDashboard_5173_112303.jpg\"},{\"Describe\":\"发动机舱\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/EngineCompartment_5167_112817_1.jpg\",\"Type\":\"外观\",\"Name\":\"EngineCompartment_5167_112817.jpg\"},{\"Describe\":\"铭牌\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/VINPanel_5176_112532_1.jpg\",\"Type\":\"外观\",\"Name\":\"VINPanel_5176_112532.jpg\"},{\"Describe\":\"左前轮毂_划痕_重\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftFrontRim_A034_113513_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"LeftFrontRim_A034_113513.jpg\"},{\"Describe\":\"左前轮胎_缺损_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftFrontTyre_A043_113539_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"LeftFrontTyre_A043_113539.jpg\"},{\"Describe\":\"右前轮毂_划痕_重\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RightFrontRim_A048_121000_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"RightFrontRim_A048_121000.jpg\"},{\"Describe\":\"左后轮毂_划痕_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftRearRim_A083_115138_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"LeftRearRim_A083_115138.jpg\"},{\"Describe\":\"右后轮胎_缺损_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RightRearTyre_A079_121119_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"RightRearTyre_A079_121119.jpg\"},{\"Describe\":\"前制动盘（鼓）_磨损异常_重\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/FrontBrakeDisc_A064_113614_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"FrontBrakeDisc_A064_113614.jpg\"},{\"Describe\":\"底部护板_变形\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/UnderbodyCover_3349_131421_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"UnderbodyCover_3349_131421.jpg\"},{\"Describe\":\"左前门铰链_螺丝有拆卸痕迹\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftFrontDoorHinge_3704_114648_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"LeftFrontDoorHinge_3704_114648.jpg\"},{\"Describe\":\"左后门铰链_螺丝有拆卸痕迹\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftRearDoorHinge_3837_114730_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"LeftRearDoorHinge_3837_114730.jpg\"},{\"Describe\":\"右后门外观_凹陷_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RightDoor_A2138_120332_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"RightDoor_A2138_120332.jpg\"},{\"Describe\":\"右前翼子板_钣金修复\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RightFrontFender_4372_120849_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"RightFrontFender_4372_120849.jpg\"},{\"Describe\":\"左后翼子板_划痕_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/LeftRearFender_A775_115110_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"LeftRearFender_A775_115110.jpg\"},{\"Describe\":\"右后翼子板_划痕_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RightRearFender_A347_120234_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"RightRearFender_A347_120234.jpg\"},{\"Describe\":\"发动机舱盖_拆装痕迹\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/EngineCompartmentLid_4404_122559_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"EngineCompartmentLid_4404_122559.jpg\"},{\"Describe\":\"后保险杠_划痕_中\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/RearBumper_A829_115830_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"RearBumper_A829_115830.jpg\"},{\"Describe\":\"发动机缸体_曲后油封漏油_轻\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/EngineBlock_A259_130517_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"EngineBlock_A259_130517.jpg\"},{\"Describe\":\"\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/AppendImage_1AddPhotoSign_130652_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"AppendImage_1AddPhotoSign_130652.jpg\"},{\"Describe\":\"\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/AppendImage_2AddPhotoSign_131617_1.jpg\",\"Type\":\"缺陷\",\"Name\":\"AppendImage_2AddPhotoSign_131617.jpg\"},{\"Describe\":\"OBD报告第1页\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/OBDReport_5439_123621_1.jpg\",\"Type\":\"OBD\",\"Name\":\"OBDReport_5439_123621.jpg\"},{\"Describe\":\"电池检测报告\",\"FilePath\":\"http://tuv-inspection.oss-cn-shanghai.aliyuncs.com/Inspection-Pic/201711/28/20171128111901bHyUvc/BatteryReport_5445_115804_1.jpg\",\"Type\":\"Battery\",\"Name\":\"BatteryReport_5445_115804.jpg\"}],\"DetailInfo\":[{\"GroupName\":\"启动\",\"Items\":[{\"Description\":\"钥匙插取异常\",\"Severity\":\"\",\"Name\":\"启动装置\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"发动机启动\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"发动机运转\"}]},{\"GroupName\":\"路试\",\"Items\":[{\"Description\":\"档位不清\",\"Severity\":\"\",\"Name\":\"排档机构\"}]},{\"GroupName\":\"内饰与电器\",\"Items\":[{\"Description\":\"按键异常\",\"Severity\":\"\",\"Name\":\"方向盘\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"方向盘主气囊\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"前雨刮系统\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"仪表外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"副驾驶主气囊\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"天窗\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"导航系统\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"空调系统\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"前大灯清洗装置\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"主驾驶座椅\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左前安全带\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"副驾驶座椅\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右前安全带\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"后排座椅\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"后排安全带\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左A柱饰板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左B柱饰板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左C柱饰板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右A柱饰板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右B柱饰板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右C柱饰板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"车顶内饰\"}]},{\"GroupName\":\"底盘\",\"Items\":[{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"前防撞横梁\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"备胎框\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"后围板\"},{\"Description\":\"变形\",\"Severity\":\"\",\"Name\":\"后防撞横梁\"}]},{\"GroupName\":\"车身外观\",\"Items\":[{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"车顶\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左前门外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后视镜\"},{\"Description\":\"功能正常\",\"Severity\":\"\",\"Name\":\"左前门窗玻璃控制总成\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后门外观\"},{\"Description\":\"功能正常\",\"Severity\":\"\",\"Name\":\"左后门窗玻璃控制总成\"},{\"Description\":\"油漆修复\",\"Severity\":\"\",\"Name\":\"右后门外观\"},{\"Description\":\"功能正常\",\"Severity\":\"\",\"Name\":\"右后门窗玻璃控制总成\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右前门外观\"},{\"Description\":\"功能正常\",\"Severity\":\"\",\"Name\":\"右前门窗玻璃控制总成\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左前翼子板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右前翼子板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后翼子板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右后翼子板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"前挡风玻璃\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"发动机舱盖\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"前保险杠\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"后挡风玻璃\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"后备箱盖/后门外板\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"后保险杠\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后尾箱雨水槽\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右后尾箱雨水槽\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"备胎\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左前大灯\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右前大灯\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后尾灯\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右后尾灯\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左A柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左B柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左C柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左D柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右D柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右C柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右B柱外观\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右A柱外观\"}]},{\"GroupName\":\"发动机舱\",\"Items\":[{\"Description\":\"变形\",\"Severity\":\"\",\"Name\":\"气门室盖及垫\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"发动机缸体\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"发动机支架及垫\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左翼子板内衬\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右翼子板内衬\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"水箱框架\"}]},{\"GroupName\":\"水泡车检查\",\"Items\":[{\"Description\":\"否\",\"Severity\":\"\",\"Name\":\"座椅滑轨-锈蚀，座椅海绵有泥沙痕迹\"},{\"Description\":\"否\",\"Severity\":\"\",\"Name\":\"脚踏板及方向柱-锈蚀\"},{\"Description\":\"否\",\"Severity\":\"\",\"Name\":\"安全带底部-水渍\"},{\"Description\":\"是\",\"Severity\":\"\",\"Name\":\"保险盒内-泥垢\"},{\"Description\":\"否\",\"Severity\":\"\",\"Name\":\"座椅-拆卸痕迹\"}]},{\"GroupName\":\"车身骨架检查\",\"Items\":[{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左前纵梁\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右前纵梁\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后纵梁\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右后纵梁\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左A柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左B柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左C柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左D柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右D柱\"},{\"Description\":\"褶皱\",\"Severity\":\"\",\"Name\":\"右C柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右B柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右A柱\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左前减震座\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右前减震座\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"左后减震座\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"右后减震座\"},{\"Description\":\"正常\",\"Severity\":\"\",\"Name\":\"前围板\"}]}],\"IsAccidentCar\":\"是\",\"DefectInfo\":[{\"GroupName\":\"启动\",\"Items\":[{\"Description\":\"钥匙插取异常\",\"Severity\":\"\",\"Name\":\"启动装置\"}]},{\"GroupName\":\"路试\",\"Items\":[{\"Description\":\"档位不清\",\"Severity\":\"\",\"Name\":\"排档机构\"}]},{\"GroupName\":\"内饰与电器\",\"Items\":[{\"Description\":\"按键异常\",\"Severity\":\"\",\"Name\":\"方向盘\"}]},{\"GroupName\":\"底盘\",\"Items\":[{\"Description\":\"变形\",\"Severity\":\"\",\"Name\":\"后防撞横梁\"}]},{\"GroupName\":\"车身外观\",\"Items\":[{\"Description\":\"油漆修复\",\"Severity\":\"\",\"Name\":\"右后门外观\"}]},{\"GroupName\":\"发动机舱\",\"Items\":[{\"Description\":\"变形\",\"Severity\":\"\",\"Name\":\"气门室盖及垫\"}]},{\"GroupName\":\"水泡车检查\",\"Items\":[{\"Description\":\"是\",\"Severity\":\"\",\"Name\":\"保险盒内-泥垢\"}]},{\"GroupName\":\"车身骨架检查\",\"Items\":[{\"Description\":\"褶皱\",\"Severity\":\"\",\"Name\":\"右C柱\"}]}],\"CustomerInfo\":[{\"Value\":\"永达远程\",\"Key\":\"客户姓名\"},{\"Value\":\"\",\"Key\":\"联系方式\"},{\"Value\":\"\",\"Key\":\"联系地址\"}]}";
 
 		if (null!=datas && StringUtils.isNotEmpty(datas)) {
@@ -259,10 +214,10 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 					}
 					map.put(checkResult.getCustomerInfo().get(0).getKey(),checkResult.getCustomerInfo().get(0).getValue());
 					for (int i = 0; i < checkResult.getCarInfo().size(); i++) {
-						map.put(checkResult.getCarInfo().get(i).getKey(), 
+						map.put(checkResult.getCarInfo().get(i).getKey(),
 								checkResult.getCarInfo().get(i).getValue());
 					}
-					
+
 					map.put("bodyFrame", bodyFrameTr);
 					map.put("inEle", inEleTr);
 				}
@@ -322,7 +277,10 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 
 	@Override
 	public Result updateCar(CarEntity car, List<CarPicture> getPicList) {
+		city = new City();
+		province = new Province();
 		city = cityService.getCityById(Integer.parseInt(car.getAttribution()));
+		province = provinceService.getProvinceById(city.getProvince());
 		TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
 		ItemUpdateRequest request = new ItemUpdateRequest();
 		request.setCid(TAOBAO_CID);// 叶子类目id
@@ -348,8 +306,8 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		request.setSkuOuterIds("3782914410043,3782914410044");
 		//设置上传到仓库
 		request.setApproveStatus("instock");
-		request.setLocationState("江苏");// 所在省
-		request.setLocationCity("无锡");
+		request.setLocationState(province.getName());// 所在省
+		request.setLocationCity(city.getName());
 		request.setValidThru(7L);// 有效期
 		request.setHasWarranty(true);//是否有保修。可选值:true,false;默认值:false(不保修)
 		request.setSellPromise(true);//是否承诺退换货服务!虚拟商品无须设置此项!
@@ -490,12 +448,17 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		return result;
 	}
 
+	private static ItemAddRequest request;
+	private static Map<String, Object> map;
 	@Override
 	public Result addMarketCar(CarEntity car, List<CarPicture> getPicList) {
+		city = new City();
+		province = new Province();
 		city = cityService.getCityById(Integer.parseInt(car.getAttribution()));
+		province = provinceService.getProvinceById(city.getProvince());
 		Result result = new Result();
 		TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
-		ItemAddRequest request = new ItemAddRequest();
+		request = new ItemAddRequest();
 		request.setCid(TAOBAO_CID);// 叶子类目id
 		request.setNum(1L);// 商品数量
 		request.setAuctionPoint(1L);
@@ -533,8 +496,8 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		request.setSkuOuterIds("3782914410043,3782914410044");
 		//设置上传到仓库
 		request.setApproveStatus("instock");
-		request.setLocationState("广西");// 所在省
-		request.setLocationCity("玉林");
+		request.setLocationState(province.getName());// 所在省
+		request.setLocationCity(city.getName());
 		request.setValidThru(7L);// 有效期
 		//request.setHasWarranty(true);//是否有保修。可选值:true,false;默认值:false(不保修)
 		request.setSellPromise(true);//是否承诺退换货服务!虚拟商品无须设置此项!
@@ -596,8 +559,8 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		for (String string : listPic) {
 			logger.info("淘宝上传图片返回==="+string);
 		}
-		
-		Map<String, Object> map = BeanUtils.obj2Map(car);
+
+		map = BeanUtils.obj2Map(car);
 		map.put("attribution", city.getName());
 		map.put("listPic", listPic);
 		/*map.put("aspectList", aspectList);
@@ -608,91 +571,48 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		if (StringUtils.isNotBlank(car.getModelCode())) {
 			map.put("listIcon", listIcon(car.getModelCode()));
 		}
-		// 获取车辆检测信息
-		String vin = car.getVin();
+
+
 		Properties prop = new Properties();
-
-		String wzjs = null;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-		String time = formatter.format(new Date());
-		Map checkMap = new HashMap();
 		try {
-			prop.load(this.getClass().getResourceAsStream("/dasouche.properties"));
-		} catch (IOException e) {
+			prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String wzmcname = prop.getProperty("wzmcname");
-		String wzurl = prop.getProperty("wzurl");
-		String wzappid = prop.getProperty("wzappid");
-		String wzappkey = prop.getProperty("wzappkey");
+		String marketName = prop.getProperty("marketName" + car.getMarket());
+		String check = prop.getProperty("check" + car.getMarket());
+		String ftlName = prop.getProperty("ftlName" + car.getMarket());
+		String marketPhone = prop.getProperty("marketPhone" + car.getMarket());
 
-		StringBuffer md5 = new StringBuffer();
-		String sign = md5.append(wzmcname).append(vin).append(wzappid).append(wzappkey).append(time).toString();
-		sign = MD5Util.MD5(String.valueOf(md5)).toLowerCase();
-		//String sign = FileUtils.sign(vin, time, wzappid, wzmcname, wzappkey);
-		String url = wzurl + "?mcname=" + wzmcname + "&vin=" + car.getVin() + "&sign=" + sign + "&key=" + wzappkey +
-				"&appid=" + wzappid;
-		try {
-			wzjs = HttpClientUtil.get(url, "utf-8", null);
-			System.out.println("维真返回参数"+wzjs);
-		} catch (IOException e) {
-			e.printStackTrace();
+		String unit = "";
+		if (car.getModelName() != null && car.getModelName().contains("L")) {
+			unit = car.getModelName().substring(car.getModelName().indexOf("L") - 3, car.getModelName().indexOf("L") + 1);
+		} else if (car.getModelName() != null && car.getModelName().contains("T")) {
+			unit = car.getModelName().substring(car.getModelName().indexOf("T") - 3, car.getModelName().indexOf("T") + 1);
 		}
-		com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(wzjs);
-		if("0".equals(js.get("code"))){
-			com.alibaba.fastjson.JSONObject js2 = com.alibaba.fastjson.JSONObject.parseObject(js.get("data").toString());
-			com.alibaba.fastjson.JSONObject js3 = com.alibaba.fastjson.JSONObject.parseObject(js2.get("report").toString());
-			CheckWZ checkResult = JsonTools.toObj(js3.toString(), CheckWZ.class);
-			for (int i = 0; i < checkResult.getAccident().size(); i++) {
-				map.put(checkResult.getAccident().get(i).getName(), checkResult.getAccident().get(i).getVal());
-
-			}
-			for (int i = 0; i < checkResult.getBaseinfo().size(); i++) {
-
-				map.put(checkResult.getBaseinfo().get(i).getName(), checkResult.getBaseinfo().get(i).getVal());
-			}
-			for (int i = 0; i < checkResult.getWater().size(); i++) {
-
-				map.put(checkResult.getWater().get(i).getName(), checkResult.getWater().get(i).getVal());
-
-			}
-			for (int i = 0; i < checkResult.getFire().size(); i++) {
-
-				map.put(checkResult.getFire().get(i).getName(), checkResult.getFire().get(i).getVal());
-
-			}
-			map.put("检测时间",js2.get("created").toString());
-			map.put("客户名称",js2.get("phone").toString());
-			if(js2.get("phone")!=null||!"".equals(js2.get("phone"))) {
-				Object packageId = taobaoCarService.selectPackageid(js2.get("phone").toString());
-				if(packageId!=null) {
-					request.setLocalityLifeVersion("1");
-					request.setLocalityLifePackageid(packageId.toString());
-				}
-			}
-			String unit = "";
-			if(car.getModelName()!=null&&car.getModelName().contains("L")) {
-				unit= car.getModelName().substring(car.getModelName().indexOf("L")-3,car.getModelName().indexOf("L")+1 );
-			}else if(car.getModelName()!=null&&car.getModelName().contains("T")) {
-				 unit = car.getModelName().substring(car.getModelName().indexOf("T")-3,car.getModelName().indexOf("T")+1 );
-			}
-			String title = "二手车 "+car.getBrandName().trim()+car.getModelYear()+car.getSeriesName()+unit+"玉林阿里智慧汽车城 "+js2.get("phone").toString().replaceAll("二手车", "").trim();
-			if(title.length()>30) {
-				title=title.substring(0, title.indexOf("玉"));
-			}
-			request.setTitle(title);
-			
-		}else {
-			result.setDatas("该车辆没有维真检测信息！");
+		String title = "二手车 " + car.getBrandName().trim() + car.getModelYear() + car.getSeriesName() + unit + marketName + marketPhone;
+		if (title.length() > 30) {
+			title = title.substring(0, title.indexOf(marketName.substring(0, 1)));
 		}
+		request.setTitle(title);
+		// 获取车辆检测信息
+		if ("0".equals(check)) {
+			checkDatas(car, result);
+			logger.info("车辆详情文件路径：path {}", new String[]{getWebClassesPath()});
+			request.setDesc(FreeMarkUtil.getHtmlString(map, ftlName, getWebClassesPath()));
+		} else if ("1".equals(check)) {
+			logger.info("车辆详情文件路径：path {}", new String[]{getWebClassesPath()});
+			request.setDesc(FreeMarkUtil.getHtmlString(map, ftlName, getWebClassesPath()));
+		}
+
 		/*String datas = carService.getDatas(vin);
 		if(datas == null){
 			datas = carService.getDatas("LSGAR5AL3HH226406");
 		}*/
 
 		// 车辆详情
-		logger.info("车辆详情文件路径：path {}", new String[] { getWebClassesPath() });
-		request.setDesc(FreeMarkUtil.getHtmlString(map, "ylcarInfo", getWebClassesPath()));
+//		logger.info("车辆详情文件路径：path {}", new String[] { getWebClassesPath() });
+//		request.setDesc(FreeMarkUtil.getHtmlString(map, "ylcarInfo", getWebClassesPath()));
 		//logger.info("########################" + FreeMarkUtil.getHtmlString(map, "carInfo", getWebClassesPath()));
 		//request.setDesc("全车通测试用");
 		inputInputs(request, car);
@@ -1555,26 +1475,103 @@ public class TaoBaoServiceImpl implements TaoBaoService {
         return result;
     }
 
-	public static void main1(String[] args) {
-		 String APP_KEY = "24812065";
-	    String SECRET = "7cf5fb32a4e8a3ffc3cd339d9baedd4a";
-	    String API_URL = "http://gw.api.taobao.com/router/rest";
-		TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
-		ItempropsGetRequest req = new ItempropsGetRequest();
-		req.setFields("pid,name,must,multi,prop_values");
-		req.setCid(50050566L);
-		
-		ItempropsGetResponse rsp = null;
+	/**
+	 * 获取维真检测信息
+	 *
+	 * @param car
+	 * @param
+	 * @param
+	 * @param
+	 */
+	public void checkDatas(CarEntity car, Result result) {
+		String vin = car.getVin();
+		Properties prop = new Properties();
+
+		String wzjs = null;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+		String time = formatter.format(new Date());
+		Map checkMap = new HashMap();
 		try {
-			rsp = client.execute(req);
-		} catch (ApiException e) {
-			// TODO Auto-generated catch block
+			prop.load(this.getClass().getResourceAsStream("/dasouche.properties"));
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(rsp.getBody());
-		
+		String wzmcname = prop.getProperty("wzmcname");
+		String wzurl = prop.getProperty("wzurl");
+		String wzappid = prop.getProperty("wzappid");
+		String wzappkey = prop.getProperty("wzappkey");
+
+		StringBuffer md5 = new StringBuffer();
+		String sign = md5.append(wzmcname).append(vin).append(wzappid).append(wzappkey).append(time).toString();
+		sign = MD5Util.MD5(String.valueOf(md5)).toLowerCase();
+		//String sign = FileUtils.sign(vin, time, wzappid, wzmcname, wzappkey);
+		String url = wzurl + "?mcname=" + wzmcname + "&vin=" + vin + "&sign=" + sign + "&key=" + wzappkey +
+				"&appid=" + wzappid;
+		try {
+			wzjs = HttpClientUtil.get(url, "utf-8", null);
+			System.out.println("维真返回参数" + wzjs);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(wzjs);
+		if ("0".equals(js.get("code"))) {
+			com.alibaba.fastjson.JSONObject js2 = com.alibaba.fastjson.JSONObject.parseObject(js.get("data").toString());
+			com.alibaba.fastjson.JSONObject js3 = com.alibaba.fastjson.JSONObject.parseObject(js2.get("report").toString());
+			CheckWZ checkResult = JsonTools.toObj(js3.toString(), CheckWZ.class);
+			for (int i = 0; i < checkResult.getAccident().size(); i++) {
+				map.put(checkResult.getAccident().get(i).getName(), checkResult.getAccident().get(i).getVal());
+
+			}
+			for (int i = 0; i < checkResult.getBaseinfo().size(); i++) {
+
+				map.put(checkResult.getBaseinfo().get(i).getName(), checkResult.getBaseinfo().get(i).getVal());
+			}
+			for (int i = 0; i < checkResult.getWater().size(); i++) {
+
+				map.put(checkResult.getWater().get(i).getName(), checkResult.getWater().get(i).getVal());
+
+			}
+			for (int i = 0; i < checkResult.getFire().size(); i++) {
+
+				map.put(checkResult.getFire().get(i).getName(), checkResult.getFire().get(i).getVal());
+
+			}
+			map.put("检测时间", js2.get("created").toString());
+			map.put("客户名称", js2.get("phone").toString());
+			if (js2.get("phone") != null || !"".equals(js2.get("phone"))) {
+				Object packageId = taobaoCarService.selectPackageid(js2.get("phone").toString());
+				if (packageId != null) {
+					request.setLocalityLifeVersion("1");
+					request.setLocalityLifePackageid(packageId.toString());
+				}
+			}
+
+
+		} else {
+			result.setDatas("该车辆没有维真检测信息！");
+		}
 	}
-	public static void main3(String[] args) throws ClientProtocolException, IOException {
+
+	//	public static void main1(String[] args) {
+//		 String APP_KEY = "24812065";
+//	    String SECRET = "7cf5fb32a4e8a3ffc3cd339d9baedd4a";
+//	    String API_URL = "http://gw.api.taobao.com/router/rest";
+//		TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
+//		ItempropsGetRequest req = new ItempropsGetRequest();
+//		req.setFields("pid,name,must,multi,prop_values");
+//		req.setCid(50050566L);
+//
+//		ItempropsGetResponse rsp = null;
+//		try {
+//			rsp = client.execute(req);
+//		} catch (ApiException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		System.out.println(rsp.getBody());
+//
+//	}
+	public static void main(String[] args) throws ClientProtocolException, IOException {
 		/*String cookie ="miid=936631312420705576; thw=cn; isg=BHFxLB_DjtpfiiJrFJGmO4vBg_7L9ua4KUTpZVOGbThXepHMm671oB-YmM65qX0I; cna=HNPuE0w+xxkCAd3As3pVsH+R; hng=CN%7Czh-CN%7CCNY%7C156; t=74985f65696795ae5bea1cb2337dfcc5; _cc_=UIHiLt3xSw%3D%3D; tg=0; UM_distinctid=1659e7e0d7f449-0c76a73f20b8af8-143f7040-15f900-1659e7e0d80ef; um=65F7F3A2F63DF02056E1FBC491C68D1DFBBDE9EBC70A0515AC7E6A3C219EB8199288FFA41F1FEEB0CD43AD3E795C914CA19E165440C03613E995DB6774CABA30; x=e%3D1%26p%3D*%26s%3D0%26c%3D0%26f%3D0%26g%3D0%26t%3D0%26__ll%3D-1%26_ato%3D0; ali_ab=60.12.250.54.1536224706622.3; mt=ci=0_1&np=; _m_h5_tk=4d6cf0fe442094bdd862a6a561620f7f_1541064344488; _m_h5_tk_enc=9819b715ae3455ba57f6f4117251d2c1; cookie2=7c7bccda3b3cba10fe07a333753378aa; _tb_token_=5855e3e813573; whl=-1%260%260%261541054217965; JSESSIONID=1CE155488904FA45988BFD2B8700B2AB; v=0; uc1=cookie16=V32FPkk%2FxXMk5UvIbNtImtMfJQ%3D%3D&cookie21=W5iHLLyFfXVRCJf5l6bv6g%3D%3D&cookie15=UIHiLt3xD8xYTw%3D%3D&existShop=true&pas=0&cookie14=UoTYN4HMXVDxTQ%3D%3D&tag=8&lng=zh_CN; skt=fc34a89d90e01fba; csg=9a71f2f6; uc3=vt3=F8dByRjNVHS09QZZiow%3D&id2=VyyUyYyZZc600A%3D%3D&nk2=F5RGNwppVl5rbTg%3D&lg2=UIHiLt3xD8xYTw%3D%3D; existShop=MTU0MTA1NDQ3OQ%3D%3D; tracknick=tb312844838; lgc=tb312844838; dnk=tb312844838; unb=4052462357; sg=874; _l_g_=Ug%3D%3D; cookie1=W5jGlh8gjHrU%2F%2BHlyxyoY%2BlUPluTLnUci6q8eZMosZ8%3D; _nk_=tb312844838; cookie17=VyyUyYyZZc600A%3D%3D";
 		String url = "https://ma.taobao.com/wangdian/EtcCommSell.do?_input_charset=utf-8&categoryId=50050566&from=taobao.sell&itemId=581139674990";
 		String result = HttpClientUtil.getWithCookie(url,"UTF-8",cookie);
@@ -1630,16 +1627,17 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		req.setLocalityLifeEticket(";has_pos:1;");
 		//req.setLocalityLifeVersion("1");
 		//req.setLocalityLifePackageid("1378553014");
-		
+
 		try {
-			ItemAddResponse response = client.execute(req , "6202606b03389ceg4494cb17e6441dc751e558b7a234ae73430314546");
+			ItemAddResponse response = client.execute(req, "6202827e9c5524d604ed4719164954c495ceg1401295ed74227823786");
 			System.out.println(response.getBody());
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	public static void main(String[] args) {
+
+	public static void main1(String[] args) {
 		/*String time1  = String.valueOf(System.currentTimeMillis());
 		int stop = time1.length();
 		System.out.println(time1.substring(stop-3, stop));*/

@@ -1,22 +1,5 @@
 package com.maxcar.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.maxcar.core.exception.ResultCode;
 import com.maxcar.core.utils.CollectionUtil;
 import com.maxcar.core.utils.Result;
@@ -24,8 +7,18 @@ import com.maxcar.core.utils.StringUtils;
 import com.maxcar.entity.CarEntity;
 import com.maxcar.entity.CarPicture;
 import com.maxcar.service.TaoBaoService;
-
 import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 @RestController
 @RequestMapping("/tbapi")
@@ -55,13 +48,19 @@ public class SyncCarController {
 		classMap.put("picList",CarPicture.class);
 		CarEntity carEntity =( CarEntity) JSONObject.toBean(params, CarEntity.class, classMap);
 		if(carEntity!=null) {
+			Properties prop = new Properties();
 			try {
 				String initialLicenceTime = (java.lang.String) params.get("initialLicenceTimeStr");
 				carEntity.setInitialLicenceTime(initialLicenceTime);
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
+
+//        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
+
+//			sessionKey = prop.getProperty("marketIdSessionKey"+carEntity.getMarket());
+
 			/*sessionKey = RedisUtil.getInstance().strings().get("taobao_"+carEntity.getMarket()+"_sessionkey");
 			if(sessionKey==null&&params.getString("market").equals("010")) {
 				sessionKey = "6200611a301add1a9ffhj1ce89dfa6e0efacac383f336424052462357";
@@ -195,10 +194,11 @@ public class SyncCarController {
 		classMap.put("picList",CarPicture.class);
 		CarEntity carEntity =( CarEntity) JSONObject.toBean(params, CarEntity.class, classMap);
 		if(carEntity!=null) {
+			Properties prop = new Properties();
 			try {
 				String initialLicenceTime = (java.lang.String) params.get("initialLicenceTimeStr");
 				carEntity.setInitialLicenceTime(initialLicenceTime);
-
+				prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -206,7 +206,8 @@ public class SyncCarController {
 			if(sessionKey==null&&params.getString("market").equals("010")) {
 				sessionKey = "6200611a301add1a9ffhj1ce89dfa6e0efacac383f336424052462357";
 			}*/
-			sessionKey = "6201c01c5ZZ36c63cc00dd0203b3eafcef61a302f3469c74052462357";
+			sessionKey = prop.getProperty("marketIdSessionKey" + carEntity.getMarket());
+//			sessionKey = "6201c01c5ZZ36c63cc00dd0203b3eafcef61a302f3469c74052462357";
 			//sessionKey = "6202606b03389ceg4494cb17e6441dc751e558b7a234ae73430314546";
 			if(StringUtils.isBlank(sessionKey)) {
 				result.setMessage("没有sessionkey，请生成!");
