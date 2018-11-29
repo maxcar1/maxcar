@@ -407,7 +407,7 @@ public class CarController extends BaseController {
 
         User user = super.getCurrentUser(request);
         carService.deleteCarById(id);
-        String topic = super.getTopic(user.getMarketId());
+        String topic = topicService.getTopic(user.getMarketId());
         //同步删除本地车辆状态
         //组装云端参数
         PostParam postParam = new PostParam();
