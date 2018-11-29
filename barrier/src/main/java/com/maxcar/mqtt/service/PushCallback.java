@@ -233,7 +233,6 @@ public class PushCallback implements MqttCallback {
 
     private void uploadRequestCloudOut(Barrier barrier, String key, int type) throws Exception {
         //刷卡开闸,扫码上行
-        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
         //组装云端参数
         PostParam postParam = new PostParam();
         postParam.setMarket(barrier.getMarketId());
@@ -244,35 +243,11 @@ public class PushCallback implements MqttCallback {
         json.put("barrierId",barrier.getBarrierId());
         json.put("type",type);
         json.put("marketId",barrier.getMarketId());
-
-        Map map = takePhoto(barrier);
-        if (!map.isEmpty()) {
-            boolean result = (Boolean) map.get("result");
-            if (result) {
-                String imageFile = String.valueOf(map.get("imageName"));
-                String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, imageFile, imageFile);
-                json.put("imageUrl", imageUrl);
-                postParam.setData(json.toJSONString());
-                postParam.setUrl(url.toString());
-                postParam.setOnlySend(false);
-                postParam.setMethod("post");
-                postParam.setMessageTime(Canstats.dateformat.format(new Date()));
-                logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
-                messageProducerService.sendMessage("-2",
-                        JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
-            } else {
-                logger.info("====摄像机抓拍失败====");
-            }
-        } else {
-            logger.info("====请选择服务环境====");
-        }
-
-
+        takePhotoAndUpLoad(barrier,json,url,postParam);
     }
 
     private void uploadRequestCloudIn(Barrier barrier, String key, int type) throws Exception {
         //上传数据到云端
-        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
         //组装云端参数
         PostParam postParam = new PostParam();
         postParam.setMarket(barrier.getMarketId());
@@ -284,35 +259,11 @@ public class PushCallback implements MqttCallback {
         //0 刷卡  1 unionId
         json.put("type",type);
 
-        Map map = takePhoto(barrier);
-        if (!map.isEmpty()) {
-            boolean result = (Boolean) map.get("result");
-            if (result) {
-                String imageFile = String.valueOf(map.get("imageName"));
-                String[] file = imageFile.split("/");
-                StringBuilder sb = new StringBuilder();
-                sb.append(file[file.length-2]);
-                sb.append("/");
-                sb.append(file[file.length-1]);
-                String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, sb.toString(), imageFile);
-                json.put("imageUrl", imageUrl);
-                postParam.setData(json.toJSONString());
-                postParam.setUrl(url);
-                postParam.setOnlySend(false);
-                postParam.setMethod("post");
-                postParam.setMessageTime(Canstats.dateformat.format(new Date()));
-                logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
-                messageProducerService.sendMessage("-2",
-                        JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
-            } else {
-                logger.info("====摄像机抓拍失败====");
-            }
-        } else {
-            logger.info("====请选择服务环境====");
-        }
+        takePhotoAndUpLoad(barrier,json,url,postParam);
     }
 
-    private Map takePhoto(Barrier barrier) {
+    private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {
+        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
         Map map = new HashMap();
         BarrierCameraService barrierCameraService = ApplicationContextHolder.getBean("barrierCameraService");
         BarrierCamera barrierCamera = new BarrierCamera();
@@ -334,10 +285,33 @@ public class PushCallback implements MqttCallback {
                 default:
                     break;
             }
+            if (!map.isEmpty()) {
+                boolean result = (Boolean) map.get("result");
+                if (result) {
+                    String imageFile = String.valueOf(map.get("imageName"));
+                    String[] file = imageFile.split("/");
+                    String objKey = file[file.length-1];
+                    String objK = objKey.replace("\\","/");
+                    String imageFileStr = imageFile.replace("\\","/");
+                    String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);
+                    json.put("imageUrl", imageUrl);
+                    postParam.setData(json.toJSONString());
+                    postParam.setUrl(url);
+                    postParam.setOnlySend(false);
+                    postParam.setMethod("post");
+                    postParam.setMessageTime(Canstats.dateformat.format(new Date()));
+                    logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
+                    messageProducerService.sendMessage("-2",
+                            JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+                } else {
+                    logger.info("====摄像机抓拍失败====");
+                }
+            } else {
+                logger.info("====请选择服务环境====");
+            }
         } else {
             logger.info("====请检查摄像机配置表====");
         }
-        return map;
     }
 
     //刷卡开闸
