@@ -477,11 +477,4 @@
         </if>
     </sql>
 
-
-    <select id="selectByParkingFeeId" resultType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from parking_fee_detail
-        where parking_fee_id = #{parkingFeeId,jdbcType=VARCHAR}
-    </select>
 </mapper>
