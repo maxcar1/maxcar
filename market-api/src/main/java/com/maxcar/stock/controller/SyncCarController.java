@@ -358,8 +358,10 @@ public class SyncCarController extends BaseController {
 						return interfaceResult;
 					}
 					if(StringUtils.isNotBlank(paramsJson.getRfid())){
-						car = carService.selectByRfid(paramsJson.getRfid());
-						if(car!=null){
+						Car car1 = new Car();
+						car1.setRfid(paramsJson.getRfid());
+						Car car2 = carService.getCar(car1);
+						if(car2!=null){
 							interfaceResult.InterfaceResult600("rfid标签已存在");
 							return interfaceResult;
 						}
