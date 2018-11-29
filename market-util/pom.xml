@@ -664,8 +664,8 @@
 				<mqtt.server.password></mqtt.server.password>
 
 				<!--App支付-->
-				<alipay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/alipay</alipay.app.notify.url>
-				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/wx-pay</wx.pay.app.notify.url>
+				<alipay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/alipay</alipay.app.notify.url>
+				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/wx-pay</wx.pay.app.notify.url>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>true</activeByDefault>
@@ -850,8 +850,8 @@
 				<mqtt.server.password></mqtt.server.password>
 
 				<!--App支付-->
-				<alipay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/alipay</alipay.app.notify.url>
-				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/wx-pay</wx.pay.app.notify.url>
+				<alipay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/alipay</alipay.app.notify.url>
+				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/wx-pay</wx.pay.app.notify.url>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>false</activeByDefault>
