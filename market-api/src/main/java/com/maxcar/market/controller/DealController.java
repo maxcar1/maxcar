@@ -179,6 +179,8 @@ public class DealController extends BaseController {
                 } else {
                     dealMap.put("tradingType", "");
                 }
+            } else {
+                dealMap.put("tradingType", "");
             }
             //  过户类型
             String transferType = d.getTransferType();
