@@ -28,6 +28,7 @@
 				<value>classpath:redis-config.properties</value>
 				<value>classpath:quartz.properties</value>
 				<value>classpath:kafka.properties</value>
+				<value>classpath:wx.properties</value>
 			</list>
 		</property>
 	</bean>

@@ -47,5 +47,6 @@
 
 	<!--引入字典 com.maxcar.user.service -->
 	<dubbo:reference interface="com.maxcar.user.service.ConfigurationService" id="configurationService" check="false" retries="0" timeout="20000" />
+	<dubbo:reference interface="com.maxcar.base.service.TopicService" id="topicService" timeout="1200000" check="false"/>
 
 </beans>

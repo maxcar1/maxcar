@@ -43,6 +43,7 @@
     <dubbo:reference interface="com.maxcar.base.service.CityService" id="cityService" timeout="1200000" check="false"/>
 
     <dubbo:reference interface="com.maxcar.weixin.service.WeiXinService" id="weiXinService" timeout="1200000" check="false"/>
+    <dubbo:reference interface="com.maxcar.base.service.TopicService" id="topicService" timeout="1200000" check="false"/>
     <!-- 引入用户 -->
     <dubbo:reference interface="com.maxcar.user.service.UserService" id="userService" timeout="1200000" check="false"/>
     <!-- 引入员工 -->

@@ -82,6 +82,8 @@
 			id="carBaseService"
 			check="false" retries="0" timeout="20000"/>
 
+	<dubbo:reference interface="com.maxcar.base.service.TopicService" id="topicService" timeout="1200000" check="false"/>
+
 	<!--调用缓存-->
 	<dubbo:reference
 			interface="com.maxcar.redis.service.SsoService"

@@ -42,25 +42,16 @@ import java.util.*;
  * 接收到已经发布的 QoS 1 或 QoS 2 消息的传递令牌时调用。
  * 由 MqttClient.connect 激活此回调。
  */
-@Component
 public class PushCallback implements MqttCallback {
 
     SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    @Value("${keep.image.path}")
-    private String keepPath;
-
-    @Value("${server.environment}")
-    private String environment;
-
-    @Value("${sts.access.key.id}")
-    private String accessKeyId;
-    @Value("${sts.access.key.secret}")
-    private String accessKeySecret;
-    @Value("${sts.bucket}")
-    private String bucket;
-    @Value("${sts.endpoint}")
-    private String endpoint;
+    private String keepPath = LoadProperties.getProperties_3("../../../application.properties","keep.image.path");
+    private String environment = LoadProperties.getProperties_3("../../../application.properties","server.environment");
+    private String accessKeyId = LoadProperties.getProperties_3("../../../application.properties","sts.access.key.id");
+    private String accessKeySecret = LoadProperties.getProperties_3("../../../application.properties","sts.access.key.secret");
+    private String bucket = LoadProperties.getProperties_3("../../../application.properties","sts.bucket");
+    private String endpoint = LoadProperties.getProperties_3("../../../application.properties","sts.endpoint");
 
 
     public PushCallback() {
@@ -298,7 +289,12 @@ public class PushCallback implements MqttCallback {
             boolean result = (Boolean) map.get("result");
             if (result) {
                 String imageFile = String.valueOf(map.get("imageName"));
-                String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, imageFile, imageFile);
+                String[] file = imageFile.split("/");
+                StringBuilder sb = new StringBuilder();
+                sb.append(file[file.length-2]);
+                sb.append("/");
+                sb.append(file[file.length-1]);
+                String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, sb.toString(), imageFile);
                 json.put("imageUrl", imageUrl);
                 postParam.setData(json.toJSONString());
                 postParam.setUrl(url);
