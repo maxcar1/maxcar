@@ -5,6 +5,7 @@ import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.CarReviewExample;
 import java.util.List;
 
+import com.maxcar.stock.pojo.HisWarning;
 import com.maxcar.stock.vo.CarReviewVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,6 +35,11 @@ public interface CarReviewMapper {
     int carOutApply(CarReview carReview);
 
     int insertCarReview(CarReview carReview);
+
+    List<HisWarning> selectByMarketid(@Param("marketId") String marketId);
+
+    List<HisWarning> selectByHisWarning(HisWarning hisWarning);
+
 
     List<CarRecordVo> getCarRecord (CarReview carReview);
 
