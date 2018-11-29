@@ -1,6 +1,8 @@
 package com.maxcar.statistics.dao;
 import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
+import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.request.TradingRequest;
+import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.model.response.TradingResponse;
 
 import java.util.List;
@@ -24,4 +26,6 @@ public interface InventoryInvoiceDayMapper {
     Map tenantCarNum(TradingRequest tradingRequest);
 
     List<TradingResponse> getTenantDealDay(TradingRequest tradingRequest);
+
+    StockResponse getCountAndValue(StockRequest stockRequest);
 }

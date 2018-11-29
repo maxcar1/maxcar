@@ -24,6 +24,12 @@
         <result column="count" property="tenantCount" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="StockResponseResultMap" type="com.maxcar.statistics.model.response.StockResponse">
+        <id column="report_time" property="reportTime" jdbcType="VARCHAR"/>
+        <result column="stock_count" property="stockCount" jdbcType="DOUBLE"/>
+        <result column="stock_price" property="stockPrice" jdbcType="DOUBLE"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
     id, market_id, tenant_id, report_time, stock_count, stock_price, stock_day_avg, out_library_count, 
     tenant_space, sales_count, sales_price, sales_avg_price, version, isvalid, register_time
@@ -314,6 +320,24 @@
         </if>
         <if test="carNumType == 10">
             AND 49 &lt; out_library_count and out_library_count &lt; 55
+        </if>
+    </select>
+
+    <select id="getCountAndValue" resultMap="StockResponseResultMap"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        SUM(stock_count) AS stock_count,
+        SUM(stock_price) AS stock_price
+        FROM `inventory_invoice_day`
+        WHERE isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="timeStart != null and timeStart != '' ">
+            AND report_time BETWEEN #{timeStart} and #{timeEnd}
         </if>
     </select>
 </mapper>
