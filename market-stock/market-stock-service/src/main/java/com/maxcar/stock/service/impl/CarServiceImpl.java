@@ -989,5 +989,60 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return carMapper.getStockCarByVin(vin);
     }
 
+    @Override
+    public InterfaceResult updateStoreCar(CarVo carVo) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+
+        if (StringUtils.isNotBlank(carVo.getId())) {
+            result.InterfaceResult600("车辆id不能为空");
+            return result;
+        }
+        if (carMapper.selectByPrimaryKey(carVo.getId()) != null) {
+            result.InterfaceResult600("该车辆不存在");
+            return result;
+        }
+        CarExample carExample = new CarExample();
+        CarExample.Criteria carCriteria = carExample.createCriteria().andIdEqualTo(carVo.getId());
+
+        CarBaseExample carBaseExample = new CarBaseExample();
+        CarBaseExample.Criteria carBaseCriteria = carBaseExample.createCriteria().andIdEqualTo(carVo.getId());
+
+        if (StringUtils.isNotBlank(carVo.getVin())) {
+            carCriteria.andVinEqualTo(carVo.getVin());
+        }
+        //市场价
+        if (carVo.getMarketPrice() != null) {
+            carBaseCriteria.andMarketPriceEqualTo(carVo.getMarketPrice().doubleValue());
+        }
+        //颜色
+        if (StringUtils.isNotBlank(carVo.getColor())) {
+            carBaseCriteria.andColorEqualTo(carVo.getColor());
+        }
+        //公里
+        if (carVo.getMileage() != null) {
+            carBaseCriteria.andMileageEqualTo(carVo.getMileage());
+        }
+        //初次上牌时间
+        if (StringUtils.isNotBlank(carVo.getInitialLicenceTime())) {
+            carCriteria.andInitialLicenceTimeEqualTo(DatePoor.getDateForString(carVo.getInitialLicenceTime()));
+            carBaseCriteria.andInitialLicenceTimeEqualTo(DatePoor.getDateForString(carVo.getInitialLicenceTime()));
+        }
+        if (StringUtils.isNotBlank(carVo.getBrandName()) && StringUtils.isNotBlank(carVo.getBrandCode())
+                && StringUtils.isNotBlank(carVo.getSeriesCode()) && StringUtils.isNotBlank(carVo.getSeriesName())
+                && StringUtils.isNotBlank(carVo.getModelCode()) && StringUtils.isNotBlank(carVo.getModelName())) {
+            carBaseCriteria.andBrandCodeEqualTo(carVo.getBrandCode())
+                    .andBrandNameEqualTo(carVo.getBrandName())
+                    .andSeriesCodeEqualTo(carVo.getSeriesCode())
+                    .andSeriesNameEqualTo(carVo.getSeriesName())
+                    .andModelCodeEqualTo(carVo.getSeriesCode())
+                    .andModelNameEqualTo(carVo.getModelName())
+                    .andModelYearEqualTo(carVo.getModelName().substring(0,4));
+        }
+
+//        carMapper.updateByPrimaryKeySelective(carBaseCriteria)
+
+        return result;
+    }
+
 
 }

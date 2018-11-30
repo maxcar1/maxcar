@@ -2,6 +2,9 @@ package com.maxcar.stock.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
+import com.maxcar.base.model.VehicleBrand;
+import com.maxcar.base.pojo.CarBrand;
+import com.maxcar.base.pojo.CarSeries;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Magic;
 import com.maxcar.base.service.DaSouCheService;
@@ -71,6 +74,52 @@ public class CarController extends BaseController {
     @Autowired
     private AreaService areaService;
 
+
+    @GetMapping("/brand/choose")
+    public Object hierarchyIn(){
+        InterfaceResult result = new InterfaceResult();
+        List<VehicleBrand> request = new ArrayList<>();
+        List<CarBrand> carBrandList = daSouCheService.getAllBrand();
+
+        for(CarBrand carBrand:carBrandList){
+            VehicleBrand vehicleBrand = new VehicleBrand();
+//            vehicleBrand.setLogoUrl(carBrand.getLogoUrl());
+            vehicleBrand.setName(carBrand.getBrandName());
+            vehicleBrand.setCode(carBrand.getBrandCode());
+            List<CarSeries> carSeriesList = daSouCheService.getAllSeries(carBrand.getId());
+            List<VehicleBrand> chooseList = new ArrayList<>();
+            for(CarSeries carSeries:carSeriesList){
+                VehicleBrand choose = new VehicleBrand();
+                choose.setName(carSeries.getSeriesName());
+                choose.setCode(carSeries.getSeriesCode());
+                chooseList.add(choose);
+            }
+            vehicleBrand.setChildren(chooseList);
+            request.add(vehicleBrand);
+        }
+        String[] letters = {"A", "B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        Map<String, ArrayList> map = new HashMap<>(32);
+        for (String letter : letters) {
+            map.put(letter, new ArrayList<>());
+        }
+        for (VehicleBrand res:request){
+            for (String key : map.keySet()) {
+                if (HanyuPinyinHelper.getFirstLetter(res.getName()).equals(key)){
+                    map.get(key).add(res);
+                }
+            }
+        }
+        result.InterfaceResult200(map);
+        return result;
+    }
+
+    @PostMapping("/update")
+    InterfaceResult updateCar(@RequestBody CarVo carVo, HttpServletRequest request) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        return carService.updateStoreCar(carVo);
+
+//        return result;
+    }
 
     /**
      * 获取库存列表
