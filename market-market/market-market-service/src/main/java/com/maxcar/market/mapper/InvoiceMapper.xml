@@ -1967,7 +1967,7 @@
       LEFT JOIN maxcar_tenant_l.user_tenant t
       ON ii.tenant_id = t.id
     <if test="contactName != null and contactName != ''">
-      WHERE t.contact_name LIKE #{contactName}
+      WHERE t.contact_name = #{contactName}
     </if>
     ORDER BY ii.insert_time DESC
 
@@ -2521,12 +2521,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
-      <if test="tradingType != null and tradingType != ''">
-      AND i.trading_type = #{tradingType}
-      </if>
-      <if test="transferType != null and transferType != ''">
-      AND i.transfer_type = #{transferType}
-      </if>
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -2792,12 +2798,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
-  <if test="tradingType != null and tradingType != ''">
-      AND i.trading_type = #{tradingType}
-  </if>
-  <if test="transferType != null and transferType != ''">
-      AND i.transfer_type = #{transferType}
-  </if>
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -3074,6 +3086,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -3349,6 +3373,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -3616,6 +3652,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
