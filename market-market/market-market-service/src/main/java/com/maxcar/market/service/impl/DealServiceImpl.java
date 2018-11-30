@@ -208,16 +208,12 @@ public class DealServiceImpl implements DealService {
                     break;
             }
         } else {
-            countDealNum = 0;
-            sumDealMoney = 0.0;
 //            invoiceExample = new InvoiceExample();
 //            criteria = invoiceExample.createCriteria();
 //            criteria.andMarketIdEqualTo(deal.getMarketId()).andCarSourcesEqualTo(1).andInvoiceStatusEqualTo(2);
             deal.setCarSources(1);
             commodityCount = invoiceMapper.countByCarSources(deal);
             commoditySum = invoiceMapper.sumPrice(deal);
-            countDealNum += commodityCount;
-            sumDealMoney += commoditySum;
 
 //            invoiceExample = new InvoiceExample();
 //            criteria = invoiceExample.createCriteria();
@@ -225,8 +221,6 @@ public class DealServiceImpl implements DealService {
             deal.setCarSources(2);
             subordinateCount = invoiceMapper.countByCarSources(deal);
             subordinateSum = invoiceMapper.sumPrice(deal);
-            countDealNum += subordinateCount;
-            sumDealMoney += subordinateSum;
 
 //            invoiceExample = new InvoiceExample();
 //            criteria = invoiceExample.createCriteria();
@@ -234,8 +228,6 @@ public class DealServiceImpl implements DealService {
             deal.setCarSources(3);
             agencyCount = invoiceMapper.countByCarSources(deal);
             agencySum = invoiceMapper.sumPrice(deal);
-            countDealNum += agencyCount;
-            sumDealMoney += agencySum;
 
 //            invoiceExample = new InvoiceExample();
 //            criteria = invoiceExample.createCriteria();
@@ -243,8 +235,6 @@ public class DealServiceImpl implements DealService {
             deal.setCarSources(4);
             retailCount = invoiceMapper.countByCarSources(deal);
             retailSum = invoiceMapper.sumPrice(deal);
-            countDealNum += retailCount;
-            sumDealMoney += retailSum;
         }
 
         map.put("commodityCount", (commodityCount == null ? 0 : commodityCount));
