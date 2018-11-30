@@ -941,10 +941,8 @@ public class CarController extends BaseController {
         PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
         List<CarVo> list = allSalesManageCarList.getList();
         for (CarVo car : list) {
-//                Invoice invoice = invoiceService.selectPriceByCarId(car.getId());
-//                if (invoice != null){
-//                    car.setInvoicePrice(invoice.getPrice()/10000);
-//                }
+            double priceByCarId = invoiceService.selectPriceByCarId(car.getId());
+            car.setInvoicePrice(priceByCarId);
         }
         allSalesManageCarList.setList(list);
         interfaceResult.InterfaceResult200(allSalesManageCarList);
