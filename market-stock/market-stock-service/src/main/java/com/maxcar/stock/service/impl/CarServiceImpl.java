@@ -1093,7 +1093,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         if (car != null){
 
             Invoice invoice = new Invoice();
-            invoice.setId(UuidUtils.gettimeFormartyyyyMMddHHmmss());
+            invoice.setId(UuidUtils.generateIdentifier());
             invoice.setBillTime(new Date());
             invoice.setPrice(carSellVo.getPrice());
             invoice.setCarId(carSellVo.getCarId());
@@ -1149,5 +1149,6 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             e.printStackTrace();
         }
     }
+
 
 }
