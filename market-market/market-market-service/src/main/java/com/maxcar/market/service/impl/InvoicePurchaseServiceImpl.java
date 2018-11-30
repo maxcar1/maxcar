@@ -69,6 +69,10 @@ public class InvoicePurchaseServiceImpl extends BaseServiceImpl<InvoicePurchase,
         if (Integer.parseInt(record.getInvoiceEndNo()) > Integer.parseInt(record.getInvoiceNo())) {
             record.setPollResidue(Integer.parseInt(record.getInvoiceEndNo()) + 1 - Integer.parseInt(record.getInvoiceNo()));
         }
+        if (Integer.parseInt(record.getInvoiceEndNo()) == Integer.parseInt(record.getInvoiceNo())) {
+            record.setPollResidue(1);
+            record.setPollAll(1);
+        }
         Integer num = invoicePurchaseMapper.insertSelective(record);
         if (num == 1) {
             interfaceResult.InterfaceResult200("插入成功");
