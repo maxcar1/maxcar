@@ -227,7 +227,7 @@ public class CarController extends BaseController {
                 response.setRegisterTime(Magic.NUll);
             } else {
                 // response.setStockDay(String.valueOf(DatePoor.getDatePoorDay(new Date(), x.getRegisterTime())));
-                response.setRegisterTime(DatePoor.getStringForDateByFormat(x.getRegisterTime(),"yyyy-MM-dd"));
+                response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
             response.setStockDay(x.getStockDays()+"");
