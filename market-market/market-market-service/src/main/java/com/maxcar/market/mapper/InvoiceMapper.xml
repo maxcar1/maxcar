@@ -2521,6 +2521,12 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+      <if test="tradingType != null and tradingType != ''">
+      AND i.trading_type = #{tradingType}
+      </if>
+      <if test="transferType != null and transferType != ''">
+      AND i.transfer_type = #{transferType}
+      </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -2732,6 +2738,7 @@
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+      where t.contact_name = #{contactName}
     ORDER BY ii.i_time DESC
     )  as  dd
   </select>
@@ -2785,6 +2792,12 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+  <if test="tradingType != null and tradingType != ''">
+      AND i.trading_type = #{tradingType}
+  </if>
+  <if test="transferType != null and transferType != ''">
+      AND i.transfer_type = #{transferType}
+  </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -2996,6 +3009,7 @@
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+    where t.contact_name = #{contactName}
     ORDER BY ii.i_time DESC
       ) as  dd
   </select>
