@@ -96,6 +96,7 @@ public class WeiXinTicketController {
         InterfaceResult result = parkingFeeService.updateParkingDetail(params);
         if (StringUtils.equals(result.getCode(),"200")){
             JSONObject json = (JSONObject)JSONObject.toJSON(result.getData());
+            System.out.println(json.toJSONString());
             //推送刷卡出场信息
             WebSocketServer.sendInfo(JSON.toJSONString(json),barrierId);
         }
