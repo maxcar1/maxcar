@@ -116,6 +116,7 @@ public class StorageCapacityController extends BaseController {
                 //  看市场有多少个商户  来计算出浮动车位数
                 if(tenantCount != 1){
                     carNum = carNum * tenantCount;
+                    marketParkCount += carNum;
                 }
                 // 如果截取出来的加号
                 if ("+".equals(symbol)) {
