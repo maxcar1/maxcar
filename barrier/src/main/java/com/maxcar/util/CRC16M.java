@@ -1,17 +1,15 @@
 package com.maxcar.util;
 
 
-import com.maxcar.base.util.StringUtils;
-
 public class CRC16M {
 
     private static int[] strToToHexInt(String hexString) {
         hexString = hexString.replace(" ", "");
-// 如果长度不是偶数，那么后面添加空格。
+        // 如果长度不是偶数，那么后面添加空格。
         if ((hexString.length() % 2) != 0) {
             hexString += " ";
         }
-// 定义数组，长度为待转换字符串长度的一半。
+        // 定义数组，长度为待转换字符串长度的一半。
         int[] returnBytes = new int[hexString.length() / 2];
         for (int i = 0; i < returnBytes.length; i++) {
             returnBytes[i] = (0xff & Integer.parseInt(hexString.substring(i * 2, i * 2 + 2), 16));

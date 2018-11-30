@@ -85,6 +85,7 @@ public class InvoiceController extends BaseController {
 
     @Autowired
     private StaffService staffService;
+
     /**
      * currentTime 默认传当日，当月，当年
      * status :1:按日查询，2：按月，3：按年
@@ -160,16 +161,16 @@ public class InvoiceController extends BaseController {
         if (invoice != null) {
             String userId = invoice.getUserId();
             User user = userService.selectByPrimaryKey(userId);
-            if(user != null){
+            if (user != null) {
                 Staff staff = staffService.selectByPrimaryId(user.getStaffId());
-                if(staff != null){
+                if (staff != null) {
                     String staffName = staff.getStaffName();
                     invoice.setOperatorName(staffName);
                 }
             }
-            String carInvoiceType = invoice.getCarInvoiceType();
-            String type = getCarInvoiceType(carInvoiceType);
-            invoice.setCarInvoiceType(type);
+//            String carInvoiceType = invoice.getCarInvoiceType();
+//            String type = getCarInvoiceType(carInvoiceType);
+//            invoice.setCarInvoiceType(type);
             market = marketService.selectByPrimaryKey(invoice.getMarketId());//市场信息
             tenantName = userTenantService.selectByTenanId(invoice.getTenantId());
             invoice.setTenantName(tenantName);
@@ -581,16 +582,36 @@ public class InvoiceController extends BaseController {
         return interfaceResult;
     }
 
-    @GetMapping(value = "/invoice/getInvoicePerson/{idCard}")
-    public InterfaceResult getInvoicePerson(@PathVariable(value = "idCard") String idCard, HttpServletRequest request) {
+    @PostMapping(value = "/invoice/getInvoicePerson")
+    public InterfaceResult getInvoicePerson(@RequestBody Map<String, String> map, HttpServletRequest request) {
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             String marketId = getCurrentUser(request).getMarketId();
+            String idCard = map.get("idCard");
+            String purchacerIdCard = map.get("purchacerIdCard");
+            if (StringUtil.isNotEmpty(purchacerIdCard)) {
+                idCard = purchacerIdCard;
+            }
+            String sellerIdCard = map.get("sellerIdCard");
+            if (StringUtil.isNotEmpty(sellerIdCard)) {
+                idCard = sellerIdCard;
+            }
+            interfaceResult.InterfaceResult600("无查询记录");
             List<InvoicePerson> invoicePersonList = invoiceService.getInvoicePerson(idCard, marketId);
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
-                interfaceResult.InterfaceResult200(invoicePersonList.get(0));
-            } else {
-                interfaceResult.InterfaceResult600("无查询记录");
+                for (int i = 0 ; i < invoicePersonList.size() ; i ++) {
+                    InvoicePerson invoice = invoicePersonList.get(i);
+                    String purchacerIdCardBack = invoice.getPurchacerIdCard();
+                    String sellerIdCardBack = invoice.getSellerIdCard();
+                    if(purchacerIdCardBack != null && idCard.equals(purchacerIdCardBack)){
+                        interfaceResult.InterfaceResult200(invoicePersonList.get(i));
+                        break;
+                    }
+                    if(sellerIdCardBack != null && idCard.equals(sellerIdCardBack)){
+                        interfaceResult.InterfaceResult200(invoicePersonList.get(i));
+                        break;
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

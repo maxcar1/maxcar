@@ -138,7 +138,19 @@ public class CarController extends BaseController {
             InventoryStatisticalRequest inventoryStatisticalRequest = new InventoryStatisticalRequest();
             inventoryStatisticalRequest.setMarketId(user.getMarketId());
             inventoryStatisticalRequest.setTenantId(carVo.getTenant());
-
+            String registerTimeStart = carVo.getRegisterTimeStart();
+            if(StringUtil.isNotEmpty(registerTimeStart)){
+                inventoryStatisticalRequest.setRegisterTimeStart(registerTimeStart);
+                String registerTimeEnd = carVo.getRegisterTimeEnd();
+                Date date = DateUtils.parseDate(registerTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+                Date dayEnd = DateUtils.getDayEnd(date);
+                String s = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATETIME);
+                inventoryStatisticalRequest.setRegisterTimeEnd(s);
+            }
+            Integer stockStatus = carVo.getStockStatus();
+            if(stockStatus != null && stockStatus != 0){
+                inventoryStatisticalRequest.setStockStatus(stockStatus);
+            }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
             m.put("InventoryStatisticalResponse", response);
         }
