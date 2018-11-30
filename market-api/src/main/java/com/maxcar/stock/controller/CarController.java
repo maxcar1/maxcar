@@ -152,6 +152,9 @@ public class CarController extends BaseController {
                 inventoryStatisticalRequest.setStockStatus(stockStatus);
             }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
+            InventoryStatisticalResponse responseAccumulative = carService.accumulativeCar(inventoryStatisticalRequest);
+            response.setValuationTotal(responseAccumulative.getValuationTotal());
+            response.setInventoryTotal(responseAccumulative.getInventoryTotal());
             m.put("InventoryStatisticalResponse", response);
         }
         m.put("listCarVo", pageInfo);
@@ -227,7 +230,7 @@ public class CarController extends BaseController {
                 response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
-            response.setStockDay(x.getStockDays().toString());
+            response.setStockDay(x.getStockDays()+"");
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);
@@ -247,7 +250,7 @@ public class CarController extends BaseController {
                 }
             }
 
-            response.setInitialLicenceTime(x.getInitialLicenceTime());
+            response.setInitialLicenceTime(x.getInitialLicenceTime()!=null?x.getInitialLicenceTime().substring(0,10):"");
             response.setMileage(x.getMileage());
             response.setMarketPrice(x.getMarketPrice());
             response.setEvaluatePrice(x.getEvaluatePrice());
@@ -447,9 +450,11 @@ public class CarController extends BaseController {
         Properties prop = new Properties();
         CarInfo carInfo = new CarInfo();
 
-        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
+//        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
 
         prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+
+        String sell_cid = prop.getProperty("sellCid");
         String url = prop.getProperty("taobaoApiUrl");
         String taobaoUrl = prop.getProperty("taobaoUrl");
         String carId = params.getString("id");
@@ -463,11 +468,12 @@ public class CarController extends BaseController {
             interfaceResult.InterfaceResult600("查无此车");
             return interfaceResult;
         }
+        carInfo.setAttribution(prop.getProperty("cityNumByMarketId" + carInfo.getMarket_id()));
         sell_cid += "," + carInfo.getBrand_code();
-        if ("010".equals(carInfo.getMarket_id())) {
-            //针对玉林市场
-            carInfo.setAttribution("450900");
-        }
+//        if ("010".equals(carInfo.getMarket_id())) {
+//            //针对玉林市场
+//            carInfo.setAttribution("450900");
+//        }
         if (carInfo.getModel_name() != null && !"".equals(carInfo.getModel_name()) && carInfo.getModel_name().contains("款")) {
             //获取modelYear 为空不能上传
             carInfo.setModel_year(carInfo.getModel_name().substring(carInfo.getModel_name().indexOf("款") - 4, carInfo.getModel_name().indexOf("款") + 1));
@@ -727,10 +733,15 @@ public class CarController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/groundCar", method = RequestMethod.POST)
-    public InterfaceResult groundCar(@RequestBody com.alibaba.fastjson.JSONObject params) {
+    public InterfaceResult groundCar(@RequestBody com.alibaba.fastjson.JSONObject params, HttpServletRequest request) {
+
         InterfaceResult result = new InterfaceResult();
         Properties prop = new Properties();
         try {
+            User user = getCurrentUser(request);
+            if (null == user || user.getMarketId().isEmpty()) {
+                return getInterfaceResult("200", "无法确认用户市场");
+            }
             prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
             CarChannelRel carChannelRel = new CarChannelRel();
             com.alibaba.fastjson.JSONArray carids = params.getJSONArray("carIds");
@@ -742,7 +753,7 @@ public class CarController extends BaseController {
             String APP_KEY = prop.getProperty("taobaoAppKey");
             String SECRET = prop.getProperty("taobaosecret");
             String API_URL = prop.getProperty("taobaoUploadUrl");
-            String sessionKey = prop.getProperty("sessionKey");
+            String sessionKey = prop.getProperty("marketIdSessionKey" + user.getMarketId());
 
             TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
             ItemUpdateListingRequest req = new ItemUpdateListingRequest();
@@ -785,11 +796,15 @@ public class CarController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/downCar", method = RequestMethod.POST)
-    public InterfaceResult downCar(@RequestBody com.alibaba.fastjson.JSONObject params) {
+    public InterfaceResult downCar(@RequestBody com.alibaba.fastjson.JSONObject params, HttpServletRequest request) {
         InterfaceResult result = new InterfaceResult();
         Properties prop = new Properties();
         CarChannelRel carChannelRel = new CarChannelRel();
         try {
+            User user = getCurrentUser(request);
+            if (null == user || user.getMarketId().isEmpty()) {
+                return getInterfaceResult("200", "无法确认用户市场");
+            }
             prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
             com.alibaba.fastjson.JSONArray carids = params.getJSONArray("carIds");
             com.alibaba.fastjson.JSONArray numIds = params.getJSONArray("taobaoIds");
@@ -799,7 +814,7 @@ public class CarController extends BaseController {
             String APP_KEY = prop.getProperty("taobaoAppKey");
             String SECRET = prop.getProperty("taobaosecret");
             String API_URL = prop.getProperty("taobaoUploadUrl");
-            String sessionKey = prop.getProperty("sessionKey");
+            String sessionKey = prop.getProperty("marketIdSessionKey" + user.getMarketId());
 
 
             TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);

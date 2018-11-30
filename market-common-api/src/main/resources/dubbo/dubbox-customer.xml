@@ -29,5 +29,7 @@
 	<dubbo:reference id="openApiConfigService" interface="com.maxcar.base.service.OpenApiConfigService" check="false"/>
 	<dubbo:reference id="parkingFeeService" interface="com.maxcar.market.service.ParkingFeeService" check="false"/>
 	<dubbo:reference id="parkingFeeRuleService" interface="com.maxcar.market.service.ParkingFeeRuleService" check="false"/>
+	<dubbo:reference id="ssoService" interface="com.maxcar.redis.service.SsoService" check="false"/>
+
 	<dubbo:reference id="parkingFeeIntegralService" interface="com.maxcar.market.service.ParkingFeeIntegralService" check="false"/>
 </beans>

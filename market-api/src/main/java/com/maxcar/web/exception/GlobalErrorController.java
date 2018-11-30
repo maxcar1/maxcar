@@ -42,13 +42,13 @@ public class GlobalErrorController implements ErrorController{
         Map<String,Object> errorAttributes = getErrorAttributes(request, webRequest,true);
         String status = errorAttributes.get("status")+"";
         String path = (String)errorAttributes.get("path");
-        String message = (String)errorAttributes.get("message");
-        String trace = (String) errorAttributes.get("trace");//详细错误栈信息
+//        String message = (String)errorAttributes.get("message");
+//        String trace = (String) errorAttributes.get("trace");//详细错误栈信息
         interfaceResult.setCode(status);
-        interfaceResult.setMsg(message);
+        interfaceResult.setMsg("系统异常");
         interfaceResult.setPath(path);
         String errorMsg = JsonTools.toJson(interfaceResult);
-        interfaceResult.setMsg(message+"\r\n"+trace);
+//        interfaceResult.setMsg(message+"\r\n"+trace);
         logger.error(JsonTools.toJson(interfaceResult));
         return errorMsg;
 //        return "errorpage/error";
