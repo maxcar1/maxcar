@@ -70,7 +70,8 @@ public class InvoicePurchaseServiceImpl extends BaseServiceImpl<InvoicePurchase,
             record.setPollResidue(Integer.parseInt(record.getInvoiceEndNo()) + 1 - Integer.parseInt(record.getInvoiceNo()));
         }
         if (Integer.parseInt(record.getInvoiceEndNo()) == Integer.parseInt(record.getInvoiceNo())) {
-            record.setPollResidue(0);
+            record.setPollResidue(1);
+            record.setPollAll(1);
         }
         Integer num = invoicePurchaseMapper.insertSelective(record);
         if (num == 1) {
