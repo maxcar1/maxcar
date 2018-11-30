@@ -118,56 +118,66 @@ public class PushCallback implements MqttCallback {
                     if (barrier == null) {//配置有误
                         outParam = failDz(clientData);
                     } else {
-                        if (codeType.equals("02")) {//初始配置参数
-                            outParam = initDz(clientData, barrier);
-                            if (barrier != null && barrier.getMqttTopic() != null) {
-                                byte b[] = toBytes(outParam);
-                                ServerMQTT serverMQTT = new ServerMQTT();
-                                logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                serverMQTT.send(b, barrier.getMqttTopic());
-                            }
-                        } else if (codeType.equals("01")) {//请求开闸
-                            BarrierValid barrierValid = new BarrierValid();
-                            Map map = barrierValid.openDz(clientData, barrier);
-                            outParam = map.get("outParam") + "";
-                            if (barrier != null && barrier.getMqttTopic() != null) {
-                                byte b[] = toBytes(outParam);
+                        switch (codeType){
+                            case "01":
+                                //请求开闸
+                                BarrierValid barrierValid = new BarrierValid();
+                                Map map = barrierValid.openDz(clientData, barrier);
+                                outParam = map.get("outParam") + "";
+                                if (barrier != null && barrier.getMqttTopic() != null) {
+                                    byte b[] = toBytes(outParam);
 //                                ServerMQTT serverMQTT = new ServerMQTT();
 //                                logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
 //                                serverMQTT.send(b, barrier.getMqttTopic());
-                            }
-                            if (map.get("stockCarInfo") != null) {
-                                Car car = (Car) map.get("stockCarInfo");
-                                uploadData(car);//请求云端
-                            }
-                        } else if (codeType.equals("07")) {//ic卡处理
-                            //截取卡号10位数
-                            String cardNo16 = clientData.substring(66, 76);
-                            doCard(barrier, cardNo16);
-                            //   uploadRequestCloud(barrier, cardNo16);
-                        } else if (codeType.equals("08")) {
-                            //微信unionid处理
-                            //根据硬件发过来的判断
-                            String key = clientData.substring(64, 66);
-                            Integer keyLen = Integer.valueOf(key, 16) * 2;
-                            String id = clientData.substring(66, 66 + keyLen);
-                            logger.info("道闸发送的unionid或者key:{}", HexUtils.convertHexToString(id));
-                            switch (barrier.getInOutType()) {
-                                case 0:
-                                    uploadRequestCloudIn(barrier, id, 1);
-                                    break;
-                                case 1:
-                                    uploadRequestCloudOut(barrier, id, 1);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } else if (codeType.equals("09")) {
-                            //刷卡出场回执asc ii码
-                            String key1 = clientData.substring(64, 66);
-                            Integer keyLen1 = Integer.valueOf(key1, 16) * 2;
-                            String cardNo = clientData.substring(66, 66 + keyLen1);
-                            doCard(barrier, HexUtils.convertHexToString(cardNo));
+                                }
+                                if (map.get("stockCarInfo") != null) {
+                                    Car car = (Car) map.get("stockCarInfo");
+                                    uploadData(car);//请求云端
+                                }
+                                break;
+                            case "02":
+                                //初始配置参数
+                                outParam = initDz(clientData, barrier);
+                                if (barrier != null && barrier.getMqttTopic() != null) {
+                                    byte b[] = toBytes(outParam);
+                                    ServerMQTT serverMQTT = new ServerMQTT();
+                                    logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+                                    serverMQTT.send(b, barrier.getMqttTopic());
+                                }
+                                break;
+                            case "07":
+                                //截取卡号10位数
+                                String cardNo16 = clientData.substring(66, 76);
+                                doCard(barrier, cardNo16);
+                                break;
+                            case "08":
+                                //微信unionid处理
+                                //根据硬件发过来的判断
+                                String key = clientData.substring(64, 66);
+                                Integer keyLen = Integer.valueOf(key, 16) * 2;
+                                String id = clientData.substring(66, 66 + keyLen);
+                                logger.info("道闸发送的unionid或者key:{}", HexUtils.convertHexToString(id));
+                                switch (barrier.getInOutType()) {
+                                    case 0:
+                                        uploadRequestCloudIn(barrier, id, 1);
+                                        break;
+                                    case 1:
+                                        uploadRequestCloudOut(barrier, id, 1);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                            case "09":
+                                //刷卡出场回执asc ii码
+                                String key1 = clientData.substring(64, 66);
+                                Integer keyLen1 = Integer.valueOf(key1, 16) * 2;
+                                String cardNo = clientData.substring(66, 66 + keyLen1);
+                                doCard(barrier, HexUtils.convertHexToString(cardNo));
+                                break;
+                            default:
+                                logger.error("====进入了错误处理====clientData==>{}",clientData);
+                                break;
                         }
                     }
                 } else {
