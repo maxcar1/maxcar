@@ -36,7 +36,7 @@ public class ServerMQTT extends Thread{
      */
     public ServerMQTT()throws MqttException{
         /*clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");*/
-        clientId = UuidUtils.getUUID();
+        clientId = UuidUtils.getUUID() + UuidUtils.getRandByNum(4);
         logger.info("{},clientId为===>{}",this.getClass().getName(),clientId);
         mqttClientHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.client.host");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
