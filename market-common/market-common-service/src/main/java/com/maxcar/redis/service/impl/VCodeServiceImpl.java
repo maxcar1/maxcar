@@ -2,6 +2,7 @@ package com.maxcar.redis.service.impl;
 
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.EnvironmentUtil;
 import com.maxcar.base.util.SmsUtil;
 import com.maxcar.redis.dao.JedisSingleDao;
 import com.maxcar.redis.service.VCodeService;
@@ -32,10 +33,13 @@ public class VCodeServiceImpl implements VCodeService{
         }
 
         Map<String, Object> vars = new HashMap<>(2);
-        String code = SmsUtil.getMobileCode();
-//        String code = "1234";
+        String code = "1234";
+        if (EnvironmentUtil.isProduct()) {
+            code = SmsUtil.getMobileCode();
+            vars.put("code", code);
+            SmsUtil.sendSMS(phoneNum, "SMS_151515138", vars);
+        }
         vars.put("code", code);
-        SmsUtil.sendSMS(phoneNum, "SMS_151515138", vars);
 
         String key = MessageFormat.format(CacheKey.LOGIN_PHONE_CODE, phoneNum);
         jedisSingleDao.set(key, code);

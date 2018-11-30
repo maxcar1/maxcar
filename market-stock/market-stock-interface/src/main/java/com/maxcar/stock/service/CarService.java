@@ -215,4 +215,6 @@ public interface CarService extends BaseService<Car, String> {
     List<Car> carByVin(CarChecks c);
 
     Car carInformation(Car car);
+
+    InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest inventoryStatisticalRequest);
 }
