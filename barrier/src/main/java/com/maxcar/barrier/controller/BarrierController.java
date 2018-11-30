@@ -281,7 +281,7 @@ public class BarrierController {
             //-4标识下发检测是否压地感
             value8  = id;
             byte[] b = value8.getBytes("gbk");
-            value7 = value4 + Integer.toHexString(b.length).toUpperCase();
+            value7 = value4 +"0"+Integer.toHexString(b.length).toUpperCase();
             byte[] v6_length = (value7+value8).getBytes("gbk");
             String v6_len = Integer.toHexString(v6_length.length).toUpperCase();
             StringBuilder sb = new StringBuilder();
