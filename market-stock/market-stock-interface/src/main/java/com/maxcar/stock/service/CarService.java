@@ -210,4 +210,6 @@ public interface CarService extends BaseService<Car, String> {
     Map<String,Object> carDetail(Car car) throws Exception;
 
     Car getStockCarByVin(String vin);
+
+    InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest inventoryStatisticalRequest);
 }

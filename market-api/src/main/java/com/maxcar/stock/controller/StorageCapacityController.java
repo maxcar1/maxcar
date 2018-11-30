@@ -79,38 +79,50 @@ public class StorageCapacityController extends BaseController {
 //              int tenantCount = 1;
 //              int parkCount = 0;
         String marketId = user.getMarketId();
-        int tenantCount = userTenantService.countTenant(marketId,requestStorageCapacity.getTenant(), requestStorageCapacity.getAreaName());
-        //  市场总车位数
+        int tenantCount = userTenantService.countTenant(marketId, requestStorageCapacity.getTenant(), requestStorageCapacity.getAreaName());
+        //  区域或商户总车位数
         GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
         requests.setMarketId(marketId);
-        if(StringUtil.isNotEmpty(requestStorageCapacity.getTenant())) {
+        if (StringUtil.isNotEmpty(requestStorageCapacity.getTenant())) {
             requests.setTenantId(requestStorageCapacity.getTenant());
         }
-        if(StringUtil.isNotEmpty(requestStorageCapacity.getAreaName())){
+        if (StringUtil.isNotEmpty(requestStorageCapacity.getAreaName())) {
             requests.setAreaId(requestStorageCapacity.getAreaName());
         }
         GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-        if(responses == null){
+        if (responses == null) {
             interfaceResult.InterfaceResult600("请联系管理员，配置相关参数！");
             return interfaceResult;
         }
-        int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal() );
+        //  总车位数
+        int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
+
+        //  市场总车位数
+        GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest marketRequests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
+        marketRequests.setMarketId(marketId);
+        GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse marketResponses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(marketRequests);
+        int marketParkCount = (marketResponses.getCarTotal() == null ? 0 : marketResponses.getCarTotal());
 
         //  按照市场配置 浮动商户停车位总数
-        if(parkCount > 0){
+        if (parkCount > 0) {
             Configuration configuration = new Configuration();
             configuration.setMarketId(marketId);
             configuration.setConfigurationKey(Magic.CAR_NUM);
             List<Configuration> configurations = configurationService.searchConfiguration(configuration);
-            if(configurations.size() > 0){
+            if (configurations.size() > 0) {
                 String configurationValue = configurations.get(0).getConfigurationValue();
                 String symbol = configurationValue.substring(0, 1);
                 String num = configurationValue.substring(1, configurationValue.length());
                 int carNum = Integer.parseInt(num);
+                //  看市场有多少个商户  来计算出浮动车位数
+                if(tenantCount != 1){
+                    carNum = carNum * tenantCount;
+                }
                 // 如果截取出来的加号
-                if("+".equals(symbol)){
+                if ("+".equals(symbol)) {
                     parkCount += carNum;
                 }
+
             }
         }
 
@@ -160,8 +172,9 @@ public class StorageCapacityController extends BaseController {
         interfaceResult.setTotal(count);
         map.put("list", RSCList);
 
-        //  剩余总车位数
+        //  商户或区域剩余总车位数
         int residue = parkCount - carCount;
+
         //  车位总饱和度
         double pro = 0;
         if (parkCount != 0) {
@@ -169,6 +182,14 @@ public class StorageCapacityController extends BaseController {
         }
         double value = new BigDecimal((pro * 100)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
+        //  市场剩余总车位数   如果条件没有选择商户  那么 总库存和剩余车位 都显示 市场总数
+        if ("".equals(requestStorageCapacity.getTenant()) || requestStorageCapacity.getTenant() == null) {
+            residue = marketParkCount - carCount;
+            if (marketParkCount != 0) {
+                pro = ((double) carCount / marketParkCount);
+                value = new BigDecimal((pro * 100)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            }
+        }
         String proportion = value + "%";
 
         map.put("residue", residue);
@@ -208,7 +229,7 @@ public class StorageCapacityController extends BaseController {
             if (storageCapacity.getRepertoryCar() == 0) {
                 storageCapacity.setParkPercent("0.0%");
             } else {
-                if(carTotal == 0){
+                if (carTotal == 0) {
                     carTotal = 1;
                 }
                 double v = (double) storageCapacity.getRepertoryCar() / carTotal;
@@ -230,7 +251,7 @@ public class StorageCapacityController extends BaseController {
     @OperationAnnotation(title = "查询区域列表")
     public InterfaceResult getArea(HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        User user=getCurrentUser(request);
+        User user = getCurrentUser(request);
 
         List<Area> areas = areaService.selectAreaList(user.getMarketId());
         interfaceResult.InterfaceResult200(areas);
@@ -246,7 +267,7 @@ public class StorageCapacityController extends BaseController {
      */
     @GetMapping("/Tenant/{tenantArea}/{marketId}")
     @OperationAnnotation(title = "查询区域商户")
-    public InterfaceResult getTenant(@PathVariable String tenantArea, @PathVariable String marketId,HttpServletRequest request) throws Exception {
+    public InterfaceResult getTenant(@PathVariable String tenantArea, @PathVariable String marketId, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = getCurrentUser(request);
         String userMarketId = user.getMarketId();
