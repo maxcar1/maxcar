@@ -313,7 +313,9 @@
     from review_step a
     LEFT JOIN review_detail b
     on a.review_person_id = b.review_person_id
-    where a.apply_type = 1
+      <if test="applyType != null and applyType != ''" >
+          and a.apply_type = #{applyType}
+      </if>
     <if test="marketId != null and marketId != ''" >
       and a.market_id = #{marketId}
     </if>
@@ -391,11 +393,14 @@ and is_valid=1
 
   </select>
   <insert id="insertCarReview" parameterType="com.maxcar.stock.pojo.CarReview">
-    insert  into car_review (car_id,market_id,user_id,out_reason,back_time,reason_desc,is_pledge,insert_time,is_valid)
-    values(#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid})
+    insert  into car_review (car_id,market_id,user_id,out_reason,back_time,reason_desc,is_pledge,insert_time,is_valid,is_pass)
+    values(#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid},#{isPass})
 
   </insert>
   <select id="checkCarReview" parameterType="com.maxcar.stock.pojo.CarReview" resultType="java.lang.Integer">
     select count(1) from car_review where car_id = #{carId} and is_valid = 1
   </select>
+  <delete id="deleteReviewStep" parameterType="com.maxcar.stock.pojo.FlowStep">
+    delete from review_step where market_id = #{marketId} and apply_type = #{code}
+  </delete>
 </mapper>

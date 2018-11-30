@@ -60,4 +60,6 @@ public interface ReviewStepMapper {
     int insertCarReview(CarReview carReview);
 
     int checkCarReview(CarReview carReview);
+
+    int deleteReviewStep(FlowStep flowStep);
 }

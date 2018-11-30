@@ -37,4 +37,6 @@ public interface ReviewStepService {
     int carOutApply(CarReview carReview);
 
     int checkCarReview(CarReview carReview);
+
+    int deleteReviewStep(FlowStep flowStep);
 }

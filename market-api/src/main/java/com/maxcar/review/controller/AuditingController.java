@@ -49,9 +49,27 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "车辆出场审核待审核列表")
     public InterfaceResult getCarReview(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         User user = getCurrentUser(request);
-        carParams.setReviewPersonId(user.getUserId());
         InterfaceResult interfaceResult = new InterfaceResult();
-        PageInfo pageInfo = carService.listReview(carParams);
+        PageInfo pageInfo = null;
+        carParams.setReviewPersonId(user.getUserId());
+        ReviewStep reviewStep = new ReviewStep();
+        reviewStep.setReviewPersonId(user.getUserId());
+        reviewStep.setMarketId(user.getMarketId());
+        reviewStep.setOrgld(user.getOrgId());
+        List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
+        //查询该用户是否在审核列表下
+        if(reviewStepList!=null){
+            //判断该用户属于第几级
+            if(reviewStepList.get(0).getLevel()==1){
+                pageInfo = carService.listReview(carParams);
+            }else{
+                //判断上一级是否审核通过
+                int currentLevel = reviewStepList.get(0).getLevel()-1;
+
+            }
+        }
+
+
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
     }
@@ -66,9 +84,9 @@ public class AuditingController extends BaseController {
         CarReview carReview = carReviewService.getCarReview(c);
         if(carReview != null){
             User user = new User();
-            user.setUserId(carReview.getUserId());
-            List<User> userList = userService.getUserList(user);
-            carReview.setUserName(userList.get(0).getTrueName());
+            //user.setUserId(carReview.getUserId());
+             user = userService.selectByPrimaryKey(carReview.getUserId());
+            carReview.setUserName(user.getUserName());
             map.put("carReview",carReview);
             List<CarDetails> list = carBaseService.getCarBaseById(carReview.getCarId());
             CarDetails carDetails = list.get(0);
@@ -92,14 +110,15 @@ public class AuditingController extends BaseController {
         return interfaceResult;
     }
 
-    @RequestMapping("/reviewProcess/{reviewId}")
+    @RequestMapping("/reviewProcess/{reviewId}/{applyType}")
     @OperationAnnotation(title = "审核流程列表")
-    public InterfaceResult getReviewProcess(@PathVariable Integer reviewId,HttpServletRequest request ) throws Exception{
+    public InterfaceResult getReviewProcess(@PathVariable Integer reviewId,@PathVariable Integer applyType,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = getCurrentUser(request);
         ReviewVo reviewVo = new ReviewVo();
         reviewVo.setReviewId(reviewId);
         reviewVo.setMarketId(user.getMarketId());
+        reviewVo.setApplyType(applyType);
         List<ReviewVo> list = reviewStepService.reviewVolist(reviewVo);
         Integer [] arr = new Integer[]{1,2,3,4,5};
         List<Map> lists = new ArrayList<Map>();
@@ -110,7 +129,7 @@ public class AuditingController extends BaseController {
                 Organizations organizations = organizationsService.selectByPrimaryKey(r.getOrgId());
                 r.setOrgName(organizations.getOrgName());
                 User u = new User();
-                user.setUserId(r.getReviewPersonId());
+                u.setUserId(r.getReviewPersonId());
                 List<User> userList = userService.getUserList(u);
                 r.setReviewPersonName(userList.get(0).getTrueName());
                 if(r.getLevel() == arr[i]){

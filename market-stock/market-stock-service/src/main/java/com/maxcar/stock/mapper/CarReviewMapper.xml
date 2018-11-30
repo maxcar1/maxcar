@@ -81,7 +81,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, car_id, market_id, user_id, out_reason, back_time, is_pass, is_pledge, insert_time,
-    is_valid,desc
+    is_valid,reason_desc
 
   </sql>
 

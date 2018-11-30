@@ -180,6 +180,8 @@ public class ReviewStepManageController extends BaseController {
                 for (String orgUser : list) {
                     String[] ou = orgUser.split(":");
                     reviewStep.setOrgld(ou[0].toString());
+                    reviewStep.setApplyType(reviewStep.getApplyType());
+                    reviewStep.setMarketId(reviewStep.getMarketId());
                     reviewStep.setReviewPersonId(ou[1].toString());
                     flag = reviewStepService.saveReviewStep(reviewStep);
                     logger.info("编辑返回=====" + flag);
@@ -239,6 +241,7 @@ public class ReviewStepManageController extends BaseController {
         flowStep.setReviewType(json.getInt("reviewType"));
         flowStep.setIsNeedReview(json.getInt("isNeedReview"));
         reviewStepService.updateFlowStep(flowStep);
+        reviewStepService.deleteReviewStep(flowStep);
             String jsonStr = json.getString("tableData");
             logger.info("========"+jsonStr);
             JSONArray jsonArray = JSONArray.parseArray(jsonStr);
@@ -246,6 +249,8 @@ public class ReviewStepManageController extends BaseController {
                 ReviewStep  review= new ReviewStep();
                 JSONObject jsonObject = (JSONObject) iterator.next();
                 review.setStepName(jsonObject.getString("stepName"));
+                review.setMarketId(jsonObject.getString("marketId"));
+                review.setApplyType(jsonObject.getInteger("applyType"));
                 review.setType(jsonObject.getInteger("type"));
                 review.setLevel(jsonObject.getInteger("level"));
                 JSONArray jsonAr = JSONArray.parseArray(jsonObject.getString("userOrg"));
@@ -297,6 +302,7 @@ public class ReviewStepManageController extends BaseController {
     public InterfaceResult carOutApply(@RequestBody CarReview carReview) {
         InterfaceResult result = new InterfaceResult();
         int flag = 0;
+        carReview.setIsPass(0);
         flag  = reviewStepService.checkCarReview(carReview);
         if(flag>0){
             result.setCode("600");

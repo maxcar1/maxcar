@@ -93,6 +93,11 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
     }
 
     @Override
+    public int deleteReviewStep(FlowStep flowStep) {
+        return reviewStepMapper.deleteReviewStep(flowStep);
+    }
+
+    @Override
     public List<ReviewStep> getReviewStep(ReviewStep reviewStep) {
         ReviewStepExample example = new ReviewStepExample();
         example.createCriteria().andApplyTypeEqualTo(1).andMarketIdEqualTo(reviewStep.getMarketId());
@@ -109,6 +114,9 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
         }
         if(StringUtils.isNotBlank(reviewStep.getOrgId())){
             criteria.andOrgIdEqualTo(reviewStep.getOrgId());
+        }
+        if(StringUtils.isNotBlank(reviewStep.getReviewPersonId())){
+            criteria.andReviewPersonIdEqualTo(reviewStep.getReviewPersonId());
         }
         List<ReviewStep> list = reviewStepMapper.selectByExample(example);
         return list;
