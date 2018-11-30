@@ -2,6 +2,7 @@ package com.maxcar.tenant.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.base.util.EnvironmentUtil;
 import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.XmlUtil;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
@@ -87,6 +88,9 @@ public class WxPayServiceImpl implements WxPayService {
             chargeMoney = market.getChangeTheNamePrice() * 100;
         }
 
+        if (!EnvironmentUtil.isProduct()) {
+            chargeMoney = 1;
+        }
         String chargeOderId = UuidUtils.generateIdentifier();
 
         // 调用微信支付生成预支付订单号
