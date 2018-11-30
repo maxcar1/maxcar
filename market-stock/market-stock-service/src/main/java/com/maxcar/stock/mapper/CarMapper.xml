@@ -1584,4 +1584,25 @@
         from car where stock_status in (1, 2, 3) and vin = #{vin};
     </select>
 
+    <select id="carInformation" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.Car">
+        select
+        <include refid="Base_Column_List"/>
+        from car
+        where 1 = 1
+        <if test="vin != null">
+            and vin = #{vin,jdbcType=VARCHAR}
+        </if>
+        <if test="rfid != null">
+            and rfid = #{rfid,jdbcType=VARCHAR}
+        </if>
+        <if test="marketId != null and marketId!=''">
+            and market_id = #{marketId,jdbcType=VARCHAR}
+        </if>
+        <if test="carNo != null and carNo!=''">
+            and car_no = #{carNo,jdbcType=VARCHAR}
+        </if>
+        and stock_status in (1,2,3,6) and isvalid=1 and car_type=1
+        limit 1
+    </select>
+
 </mapper>
