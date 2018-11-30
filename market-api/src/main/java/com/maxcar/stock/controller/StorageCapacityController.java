@@ -94,6 +94,7 @@ public class StorageCapacityController extends BaseController {
             interfaceResult.InterfaceResult600("请联系管理员，配置相关参数！");
             return interfaceResult;
         }
+        //  总车位数
         int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
 
         //  市场总车位数
@@ -182,7 +183,7 @@ public class StorageCapacityController extends BaseController {
         double value = new BigDecimal((pro * 100)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
         //  市场剩余总车位数   如果条件没有选择商户  那么 总库存和剩余车位 都显示 市场总数
-        if (!StringUtil.isNotEmpty(requestStorageCapacity.getTenant())) {
+        if ("".equals(requestStorageCapacity.getTenant()) || requestStorageCapacity.getTenant() == null) {
             residue = marketParkCount - carCount;
             if (marketParkCount != 0) {
                 pro = ((double) carCount / marketParkCount);
