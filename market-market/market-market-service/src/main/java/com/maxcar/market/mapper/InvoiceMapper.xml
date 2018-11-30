@@ -4326,9 +4326,6 @@ FROM
     <if test="tradingType == 2">
       AND mi.trading_type = 2
     </if>
-    <if test="seriesName != null and seriesName != ''">
-      AND mi.series = #{seriesName}
-    </if>
     ) ni LEFT JOIN maxcar_stock_l.car cc ON cc.id = ni.car_id
     WHERE 1 = 1
     <if test="storeHoldDays != ''  and storeHoldDays != null">
@@ -4446,9 +4443,6 @@ FROM
     </if>
     <if test="tradingType == 2">
       AND mi.trading_type = 2
-    </if>
-    <if test="seriesName != null and seriesName != ''">
-      AND mi.series = #{seriesName}
     </if>
     ) ni LEFT JOIN maxcar_stock_l.car cc ON cc.id = ni.car_id
     WHERE 1 = 1
