@@ -321,8 +321,9 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         Date endDate = Calendar.getInstance().getTime();
         //获取当前卡号最早的一条记录
         ParkingFeeDetail parkingFeeDe = parkingFeeDetailMapper.getRecordByCardNoOrUnionId(parkingFeeDetail);
-        parkingFeeDe.setAfterTime(endDate);
         if (null != parkingFeeDe) {
+            parkingFeeDe.setOverTime("0小时0分0秒");
+            parkingFeeDe.setAfterTime(endDate);
             // 判断该记录是否是会员记录
             if (parkingFeeDe.getIsVip() == 1 && StringUtils.equals(marketId,"007")){
                 long l = endDate.getTime() - parkingFeeDe.getBeforeTime().getTime();

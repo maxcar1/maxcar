@@ -143,7 +143,6 @@ public class PushCallback implements MqttCallback {
                         } else if (codeType.equals("07")) {//ic卡处理
                             //截取卡号10位数
                             String cardNo16 = clientData.substring(66, 76);
-                            logger.info("道闸发送的卡号:{}", cardNo16);
                             doCard(barrier, cardNo16);
                             //   uploadRequestCloud(barrier, cardNo16);
                         } else if (codeType.equals("08")) {
