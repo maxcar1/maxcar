@@ -131,6 +131,7 @@
       #{userId,jdbcType=VARCHAR}, #{outReason,jdbcType=VARCHAR}, #{backTime,jdbcType=TIMESTAMP}, 
       #{isPass,jdbcType=INTEGER}, #{isPledge,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, 
       #{isValid,jdbcType=INTEGER}, #{desc,jdbcType=INTEGER})
+
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.CarReview" >
     insert into car_review
@@ -351,6 +352,8 @@
     cc.brandName,
     cc.seriesCode,
     cc.seriesName,
+    cc.stockStatus,
+    cc.modelName,
     cr.user_id 'userId',
     cr.out_reason 'outReason',
     cr.id,
@@ -358,7 +361,6 @@
     cr.is_pass 'isPass',
     cr.reason_desc 'reasonDesc',
     cr.is_pledge 'isPledge',
-    cr.insert_time 'insertTime',
     cr.is_valid 'isValid',
     cr.market_id 'matketId'
     FROM
@@ -369,9 +371,11 @@
     c.vin,
     c.car_status 'carStatus',
     c.tenant,
+    c.stock_status 'stockStatus',
     c.id 'carId',
     cb.brand_code AS 'brandCode',
     cb.brand_name AS 'brandName',
+    cb.model_name AS 'modelName',
     cb.series_code 'seriesCode',
     cb.series_name AS 'seriesName'
     FROM
@@ -394,13 +398,23 @@
       and c.rfid = #{rfid,jdbcType=VARCHAR}
     </if>
 ) cc on cc.carId = cr.car_id
-where cr.back_time > NOW()
-and cr.is_pass  = 1
-and cr.is_valid = 1
-and market_id = #{marketId,jdbcType=INTEGER}
+    WHERE
+    cr.is_pledge = 1
+    AND cr.is_pass = 1
+    AND cr.is_valid = 1
+    AND cc.stockStatus = 3
+    OR (
+    cr.is_pledge = 2
+    AND (
+    cr.back_time > NOW()
+    AND date_add(NOW(), INTERVAL 1 HOUR) > cr.back_time
+    )
+    )
+    AND market_id = #{marketId,jdbcType=VARCHAR}
+    ORDER BY
+    backTime DESC
 
   </select>
-
 
   <select id="getCarRecord" parameterType="com.maxcar.stock.pojo.CarReview" resultMap="CarRecordVoMap">
     SELECT a.id as review_id,c.insert_time as time,c.type,d.barrier_position
