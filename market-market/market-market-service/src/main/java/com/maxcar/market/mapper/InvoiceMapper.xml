@@ -1699,6 +1699,7 @@
       i.id as invoiceId,
       i.vin,
       DATE_FORMAT(i.bill_time, '%Y-%m-%d') AS bill_time,
+      i.insert_time,
       i.car_sources,
       i.price,
       i.invoice_no,
@@ -1968,7 +1969,7 @@
     <if test="contactName != null and contactName != ''">
       WHERE t.contact_name LIKE #{contactName}
     </if>
-    ORDER BY ii.bill_time DESC
+    ORDER BY ii.insert_time DESC
 
 
 
