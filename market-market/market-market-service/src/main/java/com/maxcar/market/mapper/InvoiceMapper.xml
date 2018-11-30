@@ -2744,7 +2744,9 @@
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+    <if test="contactName != null and contactName != ''">
       where t.contact_name = #{contactName}
+    </if>
     ORDER BY ii.i_time DESC
     )  as  dd
   </select>
@@ -3021,7 +3023,9 @@
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
-    where t.contact_name = #{contactName}
+    <if test="contactName != null and contactName != ''">
+      where t.contact_name = #{contactName}
+    </if>
     ORDER BY ii.i_time DESC
       ) as  dd
   </select>
