@@ -103,14 +103,14 @@ public class StorageCapacityController extends BaseController {
             configuration.setConfigurationKey(Magic.CAR_NUM);
             List<Configuration> configurations = configurationService.searchConfiguration(configuration);
             if(configurations.size() > 0){
-                String configurationValue = configurations.get(0).getConfigurationValue();
-                String symbol = configurationValue.substring(0, 1);
-                String num = configurationValue.substring(1, configurationValue.length());
-                int carNum = Integer.parseInt(num);
+//                String configurationValue = configurations.get(0).getConfigurationValue();
+//                String symbol = configurationValue.substring(0, 1);
+//                String num = configurationValue.substring(1, configurationValue.length());
+//                int carNum = Integer.parseInt(num);
                 // 如果截取出来的加号
-                if("+".equals(symbol)){
-                    parkCount += carNum;
-                }
+//                if("+".equals(symbol)){
+//                    parkCount += carNum;
+//                }
             }
         }
 
