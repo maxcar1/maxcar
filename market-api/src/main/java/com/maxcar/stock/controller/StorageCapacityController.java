@@ -80,6 +80,7 @@ public class StorageCapacityController extends BaseController {
 //              int parkCount = 0;
         String marketId = user.getMarketId();
         int tenantCount = userTenantService.countTenant(marketId, requestStorageCapacity.getTenant(), requestStorageCapacity.getAreaName());
+        int marketTenantCount = userTenantService.countTenant(marketId, null,null);
         //  区域或商户总车位数
         GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
         requests.setMarketId(marketId);
@@ -114,16 +115,18 @@ public class StorageCapacityController extends BaseController {
                 String symbol = configurationValue.substring(0, 1);
                 String num = configurationValue.substring(1, configurationValue.length());
                 int carNum = Integer.parseInt(num);
+                int marketCarNum = carNum;
                 //  看市场有多少个商户  来计算出浮动车位数
                 if(tenantCount != 1){
                     carNum = carNum * tenantCount;
-                    marketParkCount += carNum;
+                    //  如果是只有办公室的  那就不加车位
+                   marketCarNum = marketTenantCount * marketCarNum;
                 }
                 // 如果截取出来的加号
                 if ("+".equals(symbol)) {
                     parkCount += carNum;
+                    marketParkCount += marketCarNum;
                 }
-
             }
         }
 
@@ -185,13 +188,13 @@ public class StorageCapacityController extends BaseController {
 
         //  市场剩余总车位数   如果条件没有选择商户  那么 总库存和剩余车位 都显示 市场总数
         if ("".equals(requestStorageCapacity.getTenant()) || requestStorageCapacity.getTenant() == null) {
-            residue = marketParkCount - carCount;
+            int marketCarCount = carService.countCarNum(marketId, requestStorageCapacity.getTenant(), requestStorageCapacity.getAreaName());
+            residue = marketParkCount - marketCarCount;
             if (marketParkCount != 0) {
-                pro = ((double) carCount / marketParkCount);
+                pro = ((double) marketCarCount / marketParkCount);
                 value = new BigDecimal((pro * 100)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             map.put("parkCount", marketParkCount);
-            int marketCarCount = carService.countCarNum(marketId, requestStorageCapacity.getTenant(), requestStorageCapacity.getAreaName());
             map.put("carCount", marketCarCount);
         }
         String proportion = value + "%";
