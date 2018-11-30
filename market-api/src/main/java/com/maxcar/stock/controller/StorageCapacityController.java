@@ -188,6 +188,9 @@ public class StorageCapacityController extends BaseController {
                 pro = ((double) carCount / marketParkCount);
                 value = new BigDecimal((pro * 100)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             }
+            map.put("parkCount", marketParkCount);
+            int marketCarCount = carService.countCarNum(marketId, requestStorageCapacity.getTenant(), requestStorageCapacity.getAreaName());
+            map.put("carCount", marketCarCount);
         }
         String proportion = value + "%";
 
