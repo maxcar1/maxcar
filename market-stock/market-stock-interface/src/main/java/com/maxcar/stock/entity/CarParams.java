@@ -320,11 +320,11 @@ public class CarParams implements Serializable {
         this.initialLicenceTimeStr = initialLicenceTimeStr;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

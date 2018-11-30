@@ -408,7 +408,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         } else {
             car.setInitialLicenceTime(null);
         }
-        car.setStockStatus(carParams.getStatus());
+        car.setStockStatus(carParams.getStatus() == null ? 1:carParams.getStatus());
         car.setCarStatus(carParams.getCarStatus());
         car.setLimitStatus(1);
         car.setRemark(carParams.getRemark());
