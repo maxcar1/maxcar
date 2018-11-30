@@ -142,8 +142,10 @@ public class InvoiceController extends BaseController {
             invoice.setMarketId(currentUser.getMarketId());
         }
         User user = userService.selectByPrimaryKey(userId);
-        if(user.getManagerFlag() == 0){
+        if(user.getManagerFlag() == 0) {
             invoice.setMarketId(null);
+        }else if(user.getManagerFlag() == 2){
+            invoice.setMarketId(currentUser.getMarketId());
         }else {
             invoice.setUserId(currentUser.getUserId());
         }
