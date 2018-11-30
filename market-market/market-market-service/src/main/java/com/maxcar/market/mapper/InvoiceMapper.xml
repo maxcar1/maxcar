@@ -4315,16 +4315,16 @@ FROM
       AND mi.car_sources = #{carSources}
     </if>
     <if test="transferType == 0">
-      AND i.transfer_type = 0
+      AND mi.transfer_type = 0
     </if>
     <if test="transferType == 1">
-      AND i.transfer_type = 1
+      AND mi.transfer_type = 1
     </if>
     <if test="tradingType == 1">
-      AND i.trading_type = 1
+      AND mi.trading_type = 1
     </if>
     <if test="tradingType == 2">
-      AND i.trading_type = 2
+      AND mi.trading_type = 2
     </if>
     <if test="seriesName != null and seriesName != ''">
       AND mi.series = #{seriesName}
@@ -4436,16 +4436,16 @@ FROM
       AND mi.car_sources = #{carSources}
     </if>
     <if test="transferType == 0">
-      AND i.transfer_type = 0
+      AND mi.transfer_type = 0
     </if>
     <if test="transferType == 1">
-      AND i.transfer_type = 1
+      AND mi.transfer_type = 1
     </if>
     <if test="tradingType == 1">
-      AND i.trading_type = 1
+      AND mi.trading_type = 1
     </if>
     <if test="tradingType == 2">
-      AND i.trading_type = 2
+      AND mi.trading_type = 2
     </if>
     <if test="seriesName != null and seriesName != ''">
       AND mi.series = #{seriesName}
