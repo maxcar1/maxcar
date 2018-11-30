@@ -230,7 +230,7 @@ public class CarController extends BaseController {
                 response.setRegisterTime(DatePoor.getStringForDateByFormat(x.getRegisterTime(),"yyyy-MM-dd"));
             }
 
-            response.setStockDay(x.getStockDays().toString());
+            response.setStockDay(x.getStockDays()+"");
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);
@@ -250,7 +250,7 @@ public class CarController extends BaseController {
                 }
             }
 
-            response.setInitialLicenceTime(x.getInitialLicenceTime());
+            response.setInitialLicenceTime(x.getInitialLicenceTime()!=null?x.getInitialLicenceTime().substring(0,10):"");
             response.setMileage(x.getMileage());
             response.setMarketPrice(x.getMarketPrice());
             response.setEvaluatePrice(x.getEvaluatePrice());
