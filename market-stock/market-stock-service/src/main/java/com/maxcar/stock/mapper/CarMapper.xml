@@ -1724,11 +1724,13 @@
         IFNULL(CAST(cb.mileage/10000 AS decimal(16,2)),0) as mileage,
         IFNULL(cb.evaluate_price,0) as evaluatePrice,
         IFNULL(cb.market_price,0) as marketPrice,
+        invoice.price AS invoicePrice,
         t.vin as vin
         FROM
         car t left join
         car_base cb on t.id = cb.id
         left join maxcar_tenant_l.user_tenant ut on t.tenant = ut.id
+        LEFT JOIN maxcar_market_l.invoice invoice on invoice.car_id = t.id
         WHERE
         t.stock_status in ('1','2','3','4','5') and
         t.isvalid=1 and t.market_id = #{marketId}
