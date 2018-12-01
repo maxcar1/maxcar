@@ -395,8 +395,8 @@
 
     <select id="selectPlayingTime" resultMap="BaseResultMap" parameterType="java.lang.String" >
         select
-        *
-        from maxcar_stock_l.car_record
+        <include refid="Base_Column_List" />
+        from car_record
         where type = 1
         <if test="vin != null and vin != ''">
             and vin = #{vin,jdbcType=VARCHAR}

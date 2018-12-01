@@ -42,32 +42,13 @@ public class ReviewListServiceImpl implements ReviewListService {
         InterfaceResult interfaceResult = new InterfaceResult();
         PageHelper.startPage(warning.getCurrentPage(), warning.getPageSize());
         List<HisWarning> list = carReviewMapper.selectByHisWarning(warning);
-        for (HisWarning hisWarning : list) {
-            Car car = carMapper.selectByPrimaryKey(hisWarning.getCarId());
-            if (null != car) {
-                CarBase carBase = carBaseMapper.selectByPrimaryKey(hisWarning.getCarId());
-                if (carBase != null && null != car.getTenant()) {
-                    UserTenant userTenant = userTenantService.selectByPrimaryKey(car.getTenant());
-                    CarRecord carRecords = null;
-                    if (userTenant != null) {
-                        carRecords = carRecordMapper.selectPlayingTime(car.getRfid(), car.getVin());
-                    }
-                    if (StringUtils.isNotBlank(carBase.getEvaluatePrice())) {
-                        hisWarning.setInsertTime(carRecords.getInsertTime());
-                    }
-                    hisWarning.setTenantName(userTenant.getTenantName());
-                    hisWarning.setTenant(car.getTenant());
-                    hisWarning.setModleName(carBase.getModelName());
-                    hisWarning.setBrandCode(carBase.getBrandCode());
-                    hisWarning.setBrandName(carBase.getBrandName());
-                    hisWarning.setCarStatus(car.getCarStatus());
-                    hisWarning.setSeriesCode(carBase.getSeriesCode());
-                    hisWarning.setSeriesName(carBase.getSeriesName());
-                    if (StringUtils.isNotBlank(carBase.getEvaluatePrice())) {
-                        hisWarning.setEvaluatePrice(carBase.getEvaluatePrice());
-                    }
-                    hisWarning.setVin(car.getVin());
-                }
+        for (int i = 0; i<list.size();i++) {
+            HisWarning hisWarning = list.get(i);
+            UserTenant userTenant = userTenantService.selectByPrimaryKey(hisWarning.getTenant());
+            hisWarning.setTenantName(userTenant.getTenantName());
+            if (userTenant != null) {
+               CarRecord carRecord = carRecordMapper.selectPlayingTime(hisWarning.getRfid(),hisWarning.getVin());
+                hisWarning.setInsertTime(carRecord.getInsertTime());
             }
         }
         PageInfo pageInfo = new PageInfo(list);
@@ -82,33 +63,27 @@ public class ReviewListServiceImpl implements ReviewListService {
         List<CarWarningExcel> carWarningExcelList= new LinkedList<>();
         for (HisWarning hisWarning : list) {
             CarWarningExcel carWarningExcel=new CarWarningExcel();
-            Car car = carMapper.selectByPrimaryKey(hisWarning.getCarId());
-            if (null != car) {
-                CarBase carBase = carBaseMapper.selectByPrimaryKey(hisWarning.getCarId());
                 carWarningExcel.setBrandName(hisWarning.getBrandName()+"-"+hisWarning.getSeriesName());
-                carWarningExcel.setModelName(carBase.getModelName());
-                if (carBase != null && null != car.getTenant()) {
-                    UserTenant userTenant = userTenantService.selectByPrimaryKey(car.getTenant());
+                carWarningExcel.setModelName(hisWarning.getModelName());
+                    UserTenant userTenant = userTenantService.selectByPrimaryKey(hisWarning.getTenant());
                     carWarningExcel.setTenantName(userTenant.getTenantName());
                     if (userTenant != null) {
-                        CarRecord carRecords = carRecordMapper.selectPlayingTime(car.getRfid(), car.getVin());
+                        CarRecord carRecords = carRecordMapper.selectPlayingTime(hisWarning.getRfid(), hisWarning.getVin());
+                        if (carRecords != null){
+                            carWarningExcel.setInsertTime(carRecords.getInsertTime());
+                        }
                     }
-
+                if (hisWarning.getCarStatus() == 1){
+                    carWarningExcel.setCarStatus("质押车" );
+                }else {
+                    carWarningExcel.setCarStatus("非质押车" );
                 }
+                carWarningExcel.setReasonDesc(hisWarning.getReasonDesc());
+                carWarningExcel.setEvaluateRrice(hisWarning.getEvaluatePrice());
+                carWarningExcel.setBackTime(hisWarning.getBackTime());
+                carWarningExcel.setVin(hisWarning.getVin());
+                carWarningExcelList.add(carWarningExcel);
             }
-            if (hisWarning.getCarStatus() == 1){
-                carWarningExcel.setCarStatus("质押车" );
-            }else {
-                carWarningExcel.setCarStatus("非质押车" );
-            }
-            carWarningExcel.setOutReason(hisWarning.getOutReason());
-            carWarningExcel.setEvaluateRrice(hisWarning.getEvaluatePrice());
-            carWarningExcel.setInsertTime(hisWarning.getInsertTime());
-            carWarningExcel.setBackTime(hisWarning.getBackTime());
-            carWarningExcel.setVin(hisWarning.getVin());
-            carWarningExcelList.add(carWarningExcel);
-        }
-
         interfaceResult.InterfaceResult200(carWarningExcelList);
         return interfaceResult;
     }

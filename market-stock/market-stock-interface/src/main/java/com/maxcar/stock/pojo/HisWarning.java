@@ -14,7 +14,7 @@ public class HisWarning extends PageBean implements Serializable {
 
     private String seriesCode;
 
-    private String modleName;
+    private String modelName;
 
     private String tenantName;
 
@@ -47,6 +47,16 @@ public class HisWarning extends PageBean implements Serializable {
     private Integer carStatus;
 
     private String reasonDesc;
+
+    private String stockStatus;
+
+    public String getStockStatus() {
+        return stockStatus;
+    }
+
+    public void setStockStatus(String stockStatus) {
+        this.stockStatus = stockStatus;
+    }
 
     public String getReasonDesc() {
         return reasonDesc;
@@ -160,12 +170,12 @@ public class HisWarning extends PageBean implements Serializable {
         this.brandName = brandName;
     }
 
-    public String getModleName() {
-        return modleName;
+    public String getModelName() {
+        return modelName;
     }
 
-    public void setModleName(String modleName) {
-        this.modleName = modleName;
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     public String getTenantName() {
