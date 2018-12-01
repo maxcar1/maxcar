@@ -1,7 +1,12 @@
 package com.maxcar.stock.pojo;
 
+import com.maxcar.base.pojo.InterfaceResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class ReviewDetail implements Serializable {
     private Integer id;
@@ -17,6 +22,16 @@ public class ReviewDetail implements Serializable {
     private Integer level;
 
     private Date insertTime;
+
+    private Integer carStatus;
+
+    public Integer getCarStatus() {
+        return carStatus;
+    }
+
+    public void setCarStatus(Integer carStatus) {
+        this.carStatus = carStatus;
+    }
 
     public Integer getId() {
         return id;
@@ -73,4 +88,5 @@ public class ReviewDetail implements Serializable {
     public void setInsertTime(Date insertTime) {
         this.insertTime = insertTime;
     }
+
 }

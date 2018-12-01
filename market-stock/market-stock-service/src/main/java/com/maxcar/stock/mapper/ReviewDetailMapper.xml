@@ -249,4 +249,19 @@
       and review_id = #{reviewId}
     </if>
   </select>
+  <update id="updateReviewStatus" parameterType="com.maxcar.stock.pojo.ReviewDetail">
+    update car_review set step_level=#{level}
+    <if test="reviewResult != null and reviewResult != ''">
+      , is_pass = #{reviewResult}
+    </if>
+    where id = #{reviewId}
+    and 1=1
+  </update>
+  <select id="selectReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
+
+    select * from review_detail where review_id = #{reviewId} and level = #{level} and review_result = 1
+  </select>
+  <select id="selReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
+    select * from review_detail where review_id = #{reviewId} and level = #{level} and review_result = 1
+  </select>
 </mapper>

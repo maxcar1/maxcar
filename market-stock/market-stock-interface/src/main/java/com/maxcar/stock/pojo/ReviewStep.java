@@ -29,13 +29,19 @@ public class ReviewStep implements Serializable {
 
     private Integer reviewType;
 
+    private Integer reviewId;
+
+    public  Integer getReviewId(){return  reviewId;}
+
+    public  void setReviewId(Integer reviewId){this.reviewId=reviewId;}
+
     public  Integer getReviewType(){return  reviewType;}
 
-    public  void setReviewType(){this.reviewType=reviewType;}
+    public  void setReviewType(Integer reviewType){this.reviewType=reviewType;}
 
     public  Integer getIsNeedReview(){return  isNeedReview;}
 
-    public  void setIsNeedReview(){this.isNeedReview=isNeedReview;}
+    public  void setIsNeedReview(Integer isNeedReview){this.isNeedReview=isNeedReview;}
 
     public List<Map> getUserOrg(){return  userOrg;}
 

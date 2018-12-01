@@ -3,6 +3,7 @@ package com.maxcar.stock.service;
 import com.maxcar.stock.entity.Response.ReviewVo;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.FlowStep;
+import com.maxcar.stock.pojo.ReviewDetail;
 import com.maxcar.stock.pojo.ReviewStep;
 
 import java.util.List;
@@ -39,4 +40,10 @@ public interface ReviewStepService {
     int checkCarReview(CarReview carReview);
 
     int deleteReviewStep(FlowStep flowStep);
+
+    Integer getReviewResult(ReviewStep review);
+
+    Integer selectCarReview(Integer reviewId);
+
+    int selectLastStep(ReviewStep reviewStep);
 }

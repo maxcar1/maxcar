@@ -98,6 +98,21 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
     }
 
     @Override
+    public Integer getReviewResult(ReviewStep review) {
+        return reviewStepMapper.getReviewResult(review);
+    }
+
+    @Override
+    public Integer selectCarReview(Integer reviewId) {
+        return reviewStepMapper.selectCarReview(reviewId);
+    }
+
+    @Override
+    public int selectLastStep(ReviewStep review) {
+        return reviewStepMapper.selectLastStep(review);
+    }
+
+    @Override
     public List<ReviewStep> getReviewStep(ReviewStep reviewStep) {
         ReviewStepExample example = new ReviewStepExample();
         example.createCriteria().andApplyTypeEqualTo(1).andMarketIdEqualTo(reviewStep.getMarketId());

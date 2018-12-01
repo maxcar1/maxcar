@@ -14,6 +14,7 @@ public class CarVo extends PageBean implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    private String stepLevel;//审批步骤
     private String outReason;//出厂原因
 
     private Integer reviewId;//审核id
@@ -187,6 +188,14 @@ public class CarVo extends PageBean implements Serializable {
 
     public void setReviewId(Integer reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public String getStepLevel() {
+        return stepLevel;
+    }
+
+    public void setStepLevel(String stepLevel) {
+        this.stepLevel = stepLevel;
     }
 
     public String getOutReason() {

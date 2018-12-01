@@ -10,4 +10,7 @@ public interface ReviewDetailService {
     boolean saveReviewDetail(ReviewDetail reviewDetail);
 
 
+    int updateReviewStatus(ReviewDetail reviewDetail);
+
+    ReviewDetail selectReviewDetail(ReviewDetail reviewDetail);
 }

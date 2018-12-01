@@ -79,6 +79,7 @@
         <result column="carChannelId" property="carChannelId" jdbcType="VARCHAR"/>
         <result column="out_reason" property="outReason" jdbcType="VARCHAR"/>
         <result column="review_id" property="reviewId" jdbcType="INTEGER"/>
+        <result column="step_level" property="stepLevel" jdbcType="INTEGER"/>
         <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>
     </resultMap>
     <!-- carVo END -->
@@ -765,16 +766,38 @@
     </select>
 
     <select id="listReview" parameterType="com.maxcar.stock.entity.CarParams" resultMap="CarVoResultMap">
-        SELECT a.*,d.*,b.id as review_id,b.out_reason,c.tenant_name
-        from maxcar_stock_l.car a
-        LEFT JOIN maxcar_stock_l.car_review b
-        on a.id = b.car_id
-        LEFT JOIN maxcar_tenant_l.user_tenant c
-        on a.tenant = c.id
-        LEFT JOIN maxcar_stock_l.car_base d
-        on a.id = d.id
-        where a.isvalid = 1
-        and  b.is_pass = 0
+        SELECT
+        a.*, d.*, b.id AS review_id,
+        b.out_reason,
+        c.tenant_name,
+        b.step_level
+        FROM
+        maxcar_stock_l.car a
+        LEFT JOIN maxcar_stock_l.car_review b ON a.id = b.car_id
+        LEFT JOIN maxcar_tenant_l.user_tenant c ON a.tenant = c.id
+        LEFT JOIN maxcar_stock_l.car_base d ON a.id = d.id
+        WHERE
+        a.isvalid = 1
+        AND b.is_pass = 0
+        AND a.id IN (
+        SELECT
+        cr.car_id
+        FROM
+        car_review cr
+        LEFT JOIN review_step rs ON cr.is_pledge = rs.apply_type
+        WHERE
+        cr.id NOT IN (
+        SELECT
+        review_id
+        FROM
+        review_detail
+        WHERE
+        review_person_id = #{reviewPersonId}
+        )
+        AND rs.review_person_id = #{reviewPersonId}
+        AND rs. LEVEL - cr.step_level = 1
+        AND cr.is_pass = 0
+        )
         <if test="market != null and market != ''">
             and a.market_id = #{market}
         </if>

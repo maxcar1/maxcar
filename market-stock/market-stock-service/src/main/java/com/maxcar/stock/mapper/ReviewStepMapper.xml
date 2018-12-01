@@ -403,4 +403,13 @@ and is_valid=1
   <delete id="deleteReviewStep" parameterType="com.maxcar.stock.pojo.FlowStep">
     delete from review_step where market_id = #{marketId} and apply_type = #{code}
   </delete>
+  <select id="getReviewResult" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="Integer">
+    select review_result from review_detail where review_id = #{reviewId} and review_person_id =#{reviewPersonId} and level = #{level}
+  </select>
+  <select id="selectCarReview" parameterType="Integer" resultType="Integer">
+    select step_level from car_review where id = #{reviewId}
+  </select>
+  <select id="selectLastStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="java.lang.Integer">
+    select level from review_step where apply_type = #{applyType} and market_id = #{marketId} group by level desc limit 1
+  </select>
 </mapper>

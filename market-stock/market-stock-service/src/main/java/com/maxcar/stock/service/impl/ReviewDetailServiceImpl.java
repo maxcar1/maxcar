@@ -18,9 +18,10 @@ public class ReviewDetailServiceImpl implements ReviewDetailService {
 
     @Override
     public List<ReviewDetail> getReviewDetail(ReviewDetail reviewDetail) {
-        ReviewDetailExample example = new ReviewDetailExample();
-        example.createCriteria().andReviewIdEqualTo(reviewDetail.getReviewId());
-        List<ReviewDetail> list = reviewDetailMapper.selectByExample(example);
+        /*ReviewDetailExample example = new ReviewDetailExample();
+        example.createCriteria().andReviewIdEqualTo(reviewDetail.getLevel());
+        example.createCriteria().andReviewIdEqualTo(reviewDetail.getReviewId());*/
+        List<ReviewDetail> list = reviewDetailMapper.selReviewDetail(reviewDetail);
         return list;
     }
 
@@ -33,5 +34,15 @@ public class ReviewDetailServiceImpl implements ReviewDetailService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int updateReviewStatus(ReviewDetail reviewDetail) {
+        return reviewDetailMapper.updateReviewStatus(reviewDetail);
+    }
+
+    @Override
+    public ReviewDetail selectReviewDetail(ReviewDetail reviewDetail) {
+        return reviewDetailMapper.selectReviewDetail(reviewDetail);
     }
 }

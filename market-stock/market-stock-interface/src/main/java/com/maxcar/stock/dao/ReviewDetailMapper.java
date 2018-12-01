@@ -27,4 +27,12 @@ public interface ReviewDetailMapper {
     int updateByPrimaryKeySelective(ReviewDetail record);
 
     int updateByPrimaryKey(ReviewDetail record);
+
+    int updateReviewStatus(ReviewDetail reviewDetail);
+
+    ReviewDetail selectReviewDetail(ReviewDetail reviewDetail);
+
+    List<ReviewDetail> getReviewDetail(ReviewDetail reviewDetail);
+
+    List<ReviewDetail> selReviewDetail(ReviewDetail reviewDetail);
 }

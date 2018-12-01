@@ -3,7 +3,6 @@ package com.maxcar.review.controller;
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.base.util.StringUtils;
 import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.pojo.*;
@@ -16,10 +15,7 @@ import com.maxcar.user.service.OrganizationsService;
 import com.maxcar.user.service.UserService;
 import com.maxcar.web.aop.OperationAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -58,17 +54,16 @@ public class AuditingController extends BaseController {
         reviewStep.setOrgld(user.getOrgId());
         List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
         //查询该用户是否在审核列表下
+        pageInfo = carService.listReview(carParams);
+        logger.info("=============="+pageInfo.getList());
+        //过滤相同人不同审核等级
+        List<CarVo> list =  pageInfo.getList();
+
         if(reviewStepList!=null){
             //判断该用户属于第几级
-            if(reviewStepList.get(0).getLevel()==1){
-                pageInfo = carService.listReview(carParams);
-            }else{
-                //判断上一级是否审核通过
-                int currentLevel = reviewStepList.get(0).getLevel()-1;
+            pageInfo = carService.listReview(carParams);
 
-            }
         }
-
 
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
@@ -79,13 +74,15 @@ public class AuditingController extends BaseController {
     public InterfaceResult carReviewDetail(@PathVariable Integer reviewId,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         Map<String, Object> map = new HashMap<>();
+        User user = getCurrentUser(request);
         CarVo c = new CarVo();
         c.setReviewId(reviewId);
         CarReview carReview = carReviewService.getCarReview(c);
         if(carReview != null){
+            /*User user = new User();
             User user = new User();
             //user.setUserId(carReview.getUserId());
-             user = userService.selectByPrimaryKey(carReview.getUserId());
+             user = userService.selectByPrimaryKey(carReview.getUserId());*/
             carReview.setUserName(user.getUserName());
             map.put("carReview",carReview);
             List<CarDetails> list = carBaseService.getCarBaseById(carReview.getCarId());
@@ -169,10 +166,57 @@ public class AuditingController extends BaseController {
     public InterfaceResult saveReviewDetail(@RequestBody ReviewDetail reviewDetail,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = getCurrentUser(request);
+        int level = reviewDetail.getLevel()+1;
         reviewDetail.setReviewPersonId(user.getUserId());
         reviewDetail.setInsertTime(new Date());
+        reviewDetail.setLevel(level);
         boolean b = reviewDetailService.saveReviewDetail(reviewDetail);
+        //如果审核不通过直接修改car_review状态
+        if(reviewDetail.getReviewResult()==2){
+            reviewDetailService.updateReviewStatus(reviewDetail);
+        }
         interfaceResult.InterfaceResult200(b);
+        //修改car_review状态   判断会签或签
+
+            ReviewStep reviewLevel = new ReviewStep();
+            reviewLevel.setLevel(level);
+            reviewLevel.setMarketId(user.getMarketId());
+            reviewLevel.setReviewPersonId(user.getUserId());
+            reviewLevel.setApplyType(reviewDetail.getCarStatus());
+            List<ReviewStep> reviewStepList = reviewStepService.selectStepList(reviewLevel);
+            //判断该车最多多少级审核
+            int lastLevel = reviewStepService.selectLastStep(reviewLevel);
+
+            //1或签     2会签
+            if(reviewStepList.get(0).getType()==1){
+                ReviewDetail review = new ReviewDetail();
+                review.setReviewResult(1);
+                review.setLevel(level);
+                review.setReviewId(reviewDetail.getReviewId());
+                ReviewDetail list = reviewDetailService.selectReviewDetail(reviewDetail);
+                if(list!=null){
+                    if(lastLevel==level){
+                        reviewDetail.setReviewResult(1);
+                    }else{
+                        reviewDetail.setReviewResult(null);
+                    }
+                    reviewDetailService.updateReviewStatus(reviewDetail);
+                }
+            }else{
+                List<ReviewDetail> list = reviewDetailService.getReviewDetail(reviewDetail);
+                if(reviewStepList.size()==list.size()){
+                    ReviewDetail review = new ReviewDetail();
+                    review.setLevel(level);
+                    review.setReviewId(reviewDetail.getReviewId());
+                    if(lastLevel==level){
+                        review.setReviewResult(1);
+                    }else{
+                        review.setReviewResult(null);
+                    }
+                    reviewDetailService.updateReviewStatus(review);
+                }
+            }
+
         return interfaceResult;
     }
 
@@ -271,6 +315,47 @@ public class AuditingController extends BaseController {
         List<CarRecordVo> list = carReviewService.getCarRecord(carReview);
         interfaceResult.InterfaceResult200(list);
         return interfaceResult;
+    }
+    /**
+     * 审批步骤列表
+     *
+     * @param reviewStep
+     * @return
+     */
+    @RequestMapping(value = "/reviewStepList", method = RequestMethod.POST)
+    public InterfaceResult reviewStepList( @RequestBody ReviewStep reviewStep) {
+        InterfaceResult result = new InterfaceResult();
+        Map map =new HashMap();
+        Integer reviewId = reviewStep.getReviewId();
+        Integer level = reviewStepService.selectCarReview(reviewId);
+        try{
+            FlowStep step = reviewStepService.selectReviewManageByReviewStep(reviewStep);
+            List<ReviewStep> reviewStepListLevel  = reviewStepService.selectStepListByLevel(reviewStep);
+            logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
+            for (ReviewStep reviewLevel:reviewStepListLevel) {
+
+                List<ReviewStep> reviewStepList = reviewStepService.selectStepList(reviewLevel);
+                logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
+                List list = new ArrayList();
+                for (ReviewStep review:reviewStepList) {
+                    Map user = userService.getUserOrgByReview(review);
+                    review.setReviewId(reviewId);
+                    Integer reviewResult = reviewStepService.getReviewResult(review);
+                    user.put("result",reviewResult);
+                    list.add(user);
+                }
+                reviewLevel.setUserOrg(list);
+            }
+            map.put("list",reviewStepListLevel);
+
+            map.put("step" ,step);
+            map.put("level",level);
+
+            result.setData(map);
+            result.setCode("200");
+        }catch (Exception e){
+        }
+        return result;
     }
 
 }

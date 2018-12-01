@@ -1,10 +1,8 @@
 package com.maxcar.stock.dao;
 
-import com.maxcar.stock.pojo.CarReview;
-import com.maxcar.stock.pojo.FlowStep;
+import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.entity.Response.ReviewVo;
-import com.maxcar.stock.pojo.ReviewStep;
-import com.maxcar.stock.pojo.ReviewStepExample;
+
 import java.util.List;
 import java.util.Map;
 
@@ -62,4 +60,10 @@ public interface ReviewStepMapper {
     int checkCarReview(CarReview carReview);
 
     int deleteReviewStep(FlowStep flowStep);
+
+    Integer getReviewResult(ReviewStep review);
+
+    Integer selectCarReview(Integer reviewId);
+
+    int selectLastStep(ReviewStep review);
 }
