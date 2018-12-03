@@ -31,7 +31,7 @@ public class ClientMQTT{
     @PostConstruct
     public void init() {
         /*clientId = LoadProperties.getProperties_3("../../../application.properties","clientid");*/
-        clientId = UuidUtils.getRandByNum(6);
+        clientId = UuidUtils.getUUID();
         mqttServerHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.host");
         topic = LoadProperties.getProperties_3("../../../application.properties","mqtt.push.topic");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
@@ -65,7 +65,7 @@ public class ClientMQTT{
             //设置道闸在线
 //            isOnline = true;
             //订阅消息
-            int[] Qos = {Canstats.qos2};
+            int[] Qos = {Canstats.qos1};
             String[] topic1 = {topic};
             client.subscribe(topic1, Qos);
             logger.info("已建立连接，监听" + topic);

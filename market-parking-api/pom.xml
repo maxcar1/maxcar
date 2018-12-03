@@ -446,7 +446,7 @@
     </profiles>
 
     <build>
-        <finalName>parking-api</finalName>
+        <finalName>market-parking-api</finalName>
         <plugins>
             <!--生成可执行jar-->
             <plugin>
