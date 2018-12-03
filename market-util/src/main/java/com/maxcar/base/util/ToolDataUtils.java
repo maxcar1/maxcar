@@ -68,6 +68,19 @@ public class ToolDataUtils {
 
     /**
      * param:
+     * describe: 获取传入日期的上一年日期
+     * create_date:  lxy   2018/12/3  15:22
+     **/
+    public static String getLastYear(String thisYear) throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(sdfDay.parse(thisYear));
+        calendar.add(Calendar.YEAR, -1);
+        return sdfDay.format(calendar.getTime());
+    }
+
+
+    /**
+     * param:
      * describe: 计算平均价格
      * create_date:  lxy   2018/11/22  14:55
      **/
