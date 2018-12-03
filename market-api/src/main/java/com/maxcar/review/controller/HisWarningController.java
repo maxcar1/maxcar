@@ -21,7 +21,7 @@ public class HisWarningController extends BaseController {
     @Autowired
     private ReviewListService reviewListService;
 
-    @RequestMapping("hisWarningList")
+    @RequestMapping("/hisWarningList")
     @OperationAnnotation(title = "出场告警列表")
     public InterfaceResult getHisWarningList(@RequestBody HisWarning hisWarning , HttpServletRequest request)throws Exception {
         User user = getCurrentUser(request);
@@ -29,7 +29,7 @@ public class HisWarningController extends BaseController {
         InterfaceResult interfaceResult = reviewListService.getHisWarningList(hisWarning);
         return interfaceResult;
     }
-    @RequestMapping("carWarningExcel")
+    @RequestMapping("/carWarningExcel")
     @OperationAnnotation(title = "导出告警Excel")
     public InterfaceResult carWarningExcel(@RequestBody HisWarning hisWarning , HttpServletRequest request)throws Exception {
         User user = getCurrentUser(request);

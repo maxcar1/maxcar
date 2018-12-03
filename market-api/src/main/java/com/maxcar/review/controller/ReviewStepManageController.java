@@ -40,7 +40,7 @@ public class ReviewStepManageController extends BaseController {
         InterfaceResult result = new InterfaceResult();
         Map map =new HashMap();
         try{
-        FlowStep step = reviewStepService.selectReviewManageByReviewStep(reviewStep);
+            FlowStep step = reviewStepService.selectReviewManageByReviewStep(reviewStep);
             List<ReviewStep> reviewStepListLevel  = reviewStepService.selectStepListByLevel(reviewStep);
             logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
             for (ReviewStep reviewLevel:reviewStepListLevel) {
@@ -50,19 +50,19 @@ public class ReviewStepManageController extends BaseController {
                 List list = new ArrayList();
                 for (ReviewStep review:reviewStepList) {
                     Map user = userService.getUserOrgByReview(review);
-                    apply += user.get("true_name")+"("+user.get("org_name")+")";
+                    apply += user.get("true_name")+"("+user.get("org_name")+") ";
                     list.add(user);
                 }
                 reviewLevel.setApply(apply);
                 reviewLevel.setUserOrg(list);
             }
-                map.put("list",reviewStepListLevel);
-
+            map.put("list",reviewStepListLevel);
             map.put("step" ,step);
-
             result.setData(map);
             result.setCode("200");
         }catch (Exception e){
+            e.printStackTrace();
+            result.InterfaceResult500("服务器异常");
         }
         return result;
     }
@@ -174,7 +174,8 @@ public class ReviewStepManageController extends BaseController {
         try {
             if (reviewStep.getApply() != null) {
                 List<String> list = Arrays.asList(reviewStep.getApply().split(","));
-                if (reviewStep.getId() != null) {
+                List<ReviewStep> reviewSteps = reviewStepService.selectStepListBySomeParams(reviewStep);
+                if (reviewSteps != null && reviewSteps.size() > 0) {
                     reviewStepService.deleteByReview(reviewStep);
                 }
                 for (String orgUser : list) {
@@ -194,7 +195,7 @@ public class ReviewStepManageController extends BaseController {
                 }
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return result;
     }

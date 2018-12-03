@@ -265,19 +265,6 @@ public class AuditingController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         User u = getCurrentUser(request);
         Map<String,Object> map = new HashMap<>();
-        ReviewDetail r =  new ReviewDetail();
-        r.setReviewId(reviewId);
-        List<ReviewDetail> list = reviewDetailService.getReviewDetail(r);
-         if(list != null && list.size()>0){
-            for(ReviewDetail reviewDetail:list){
-                if(reviewDetail.getReviewResult() !=1){
-                    map.put("reviewDetail","审核不通过");
-                }
-                else {
-                    map.put("reviewDetail","审核通过");
-                }
-            }
-        }
         CarVo carVo = new CarVo();
         carVo.setReviewId(reviewId);
         CarReview carReview = carReviewService.getCarReview(carVo);
@@ -288,18 +275,8 @@ public class AuditingController extends BaseController {
             carReview.setUserName(userList.get(0).getTrueName());
             map.put("carReview",carReview);
         }
-        ReviewDetail reviewDetail = new ReviewDetail();
-        reviewDetail.setReviewId(reviewId);
-        List<ReviewDetail> reviewDetaillist = reviewDetailService.getReviewDetail(reviewDetail);
-        ReviewStep reviewStep = new ReviewStep();
-        reviewStep.setMarketId(u.getMarketId());
-        reviewStep.setOrgId(u.getOrgId());
-        List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
-        for(ReviewDetail rd:reviewDetaillist){
-            if(rd.getReviewPersonId().equals(u.getUserId()) && rd.getLevel() == reviewStepList.get(0).getLevel()){
-                map.put("reviewDetails",rd);
-            }
-        }
+        ReviewDetail rd = reviewDetailService.reviewDetail(reviewId);
+        map.put("reviewDetails",rd);
         interfaceResult.InterfaceResult200(map);
         return interfaceResult;
     }
