@@ -98,12 +98,14 @@ public class ConfrgurationController extends BaseController {
             case Constants.PROPERTY_TYPE://物业类型
 
                 configurationTenantType.setMarketId(user.getMarketId());
+                configurationTenantType.setManagerFlag(user.getManagerFlag());
                 configurationTenantType.setConfigurationKey(Constants.PROPERTY_TYPE);
 
                 interfaceResult.InterfaceResult200(configurationService.searchConfiguration(configurationTenantType));
                 break;
             case Constants.TENANT_TYPE://商户类型
                 configurationTenantType.setMarketId(user.getMarketId());
+                configurationTenantType.setManagerFlag(user.getManagerFlag());
                 configurationTenantType.setConfigurationKey(Constants.TENANT_TYPE);
 
                 interfaceResult.InterfaceResult200(configurationService.searchConfiguration(configurationTenantType));

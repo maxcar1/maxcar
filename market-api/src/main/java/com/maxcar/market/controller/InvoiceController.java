@@ -85,6 +85,7 @@ public class InvoiceController extends BaseController {
 
     @Autowired
     private StaffService staffService;
+
     /**
      * currentTime 默认传当日，当月，当年
      * status :1:按日查询，2：按月，3：按年
@@ -136,12 +137,21 @@ public class InvoiceController extends BaseController {
     public InterfaceResult getInvoiceList(@RequestBody Invoice invoice, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         User currentUser = getCurrentUser(request);
-        if (null != currentUser.getMarketId() && currentUser.getMarketId() != "") {
+        String userId = currentUser.getUserId();
+        if (null != currentUser.getMarketId() &&  !"".equals(currentUser.getMarketId())) {
             invoice.setMarketId(currentUser.getMarketId());
         }
-        invoice.setUserId(currentUser.getUserId());
+        User user = userService.selectByPrimaryKey(userId);
+        if(user.getManagerFlag() == 0) {
+            invoice.setMarketId(null);
+        }else if(user.getManagerFlag() == 2){
+            invoice.setMarketId(currentUser.getMarketId());
+        }else {
+            invoice.setUserId(currentUser.getUserId());
+        }
         PageInfo pageInfo = invoiceService.getInvoiceList(invoice);
         interfaceResult.InterfaceResult200(pageInfo);
+
         return interfaceResult;
     }
 
@@ -154,16 +164,15 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "查询发票详情")
     public InterfaceResult getInvoiceDetailById(@PathVariable(value = "id") String id, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        User currentUser = getCurrentUser(request);
         Invoice invoice = invoiceService.selectInvoiceDetailById(id);//开票信息
         Market market = new Market();
         String tenantName = "";
         if (invoice != null) {
-            String userId = currentUser.getUserId();
+            String userId = invoice.getUserId();
             User user = userService.selectByPrimaryKey(userId);
-            if(user != null){
+            if (user != null) {
                 Staff staff = staffService.selectByPrimaryId(user.getStaffId());
-                if(staff != null){
+                if (staff != null) {
                     String staffName = staff.getStaffName();
                     invoice.setOperatorName(staffName);
                 }
@@ -582,16 +591,36 @@ public class InvoiceController extends BaseController {
         return interfaceResult;
     }
 
-    @GetMapping(value = "/invoice/getInvoicePerson/{idCard}")
-    public InterfaceResult getInvoicePerson(@PathVariable(value = "idCard") String idCard, HttpServletRequest request) {
+    @PostMapping(value = "/invoice/getInvoicePerson")
+    public InterfaceResult getInvoicePerson(@RequestBody Map<String, String> map, HttpServletRequest request) {
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             String marketId = getCurrentUser(request).getMarketId();
+            String idCard = map.get("idCard");
+            String purchacerIdCard = map.get("purchacerIdCard");
+            if (StringUtil.isNotEmpty(purchacerIdCard)) {
+                idCard = purchacerIdCard;
+            }
+            String sellerIdCard = map.get("sellerIdCard");
+            if (StringUtil.isNotEmpty(sellerIdCard)) {
+                idCard = sellerIdCard;
+            }
+            interfaceResult.InterfaceResult600("无查询记录");
             List<InvoicePerson> invoicePersonList = invoiceService.getInvoicePerson(idCard, marketId);
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
-                interfaceResult.InterfaceResult200(invoicePersonList.get(0));
-            } else {
-                interfaceResult.InterfaceResult600("无查询记录");
+                for (int i = 0 ; i < invoicePersonList.size() ; i ++) {
+                    InvoicePerson invoice = invoicePersonList.get(i);
+                    String purchacerIdCardBack = invoice.getPurchacerIdCard();
+                    String sellerIdCardBack = invoice.getSellerIdCard();
+                    if(purchacerIdCardBack != null && idCard.equals(purchacerIdCardBack)){
+                        interfaceResult.InterfaceResult200(invoicePersonList.get(i));
+                        break;
+                    }
+                    if(sellerIdCardBack != null && idCard.equals(sellerIdCardBack)){
+                        interfaceResult.InterfaceResult200(invoicePersonList.get(i));
+                        break;
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

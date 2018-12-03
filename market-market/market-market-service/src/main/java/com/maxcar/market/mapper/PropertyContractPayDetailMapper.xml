@@ -141,13 +141,12 @@
     <insert id="insert" parameterType="com.maxcar.market.pojo.PropertyContractPayDetail">
     insert into property_contract_pay_detail (id, market_id, property_contract_id,
       property_contract_detail, pay_time, status,
-      pay_price, isvalid, remark,
-      insert_time, update_time, insert_operator,
+      pay_price, isvalid, remark, update_time, insert_operator,
       update_operator)
     values (#{id,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, #{propertyContractId,jdbcType=VARCHAR},
       #{propertyContractDetail,jdbcType=VARCHAR}, #{payTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},
       #{payPrice,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
-      #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{insertOperator,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}, #{insertOperator,jdbcType=VARCHAR},
       #{updateOperator,jdbcType=VARCHAR})
   </insert>
     <insert id="insertSelective" parameterType="com.maxcar.market.pojo.PropertyContractPayDetail">
@@ -179,9 +178,6 @@
             </if>
             <if test="remark != null">
                 remark,
-            </if>
-            <if test="insertTime != null">
-                insert_time,
             </if>
             <if test="updateTime != null">
                 update_time,
@@ -220,9 +216,6 @@
             </if>
             <if test="remark != null">
                 #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="insertTime != null">
-                #{insertTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},

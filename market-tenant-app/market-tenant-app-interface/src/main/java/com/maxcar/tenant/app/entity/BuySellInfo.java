@@ -280,9 +280,6 @@ public class BuySellInfo implements Serializable {
 
     public String getFieldValue(String fieldName) {
         try {
-            Field field = this.getClass().getDeclaredField(fieldName);
-            Object obj = field.get(this);
-
             if ("sellerBusinessLicense".equals(fieldName)) {
                 if (sellerType == 2) {
                     return "<div class='downLeft' id='yYZZ1'>" +
@@ -300,6 +297,9 @@ public class BuySellInfo implements Serializable {
                 }
                 return "";
             }
+
+            Field field = this.getClass().getDeclaredField(fieldName);
+            Object obj = field.get(this);
 
             if (obj == null) {
                 return "";

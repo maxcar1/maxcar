@@ -358,8 +358,10 @@ public class SyncCarController extends BaseController {
 						return interfaceResult;
 					}
 					if(StringUtils.isNotBlank(paramsJson.getRfid())){
-						car = carService.selectByRfid(paramsJson.getRfid());
-						if(car!=null){
+						Car car1 = new Car();
+						car1.setRfid(paramsJson.getRfid());
+						Car car2 = carService.getCar(car1);
+						if(car2!=null){
 							interfaceResult.InterfaceResult600("rfid标签已存在");
 							return interfaceResult;
 						}
@@ -825,6 +827,8 @@ public class SyncCarController extends BaseController {
 	public InterfaceResult modifyTenant(@RequestBody CarTenantVo carTenantVo,HttpServletRequest request) throws Exception{
 		InterfaceResult interfaceResult = new InterfaceResult();
 		User user = super.getCurrentUser(request);
+		Car car = new Car();
+		car.setId(carTenantVo.getCarId());
 		if (StringUtils.isNotBlank(carTenantVo.getTenant())) {
 			UserTenant tenant = userTenantService.selectByPrimaryKey(carTenantVo.getTenant());
 			if (null == tenant) {
@@ -870,59 +874,161 @@ public class SyncCarController extends BaseController {
 				interfaceResult.InterfaceResult600("可用车位数为0，请确认");
 				return interfaceResult;
 			}
-			Car car = new Car();
-			car.setId(carTenantVo.getCarId());
 			car.setTenant(carTenantVo.getTenant());
-			int count = carService.updateByPrimaryKeySelective(car);
-			if(count>0){
-				interfaceResult.InterfaceResult200("修改成功");
-			}else{
-				interfaceResult.InterfaceResult500("操作失败");
-			}
 		}
-
+		//更新vin
 		if(StringUtils.isNotBlank(carTenantVo.getVin())){
-			Car car = new Car();
 			car.setVin(carTenantVo.getVin());
 			Car c = carService.getCar(car);
 			if(c!=null){
 				interfaceResult.InterfaceResult500("该vin码已存在，请更换");
 				return interfaceResult;
 			}
-			/*Car car1 = new Car();
-			car1.setId(carTenantVo.getCarId());
-			car1.setVin(carTenantVo.getVin());
-			int num = carService.updateByPrimaryKeySelective(car1);
-			if(num>0){
-				interfaceResult.InterfaceResult200("修改成功");
-			}else{
-				interfaceResult.InterfaceResult500("操作失败");
-			}*/
-//            String topic = super.consumerTopic7;
-//            switch (user.getMarketId()) {
-//                case "006":
-//                    topic = super.consumerTopic6;
-//                    break;
-//                case "007":
-//                    topic = super.consumerTopic7;
-//                    break;
-//                case "008":
-//                    topic = super.consumerTopic8;
-//                    break;
-//                case "010":
-//                    topic = super.consumerTopic10;
-//                    break;
-//            }
-//            //同步删除本地车辆状态
-//            //组装云端参数
-//            PostParam postParam = new PostParam();
-//            postParam.setData(JsonTools.toJson(car1));
-//            postParam.setMarket(user.getMarketId());
-//            postParam.setUrl("/barrier/car/saveCar");
-//            postParam.setOnlySend(false);
-//            postParam.setMessageTime(Constants.dateformat.format(new Date()));
-//            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
-            }
-        return interfaceResult;
+
+		}
+		int count = carService.updateByPrimaryKeySelective(car);
+		if(count>0){
+			interfaceResult.InterfaceResult200("修改成功");
+		}else{
+			interfaceResult.InterfaceResult500("操作失败");
+		}
+		String topic = super.getTopic(user.getMarketId());
+		//同步删除本地车辆状态
+		//组装云端参数
+		PostParam postParam = new PostParam();
+		postParam.setData(JsonTools.toJson(car));
+		postParam.setMarket(user.getMarketId());
+		postParam.setUrl("/barrier/car/saveCar");
+		postParam.setOnlySend(false);
+		postParam.setMessageTime(Constants.dateformat.format(new Date()));
+		messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
+		return interfaceResult;
 	}
+
+	/**
+	 * 出场超时车重新录入
+	 * @param c
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/overtime")
+	public InterfaceResult getStaffDetails(@RequestBody CarChecks c, HttpServletRequest request) throws Exception{
+		InterfaceResult interfaceResult = new InterfaceResult();
+		Map map = new HashMap();
+		User user = getCurrentUser(request);
+		//校验市场id是否为空
+		if (StringUtils.isEmpty(c.getMarket())) {
+			interfaceResult.InterfaceResult600("缺少市场参数");
+			return interfaceResult;
+		}
+		Market m = marketService.getMarket(c.getMarket());
+		if (null == m) {
+			interfaceResult.InterfaceResult600("市场不存在");
+			return interfaceResult;
+		}
+		if (c.getVin().isEmpty() || c.getRfid().isEmpty()) {
+			interfaceResult.InterfaceResult600("rfid/vin码缺一不可");
+			return interfaceResult;
+		}
+		//根据vin、marketId判断该车库存状态是否为出场超时
+		List<Car> list = carService.carByVin(c);
+		if(list != null && list.size()>0){
+			if (StringUtils.isEmpty(c.getTenant())) {
+				interfaceResult.InterfaceResult600("缺少商户参数");
+				return interfaceResult;
+			}
+			//校验商户
+			UserTenant tenant = userTenantService.selectByPrimaryKey(c.getTenant());
+			if (null == tenant) {
+				interfaceResult.InterfaceResult600("商户不存在");
+				return interfaceResult;
+			}
+			if(!list.get(0).getTenant().equals( c.getTenant())){
+				interfaceResult.InterfaceResult600("当前关联商户与该车所属商户不匹配");
+				return interfaceResult;
+			}
+			//校验商户是否存在可用车位
+			Integer number = 0;
+			GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest r = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
+			r.setTenantId(c.getTenant());
+			r.setMarketId(c.getMarket());
+			//校验是否配置参数
+			GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse response = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(r);
+			if(response == null){
+				interfaceResult.InterfaceResult600("请联系管理员，配置相关参数");
+				return interfaceResult;
+			}
+			//获取总车位，当车位为0是做出对应提示
+			if(response != null && response.getCarTotal() == 0){
+				interfaceResult.InterfaceResult600(response.getMessage());
+				return interfaceResult;
+			}
+			if(response != null){
+				number = response.getCarTotal();//总车位数
+			}
+			//根据市场id及key获取对应的value值
+			Configuration configuration1 = new Configuration();
+			configuration1.setMarketId(user.getMarketId());
+			configuration1.setConfigurationKey("car_num");
+			List<Configuration> configurationList = configurationService.searchConfiguration(configuration1);
+			if(list != null && list.size()>0){
+				for(Configuration configuration:configurationList){
+					String value = configuration.getConfigurationValue();
+					if(value.substring(0,1).equals("+")){
+						number = number+Integer.parseInt(value.substring(1));
+					}
+				}
+			}
+			Car car = new Car();
+			car.setTenant(c.getTenant());
+			car.setMarketId(c.getMarket());
+			car.setCarType(1);
+			Integer counts = 0;
+			counts = carService.selectCountsByCar(car);
+			Integer upCarnum = (counts == null ? 0 : counts);
+			if (number <= upCarnum) {
+				interfaceResult.InterfaceResult600("车位总数" + number + ", 已经全部使用，不允许继续录车");
+				return interfaceResult;
+			}
+			Car carRfid = new Car();
+			carRfid.setMarketId(c.getMarket());
+			carRfid.setRfid(c.getRfid());
+			Car carByRfid = carService.carInformation(carRfid);
+			CarBase carBase = carBaseService.selectByPrimaryKey(list.get(0).getId());
+			CarPic carPicTemp = new CarPic();
+			carPicTemp.setCarId(list.get(0).getId());
+			List<CarPic> picList = carPicService.listCarPic(carPicTemp);
+			list.get(0).setCarPic(picList);
+			if(list.get(0).getRfid().equals(c.getRfid())){
+				map.put("doNext",true);
+				map.put("msg","该车辆库存状态为出场超时，是否选择重新录入?");
+				map.put("car",list.get(0));
+				map.put("carBase",carBase);
+				interfaceResult.InterfaceResult200(map);
+				return interfaceResult;
+			}
+			if(!list.get(0).getRfid().equals(c.getRfid()) && carByRfid != null){
+				interfaceResult.InterfaceResult600("该rfid已经被占用，请输入其他可用rfid！");
+				return interfaceResult;
+			}
+			if(!list.get(0).getRfid().equals(c.getRfid()) && carByRfid == null){
+				map.put("doNext",true);
+				map.put("msg","该车辆库存状态为出场超时，是否选择重新录入?");
+				map.put("car",list.get(0));
+				map.put("carBase",carBase);
+				return interfaceResult;
+			}
+		}
+		else {
+			map.put("doNext",false);
+			map.put("msg","");
+			interfaceResult.InterfaceResult200(map);
+		}
+		return interfaceResult;
+	}
+
+
+
 }

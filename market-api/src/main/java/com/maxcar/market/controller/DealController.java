@@ -4,27 +4,31 @@ import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.StringUtil;
-import com.maxcar.market.dao.InvoiceMapper;
 import com.maxcar.market.model.request.DealRequest;
 import com.maxcar.market.model.request.SelectInvoice;
 import com.maxcar.market.model.response.DealResponse;
 import com.maxcar.market.pojo.Invoice;
-import com.maxcar.market.pojo.InvoiceExample;
 import com.maxcar.market.service.DealService;
 import com.maxcar.market.service.InvoiceService;
-import com.maxcar.stock.pojo.CarBase;
 import com.maxcar.stock.service.CarBaseService;
-import com.maxcar.tenant.pojo.UserTenant;
-import com.maxcar.tenant.service.TenantInvoiceService;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.entity.User;
 import com.maxcar.web.aop.OperationAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -179,6 +183,8 @@ public class DealController extends BaseController {
                 } else {
                     dealMap.put("tradingType", "");
                 }
+            } else {
+                dealMap.put("tradingType", "");
             }
             //  过户类型
             String transferType = d.getTransferType();
@@ -188,8 +194,10 @@ public class DealController extends BaseController {
                 } else if ("1".equals(transferType)) {
                     dealMap.put("transferType", "卖出过户");
                 }
-                deals.add(dealMap);
+            }else{
+                dealMap.put("transferType", "");
             }
+                deals.add(dealMap);
         }
 
 //        for (DealResponse backDeal : list) {
@@ -415,7 +423,7 @@ public class DealController extends BaseController {
 
         User user = getCurrentUser(request);
 
-        if("0".equals(tenantId)){
+        if("0".equals(tenantId) || "00".equals(tenantId)){
             tenantId = null;
         }
 
