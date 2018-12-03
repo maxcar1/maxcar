@@ -4,7 +4,6 @@ import com.maxcar.base.util.DateUtils;
 import com.maxcar.statistics.dao.CarpriceDayMapper;
 import com.maxcar.statistics.dao.InventoryInvoiceDayMapper;
 import com.maxcar.statistics.dao.InventoryInvoiceMonthMapper;
-import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
@@ -13,7 +12,6 @@ import com.maxcar.statistics.service.TradingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
@@ -56,7 +54,7 @@ public class TradingServiceImpl implements TradingService {
                 Integer nowSalesCount = inventory.getSalesCount();
                 Double nowSalesPrice = inventory.getSalesPrice();
                 Integer avgSalesCount = (nowSalesCount + (agoSalesCount == null ? 0 : agoSalesCount)) / 2;
-                Double avgSalesPrice = (nowSalesPrice + (agoSalesPrice == null ? 0 : agoSalesPrice)) / 2;
+                Double avgSalesPrice = (nowSalesPrice + (agoSalesPrice == null ? 0 : agoSalesPrice)) / 2 / 10000.0;
                 inventory.setAvgSalesCount(avgSalesCount);
                 inventory.setAvgSalesPrice(avgSalesPrice);
             }
@@ -305,6 +303,10 @@ public class TradingServiceImpl implements TradingService {
         List<TradingResponse> listDay = inventoryInvoiceDayMapper.getTenantDealDay(tradingRequest);
         if (listDay.size() > 0) {
             TradingResponse trading = listDay.get(0);
+            Date date = new Date();
+            String s = DateUtils.formatDate(date, DateUtils.DATE_FORMAT_DATETIME);
+            String substring = s.substring(0, 7);
+            trading.setMonth(substring);
             list.add(trading);
         }
         for (TradingResponse response : list) {

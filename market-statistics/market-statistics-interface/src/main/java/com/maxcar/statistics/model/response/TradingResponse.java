@@ -10,37 +10,37 @@ public class TradingResponse implements Serializable {
     //  统计的分月
     private String month;
     //  当月的交易总价值
-    private Double price;
+    private Double price = 0.0;
     //  当月的交易总量
-    private Double count;
+    private Double count = 0.0;
     //  移动平均交易总价值
-    private Double priceMove;
+    private Double priceMove = 0.0;
     //  移动平均交易总量
-    private Double countMove;
+    private Double countMove = 0.0;
     //  交易总价值 同比/环比 增长率
-    private Double priceRate;
+    private Double priceRate = 0.0;
     //  交易总量 同比/环比 增长率
-    private Double countRate;
+    private Double countRate = 0.0;
     //  平均交易价格
-    private Double avgPrice;
+    private Double avgPrice = 0.0;
     //  平均交易价格同比增长率
-    private Double avgPriceYear;
+    private Double avgPriceYear = 0.0;
     //  平均交易价格环比增长率
-    private Double avgPriceMonth;
+    private Double avgPriceMonth = 0.0;
     //  当月商户成交量在条件中的数量
-    private Double tenantCount;
+    private Double tenantCount = 0.0;
     //  当月商户成交量在条件中的数量  同比
-    private Double tenantCountYear;
+    private Double tenantCountYear = 0.0;
     //  当月商户成交量在条件中的数量  环比
-    private Double tenantCountMonth;
+    private Double tenantCountMonth = 0.0;
     //  交易层次同比增长率
-    private Double dealPriceYear;
+    private Double dealPriceYear = 0.0;
     //  交易层次环比增长率
-    private Double dealPriceMonth;
+    private Double dealPriceMonth = 0.0;
     //  价格区间类型
     private String invoicePriceId;
     //  库存数量
-    private Double stockAvgStocktime;
+    private Double stockAvgStocktime = 0.0;
     //  车商交易库存天数占比
-    private Double dayPercentage;
+    private Double dayPercentage = 0.0;
 }

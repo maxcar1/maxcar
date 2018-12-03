@@ -27,4 +27,19 @@ public class StockResponse implements Serializable {
     private Double stockYearCountIncrease;
     //  车位饱和度
     private Double parkingSaturability;
+    //  库存周期id
+    private String stocktimeId;
+    //  平均库存天数
+    private Double stockDayAvg;
+    //  车辆平均库存天数发展趋势   同步增长
+    private Double yearStockDay;
+    //  车辆平均库存天数发展趋势   环比增长率
+    private Double monthStockDay;
+    //  车商平均库存量发展趋势，在条件中的车商数量
+    private Integer monthTenantCount;
+    //  车商平均库存量发展趋势，在条件中的车商数量  环比增长
+    private Double monthTenantCountMonth;
+    //  车商平均库存量发展趋势，在条件中的车商数量  同比增长
+    private Double monthTenantCountYear;
+
 }

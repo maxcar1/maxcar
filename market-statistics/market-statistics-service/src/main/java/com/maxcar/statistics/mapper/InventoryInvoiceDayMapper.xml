@@ -28,6 +28,7 @@
         <id column="report_time" property="reportTime" jdbcType="VARCHAR"/>
         <result column="stock_count" property="stockCount" jdbcType="DOUBLE"/>
         <result column="stock_price" property="stockPrice" jdbcType="DOUBLE"/>
+        <result column="month_tenant_count" property="monthTenantCount" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -226,9 +227,9 @@
 
     <select id="sumMonth" resultMap="BaseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest">
         SELECT
-        SUM(IFNULL(sales_count, 0)) AS sales_count,
-        SUM(IFNULL(sales_price, 0)) AS sales_price,
-        AVG(IFNULL(sales_avg_price,0)) AS sales_avg_price
+        IFNULL(SUM(sales_count), 0) AS sales_count,
+        IFNULL(SUM(sales_price), 0) AS sales_price,
+        IFNULL(AVG(sales_avg_price),0) AS sales_avg_price
         FROM
         inventory_invoice_day
         WHERE isvalid = 1
@@ -270,7 +271,7 @@
         GROUP BY tenant_id) aa
     </select>
 
-    <select id="getTenantDealDay" resultType="java.util.Map"
+    <select id="getTenantDealDay" resultMap="ResponseResultMap"
             parameterType="com.maxcar.statistics.model.request.TradingRequest">
         SELECT
         COUNT(0) as count
@@ -289,37 +290,37 @@
         GROUP BY tenant_id) aa
         WHERE  1 = 1
         <if test="carNumType == 0">
-            AND out_library_count &lt; 5
+            AND aa.sales_count &lt; 5
         </if>
         <if test="carNumType == 1">
-            AND 4 &lt; out_library_count and out_library_count &lt; 10
+            AND 4 &lt; aa.sales_count and aa.sales_count &lt; 10
         </if>
         <if test="carNumType == 2">
-            AND 9 &lt; out_library_count and out_library_count &lt; 15
+            AND 9 &lt; aa.sales_count and aa.sales_count &lt; 15
         </if>
         <if test="carNumType == 3">
-            AND 14 &lt; out_library_count and out_library_count &lt; 20
+            AND 14 &lt; aa.sales_count and aa.sales_count &lt; 20
         </if>
         <if test="carNumType == 4">
-            AND 19 &lt; out_library_count and out_library_count &lt; 25
+            AND 19 &lt; aa.sales_count and aa.sales_count &lt; 25
         </if>
         <if test="carNumType == 5">
-            AND 24 &lt; out_library_count and out_library_count &lt; 30
+            AND 24 &lt; aa.sales_count and aa.sales_count &lt; 30
         </if>
         <if test="carNumType == 6">
-            AND 29 &lt; out_library_count and out_library_count &lt; 35
+            AND 29 &lt; aa.sales_count and aa.sales_count &lt; 35
         </if>
         <if test="carNumType == 7">
-            AND 24 &lt; out_library_count and out_library_count &lt; 40
+            AND 24 &lt; aa.sales_count and aa.sales_count &lt; 40
         </if>
         <if test="carNumType == 8">
-            AND 39 &lt; out_library_count and out_library_count &lt; 45
+            AND 39 &lt; aa.sales_count and aa.sales_count &lt; 45
         </if>
         <if test="carNumType == 9">
-            AND 44 &lt; out_library_count and out_library_count &lt; 50
+            AND 44 &lt; aa.sales_count and aa.sales_count &lt; 50
         </if>
         <if test="carNumType == 10">
-            AND 49 &lt; out_library_count and out_library_count &lt; 55
+            AND 49 &lt; aa.sales_count and aa.sales_count &lt; 55
         </if>
     </select>
 
@@ -338,6 +339,195 @@
         </if>
         <if test="timeStart != null and timeStart != '' ">
             AND report_time BETWEEN #{timeStart} and #{timeEnd}
+        </if>
+    </select>
+
+    <select id="getStockAvgDayCar" resultType="java.lang.Double"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        IFNULL(AVG(stock_day_avg) , 0)
+        FROM
+        `inventory_invoice_day`
+        WHERE isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="timeStart != null and timeStart != '' ">
+            AND report_time BETWEEN #{timeStart} and #{timeEnd}
+        </if>
+    </select>
+
+    <select id="getTenantStock" resultType="java.util.Map"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        IFNULL(SUM(stock_count &lt; 10),0) AS "1",
+        IFNULL(SUM(9 &lt; stock_count AND stock_count &lt; 20),0) AS "2",
+        IFNULL(SUM(19 &lt; stock_count AND stock_count &lt; 30),0) AS "3",
+        IFNULL(SUM(29 &lt; stock_count AND stock_count &lt; 40),0) AS "4",
+        IFNULL(SUM(39 &lt; stock_count AND stock_count &lt; 50),0) AS "5",
+        IFNULL(SUM(49 &lt; stock_count ),0) AS "6"
+        FROM
+        `carstocktime_day`
+        WHERE isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="timeEndDay != null and timeEndDay != '' ">
+            AND report_time = #{timeEndDay}
+        </if>
+    </select>
+
+    <select id="getTenantAvgStockDay" resultType="java.lang.Integer"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        COUNT(*)
+        FROM
+        `inventory_invoice_day`
+        WHERE isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="monthNum != null and monthNum != '' ">
+            AND report_time =  #{monthNum}
+        </if>
+        <if test="carNumType == 0">
+            AND stock_count &lt; 5
+        </if>
+        <if test="carNumType == 1">
+            AND 4 &lt; stock_count and stock_count &lt; 10
+        </if>
+        <if test="carNumType == 2">
+            AND 9 &lt; stock_count and stock_count &lt; 15
+        </if>
+        <if test="carNumType == 3">
+            AND 14 &lt; stock_count and stock_count &lt; 20
+        </if>
+        <if test="carNumType == 4">
+            AND 19 &lt; stock_count and stock_count &lt; 25
+        </if>
+        <if test="carNumType == 5">
+            AND 24 &lt; stock_count and stock_count &lt; 30
+        </if>
+        <if test="carNumType == 6">
+            AND 29 &lt; stock_count and stock_count &lt; 35
+        </if>
+        <if test="carNumType == 7">
+            AND 24 &lt; stock_count and stock_count &lt; 40
+        </if>
+        <if test="carNumType == 8">
+            AND 39 &lt; stock_count and stock_count &lt; 45
+        </if>
+        <if test="carNumType == 9">
+            AND 44 &lt; stock_count and stock_count &lt; 50
+        </if>
+        <if test="carNumType == 10">
+            AND 49 &lt; stock_count and stock_count &lt; 55
+        </if>
+        ORDER BY report_time
+    </select>
+
+    <select id="getTenantStockBranch" resultType="java.util.Map"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        SUM(stock_count  &lt; 10) AS '10台以下',
+        SUM(9  &lt; stock_count AND stock_count  &lt; 20) AS '10-20台',
+        SUM(19  &lt; stock_count AND stock_count  &lt; 30) AS '20-30台',
+        SUM(29  &lt; stock_count AND stock_count  &lt; 40) AS '30-40台',
+        SUM(39  &lt; stock_count AND stock_count  &lt; 50) AS '40-50台',
+        SUM(49  &lt; stock_count) AS '50台以上'
+        FROM
+        `inventory_invoice_day`
+        WHERE
+        isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="timeEndDay != null and timeEndDay != '' ">
+            AND report_time =  #{timeEndDay}
+        </if>
+    </select>
+
+    <select id="getTenantAvgStockTrend" resultType="java.util.Map"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        COUNT(*) AS `count`
+        FROM
+        `inventory_invoice_day`
+        WHERE isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="timeStart != null and timeStart != '' ">
+            AND report_time =  #{timeStart}
+        </if>
+        <if test="carNumType == 0">
+            AND stock_count &lt; 5
+        </if>
+        <if test="carNumType == 1">
+            AND 4 &lt; stock_count and stock_count &lt; 10
+        </if>
+        <if test="carNumType == 2">
+            AND 9 &lt; stock_count and stock_count &lt; 15
+        </if>
+        <if test="carNumType == 3">
+            AND 14 &lt; stock_count and stock_count &lt; 20
+        </if>
+        <if test="carNumType == 4">
+            AND 19 &lt; stock_count and stock_count &lt; 25
+        </if>
+        <if test="carNumType == 5">
+            AND 24 &lt; stock_count and stock_count &lt; 30
+        </if>
+        <if test="carNumType == 6">
+            AND 29 &lt; stock_count and stock_count &lt; 35
+        </if>
+        <if test="carNumType == 7">
+            AND 24 &lt; stock_count and stock_count &lt; 40
+        </if>
+        <if test="carNumType == 8">
+            AND 39 &lt; stock_count and stock_count &lt; 45
+        </if>
+        <if test="carNumType == 9">
+            AND 44 &lt; stock_count and stock_count &lt; 50
+        </if>
+        <if test="carNumType == 10">
+            AND 49 &lt; stock_count and stock_count &lt; 55
+        </if>
+    </select>
+
+    <select id="getStockPriceTrend" resultType="java.util.Map"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
+        SELECT
+        COUNT(*) AS `count`
+        FROM
+        `carstock_day`
+        WHERE isvalid = 1
+        <if test="marketId != null and marketId != '' ">
+            AND market_id = #{marketId}
+        </if>
+        <if test="tenantId != null and tenantId != '' ">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="timeStart != null and timeStart != '' ">
+            AND report_time =  #{timeStart}
+        </if>
+        <if test="carNumType != null and carNumType != '' ">
+        AND invoice_stock_id = #{carNumType}
         </if>
     </select>
 </mapper>

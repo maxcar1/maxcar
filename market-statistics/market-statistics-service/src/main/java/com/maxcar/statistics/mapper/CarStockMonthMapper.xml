@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.statistics.dao.CarStockMonthMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.statistics.model.entity.CarStockMonth" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
+    <result column="report_time" property="reportTime" jdbcType="VARCHAR" />
+    <result column="invoice_stock_id" property="invoiceStockId" jdbcType="VARCHAR" />
+    <result column="invoice_stock_name" property="invoiceStockName" jdbcType="VARCHAR" />
+    <result column="stock_count" property="stockCount" jdbcType="INTEGER" />
+    <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, market_id, tenant_id, report_time, invoice_stock_id, invoice_stock_name, sales_count, 
+    isvalid, version, register_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from carstock_month
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from carstock_month
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+    insert into carstock_month (id, market_id, tenant_id, 
+      report_time, invoice_stock_id, invoice_stock_name, 
+      sales_count, isvalid, version, 
+      register_time)
+    values (#{id,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, 
+      #{reportTime,jdbcType=VARCHAR}, #{invoiceStockId,jdbcType=VARCHAR}, #{invoiceStockName,jdbcType=VARCHAR}, 
+      #{salesCount,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{version,jdbcType=INTEGER}, 
+      #{registerTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+    insert into carstock_month
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="marketId != null" >
+        market_id,
+      </if>
+      <if test="tenantId != null" >
+        tenant_id,
+      </if>
+      <if test="reportTime != null" >
+        report_time,
+      </if>
+      <if test="invoiceStockId != null" >
+        invoice_stock_id,
+      </if>
+      <if test="invoiceStockName != null" >
+        invoice_stock_name,
+      </if>
+      <if test="salesCount != null" >
+        sales_count,
+      </if>
+      <if test="isvalid != null" >
+        isvalid,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="registerTime != null" >
+        register_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null" >
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        #{reportTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceStockId != null" >
+        #{invoiceStockId,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceStockName != null" >
+        #{invoiceStockName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCount != null" >
+        #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null" >
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+    update carstock_month
+    <set >
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null" >
+        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        report_time = #{reportTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceStockId != null" >
+        invoice_stock_id = #{invoiceStockId,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceStockName != null" >
+        invoice_stock_name = #{invoiceStockName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCount != null" >
+        sales_count = #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null" >
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+    update carstock_month
+    set market_id = #{marketId,jdbcType=VARCHAR},
+      tenant_id = #{tenantId,jdbcType=VARCHAR},
+      report_time = #{reportTime,jdbcType=VARCHAR},
+      invoice_stock_id = #{invoiceStockId,jdbcType=VARCHAR},
+      invoice_stock_name = #{invoiceStockName,jdbcType=VARCHAR},
+      sales_count = #{salesCount,jdbcType=INTEGER},
+      isvalid = #{isvalid,jdbcType=INTEGER},
+      version = #{version,jdbcType=INTEGER},
+      register_time = #{registerTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getStockPrice" resultType="java.lang.Integer" parameterType="com.maxcar.statistics.model.request.StockRequest" >
+    SELECT
+    SUM(stock_count)
+    FROM(
+    SELECT
+    invoice_stock_id,
+    IFNULL(sum(stock_count),0) as stock_count
+    FROM `carstock_day`
+    WHERE isvalid = 1
+    <if test="marketId != null and marketId != ''  ">
+      AND market_id = #{marketId}
+    </if>
+    <if test="tenantId != null and tenantId != ''  ">
+      AND tenantId = #{tenantId}
+    </if>
+    <if test="timeEndDay != null and timeEndDay != ''  ">
+      AND report_time =  #{timeEndDay}
+    </if>
+    GROUP BY invoice_stock_id
+    ) aa
+    <if test="carNumType == 0">
+      WHERE aa.invoice_stock_id = '0' OR aa.invoice_stock_id = '1'
+    </if>
+    <if test="carNumType == 1">
+      WHERE aa.invoice_stock_id = '2' OR aa.invoice_stock_id = '3'
+    </if>
+    <if test="carNumType == 2">
+      WHERE aa.invoice_stock_id = '4' OR aa.invoice_stock_id = '5'
+    </if>
+    <if test="carNumType == 3">
+      WHERE aa.invoice_stock_id = '6'OR aa.invoice_stock_id = '7'
+    </if>
+    <if test="carNumType == 4">
+      WHERE aa.invoice_stock_id = '8'OR aa.invoice_stock_id = '9'
+    </if>
+    <if test="carNumType == 5">
+      WHERE aa.invoice_stock_id = '10'
+    </if>
+  </select>
+</mapper>

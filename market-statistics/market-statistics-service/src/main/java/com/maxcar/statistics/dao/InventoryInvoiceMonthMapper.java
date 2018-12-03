@@ -31,4 +31,14 @@ public interface InventoryInvoiceMonthMapper {
     List<StockResponse> getCountAndValue(StockRequest stockRequest);
 
     List<StockResponse> getParkingSaturability(StockRequest stockRequest);
+
+    List<StockResponse> getStockDayCar(StockRequest stockRequest);
+
+    List<StockResponse> getStockAvgMonthCar(StockRequest stockRequest);
+
+    List<Map<String , Object>> getTenantAvgStock(StockRequest stockRequest);
+
+    List<Map<String , Object>> getTenantAvgStockTrend(StockRequest stockRequest);
+
+    List<Map<String,Object>> getStockPriceTrend(StockRequest stockRequest);
 }

@@ -1568,6 +1568,36 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return agoDate;
     }
 
+    /**
+     * 传入日期获取下个月份
+     *
+     * @param Date
+     * @return
+     */
+    public static String getNextMonth(String Date) {
+        String[] split = Date.split("-");
+        String year = split[0];
+        String month = split[1];
+        Integer yearNum = Integer.parseInt(year);
+        Integer monthNum = Integer.parseInt(month);
+
+        monthNum = monthNum + 1;
+        if (monthNum == 13) {
+            yearNum = yearNum + 1;
+            monthNum = 01;
+        }
+
+        String nextYear = yearNum.toString();
+        String nextMonth = monthNum.toString();
+        if(nextMonth.length() == 1){
+            nextMonth = "0" + nextMonth;
+        }
+
+        String nextDate = nextYear + "-" + nextMonth + "-" + split[2];
+
+        return nextDate;
+    }
+
     public static void main(String[] args) throws Exception {
         /*Date date3 = DateUtils.addMinutes(new Date(), 5);
         System.out.println(new Date().after(DateUtils.addMinute(new Date(), -10)));
