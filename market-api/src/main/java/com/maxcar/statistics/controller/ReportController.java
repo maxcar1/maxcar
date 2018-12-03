@@ -107,6 +107,7 @@ public class ReportController extends BaseController {
      * describe: 车辆类型交易价格增长率
      * create_date:  lxy   2018/12/3  14:57
      **/
+    @RequestMapping("/report/growthCartypeByMonth")
     public InterfaceResult growthCartypeByMonth(@RequestBody @Valid GroupCartypeMonthRequest groupCartypeMonthRequest,
                                                 BindingResult result, HttpServletRequest request) throws Exception {
 
@@ -140,37 +141,31 @@ public class ReportController extends BaseController {
 
         List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
 
-        // 同比增长率
+
         for (int i = 0; i < lastYear.size(); i++) {
+
+            // 同比增长率
             GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
 
             GroupCartypeMonthResponse thisResponse = lastYear.get(i);
 
             Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
 
-            GroupCartypeMonthResponse liatResponse = thisYear.get(i);
+            GroupCartypeMonthResponse lastResponse = thisYear.get(i);
 
-            Double liatResponseAvgPrice = ToolDataUtils.getAvgPrice(liatResponse.getInvoicePrice(), liatResponse.getInvoiceCount());
+            Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
-            if (0 != liatResponseAvgPrice) {
+            if (0 != lastResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - liatResponseAvgPrice) / liatResponseAvgPrice * 100;
+                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
 
                 growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
                 growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
 
                 yearOnYearPacks.add(growthByMonthYearOnYearPack);
             }
-
-        }
-
-        // 环比增长率
-        for (int i = 0; i < lastYear.size(); i++) {
+            // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
-
-            GroupCartypeMonthResponse thisResponse = lastYear.get(i);
-
-            Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
 
             if (i > 0) {
 
@@ -186,7 +181,6 @@ public class ReportController extends BaseController {
                     sequentialPacks.add(growthByMonthSequentialPack);
                 }
             }
-
 
         }
 
@@ -314,6 +308,96 @@ public class ReportController extends BaseController {
 
     }
 
+    /**
+     * param:
+     * describe: 车辆品牌交易价格增长率
+     * create_date:  lxy   2018/12/3  14:57
+     **/
+    @RequestMapping("/report/growthCarbrandByMonth")
+    public InterfaceResult growthCarbrandByMonth(@RequestBody @Valid GroupCarbrandInvoiceMonthRequest groupCarbrandInvoiceMonthRequest,
+                                                BindingResult result, HttpServletRequest request) throws Exception {
+
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                return getInterfaceResult("600", error.getDefaultMessage());
+            }
+        }
+
+        User user = getCurrentUser(request);
+
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            groupCarbrandInvoiceMonthRequest.setMarketId(user.getMarketId());
+        }
+
+        GrowthByMonthResponse growthByMonthResponse = new GrowthByMonthResponse();
+
+        List<GroupCarbrandInvoiceMonthResponse> thisYear = reportByCarbrandService.groupCarbrandInvoiceMonth(groupCarbrandInvoiceMonthRequest);
+
+        groupCarbrandInvoiceMonthRequest.setStartTime(ToolDataUtils.getLastYear(groupCarbrandInvoiceMonthRequest.getStartTime()));
+        groupCarbrandInvoiceMonthRequest.setEndTime(ToolDataUtils.getLastYear(groupCarbrandInvoiceMonthRequest.getEndTime()));
+
+        List<GroupCarbrandInvoiceMonthResponse> lastYear = reportByCarbrandService.groupCarbrandInvoiceMonth(groupCarbrandInvoiceMonthRequest);
+
+        List<GrowthByMonthYearOnYearPack> yearOnYearPacks = new ArrayList<>(thisYear.size());
+
+        List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
+
+
+        for (int i = 0; i < lastYear.size(); i++) {
+
+            // 同比增长率
+            GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
+
+            GroupCarbrandInvoiceMonthResponse thisResponse = lastYear.get(i);
+
+            Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
+
+            GroupCarbrandInvoiceMonthResponse lastResponse = thisYear.get(i);
+
+            Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
+
+            if (0 != lastResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
+
+                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+
+                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+            }
+
+            // 环比增长率
+            GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
+
+            if (i > 0) {
+
+                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+
+                if (0 != lastMonthResponseAvgPrice) {
+
+                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+
+                    sequentialPacks.add(growthByMonthSequentialPack);
+                }
+            }
+        }
+
+
+        growthByMonthResponse.setGrowthByMonthYearOnYearPacks(yearOnYearPacks);
+        growthByMonthResponse.setGrowthByMonthSequentialPacks(sequentialPacks);
+
+        return getInterfaceResult("200", growthByMonthResponse);
+    }
+
+
 
     /**
      * param:
@@ -434,6 +518,96 @@ public class ReportController extends BaseController {
 
     /**
      * param:
+     * describe: 车辆品牌交易价格增长率
+     * create_date:  lxy   2018/12/3  14:57
+     **/
+    @RequestMapping("/report/growthCaryearByMonth")
+    public InterfaceResult growthCaryearByMonth(@RequestBody @Valid GroupCaryearInvoiceMonthRequest parameter,
+                                                 BindingResult result, HttpServletRequest request) throws Exception {
+
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                return getInterfaceResult("600", error.getDefaultMessage());
+            }
+        }
+
+        User user = getCurrentUser(request);
+
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            parameter.setMarketId(user.getMarketId());
+        }
+
+        GrowthByMonthResponse growthByMonthResponse = new GrowthByMonthResponse();
+
+        List<GroupCaryearInvoiceMonthResponse> thisYear = reportByCaryearService.groupCaryearInvoiceMonth(parameter);
+
+        parameter.setStartTime(ToolDataUtils.getLastYear(parameter.getStartTime()));
+        parameter.setEndTime(ToolDataUtils.getLastYear(parameter.getEndTime()));
+
+        List<GroupCaryearInvoiceMonthResponse> lastYear = reportByCaryearService.groupCaryearInvoiceMonth(parameter);
+
+        List<GrowthByMonthYearOnYearPack> yearOnYearPacks = new ArrayList<>(thisYear.size());
+
+        List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
+
+
+        for (int i = 0; i < lastYear.size(); i++) {
+
+            // 同比增长率
+            GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
+
+            GroupCaryearInvoiceMonthResponse thisResponse = lastYear.get(i);
+
+            Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
+
+            GroupCaryearInvoiceMonthResponse lastResponse = thisYear.get(i);
+
+            Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
+
+            if (0 != lastResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
+
+                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+
+                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+            }
+
+            // 环比增长率
+            GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
+
+            if (i > 0) {
+
+                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+
+                if (0 != lastMonthResponseAvgPrice) {
+
+                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+
+                    sequentialPacks.add(growthByMonthSequentialPack);
+                }
+            }
+        }
+
+
+        growthByMonthResponse.setGrowthByMonthYearOnYearPacks(yearOnYearPacks);
+        growthByMonthResponse.setGrowthByMonthSequentialPacks(sequentialPacks);
+
+        return getInterfaceResult("200", growthByMonthResponse);
+    }
+
+
+    /**
+     * param:
      * describe: 分组查询车辆年限月表 库存
      * create_date:  lxy   2018/11/26  15:29
      **/
@@ -545,6 +719,95 @@ public class ReportController extends BaseController {
 
         return getInterfaceResult("200", reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter));
 
+    }
+
+    /**
+     * param:
+     * describe: 车辆品牌交易价格增长率
+     * create_date:  lxy   2018/12/3  14:57
+     **/
+    @RequestMapping("/report/growthCarstocktimeByMonth")
+    public InterfaceResult growthCarstocktimeByMonth(@RequestBody @Valid GroupCarstocktimeInvoiceMonthRequest parameter,
+                                                BindingResult result, HttpServletRequest request) throws Exception {
+
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                return getInterfaceResult("600", error.getDefaultMessage());
+            }
+        }
+
+        User user = getCurrentUser(request);
+
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            parameter.setMarketId(user.getMarketId());
+        }
+
+        GrowthByMonthResponse growthByMonthResponse = new GrowthByMonthResponse();
+
+        List<GroupCarstocktimeInvoiceMonthResponse> thisYear = reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter);
+
+        parameter.setStartTime(ToolDataUtils.getLastYear(parameter.getStartTime()));
+        parameter.setEndTime(ToolDataUtils.getLastYear(parameter.getEndTime()));
+
+        List<GroupCarstocktimeInvoiceMonthResponse> lastYear = reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter);
+
+        List<GrowthByMonthYearOnYearPack> yearOnYearPacks = new ArrayList<>(thisYear.size());
+
+        List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
+
+
+        for (int i = 0; i < lastYear.size(); i++) {
+
+            // 同比增长率
+            GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
+
+            GroupCarstocktimeInvoiceMonthResponse thisResponse = lastYear.get(i);
+
+            Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
+
+            GroupCarstocktimeInvoiceMonthResponse lastResponse = thisYear.get(i);
+
+            Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
+
+            if (0 != lastResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
+
+                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+
+                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+            }
+
+            // 环比增长率
+            GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
+
+            if (i > 0) {
+
+                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+
+                if (0 != lastMonthResponseAvgPrice) {
+
+                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+
+                    sequentialPacks.add(growthByMonthSequentialPack);
+                }
+            }
+        }
+
+
+        growthByMonthResponse.setGrowthByMonthYearOnYearPacks(yearOnYearPacks);
+        growthByMonthResponse.setGrowthByMonthSequentialPacks(sequentialPacks);
+
+        return getInterfaceResult("200", growthByMonthResponse);
     }
 
     /**
