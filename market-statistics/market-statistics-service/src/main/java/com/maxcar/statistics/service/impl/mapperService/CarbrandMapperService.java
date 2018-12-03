@@ -7,10 +7,7 @@ import com.maxcar.statistics.dao.CarbrandMonthDao;
 import com.maxcar.statistics.dao.CartypeMonthDao;
 import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
 import com.maxcar.statistics.model.parameter.InsertTParamter;
-import com.maxcar.statistics.model.request.GroupCarbrandInventoryDayRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInventoryMonthRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInvoiceDayRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInvoiceMonthRequest;
+import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,15 @@ public class CarbrandMapperService {
 
     @Autowired
     private CarbrandMonthDao carbrandMonthDao;
+
+    /**
+     * param:
+     * describe: 查询市场 或者 商户 车辆品牌集合
+     * create_date:  lxy   2018/12/1  11:15
+     **/
+    public List<String> getAllBrandName(GetAllBrandNameRequest request) {
+        return carbrandDayDao.getAllBrandName(request);
+    }
 
     /**
      * param:
@@ -65,7 +71,7 @@ public class CarbrandMapperService {
      * describe: 分组查询车辆品牌月表 交易
      * create_date:  lxy   2018/11/26  15:04
      **/
-    public List<GroupCarbrandInvoiceMonthResponse> groupCarbrandInvoiceMonth(GroupCarbrandInvoiceMonthRequest parameter){
+    public List<GroupCarbrandInvoiceMonthResponse> groupCarbrandInvoiceMonth(GroupCarbrandInvoiceMonthRequest parameter) {
 
         StringBuffer stringBuffer = new StringBuffer(128);
         stringBuffer.append(" where 1=1  ");
@@ -91,13 +97,12 @@ public class CarbrandMapperService {
     }
 
 
-
     /**
      * param:
      * describe: 分组查询车辆品牌月表 库存
      * create_date:  lxy   2018/11/26  15:29
      **/
-    public List<GroupCarbrandInventoryMonthResponse> groupCarbrandInventoryMonth(GroupCarbrandInventoryMonthRequest parameter){
+    public List<GroupCarbrandInventoryMonthResponse> groupCarbrandInventoryMonth(GroupCarbrandInventoryMonthRequest parameter) {
 
         StringBuffer stringBuffer = new StringBuffer(128);
         stringBuffer.append(" where 1=1  ");
@@ -121,8 +126,6 @@ public class CarbrandMapperService {
 
         return carbrandMonthDao.groupCarbrandInventoryMonth(parameter);
     }
-
-
 
 
 // 以下是车辆品牌数据插入

@@ -1,6 +1,7 @@
 package com.maxcar.statistics.dao.provider;
 
 import com.maxcar.base.util.StringUtil;
+import com.maxcar.statistics.model.request.GetAllBrandNameRequest;
 import com.maxcar.statistics.model.request.GroupCarbrandInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarbrandInvoiceDayRequest;
 import org.apache.ibatis.jdbc.SQL;
@@ -80,5 +81,20 @@ public class CarbrandDayProvider {
         }}.toString();
     }
 
+
+
+    public String getAllBrandName(GetAllBrandNameRequest request){
+        return new SQL() {{
+            SELECT("brand_name");
+            FROM("`maxcar_stock_l`.`car_base` AS cb   LEFT JOIN  `maxcar_stock_l`.`car` c ON cb.id = c.id ");
+            if (StringUtil.isNotEmpty(request.getMarketId())){
+                WHERE("c.market_id =#{marketId}");
+            }
+            if (StringUtil.isNotEmpty(request.getTenantId())){
+                WHERE("c.tenant =#{tenantId}");
+            }
+            GROUP_BY(" cb.brand_name");
+        }}.toString();
+    }
 
 }

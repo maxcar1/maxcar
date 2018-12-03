@@ -1,10 +1,7 @@
 package com.maxcar.statistics.service;
 
 
-import com.maxcar.statistics.model.request.GroupCarbrandInventoryDayRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInventoryMonthRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInvoiceDayRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInvoiceMonthRequest;
+import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.GroupCarbrandInventoryDayResponse;
 import com.maxcar.statistics.model.response.GroupCarbrandInventoryMonthResponse;
 import com.maxcar.statistics.model.response.GroupCarbrandInvoiceDayResponse;
@@ -14,6 +11,12 @@ import java.util.List;
 
 public interface ReportByCarbrandService {
 
+    /**
+     * param:
+     * describe: 查询市场 或者 商户 车辆品牌集合
+     * create_date:  lxy   2018/12/1  11:15
+     **/
+    List<String> getAllBrandName(GetAllBrandNameRequest request);
 
     /**
      * param:

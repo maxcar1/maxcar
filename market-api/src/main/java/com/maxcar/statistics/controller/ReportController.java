@@ -102,6 +102,36 @@ public class ReportController extends BaseController {
 
     // 以下是车辆品牌
 
+
+    /**
+     * param:
+     * describe: 查询市场 或者 商户 车辆品牌集合
+     * create_date:  lxy   2018/12/1  11:15
+     **/
+    @RequestMapping("/report/getAllBrandName")
+    public InterfaceResult getAllBrandName(@RequestBody @Valid GetAllBrandNameRequest getAllBrandNameRequest,
+                                                   BindingResult result, HttpServletRequest request) throws Exception {
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                return getInterfaceResult("600", error.getDefaultMessage());
+            }
+        }
+
+        User user = getCurrentUser(request);
+
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            getAllBrandNameRequest.setMarketId(user.getMarketId());
+        }
+
+        return getInterfaceResult("200", reportByCarbrandService.getAllBrandName(getAllBrandNameRequest));
+    }
+
+
     /**
      * param:
      * describe: 分组查询车辆品牌日表 交易

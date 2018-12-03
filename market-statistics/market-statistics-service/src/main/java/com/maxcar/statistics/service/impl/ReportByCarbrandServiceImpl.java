@@ -1,6 +1,5 @@
 package com.maxcar.statistics.service.impl;
 
-import com.maxcar.base.util.StringUtil;
 import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
 import com.maxcar.statistics.model.parameter.GetInventoryReportParameter;
 import com.maxcar.statistics.model.request.*;
@@ -27,6 +26,15 @@ public class ReportByCarbrandServiceImpl implements ReportByCarbrandService {
     @Autowired
     private CarbrandMapperService carbrandMapperService;
 
+    /**
+     * param:
+     * describe: 查询市场 或者 商户 车辆品牌集合
+     * create_date:  lxy   2018/12/1  11:15
+     **/
+    @Override
+    public List<String> getAllBrandName(GetAllBrandNameRequest request) {
+        return carbrandMapperService.getAllBrandName(request);
+    }
 
     /**
      * param:
@@ -78,11 +86,11 @@ public class ReportByCarbrandServiceImpl implements ReportByCarbrandService {
 
 // 以下待删除
 
-    /**
+/*    *//**
      * param:
      * describe: 根据车辆品牌统计车辆库存量与库存价值
      * create_date:  lxy   2018/11/20  14:10
-     **/
+     **//*
     public List<GetInventoryReportResponse> getInventoryByBrandNameReport(GetInventoryByBrandNameReportRequest request) {
 
         GetInventoryReportParameter parameter = new GetInventoryReportParameter();
@@ -99,11 +107,11 @@ public class ReportByCarbrandServiceImpl implements ReportByCarbrandService {
         return reportMapperService.getInventoryReport(parameter);
     }
 
-    /**
+    *//**
      * param:  
      * describe: 根据车辆品牌统计车辆交易量与交易价值
      * create_date:  lxy   2018/11/20  15:07 
-     **/
+     **//*
     public List<GetCarInvoiceTypeInvoiceReportResponse> getInvoiceByBrandNameReport(GetInvoiceByBrandNameReportRequest request){
 
         GetCarInvoiceTypeInvoiceReportParameter parameter = new GetCarInvoiceTypeInvoiceReportParameter();
@@ -119,5 +127,5 @@ public class ReportByCarbrandServiceImpl implements ReportByCarbrandService {
         return reportMapperService.getCarInvoiceTypeInvoiceReport(parameter);
     }
     
-    
+    */
 }

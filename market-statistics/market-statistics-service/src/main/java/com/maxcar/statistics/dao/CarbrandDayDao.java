@@ -2,6 +2,7 @@ package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CarbrandDayProvider;
+import com.maxcar.statistics.model.request.GetAllBrandNameRequest;
 import com.maxcar.statistics.model.request.GroupCarbrandInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarbrandInvoiceDayRequest;
 import com.maxcar.statistics.model.response.GroupCarbrandInventoryDayResponse;
@@ -28,5 +29,14 @@ public interface CarbrandDayDao extends BaseDao {
      **/
     @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInventoryDay")
     List<GroupCarbrandInventoryDayResponse> groupCarbrandInventoryDay(GroupCarbrandInventoryDayRequest parameter);
+
+    /**
+     * param:
+     * describe: 查询市场 或者 商户 车辆品牌集合
+     * create_date:  lxy   2018/12/1  11:15
+     **/
+    @SelectProvider(type = CarbrandDayProvider.class, method = "getAllBrandName")
+    List<String> getAllBrandName(GetAllBrandNameRequest request);
+
 
 }
