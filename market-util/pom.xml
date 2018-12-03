@@ -494,7 +494,7 @@
 				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
 				<system.jdbc.url.stock>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
 				<system.jdbc.user.stock>root</system.jdbc.user.stock>
-				<system.jdbc.password.stock>admin</system.jdbc.password.stock>
+				<system.jdbc.password.stock>Maxcar#2018d</system.jdbc.password.stock>
 				<!-- 云端数据源配置datasource物业、商户-->
 				<system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
 				<system.jdbc.url.market>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_market_l?characterEncoding=utf-8</system.jdbc.url.market>
