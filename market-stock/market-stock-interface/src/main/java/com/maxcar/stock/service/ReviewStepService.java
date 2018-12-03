@@ -46,4 +46,6 @@ public interface ReviewStepService {
     Integer selectCarReview(Integer reviewId);
 
     int selectLastStep(ReviewStep reviewStep);
+
+    List<ReviewStep> selectStepListBySomeParams(ReviewStep reviewStep);
 }

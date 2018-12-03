@@ -135,6 +135,9 @@ public class CarVo extends PageBean implements Serializable {
     private Integer carAge;
     private Integer stockDays;
 
+    private String applicationTime; // 申请时间
+    private Integer isPass;// 审核状态
+
     private String registerTimeStart;
     private String registerTimeEnd;
     private String initialLicenceTime;//初次上牌时间
@@ -173,6 +176,22 @@ public class CarVo extends PageBean implements Serializable {
     private String displacement2;
 
     private Double invoicePrice;// 实际售价
+
+    public Integer getIsPass() {
+        return isPass;
+    }
+
+    public void setIsPass(Integer isPass) {
+        this.isPass = isPass;
+    }
+
+    public String getApplicationTime() {
+        return applicationTime;
+    }
+
+    public void setApplicationTime(String applicationTime) {
+        this.applicationTime = applicationTime;
+    }
 
     public Double getInvoicePrice() {
         return invoicePrice;

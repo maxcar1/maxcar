@@ -80,7 +80,9 @@
         <result column="out_reason" property="outReason" jdbcType="VARCHAR"/>
         <result column="review_id" property="reviewId" jdbcType="INTEGER"/>
         <result column="step_level" property="stepLevel" jdbcType="INTEGER"/>
+        <result column="is_pass" property="isPass" jdbcType="INTEGER"/>
         <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>
+        <result column="application_time" property="applicationTime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <!-- carVo END -->
     <resultMap id="taoBaoCarMap" type="com.maxcar.stock.pojo.TaoBaoCar">
@@ -819,18 +821,19 @@
     </select>
 
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
-        SELECT a.*,d.*,b.id as review_id,b.out_reason,b.insert_time,c.tenant_name,e.review_result
-        from maxcar_stock_l.car a
-        LEFT JOIN maxcar_stock_l.car_review b
-        on a.id = b.car_id
-        LEFT JOIN maxcar_tenant_l.user_tenant c
-        on a.tenant = c.id
-        LEFT JOIN maxcar_stock_l.car_base d
-        on a.id = d.id
-        LEFT JOIN maxcar_stock_l.review_detail e
-        on b.id = e.review_id
-        where a.isvalid = 1
-        and  b.is_pass = 1
+        SELECT
+        b.*, c.*, a.id AS review_id,a.is_pass,
+        a.out_reason,
+        a.insert_time AS application_time,
+        d.tenant_name
+        FROM
+        maxcar_stock_l.car_review a
+        LEFT JOIN car b ON a.car_id = b.id
+        LEFT JOIN car_base c ON a.car_id = c.id
+        LEFT JOIN maxcar_tenant_l.user_tenant d ON b.tenant = d.id
+        WHERE
+        a.is_pass != 0
+        AND b.isvalid = 1
         <if test="market != null and market != ''">
             and a.market_id = #{market}
         </if>

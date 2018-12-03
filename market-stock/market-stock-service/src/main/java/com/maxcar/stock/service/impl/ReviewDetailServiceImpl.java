@@ -45,4 +45,9 @@ public class ReviewDetailServiceImpl implements ReviewDetailService {
     public ReviewDetail selectReviewDetail(ReviewDetail reviewDetail) {
         return reviewDetailMapper.selectReviewDetail(reviewDetail);
     }
+
+    @Override
+    public ReviewDetail reviewDetail(Integer reviewId) {
+        return reviewDetailMapper.reviewDetail(reviewId);
+    }
 }

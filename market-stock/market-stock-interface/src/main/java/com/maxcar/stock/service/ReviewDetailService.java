@@ -13,4 +13,6 @@ public interface ReviewDetailService {
     int updateReviewStatus(ReviewDetail reviewDetail);
 
     ReviewDetail selectReviewDetail(ReviewDetail reviewDetail);
+
+    ReviewDetail reviewDetail (Integer reviewId);
 }

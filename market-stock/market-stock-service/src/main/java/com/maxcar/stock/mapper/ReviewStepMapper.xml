@@ -335,16 +335,16 @@
     <if test="level != null" >
       and level = #{level}
     </if>
-    <!--
-
-    <if test="id != null" >
-      and id = #{id}
-    </if>
--->
-
   </select>
-  <select id="selectStepListByLevel" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="BaseResultMap">
-  select * from review_step where
+
+  <select id="selectStepListByLevel" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="com.maxcar.stock.pojo.ReviewStep">
+  select
+    `level`,
+    apply_type as applyType,
+    market_id as marketId,
+    step_name as stepName,
+    `type`
+    from review_step where
     <if test="marketId != null" >
       market_id = #{marketId}
     </if>
@@ -357,8 +357,7 @@
     <if test="id != null" >
       and id = #{id}
     </if>
-    group by level
-
+    GROUP BY `level`, apply_type,market_id,step_name,`type`
   </select>
 
   <select id="selectReviewManage" resultMap="FlowStepResultMap" parameterType="String">
@@ -412,4 +411,20 @@ and is_valid=1
   <select id="selectLastStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="java.lang.Integer">
     select level from review_step where apply_type = #{applyType} and market_id = #{marketId} group by level desc limit 1
   </select>
+
+  <select id="selectStepListBySomeParams" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewStep">
+    select
+    <include refid="Base_Column_List" />
+    from review_step where 1=1
+    <if test="level != null" >
+      and level = #{level}
+    </if>
+    <if test="applyType != null" >
+      and apply_type = #{applyType}
+    </if>
+    <if test="marketId != null" >
+      and market_id = #{marketId}
+    </if>
+  </select>
+
 </mapper>

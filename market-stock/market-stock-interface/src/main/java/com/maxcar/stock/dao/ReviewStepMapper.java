@@ -66,4 +66,6 @@ public interface ReviewStepMapper {
     Integer selectCarReview(Integer reviewId);
 
     int selectLastStep(ReviewStep review);
+
+    List<ReviewStep> selectStepListBySomeParams(ReviewStep reviewStep);
 }

@@ -48,7 +48,9 @@ public class ReviewListServiceImpl implements ReviewListService {
             hisWarning.setTenantName(userTenant.getTenantName());
             if (userTenant != null) {
                CarRecord carRecord = carRecordMapper.selectPlayingTime(hisWarning.getRfid(),hisWarning.getVin());
-                hisWarning.setInsertTime(carRecord.getInsertTime());
+                if (carRecord != null){
+                    hisWarning.setInsertTime(carRecord.getInsertTime());
+                }
             }
         }
         PageInfo pageInfo = new PageInfo(list);

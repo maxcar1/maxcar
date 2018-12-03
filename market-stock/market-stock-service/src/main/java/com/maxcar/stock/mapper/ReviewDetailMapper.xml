@@ -264,4 +264,11 @@
   <select id="selReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
     select * from review_detail where review_id = #{reviewId} and level = #{level} and review_result = 1
   </select>
+  <select id="reviewDetail" parameterType="java.lang.Integer" resultType="com.maxcar.stock.pojo.ReviewDetail">
+    select review_desc as reviewDesc,date_format(insert_time, '%Y-%m-%d %H:%i:%s') AS insertTime
+     from review_detail
+    where review_id = #{reviewId}
+    ORDER BY insert_time desc
+    LIMIT 1
+  </select>
 </mapper>
