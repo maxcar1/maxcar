@@ -388,7 +388,7 @@ and is_valid=1
     select count(1) from flow_step where market_id = #{marketId} and code = #{code}
   </select>
   <select id="selectReviewManageByReviewStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="FlowStepResultMap">
-    select * from flow_step where market_id = #{marketId} and code = #{applyType}
+    select * from flow_step where is_valid = 1 and market_id = #{marketId} and code = #{applyType}
 
   </select>
   <insert id="insertCarReview" parameterType="com.maxcar.stock.pojo.CarReview">
