@@ -237,12 +237,12 @@ public class ReviewStepManageController extends BaseController {
         int flag = 0;
         try {
 
-        flowStep.setCode(json.getInt("code"));
-        flowStep.setMarketId(json.getString("marketId"));
-        flowStep.setReviewType(json.getInt("reviewType"));
-        flowStep.setIsNeedReview(json.getInt("isNeedReview"));
-        reviewStepService.updateFlowStep(flowStep);
-        reviewStepService.deleteReviewStep(flowStep);
+            flowStep.setCode(json.getInt("code"));
+            flowStep.setMarketId(json.getString("marketId"));
+            flowStep.setReviewType(json.getInt("reviewType"));
+            flowStep.setIsNeedReview(json.getInt("isNeedReview"));
+            flag = reviewStepService.updateFlowStep(flowStep);
+            reviewStepService.deleteReviewStep(flowStep);
             String jsonStr = json.getString("tableData");
             logger.info("========"+jsonStr);
             JSONArray jsonArray = JSONArray.parseArray(jsonStr);
