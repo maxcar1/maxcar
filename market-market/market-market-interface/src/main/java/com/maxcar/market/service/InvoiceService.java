@@ -31,4 +31,5 @@ public interface InvoiceService extends BaseService<Invoice, String> {
     List<InvoicePerson> getInvoicePerson(String idCard, String marketId);
 
 
+    List<Invoice> detailsManage(Invoice invoice);
 }
