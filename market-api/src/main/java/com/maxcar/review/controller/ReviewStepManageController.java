@@ -118,7 +118,12 @@ public class ReviewStepManageController extends BaseController {
     @RequestMapping(value = "/deleteReviewManage", method = RequestMethod.GET)
     public InterfaceResult deleteReviewManage(String id) {
         InterfaceResult result = new InterfaceResult();
-        int flag = reviewStepService.deleteReviewManage(id);
+        FlowStep flowStep = reviewStepService.selectFlowStepByPrimarykey(id);
+        int flag = 0;
+        if (flowStep != null){
+            reviewStepService.deleteReviewStep(flowStep);
+            flag = reviewStepService.deleteReviewManage(id);
+        }
         if(flag>0){
             result.setCode("200");
         }else{

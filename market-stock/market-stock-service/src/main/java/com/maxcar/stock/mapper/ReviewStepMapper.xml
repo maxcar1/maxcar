@@ -376,10 +376,10 @@ and is_valid=1
 
   </insert>
 
-  <update id="deleteReviewManage" parameterType="String" >
-    update flow_step set is_valid = 0 where id = #{id}
+  <delete id="deleteReviewManage" parameterType="String" >
+    delete from flow_step  where id = #{id}
+  </delete>
 
-  </update>
   <update id="updateFlowStep" parameterType="com.maxcar.stock.pojo.FlowStep" >
     update flow_step set is_need_review = #{isNeedReview} , review_type =#{reviewType} where code = #{code} and market_id = #{marketId}
 
@@ -410,6 +410,19 @@ and is_valid=1
   </select>
   <select id="selectLastStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="java.lang.Integer">
     select level from review_step where apply_type = #{applyType} and market_id = #{marketId} group by level desc limit 1
+  </select>
+
+    <select id="selectFlowStepByPrimarykey" parameterType="java.lang.String" resultType="com.maxcar.stock.pojo.FlowStep">
+    select
+    id,
+    flow_name as flowName,
+    is_need_review as isNeedReview,
+    market_id as marketId,
+    review_type as reviewType,
+    code,
+    insert_time as insertTime,
+    is_valid as isValid
+    from flow_step where id = #{id}
   </select>
 
   <select id="selectStepListBySomeParams" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewStep">

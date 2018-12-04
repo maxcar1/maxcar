@@ -68,4 +68,6 @@ public interface ReviewStepMapper {
     int selectLastStep(ReviewStep review);
 
     List<ReviewStep> selectStepListBySomeParams(ReviewStep reviewStep);
+
+    FlowStep selectFlowStepByPrimarykey(String id);
 }

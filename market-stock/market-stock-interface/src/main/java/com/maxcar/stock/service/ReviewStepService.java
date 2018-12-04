@@ -48,4 +48,6 @@ public interface ReviewStepService {
     int selectLastStep(ReviewStep reviewStep);
 
     List<ReviewStep> selectStepListBySomeParams(ReviewStep reviewStep);
+
+    FlowStep selectFlowStepByPrimarykey(String id);
 }

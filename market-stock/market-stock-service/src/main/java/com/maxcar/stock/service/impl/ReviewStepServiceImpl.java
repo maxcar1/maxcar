@@ -118,6 +118,11 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
     }
 
     @Override
+    public FlowStep selectFlowStepByPrimarykey(String id) {
+        return reviewStepMapper.selectFlowStepByPrimarykey(id);
+    }
+
+    @Override
     public List<ReviewStep> getReviewStep(ReviewStep reviewStep) {
         ReviewStepExample example = new ReviewStepExample();
         example.createCriteria().andApplyTypeEqualTo(1).andMarketIdEqualTo(reviewStep.getMarketId());
