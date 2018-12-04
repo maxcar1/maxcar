@@ -91,8 +91,8 @@ public class AuditingController extends BaseController {
                 map.put("car",carDetails);
             }
             if(carDetails.getTenant() != null){
-                CarDataStatistics carDataStatistics = carService.getCarDataStatistics(carDetails.getTenant());
-                CarDataStatistics dataStatistics = carService.carData(carDetails.getTenant());
+                CarDataStatistics carDataStatistics = carService.getCarDataStatistics(carDetails.getTenant(),user.getMarketId());
+                CarDataStatistics dataStatistics = carService.carData(carDetails.getTenant(),user.getMarketId());
                 CarDataStatistics statistics = new CarDataStatistics();
                 statistics.setInventoryTotal(carDataStatistics.getInventoryTotal());//库存总数
                 statistics.setInventoryValuation(carDataStatistics.getInventoryValuation());//库存估价
@@ -156,6 +156,8 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "商户库存车信息列表")
     public InterfaceResult getcarList(@RequestBody CarVo carVo,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        User user = getCurrentUser(request);
+        carVo.setMarketId(user.getMarketId());
         PageInfo pageInfo = carService.listCarVo(carVo);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;

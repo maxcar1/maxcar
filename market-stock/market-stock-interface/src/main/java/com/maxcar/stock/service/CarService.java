@@ -228,9 +228,9 @@ public interface CarService extends BaseService<Car, String> {
      * @param tenantId
      * @return
      */
-    CarDataStatistics getCarDataStatistics(String tenantId);
+    CarDataStatistics getCarDataStatistics(String tenantId,String marketId);
 
-    CarDataStatistics carData(String tenantId);
+    CarDataStatistics carData(String tenantId,String marketId);
 
     /**
      * 出售管理列表

@@ -141,9 +141,9 @@ public interface CarMapper extends BaseDao<Car, String> {
      * @param tenantId
      * @return
      */
-    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId);
+    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
 
-    CarDataStatistics carData(@Param("tenantId") String tenantId);
+    CarDataStatistics carData(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
 
     /**
      * 出售管理列表

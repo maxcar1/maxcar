@@ -1049,13 +1049,13 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     }
 
     @Override
-    public CarDataStatistics getCarDataStatistics(String tenantId) {
-        return carMapper.getCarDataStatistics(tenantId);
+    public CarDataStatistics getCarDataStatistics(String tenantId,String marketId) {
+        return carMapper.getCarDataStatistics(tenantId,marketId);
     }
 
     @Override
-    public CarDataStatistics carData(String tenantId) {
-        return carMapper.carData(tenantId);
+    public CarDataStatistics carData(String tenantId,String marketId) {
+        return carMapper.carData(tenantId,marketId);
     }
 
     /**
