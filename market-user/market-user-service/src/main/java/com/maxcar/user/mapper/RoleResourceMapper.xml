@@ -244,7 +244,7 @@
     <if test="level !=null">
       and resource_Level=#{level,jdbcType=VARCHAR}
     </if>
-  ) aaa
+  ) aaa ORDER BY ind ,resourceLevel asc
   <!--select resource_id as resourceId,resource_name as resourceName,resource_url as resourceUrl-->
     <!--,parent_id as parentId,ind,resource_Level as resourceLevel-->
     <!--,true as checked  from resource rr-->
