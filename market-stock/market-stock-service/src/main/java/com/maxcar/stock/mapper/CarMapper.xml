@@ -1715,6 +1715,7 @@
         LEFT JOIN car_base cb
         ON c.id = cb.id
         WHERE c.isvalid =1 AND c.car_type =1
+        and c.stock_status in (1, 2, 3)
         <if test="tenantId != null and tenantId != '' ">
             and c.tenant = #{tenantId}
         </if>
