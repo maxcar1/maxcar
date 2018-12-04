@@ -7,6 +7,8 @@ import com.maxcar.market.model.response.DealResponse;
 import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.pojo.InvoiceExample;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     /**
      * 查询交易列表
      * shenzhongzong
+     *
      * @param deal
      * @return
      */
@@ -58,6 +61,7 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     /**
      * 市场总交易量
      * shenzhongzong
+     *
      * @return
      */
     int countDealNum(DealRequest deal);
@@ -65,24 +69,31 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     /**
      * 交易总价值
      * shenzhongzong
+     *
      * @return
      */
     Double sumDealMoney(DealRequest deal);
+
     /**
      * 库存车交易量
      * shenzhongzong
+     *
      * @return
      */
     int countStockCarNum(DealRequest deal);
+
     /**
      * 库存车交易总价值
      * shenzhongzong
+     *
      * @return
      */
     Double sumStockCarMoney(DealRequest deal);
+
     /**
      * 查询交易列表  总数
      * shenzhongzong
+     *
      * @param deal
      * @return
      */
@@ -111,4 +122,8 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     List<String> getContactName(String marketId);
 
     Double countByCarSources(DealRequest deal);
+
+    Map<String, Object> nowDeal(@Param("marketId") String marketId, @Param("tenantId") String tenantId, @Param("dayStart") Date dayStart, @Param("dayEnd") Date dayEnd);
+
+    Map<String,Object> nowCommercialDeal(@Param("marketId") String marketId, @Param("tenantId") String tenantId, @Param("dayStart") Date dayStart, @Param("dayEnd") Date dayEnd);
 }

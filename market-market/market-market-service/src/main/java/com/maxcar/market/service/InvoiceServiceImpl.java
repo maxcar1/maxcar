@@ -20,6 +20,8 @@ import com.maxcar.tenant.pojo.UserTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +145,38 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     @Override
     public List<InvoicePerson> getInvoicePerson(String idCard, String marketId) {
         return invoiceMapper.selectByIdCard(idCard, marketId);
+    }
+
+    @Override
+    public Map nowDeal(String marketId, String tenantId) throws ParseException {
+        Date dayStart = DateUtils.getDayStart(new Date());
+        Date dayEnd = DateUtils.getDayEnd(new Date());
+        Map<String,Object> map = invoiceMapper.nowDeal(marketId,tenantId,dayStart,dayEnd);
+        Map<String,Object> stockMap = invoiceMapper.nowCommercialDeal(marketId,tenantId,dayStart,dayEnd);
+        Object stockSum = stockMap.get("stockSum");
+        if(stockSum != null){
+            String s = stockSum.toString();
+            map.put("stockSum",s);
+        }
+        Object stockAvg = stockMap.get("stockAvg");
+        if(stockAvg != null){
+            String s = stockAvg.toString();
+            map.put("stockAvg",s);
+        }
+
+        Object stockCount = stockMap.get("stockCount");
+        if(stockCount != null){
+            String s = stockCount.toString();
+            map.put("stockCount",s);
+        }
+
+        String yesterday = DateUtils.getYesterday();
+        Date date = DateUtils.parseDate(yesterday, DateUtils.DATE_FORMAT_DATETIME);
+        dayStart = DateUtils.getDayStart(date);
+        dayEnd = DateUtils.getDayEnd(date);
+        Map<String,Object> yesterMap = invoiceMapper.nowDeal(marketId,tenantId,dayStart,dayEnd);
+        Map<String,Object> yesterStockMap = invoiceMapper.nowCommercialDeal(marketId,tenantId,dayStart,dayEnd);
+        return null;
     }
 
 //    @Override

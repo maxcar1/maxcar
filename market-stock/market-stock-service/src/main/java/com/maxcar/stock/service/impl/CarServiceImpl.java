@@ -989,5 +989,37 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return carMapper.getStockCarByVin(vin);
     }
 
+    @Override
+    public Map<String, Object> nowRanking(String marketId, String tenantId) {
+        Map<String , Object> map = carMapper.nowRanking(marketId,tenantId);
+
+        CarExample example = new CarExample();
+        CarExample.Criteria criteria = example.createCriteria();
+        if(StringUtil.isNotEmpty(marketId)){
+            criteria.andMarketIdEqualTo(marketId);
+        }
+        if(StringUtil.isNotEmpty(tenantId)){
+            criteria.andTenantEqualTo(tenantId);
+        }
+        criteria.andStockStatusIn(new ArrayList<Integer>(){{add(1);add(2);}});
+        criteria.andCarTypeEqualTo(1).andIsvalidEqualTo(1);
+
+        int inMarketCarCount = carMapper.countByExample(example);
+        map.put("inMarketCarCount",inMarketCarCount);
+
+        Integer count = Integer.parseInt(map.get("count").toString());
+        int outMarketCarNum = count - inMarketCarCount;
+        map.put("outMarketCarNum",outMarketCarNum);
+
+        Object o = map.get("stockPrice");
+        double stockPrice = 0.0;
+        if(o != null){
+            stockPrice = Double.parseDouble(o.toString()) / 10000.0;
+        }
+        map.put("stockPrice" , stockPrice);
+
+        return map;
+    }
+
 
 }
