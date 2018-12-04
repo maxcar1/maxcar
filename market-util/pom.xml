@@ -680,7 +680,7 @@
 				<!--开发环境端口配置-->
 				<spring.profiles.active>test</spring.profiles.active>
 				<!-- dubbo 123-->
-				<dubbo.registry.address>zookeeper://192.168.3.60:3001</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://localhost:3001</dubbo.registry.address>
 				<!-- datasource通用-->
 				<system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
 				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
