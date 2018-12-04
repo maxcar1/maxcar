@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.base.util.dasouche.Result;
+import com.maxcar.stock.entity.CarChecks;
 import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
@@ -241,4 +242,10 @@ public interface CarService extends BaseService<Car, String> {
     InterfaceResult sellCarAndDownTaoBao(CarSellVo carSellVo);
 
     List<SellCarListExportVo> exportAllSellCarList(CarVo carVo);
+
+    List<Car> carByVin(CarChecks c);
+
+    Car carInformation(Car car);
+
+    InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest inventoryStatisticalRequest);
 }
