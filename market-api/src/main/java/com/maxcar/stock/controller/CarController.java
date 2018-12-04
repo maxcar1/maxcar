@@ -139,7 +139,7 @@ public class CarController extends BaseController {
             inventoryStatisticalRequest.setMarketId(user.getMarketId());
             inventoryStatisticalRequest.setTenantId(carVo.getTenant());
             String registerTimeStart = carVo.getRegisterTimeStart();
-            if(StringUtil.isNotEmpty(registerTimeStart)){
+            if (StringUtil.isNotEmpty(registerTimeStart)) {
                 inventoryStatisticalRequest.setRegisterTimeStart(registerTimeStart);
                 String registerTimeEnd = carVo.getRegisterTimeEnd();
                 Date date = DateUtils.parseDate(registerTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
@@ -148,7 +148,7 @@ public class CarController extends BaseController {
                 inventoryStatisticalRequest.setRegisterTimeEnd(s);
             }
             Integer stockStatus = carVo.getStockStatus();
-            if(stockStatus != null && stockStatus != 0){
+            if (stockStatus != null && stockStatus != 0) {
                 inventoryStatisticalRequest.setStockStatus(stockStatus);
             }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
@@ -199,7 +199,7 @@ public class CarController extends BaseController {
 
             ExportResponse response = new ExportResponse();
 
-           // response.setCarNo(x.getCarNo());
+            // response.setCarNo(x.getCarNo());
             response.setVin(x.getVin());
             UserTenant tenant = userTenantService.selectByPrimaryKey(x.getTenant());
             if (null != tenant) {
@@ -211,15 +211,40 @@ public class CarController extends BaseController {
             if (null == x.getIsNewCar()) {
                 response.setIsNewCar(Magic.NUll);
             } else {
-                String isNewCar = configurationService.getNameByKeyAndValue("is_new_car", x.getIsNewCar().toString());
-                response.setIsNewCar(null == isNewCar ? Magic.NUll : isNewCar);
+              /*  String isNewCar = configurationService.getNameByKeyAndValue("is_new_car", x.getIsNewCar().toString());
+                response.setIsNewCar(null == isNewCar ? Magic.NUll : isNewCar);*/
+
+                if (0 == x.getIsNewCar()) {
+                    response.setIsNewCar("新车");
+                } else if (1 == x.getIsNewCar()) {
+                    response.setIsNewCar("旧车");
+                } else {
+                    response.setIsNewCar(Magic.NUll);
+                }
+
             }
 
             if (null == x.getStockStatus()) {
                 response.setStockStatus(Magic.NUll);
             } else {
-                String stockStatus = configurationService.getNameByKeyAndValue("stock_status", x.getStockStatus().toString());
-                response.setStockStatus(null == stockStatus ? Magic.NUll : stockStatus);
+                /*String stockStatus = configurationService.getNameByKeyAndValue("stock_status", x.getStockStatus().toString());
+                response.setStockStatus(null == stockStatus ? Magic.NUll : stockStatus);*/
+                if (-1 == x.getStockStatus()) {
+                    response.setStockStatus("删除");
+                } else if (1 == x.getStockStatus()) {
+                    response.setStockStatus("在场");
+                } else if (2 == x.getStockStatus()) {
+                    response.setStockStatus("在内场");
+                } else if (3 == x.getStockStatus()) {
+                    response.setStockStatus("出场");
+                } else if (4 == x.getStockStatus()) {
+                    response.setStockStatus("售出未出场");
+                } else if (5 == x.getStockStatus()) {
+                    response.setStockStatus("售出已出场");
+                } else {
+                    response.setStockStatus(Magic.NUll);
+                }
+
             }
 
             if (null == x.getRegisterTime()) {
@@ -230,13 +255,20 @@ public class CarController extends BaseController {
                 response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
-            response.setStockDay(x.getStockDays()+"");
+            response.setStockDay(x.getStockDays() + "");
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);
             } else {
-                String carStatus = configurationService.getNameByKeyAndValue("car_status", x.getCarStatus().toString());
-                response.setCarStatus(null == carStatus ? Magic.NUll : carStatus);
+               /* String carStatus = configurationService.getNameByKeyAndValue("car_status", x.getCarStatus().toString());
+                response.setCarStatus(null == carStatus ? Magic.NUll : carStatus);*/
+                if (1 == x.getCarStatus()) {
+                    response.setCarStatus("质押");
+                } else if (2 == x.getCarStatus()) {
+                    response.setCarStatus("非质押");
+                } else {
+                    response.setCarStatus(Magic.NUll);
+                }
             }
 
             if (null == x.getAreaId()) {
@@ -250,7 +282,7 @@ public class CarController extends BaseController {
                 }
             }
 
-            response.setInitialLicenceTime(x.getInitialLicenceTime()!=null?x.getInitialLicenceTime().substring(0,10):"");
+            response.setInitialLicenceTime(x.getInitialLicenceTime() != null ? x.getInitialLicenceTime().substring(0, 10) : "");
             response.setMileage(x.getMileage());
             response.setMarketPrice(x.getMarketPrice());
             response.setEvaluatePrice(x.getEvaluatePrice());

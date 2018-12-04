@@ -271,13 +271,13 @@ public class PropertyContractPayServiceImpl extends BaseServiceImpl<PropertyCont
                     } else if (Magic.CONTRACT_CATEGORY_OFFICE.equals(contractDetail.getContractCategory())) {
                         x.setOfficeNos(contractDetail.getAreaName());
                         x.setOfficeTotal(contractDetail.getAreaTotal());
-                    } else if(Magic.CONTRACT_CATEGORY_WAREHOUSE.equals(contractDetail.getContractCategory())){
+                    } else if (Magic.CONTRACT_CATEGORY_WAREHOUSE.equals(contractDetail.getContractCategory())) {
                         x.setWarehouseNos(contractDetail.getAreaName());
                         x.setWarehouseTotal(contractDetail.getAreaTotal());
-                    }else if (Magic.CONTRACT_CATEGORY_TEMPORARY_CAR_SPACE.equals(contractDetail.getContractCategory())){
+                    } else if (Magic.CONTRACT_CATEGORY_TEMPORARY_CAR_SPACE.equals(contractDetail.getContractCategory())) {
                         x.setTemporaryCarSpaceNos(contractDetail.getAreaName());
                         x.setTemporaryCarSpaceTotal(contractDetail.getAreaTotal());
-                    }else if (Magic.CONTRACT_CATEGORY_OTHER.equals(contractDetail.getContractCategory())){
+                    } else if (Magic.CONTRACT_CATEGORY_OTHER.equals(contractDetail.getContractCategory())) {
                         x.setOtherNos(contractDetail.getAreaName());
                         x.setOtherTotal(contractDetail.getAreaTotal());
                     }
@@ -426,6 +426,10 @@ public class PropertyContractPayServiceImpl extends BaseServiceImpl<PropertyCont
         beforeTime = LocalDate.of(cal.get(Calendar.YEAR), (cal.get(Calendar.MONTH) + 1), cal.get(Calendar.DATE));
         afterTime = today;
 
+        if (beforeTime.isAfter(afterTime)) {
+            return;
+        }
+
         // 按 付费方式查看 今天是否需要生成缴费记录
         if (Magic.CONTRACT_DETAIL_TYPE_MONTH.equals(propertyContractDetail.getType())) {
             // 月付 查看上次缴费日期距离今天是否 大于等于一个月
@@ -451,7 +455,7 @@ public class PropertyContractPayServiceImpl extends BaseServiceImpl<PropertyCont
     public boolean add(int x, LocalDate beforeTime, LocalDate afterTime, Calendar cal, PropertyContractDetail propertyContractDetail,
                        PropertyContractPay updatePropertyContractPay, Double payPrice) {
         // 查看上次缴费日期距离合同到期是否 大于等于x个月
-        System.out.println(ToolUtils.getMonth(beforeTime, afterTime));
+        //System.out.println(ToolUtils.getMonth(beforeTime, afterTime));
         if (ToolUtils.getMonth(beforeTime, afterTime) >= x) {
             // 大于一个月 生成补缴记录
             for (int i = 1; i <= ToolUtils.getMonth(beforeTime, afterTime) / x; i++) {
