@@ -238,26 +238,25 @@ public class IndexController extends BaseController{
     /**
      * 获取营业执照接口
      * @param org 机构id
-     * @param id
-     * @param seqId
      * @param request
      * @return
      * @throws Exception
      */
-    @RequestMapping(value={"/business/licence/{province}/{org}/{id}/{seqId}"})
-    public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,@PathVariable("id")String id,@PathVariable("seqId")String seqId,HttpServletRequest request)throws Exception {
+    @RequestMapping(value={"/business/licence/{province}/{org}"})
+    public InterfaceResult businessLicence(@PathVariable("province")String province,@PathVariable("org")String org,HttpServletRequest request)throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        interfaceResult = ssoService.getStringKey(org);
         if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
             interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
             return interfaceResult;
         }
         switch (province){
             case "jiangsu"://江苏省
-                JiangsuLicence.start(org,id,seqId);
+                JiangsuLicence jiangsuLicence = new JiangsuLicence();
+                jiangsuLicence.start(org);
                 break;
         }
-        interfaceResult = ssoService.getStringKey(org+"="+id+"="+seqId);
+        interfaceResult = ssoService.getStringKey(org);
         if(interfaceResult.getCode().equals("200")) {//缓存有直接拿走
             interfaceResult.setData(JsonTools.jsonToMap(interfaceResult.getData()+""));
         }

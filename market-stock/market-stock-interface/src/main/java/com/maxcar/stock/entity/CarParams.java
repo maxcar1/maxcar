@@ -367,10 +367,6 @@ public class CarParams extends PageBean implements Serializable {
         this.status = status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getColor() {
         return color;
     }

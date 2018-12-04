@@ -27,6 +27,7 @@ import com.maxcar.market.service.InvoiceService;
 import com.maxcar.stock.dao.CarBaseMapper;
 import com.maxcar.stock.dao.CarMapper;
 import com.maxcar.stock.dao.CarPicMapper;
+import com.maxcar.stock.entity.CarChecks;
 import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
@@ -464,7 +465,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         } else {
             car.setInitialLicenceTime(null);
         }
-        car.setStockStatus(1);
+        car.setStockStatus(carParams.getStatus() == null ? 1:carParams.getStatus());
         car.setCarStatus(carParams.getCarStatus());
         car.setLimitStatus(1);
         car.setRemark(carParams.getRemark());
@@ -498,7 +499,8 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         car.setBrandName(carParams.getBrandName());
         car.setModelCode(carParams.getModelCode());
         car.setModelName(carParams.getModelName());
-        car.setAccidentType(carParams.getAccidentType());
+        car.setAccidentType(carParams.getAccidentType());//
+        car.setRemark(carParams.getRemark());//备注
 //		car.setModelYear(carParams.);无
         if (carParams.getInitialLicenceTimeStr() != null && !carParams.getInitialLicenceTimeStr().equals("")) {
             car.setInitialLicenceTime(DateUtils.parseDate(carParams.getInitialLicenceTimeStr(), "yyyy-MM-dd hh:mm:ss"));
@@ -1148,6 +1150,29 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Car> carByVin(CarChecks c) {
+        CarExample example = new CarExample();
+        CarExample.Criteria criteria = example.createCriteria();
+        criteria.andMarketIdEqualTo(c.getMarket()).andVinEqualTo(c.getVin()).andIsvalidEqualTo(1).andStockStatusEqualTo(6).andCarTypeEqualTo(1);
+        List<Car> list = carMapper.selectByExample(example);
+        return list;
+    }
+
+    @Override
+    public Car carInformation(Car car) {
+        return carMapper.carInformation(car);
+    }
+    @Override
+    public InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response) {
+        if (null == response) {
+            return null;
+        }
+        InventoryStatisticalResponse inventoryStatisticalResponse = carMapper.accumulativeCar(response);
+
+        return inventoryStatisticalResponse;
     }
 
 

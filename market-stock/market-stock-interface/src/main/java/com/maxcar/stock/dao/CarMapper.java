@@ -158,4 +158,8 @@ public interface CarMapper extends BaseDao<Car, String> {
      * @return
      */
     List<SellCarListExportVo> exportAllSellCarList(CarVo carVo);
+
+    Car carInformation(Car car);
+
+    InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response);
 }

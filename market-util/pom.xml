@@ -664,8 +664,9 @@
 				<mqtt.server.password></mqtt.server.password>
 
 				<!--App支付-->
-				<alipay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/alipay</alipay.app.notify.url>
-				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/wx-pay</wx.pay.app.notify.url>
+				<alipay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/alipay</alipay.app.notify.url>
+				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/wx-pay</wx.pay.app.notify.url>
+				<system.environment>dev</system.environment>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>true</activeByDefault>
@@ -679,7 +680,7 @@
 				<!--开发环境端口配置-->
 				<spring.profiles.active>test</spring.profiles.active>
 				<!-- dubbo 123-->
-				<dubbo.registry.address>zookeeper://192.168.3.60:3001</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://localhost:3001</dubbo.registry.address>
 				<!-- datasource通用-->
 				<system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
 				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -850,8 +851,9 @@
 				<mqtt.server.password></mqtt.server.password>
 
 				<!--App支付-->
-				<alipay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/alipay</alipay.app.notify.url>
-				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/wx-pay</wx.pay.app.notify.url>
+				<alipay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/alipay</alipay.app.notify.url>
+				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/wx-pay</wx.pay.app.notify.url>
+				<system.environment>test</system.environment>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>false</activeByDefault>
@@ -1039,6 +1041,7 @@
 				<!--App支付-->
 				<alipay.app.notify.url>http://app.maxcar.com.cn/api/notify/alipay</alipay.app.notify.url>
 				<wx.pay.app.notify.url>http://app.maxcar.com.cn/api/notify/wx-pay</wx.pay.app.notify.url>
+				<system.environment>pro</system.environment>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>false</activeByDefault>

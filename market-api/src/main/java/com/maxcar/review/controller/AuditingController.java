@@ -315,7 +315,7 @@ public class AuditingController extends BaseController {
                 logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
                 List list = new ArrayList();
                 for (ReviewStep review:reviewStepList) {
-                    Map user = userService.getUserOrgByReview(review);
+                    Map user = userService.getUserOrgByReview(review.getReviewPersonId(), review.getOrgId());
                     review.setReviewId(reviewId);
                     Integer reviewResult = reviewStepService.getReviewResult(review);
                     user.put("result",reviewResult);

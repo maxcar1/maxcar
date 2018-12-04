@@ -459,8 +459,8 @@
     org .market_id = #{marketId}
 
   </select>
-  <select id="getUserOrgByReview" resultType="java.util.Map" parameterType="com.maxcar.stock.pojo.ReviewStep">
-    SELECT
+  <select id="getUserOrgByReview" resultType="java.util.Map">
+  SELECT
 	us.user_id,
 	us.true_name,
 	org.org_id,

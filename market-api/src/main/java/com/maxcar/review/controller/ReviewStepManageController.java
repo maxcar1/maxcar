@@ -49,7 +49,7 @@ public class ReviewStepManageController extends BaseController {
                 logger.info("reviewStepListLevel==================="+reviewStepListLevel.size());
                 List list = new ArrayList();
                 for (ReviewStep review:reviewStepList) {
-                    Map user = userService.getUserOrgByReview(review);
+                    Map user = userService.getUserOrgByReview(review.getReviewPersonId(), review.getOrgId());
                     apply += user.get("true_name")+"("+user.get("org_name")+") ";
                     list.add(user);
                 }
@@ -288,7 +288,7 @@ public class ReviewStepManageController extends BaseController {
         try{
             List<ReviewStep> reviewStepList  = reviewStepService.selectStepList(reviewStep);
             for (ReviewStep review:reviewStepList ) {
-                Map list = userService.getUserOrgByReview(review);
+                Map list = userService.getUserOrgByReview(review.getReviewPersonId(), review.getOrgId());
                 //review.setUserOrg(list);
             }
             result.setData(reviewStepList);
