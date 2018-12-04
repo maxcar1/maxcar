@@ -2,12 +2,9 @@ package com.maxcar.user.service;
 
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
-import com.maxcar.stock.pojo.ReviewStep;
-import com.maxcar.user.entity.LoginLog;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.vo.ChangeUser;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +89,7 @@ public interface UserService extends BaseService<User,String> {
 
     List<Map> getUserAndOrgByMarketId(String marketId);
 
-    Map getUserOrgByReview(ReviewStep review);
+    Map getUserOrgByReview(String reviewPersonId, String orgId);
 
     /*getUser(User user)throws Exception;*/
 }
