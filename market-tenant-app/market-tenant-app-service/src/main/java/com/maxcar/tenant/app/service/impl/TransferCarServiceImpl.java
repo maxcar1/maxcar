@@ -476,7 +476,12 @@ public class TransferCarServiceImpl implements TransferCarService {
 
     Map<String, String> replaceVarsFinish(String template, JSONArray varNames, String transferCarId) throws Exception {
 
+        Map<String, String> map = new HashMap<>(2);
         TransferCar transferCar = getTransferCarById(transferCarId);
+        if (transferCar == null) {
+            map.put("html", "");
+            return map;
+        }
         AddDealInfo addDealInfo = addDealInfoMapper.selectByPrimaryKey(transferCar.getAddDealInfo());
         BuySellInfo buySellInfo = buySellInfoMapper.selectByPrimaryKey(transferCar.getByeSellInfo());
         Map<String, String> vars = new HashMap<>();
@@ -493,7 +498,6 @@ public class TransferCarServiceImpl implements TransferCarService {
         }
         vars.put("date", DateUtils.today());
 
-        Map<String, String> map = new HashMap<>(2);
         map.put("html", HtmlTemplateUtil.replaceVar(template, vars));
         return map;
     }

@@ -13,6 +13,8 @@
         <module>market-statistics-service</module>
     </modules>
 
+
+    
     <!--仓库地址-->
     <repositories>
         <repository>
