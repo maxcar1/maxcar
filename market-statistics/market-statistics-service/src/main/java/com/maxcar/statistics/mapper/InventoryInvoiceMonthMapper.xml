@@ -318,8 +318,8 @@
         <if test="tenantId != null and tenantId != '' ">
             AND tenant_id = #{tenantId}
         </if>
-        <if test="tenantTimeStart != null and tenantTimeStart != '' ">
-            AND bill_time BETWEEN #{tenantTimeStart} and #{tenantTimeEnd}
+        <if test="timeStart != null and timeStart != '' ">
+            AND bill_time BETWEEN #{timeStart} and #{timeEnd}
         </if>
         ) aa
     </select>
@@ -421,6 +421,39 @@
         </if>
         <if test="timeStart != null and timeStart != '' ">
             AND report_time BETWEEN  #{timeStart} and #{timeEnd}
+        </if>
+        <if test="carNumType == 0">
+            AND stock_count &lt; 5
+        </if>
+        <if test="carNumType == 1">
+            AND 4 &lt; stock_count and stock_count &lt; 10
+        </if>
+        <if test="carNumType == 2">
+            AND 9 &lt; stock_count and stock_count &lt; 15
+        </if>
+        <if test="carNumType == 3">
+            AND 14 &lt; stock_count and stock_count &lt; 20
+        </if>
+        <if test="carNumType == 4">
+            AND 19 &lt; stock_count and stock_count &lt; 25
+        </if>
+        <if test="carNumType == 5">
+            AND 24 &lt; stock_count and stock_count &lt; 30
+        </if>
+        <if test="carNumType == 6">
+            AND 29 &lt; stock_count and stock_count &lt; 35
+        </if>
+        <if test="carNumType == 7">
+            AND 24 &lt; stock_count and stock_count &lt; 40
+        </if>
+        <if test="carNumType == 8">
+            AND 39 &lt; stock_count and stock_count &lt; 45
+        </if>
+        <if test="carNumType == 9">
+            AND 44 &lt; stock_count and stock_count &lt; 50
+        </if>
+        <if test="carNumType == 10">
+            AND 49 &lt; stock_count and stock_count &lt; 55
         </if>
         GROUP BY report_time
         ORDER BY report_time

@@ -30,10 +30,6 @@ public class TradingRequest implements Serializable {
     private String selectFrom;
     //   分组条件
     private String groupByColumns;
-    //  车商交易时间条件
-    private String tenantTimeStart;
-    //  车商交易结束时间条件
-    private String tenantTimeEnd;
     //  查询车辆数量状态值
     private Integer carNumType;
     // 车商交易量发展趋势 同比

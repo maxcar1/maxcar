@@ -20,10 +20,6 @@ public class StockRequest implements Serializable {
     //  时间范围结束
     @NotNull
     private String timeEnd;
-    //  时间范围精确到天 开始
-    private String timeStartDay;
-    //  时间范围精确到天的结束
-    private String timeEndDay;
     //  车辆数量区间 类型
     private String carNumType;
     //查询的月份

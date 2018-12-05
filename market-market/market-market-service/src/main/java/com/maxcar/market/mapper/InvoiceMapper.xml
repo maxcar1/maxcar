@@ -4392,8 +4392,8 @@ FROM
   <!-- 当前市场交易状况  车辆总交易总量  交易总价值  平均交易价格-->
   <select id="nowDeal"  parameterType="string" resultType="java.util.Map">
     SELECT
-    SUM(price) / 10000 AS `sum`,        --  总价值
-    AVG(price) AS `avg`,                      	--  平均交易价格
+    IFNULL(SUM(price),0) / 10000 AS `sum`,        --  总价值
+    IFNULL(AVG(price),0) AS `avg`,                      	--  平均交易价格
     COUNT(*) AS `count`	            	-- 车辆交易总量
     FROM
     maxcar_market_l.`invoice`
@@ -4409,10 +4409,10 @@ FROM
   </select>
 
   <!-- 当前市场商品车交易状况  车辆总交易总量  交易总价值  平均交易价格-->
-  <select id="nowDeal"  parameterType="string" resultType="java.util.Map">
+  <select id="nowCommercialDeal"  parameterType="string" resultType="java.util.Map">
     SELECT
-    SUM(price) / 10000 AS `stockSum`,        --  总价值
-    AVG(price) AS stockAvg,                      	--  平均交易价格
+    IFNULL(SUM(price),0) / 10000 AS `stockSum`,        --  总价值
+    IFNULL(AVG(price),0) AS stockAvg,                      	--  平均交易价格
     COUNT(*) AS `stockCount`	            	-- 车辆交易总量
     FROM
     maxcar_market_l.`invoice`

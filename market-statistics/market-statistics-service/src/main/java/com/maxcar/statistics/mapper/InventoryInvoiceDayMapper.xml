@@ -262,8 +262,8 @@
         <if test="marketId != null and marketId != '' ">
             AND market_id = #{marketId}
         </if>
-        <if test="tenantTimeStart != null and tenantTimeStart != '' ">
-            AND report_time BETWEEN #{tenantTimeStart} and #{tenantTimeEnd}
+        <if test="timeStart != null and timeStart != '' ">
+            AND report_time BETWEEN #{timeStart} and #{timeEnd}
         </if>
         <if test="tenantId != null and tenantId != '' ">
             AND tenant_id = #{tenantId}
@@ -523,8 +523,8 @@
         <if test="tenantId != null and tenantId != '' ">
             AND tenant_id = #{tenantId}
         </if>
-        <if test="timeStart != null and timeStart != '' ">
-            AND report_time =  #{timeStart}
+        <if test="timeEnd != null and timeEnd != '' ">
+            AND report_time =  #{timeEnd}
         </if>
         <if test="carNumType != null and carNumType != '' ">
         AND invoice_stock_id = #{carNumType}

@@ -120,6 +120,10 @@ public class StockController extends BaseController {
         getUserMarketId(stockRequest, request);
         InterfaceResult interfaceResult = new InterfaceResult();
 
+        String timeStart = stockRequest.getTimeStart();
+        String timeEnd = stockRequest.getTimeEnd();
+        stockRequest.setTimeStart(timeStart.substring(0,7));
+        stockRequest.setTimeEnd(timeEnd.substring(0,7));
         List<StockResponse> stockAvgDayCar = stockService.getStockAvgDayCar(stockRequest);
 
         interfaceResult.InterfaceResult200(stockAvgDayCar);
@@ -157,6 +161,11 @@ public class StockController extends BaseController {
     public InterfaceResult getTenantAvgStock(@RequestBody StockRequest stockRequest, HttpServletRequest request) throws Exception {
         getUserMarketId(stockRequest, request);
         InterfaceResult interfaceResult = new InterfaceResult();
+
+        String timeStart = stockRequest.getTimeStart();
+        String timeEnd = stockRequest.getTimeEnd();
+        stockRequest.setTimeStart(timeStart.substring(0,7));
+        stockRequest.setTimeEnd(timeEnd.substring(0,7));
 
         List<Map<String, Object>> tenantAvgStock = stockService.getTenantAvgStock(stockRequest);
 

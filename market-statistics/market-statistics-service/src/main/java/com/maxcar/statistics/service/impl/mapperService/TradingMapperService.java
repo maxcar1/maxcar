@@ -62,9 +62,9 @@ public class TradingMapperService {
         if (StringUtil.isNotEmpty(tradingRequest.getMarketId())) {
             selectForm += " and  i.market_id = #{marketId} ";
         }
-        if (StringUtil.isNotEmpty(tradingRequest.getTenantTimeStart())) {
-            selectForm += " AND i.bill_time BETWEEN  #{tenantTimeStart}  AND #{tenantTimeEnd} ";
-        }
+//        if (StringUtil.isNotEmpty(tradingRequest.getTenantTimeStart())) {
+//            selectForm += " AND i.bill_time BETWEEN  #{tenantTimeStart}  AND #{tenantTimeEnd} ";
+//        }
         selectForm += "  GROUP BY i.tenant_id)  aa  ";
         tradingRequest.setSelectFrom(selectForm);
 

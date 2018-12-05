@@ -145,11 +145,11 @@ public class TradingController extends BaseController {
 //        getUserMarketAndSetTime(tradingRequest, request);
         getUserMarketId(tradingRequest, request);
 
-        String tenantTimeEnd = tradingRequest.getTenantTimeEnd();
-        Date date = DateUtils.parseDate(tenantTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        String timeStart = tradingRequest.getTimeStart();
+        Date date = DateUtils.parseDate(timeStart, DateUtils.DATE_FORMAT_DATEONLY);
         Date dayEnd = DateUtils.getDayEnd(date);
-        tenantTimeEnd = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATEONLY);
-        tradingRequest.setTimeEnd(tenantTimeEnd);
+        timeStart = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        tradingRequest.setTimeEnd(timeStart);
 
         Map<String, Double> tenantCount = tradingService.getTenantCount(tradingRequest);
 
@@ -172,6 +172,10 @@ public class TradingController extends BaseController {
 //        getUserMarketAndSetTime(tradingRequest, request);
         getUserMarketId(tradingRequest, request);
 
+        String timeStart = tradingRequest.getTimeStart();
+        tradingRequest.setTimeStart(timeStart.substring(0,7));
+        String timeEnd = tradingRequest.getTimeEnd();
+        tradingRequest.setTimeEnd(timeEnd.substring(0,7));
         List<TradingResponse> tenantDeal = tradingService.getTenantDeal(tradingRequest);
 
         InterfaceResult interfaceResult = new InterfaceResult();
@@ -220,6 +224,12 @@ public class TradingController extends BaseController {
     @PostMapping("/trading/transactionLevel")
     public InterfaceResult transactionLevel(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
         getUserMarketId(tradingRequest, request);
+
+        String timeStart = tradingRequest.getTimeStart().substring(0, 7);
+        String timeEnd = tradingRequest.getTimeEnd().substring(0, 7);
+
+        tradingRequest.setTimeStart(timeStart);
+        tradingRequest.setTimeEnd(timeEnd);
 
         List<TradingResponse> carpriceDayEntities = tradingService.transactionLevel(tradingRequest);
 

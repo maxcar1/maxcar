@@ -204,8 +204,8 @@ WHERE isvalid = 1
     <if test="tenantId != null and tenantId != '' ">
       AND tenant_id = #{tenantId}
     </if>
-    <if test="tenantTimeStart != null and tenantTimeStart != '' ">
-      AND report_time BETWEEN #{tenantTimeStart} and #{tenantTimeEnd}
+    <if test="timeStart != null and timeStart != '' ">
+      AND report_time BETWEEN #{timeStart} and #{timeEnd}
     </if>
 GROUP BY invoice_price_id
   </select>

@@ -314,8 +314,12 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Map<String , Object>> getStockPriceTrend(StockRequest stockRequest) {
-        List<Map<String , Object>> mapList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
         Map<String , Object> nowMap = inventoryInvoiceDayMapper.getStockPriceTrend(stockRequest);
+        String timeStart = stockRequest.getTimeStart();
+        String timeEnd = stockRequest.getTimeEnd();
+        stockRequest.setTimeStart(timeStart.substring(0,7));
+        stockRequest.setTimeEnd(timeEnd.substring(0,7));
+        List<Map<String , Object>> mapList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
         String s = DateUtils.formatDate(new Date(), DateUtils.DATE_FORMAT_DATETIME);
         nowMap.put("reportTime" , s.substring(0,7));
         mapList.add(nowMap);

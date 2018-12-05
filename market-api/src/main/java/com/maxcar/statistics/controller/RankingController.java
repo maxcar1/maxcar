@@ -94,10 +94,9 @@ public class RankingController extends BaseController {
             marketId = currentUser.getMarketId();
         }
         InterfaceResult interfaceResult = new InterfaceResult();
-        Map map = invoiceService.nowDeal(marketId,tenantId);
+        Map<String , Object> map = invoiceService.nowDeal(marketId,tenantId);
 
-
-//        interfaceResult.InterfaceResult200(map);
+        interfaceResult.InterfaceResult200(map);
 
         return interfaceResult;
     }
