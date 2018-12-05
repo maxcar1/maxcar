@@ -225,8 +225,13 @@ public class ReviewStepManageController extends BaseController {
     public InterfaceResult deleteStep(@RequestBody  ReviewStep reviewStep) {
         InterfaceResult result = new InterfaceResult();
         int delFlag = 0;
-        try {
+        int currentLevel = reviewStep.getLevel();
+            int lastLevel = reviewStepService.selectLastStep(reviewStep);
             delFlag = reviewStepService.deleteByReview(reviewStep);
+            if(lastLevel>1){
+                reviewStep.setCurrentLevel(currentLevel);
+                reviewStepService.updateReviewStep(reviewStep);
+            }
             if(delFlag>0){
                 result.setCode("200");
                 result.setMsg("删除成功");
@@ -234,9 +239,7 @@ public class ReviewStepManageController extends BaseController {
                 result.setCode("600");
                 result.setMsg("删除失败");
             }
-        } catch (Exception e) {
 
-        }
         return result;
     }
 
@@ -255,27 +258,33 @@ public class ReviewStepManageController extends BaseController {
 
             flowStep.setCode(json.getInt("code"));
             flowStep.setMarketId(json.getString("marketId"));
-            flowStep.setReviewType(json.getInt("reviewType"));
             flowStep.setIsNeedReview(json.getInt("isNeedReview"));
-            flag = reviewStepService.updateFlowStep(flowStep);
-            reviewStepService.deleteReviewStep(flowStep);
-            String jsonStr = json.getString("tableData");
-            logger.info("========"+jsonStr);
-            JSONArray jsonArray = JSONArray.parseArray(jsonStr);
-            for (Iterator iterator = jsonArray.iterator(); iterator.hasNext();) {
-                ReviewStep  review= new ReviewStep();
-                JSONObject jsonObject = (JSONObject) iterator.next();
-                review.setStepName(jsonObject.getString("stepName"));
-                review.setMarketId(jsonObject.getString("marketId"));
-                review.setApplyType(jsonObject.getInteger("applyType"));
-                review.setType(jsonObject.getInteger("type"));
-                review.setLevel(jsonObject.getInteger("level"));
-                JSONArray jsonAr = JSONArray.parseArray(jsonObject.getString("userOrg"));
-                for (Iterator iter = jsonAr.iterator(); iter.hasNext();) {
-                    JSONObject jsonOb = (JSONObject) iter.next();
-                    review.setOrgld(jsonOb.get("org_id").toString());
-                    review.setReviewPersonId(jsonOb.get("user_id").toString());
-                     flag = reviewStepService.saveReviewStep(review);
+            if(json.getInt("isNeedReview")==0){
+                flowStep.setReviewType(0);
+                //删除reviewStep表数据
+                flag = reviewStepService.updateFlowStep(flowStep);
+                reviewStepService.deleteReviewStep(flowStep);
+            }else {
+                flag = reviewStepService.updateFlowStep(flowStep);
+                reviewStepService.deleteReviewStep(flowStep);
+                String jsonStr = json.getString("tableData");
+                logger.info("========" + jsonStr);
+                JSONArray jsonArray = JSONArray.parseArray(jsonStr);
+                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
+                    ReviewStep review = new ReviewStep();
+                    JSONObject jsonObject = (JSONObject) iterator.next();
+                    review.setStepName(jsonObject.getString("stepName"));
+                    review.setMarketId(jsonObject.getString("marketId"));
+                    review.setApplyType(jsonObject.getInteger("applyType"));
+                    review.setType(jsonObject.getInteger("type"));
+                    review.setLevel(jsonObject.getInteger("level"));
+                    JSONArray jsonAr = JSONArray.parseArray(jsonObject.getString("userOrg"));
+                    for (Iterator iter = jsonAr.iterator(); iter.hasNext(); ) {
+                        JSONObject jsonOb = (JSONObject) iter.next();
+                        review.setOrgld(jsonOb.get("org_id").toString());
+                        review.setReviewPersonId(jsonOb.get("user_id").toString());
+                        flag = reviewStepService.saveReviewStep(review);
+                    }
                 }
             }
 
@@ -321,14 +330,24 @@ public class ReviewStepManageController extends BaseController {
         User user = super.getCurrentUser(request);
         int flag = 0;
         carReview.setIsPass(0);
+        carReview.setId(UuidUtils.getUUID());
         flag  = reviewStepService.checkCarReview(carReview);
         if(flag>0){
             result.setCode("600");
             result.setMsg("该车已经提交过申请，不能重复提交");
             return result;
         }
+        //判断该车是自动还是手动
+        ReviewStep reviewStep = new ReviewStep();
+        reviewStep.setMarketId(carReview.getMarketId());
+        reviewStep.setApplyType(carReview.getIsPledge());
+        FlowStep flowStep = reviewStepService.selectReviewManageByReviewStep(reviewStep);
+        if(flowStep.getIsNeedReview()==0){
+            carReview.setIsPass(1);
+        }
         carReview.setInsertTime(new Date());
         carReview.setIsValid(1);
+
         flag = reviewStepService.carOutApply(carReview);
         String topic = super.getTopic(user.getMarketId());
         //同步删除本地车辆状态
@@ -336,7 +355,7 @@ public class ReviewStepManageController extends BaseController {
         PostParam postParam = new PostParam();
         postParam.setData(JsonTools.toJson(carReview));
         postParam.setMarket(user.getMarketId());
-        postParam.setUrl("/barrier/carReview/saveOrUpdate");
+        postParam.setUrl("/barrier/carView/saveOrUpdate");
         postParam.setMethod("post");
         postParam.setOnlySend(false);
         postParam.setMessageTime(Constants.dateformat.format(new Date()));
