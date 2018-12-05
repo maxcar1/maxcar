@@ -37,9 +37,13 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
 
     @Override
     public int deleteByReview(ReviewStep reviewStep) {
-        int delFlag = 0;
+        /*int delFlag = 0;
         delFlag= reviewStepMapper.deleteByReview(reviewStep);
-        return delFlag;
+        //int updateFlag = reviewStepMapper.updateReviewStep(reviewStep);
+        if(delFlag>0){
+            return 1;
+        }*/
+        return reviewStepMapper.deleteByReview(reviewStep);
     }
 
     @Override
@@ -59,6 +63,7 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
 
     @Override
     public int deleteReviewManage(String id) {
+        //reviewStepMapper.updateFlowStep()
         return reviewStepMapper.deleteReviewManage(id);
     }
 
@@ -103,7 +108,7 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
     }
 
     @Override
-    public Integer selectCarReview(Integer reviewId) {
+    public Integer selectCarReview(String reviewId) {
         return reviewStepMapper.selectCarReview(reviewId);
     }
 
@@ -120,6 +125,16 @@ public class ReviewStepServiceImpl extends BaseServiceImpl<ReviewStep,String> im
     @Override
     public FlowStep selectFlowStepByPrimarykey(String id) {
         return reviewStepMapper.selectFlowStepByPrimarykey(id);
+    }
+
+    @Override
+    public Integer updateReviewStep(ReviewStep reviewStep) {
+        return reviewStepMapper.updateReviewStep(reviewStep);
+    }
+
+    @Override
+    public ReviewStep selectReviewStep(CarReview carReview) {
+        return reviewStepMapper.selectReviewStep(carReview);
     }
 
     @Override

@@ -63,11 +63,15 @@ public interface ReviewStepMapper {
 
     Integer getReviewResult(ReviewStep review);
 
-    Integer selectCarReview(Integer reviewId);
+    Integer selectCarReview(String reviewId);
 
     int selectLastStep(ReviewStep review);
 
     List<ReviewStep> selectStepListBySomeParams(ReviewStep reviewStep);
 
     FlowStep selectFlowStepByPrimarykey(String id);
+
+    Integer updateReviewStep(ReviewStep reviewStep);
+
+    ReviewStep selectReviewStep(CarReview carReview);
 }

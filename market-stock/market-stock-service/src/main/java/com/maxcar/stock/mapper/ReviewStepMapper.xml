@@ -392,8 +392,8 @@ and is_valid=1
 
   </select>
   <insert id="insertCarReview" parameterType="com.maxcar.stock.pojo.CarReview">
-    insert  into car_review (car_id,market_id,user_id,out_reason,back_time,reason_desc,is_pledge,insert_time,is_valid,is_pass)
-    values(#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid},#{isPass})
+    insert  into car_review (id,car_id,market_id,user_id,out_reason,back_time,reason_desc,is_pledge,insert_time,is_valid,is_pass)
+    values(#{id},#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid},#{isPass})
 
   </insert>
   <select id="checkCarReview" parameterType="com.maxcar.stock.pojo.CarReview" resultType="java.lang.Integer">
@@ -405,7 +405,7 @@ and is_valid=1
   <select id="getReviewResult" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="Integer">
     select review_result from review_detail where review_id = #{reviewId} and review_person_id =#{reviewPersonId} and level = #{level}
   </select>
-  <select id="selectCarReview" parameterType="Integer" resultType="Integer">
+  <select id="selectCarReview" parameterType="String" resultType="Integer">
     select step_level from car_review where id = #{reviewId}
   </select>
   <select id="selectLastStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="java.lang.Integer">
@@ -439,5 +439,12 @@ and is_valid=1
       and market_id = #{marketId}
     </if>
   </select>
+<update id="updateReviewStep" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+  update review_step set level = level-1 where apply_type = #{applyType} and market_id = #{marketId} and level>#{currentLevel}
 
+</update>
+  <select id="selectReviewStep" parameterType="com.maxcar.stock.pojo.CarReview" resultMap="BaseResultMap">
+
+    select * from flow_step where market_id = #{marketId} and code = #{isPledge}
+  </select>
 </mapper>

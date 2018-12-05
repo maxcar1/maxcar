@@ -43,11 +43,15 @@ public interface ReviewStepService {
 
     Integer getReviewResult(ReviewStep review);
 
-    Integer selectCarReview(Integer reviewId);
+    Integer selectCarReview(String reviewId);
 
     int selectLastStep(ReviewStep reviewStep);
 
     List<ReviewStep> selectStepListBySomeParams(ReviewStep reviewStep);
 
     FlowStep selectFlowStepByPrimarykey(String id);
+
+    Integer updateReviewStep(ReviewStep reviewStep);
+
+    ReviewStep selectReviewStep(CarReview carReview);
 }

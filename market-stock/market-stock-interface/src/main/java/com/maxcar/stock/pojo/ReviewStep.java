@@ -29,11 +29,17 @@ public class ReviewStep implements Serializable {
 
     private Integer reviewType;
 
-    private Integer reviewId;
+    private String reviewId;
 
-    public  Integer getReviewId(){return  reviewId;}
+    private Integer currentLevel;
 
-    public  void setReviewId(Integer reviewId){this.reviewId=reviewId;}
+    public  Integer getCurrentLevel(){return  currentLevel;}
+
+    public  void setCurrentLevel(Integer currentLevel){this.currentLevel=currentLevel;}
+
+    public  String getReviewId(){return  reviewId;}
+
+    public  void setReviewId(String reviewId){this.reviewId=reviewId;}
 
     public  Integer getReviewType(){return  reviewType;}
 
