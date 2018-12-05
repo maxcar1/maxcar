@@ -138,15 +138,15 @@ public class InvoiceController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         User currentUser = getCurrentUser(request);
         String userId = currentUser.getUserId();
-        if (null != currentUser.getMarketId() &&  !"".equals(currentUser.getMarketId())) {
+        if (null != currentUser.getMarketId() && !"".equals(currentUser.getMarketId())) {
             invoice.setMarketId(currentUser.getMarketId());
         }
         User user = userService.selectByPrimaryKey(userId);
-        if(user.getManagerFlag() == 0) {
+        if (user.getManagerFlag() == 0) {
             invoice.setMarketId(null);
-        }else if(user.getManagerFlag() == 2){
+        } else if (user.getManagerFlag() == 2) {
             invoice.setMarketId(currentUser.getMarketId());
-        }else {
+        } else {
             invoice.setUserId(currentUser.getUserId());
         }
         PageInfo pageInfo = invoiceService.getInvoiceList(invoice);
@@ -608,15 +608,15 @@ public class InvoiceController extends BaseController {
             interfaceResult.InterfaceResult600("无查询记录");
             List<InvoicePerson> invoicePersonList = invoiceService.getInvoicePerson(idCard, marketId);
             if (null != invoicePersonList && invoicePersonList.size() > 0) {
-                for (int i = 0 ; i < invoicePersonList.size() ; i ++) {
+                for (int i = 0; i < invoicePersonList.size(); i++) {
                     InvoicePerson invoice = invoicePersonList.get(i);
                     String purchacerIdCardBack = invoice.getPurchacerIdCard();
                     String sellerIdCardBack = invoice.getSellerIdCard();
-                    if(purchacerIdCardBack != null && idCard.equals(purchacerIdCardBack)){
+                    if (purchacerIdCardBack != null && idCard.equals(purchacerIdCardBack)) {
                         interfaceResult.InterfaceResult200(invoicePersonList.get(i));
                         break;
                     }
-                    if(sellerIdCardBack != null && idCard.equals(sellerIdCardBack)){
+                    if (sellerIdCardBack != null && idCard.equals(sellerIdCardBack)) {
                         interfaceResult.InterfaceResult200(invoicePersonList.get(i));
                         break;
                     }
@@ -674,8 +674,8 @@ public class InvoiceController extends BaseController {
 
         request.setMarketId(marketId);
 
-        List<Map> invoices = transactionService.getAllTransactionExcel(request);
-        interfaceResult.InterfaceResult200(invoices);
+        List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
+        interfaceResult.InterfaceResult200(allTransactionExcel);
 
         return interfaceResult;
     }
@@ -727,9 +727,98 @@ public class InvoiceController extends BaseController {
         User user = super.getCurrentUser(request);
         invoice.setUserId(user.getUserId());
         invoice.setMarketId(user.getMarketId());
-        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
+//        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
+        List<Invoice> lists = invoiceService.detailsManage(invoice);
+        List<Map> list = new ArrayList<>();
+        for (Invoice i : lists) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            //  发票代码
+            String invoiceCode = i.getInvoiceCode();
+            if (StringUtil.isNotEmpty(invoiceCode)) {
+                map.put("invoiceCode", invoiceCode);
+            } else {
+                map.put("invoiceCode", "");
+            }
+            //  发票号码
+            String invoiceNo = i.getInvoiceNo();
+            if (StringUtil.isNotEmpty(invoiceNo)) {
+                map.put("invoiceNo", invoiceNo);
+            } else {
+                map.put("invoiceNo", "");
+            }
+            //  开票时间
+            Date billTime = i.getBillTime();
+            if (billTime != null) {
+                map.put("billTime", billTime);
+            } else {
+                map.put("billTime", "");
+            }
+            //  买方
+            String purchacerName = i.getPurchacerName();
+            if (StringUtil.isNotEmpty(purchacerName)) {
+                map.put("purchacerName", purchacerName);
+            } else {
+                map.put("purchacerName", "");
+            }
+            //  卖方
+            String sellerName = i.getSellerName();
+            if (StringUtil.isNotEmpty(sellerName)) {
+                map.put("sellerName", sellerName);
+            } else {
+                map.put("sellerName", "");
+            }
+            //  车价合计
+            Double price = i.getPrice();
+            if (price != 0 && price != null) {
+                map.put("price", price);
+            } else {
+                map.put("price", "");
+            }
+            //  开票端口
+            Integer invoicePortof = i.getInvoicePortof();
+            if (invoicePortof != null) {
+                if (invoicePortof == 0) {
+                    map.put("invoicePortof", "自助交易终端");
+                } else if(invoicePortof == 1) {
+                    map.put("invoicePortof", "商户APP");
+                }else if(invoicePortof == 2) {
+                    map.put("invoicePortof", "窗口");
+                }
+            } else {
+                map.put("invoicePortof", "");
+            }
+            //  开票端口
+            Integer carSources = i.getCarSources();
+            if (carSources != 0 && carSources != null) {
+                if (carSources == 1) {
+                    map.put("carSources", "商品车");
+                } else if(carSources == 2) {
+                    map.put("carSources", "挂靠");
+                }else if(carSources == 3) {
+                    map.put("carSources", "代办");
+                }else if(carSources == 4) {
+                    map.put("carSources", "散户");
+                }
+            } else {
+                map.put("carSources", "");
+            }
+            //  开票端口
+            Integer invoiceStatus = i.getInvoiceStatus();
+            if (invoiceStatus != null) {
+                if (invoiceStatus == 1) {
+                    map.put("invoiceStatus", "未处理");
+                } else if(invoiceStatus == 0) {
+                    map.put("invoiceStatus", "作废");
+                }else if(invoiceStatus == 2) {
+                    map.put("invoiceStatus", "已处理");
+                }
+            } else {
+                map.put("invoiceStatus", "");
+            }
+            list.add(map);
+        }
 
-        interfaceResult.InterfaceResult200(tradeInformations);
+        interfaceResult.InterfaceResult200(list);
 
         return interfaceResult;
     }

@@ -152,6 +152,58 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         return invoiceMapper.selectPriceByCarId(carId) == null ? 0 : invoiceMapper.selectPriceByCarId(carId);
     }
 
+    @Override
+    public List<Invoice> detailsManage(Invoice invoice) {
+        InvoiceExample invoiceExample = new InvoiceExample();
+        InvoiceExample.Criteria criteria = invoiceExample.createCriteria();
+        if (null != invoice.getRemark() && invoice.getRemark() == 2) {//查询开票申请列表
+            criteria.andInvoicePortofNotEqualTo(2);//非窗口列表
+            criteria.andInvoiceStatusNotEqualTo(0);//非作废状态
+        }
+        if (null != invoice.getRemark() && invoice.getRemark() == 1) {//查询开具发票列表
+            criteria.andInvoiceStatusNotEqualTo(1);//查询为已处理和作废状态
+            if(StringUtil.isNotEmpty(invoice.getUserId())){
+                criteria.andUserIdEqualTo(invoice.getUserId());
+            }
+        }
+        if (null != invoice.getMarketId() && !invoice.getMarketId().equals("")) {
+            criteria.andMarketIdEqualTo(invoice.getMarketId());
+        }
+        if (null != invoice.getPurchacerName() && !invoice.getPurchacerName().equals("")) {
+            criteria.andPurchacerNameLike("%" + invoice.getPurchacerName() + "%");
+        }
+        if (null != invoice.getSellerName() && !invoice.getSellerName().equals("")) {
+            criteria.andSellerNameLike("%" + invoice.getSellerName() + "%");
+        }
+        if (null != invoice.getInvoiceNo() && !invoice.getInvoiceNo().equals("")) {
+            criteria.andInvoiceNoLike("%" + invoice.getInvoiceNo() + "%");
+        }
+        if (null != invoice.getBillTimeStart() && null != invoice.getBillTimeEnd()) {
+            criteria.andBillTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeStart(), "yyyy-MM-dd"));
+            criteria.andBillTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeEnd(), "yyyy-MM-dd"));
+        }
+        if (null != invoice.getSyncTimeStart() && null != invoice.getSyncTimeEnd()) {
+            criteria.andSyncTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeStart(), "yyyy-MM-dd"));
+            criteria.andSyncTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeEnd(), "yyyy-MM-dd"));
+        }
+        if (null != invoice.getInvoicePortof()) {
+            criteria.andInvoicePortofEqualTo(invoice.getInvoicePortof());
+        }
+        if (null != invoice.getInvoiceStatus()) {
+            criteria.andInvoiceStatusEqualTo(invoice.getInvoiceStatus());
+        }
+        if (null != invoice.getCarSources()) {
+            criteria.andCarSourcesEqualTo(invoice.getCarSources());
+        }
+        if (null != invoice.getCurrentNo() && invoice.getCurrentNo() != "") {
+            criteria.andCurrentNoEqualTo(invoice.getCurrentNo());
+        }
+        invoiceExample.setOrderByClause("insert_time desc");
+
+        List<Invoice> lists = invoiceMapper.selectByExample(invoiceExample);
+        return lists;
+    }
+
 //    @Override
 //    public InterfaceResult insertInvoice(Invoice invoice) {
 //        InterfaceResult interfaceResult = new InterfaceResult();
