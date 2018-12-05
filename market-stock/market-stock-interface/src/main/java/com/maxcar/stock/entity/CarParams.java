@@ -140,14 +140,6 @@ public class CarParams extends PageBean implements Serializable {
         this.stockStatus = stockStatus;
     }
 
-    public String getSeriesCode() {
-        return seriesCode;
-    }
-
-    public void setSeriesCode(String seriesCode) {
-        this.seriesCode = seriesCode;
-    }
-
     public Integer getCarStatus() {
         return carStatus;
     }
