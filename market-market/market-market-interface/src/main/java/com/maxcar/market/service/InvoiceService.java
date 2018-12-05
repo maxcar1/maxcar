@@ -36,4 +36,5 @@ public interface InvoiceService extends BaseService<Invoice, String> {
      */
     double selectPriceByCarId(String carId);
 
+    List<Invoice> detailsManage(Invoice invoice);
 }
