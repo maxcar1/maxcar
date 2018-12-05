@@ -397,7 +397,7 @@ and is_valid=1
 
   </insert>
   <select id="checkCarReview" parameterType="com.maxcar.stock.pojo.CarReview" resultType="java.lang.Integer">
-    select count(1) from car_review where car_id = #{carId} and is_valid = 1
+    select count(1) from car_review where car_id = #{carId} and is_valid = 1 and is_pass = 0
   </select>
   <delete id="deleteReviewStep" parameterType="com.maxcar.stock.pojo.FlowStep">
     delete from review_step where market_id = #{marketId} and apply_type = #{code}
