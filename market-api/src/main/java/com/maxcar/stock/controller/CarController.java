@@ -1011,18 +1011,6 @@ public class CarController extends BaseController {
             carVo.setCarType(1);
             carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
             List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
-//            for (SellCarListExportVo vo: list) {
-//                String price = redisService.get(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()));
-//                if (StringUtils.isNotBlank(price)) {
-//                    vo.setInvoicePrice(Double.parseDouble(price));
-//                } else {
-//                    double priceByCarId = invoiceService.selectPriceByCarId(vo.getCarId());
-//                    if (invoice != null && invoice.getPrice() != null) {
-//                        vo.setInvoicePrice(invoice.getPrice());
-//                        redisService.set(MessageFormat.format(CacheKey.CAR_INVOICE_PRICE, vo.getCarId()), String.valueOf(invoice.getPrice()));
-//                    }
-//                }
-//            }
             interfaceResult.InterfaceResult200(list);
             return interfaceResult;
     }
