@@ -85,8 +85,6 @@ public class CarParams extends PageBean implements Serializable {
     private String brandCode;
     @NotNull(message="车系code不能为空")
     private String series;
-    @NotNull(message="车系Code不能为空")
-    private String seriesCode;
     @NotNull(message="车系名称不能为空")
     private String seriesName;
 
