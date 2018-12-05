@@ -43,8 +43,8 @@ public class ICarMenu {
         b1.setType("view");
         b1.setName("商品车列表");
         b2.setName("关于我们");
-        b2.setType("view");
-        b2.setUrl("http://www.maxcar.com.cn");
+        b2.setType("click");
+        b2.setUrl("gywm");
         Menu menu = new Menu();
         List<Button> buttonList = new ArrayList<>(2);
         buttonList.add(b1);
