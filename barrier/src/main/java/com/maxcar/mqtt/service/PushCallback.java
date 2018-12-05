@@ -272,7 +272,6 @@ public class PushCallback implements MqttCallback {
     }
 
     private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {
-        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
         Map map = new HashMap();
         BarrierCameraService barrierCameraService = ApplicationContextHolder.getBean("barrierCameraService");
         BarrierCamera barrierCamera = new BarrierCamera();
@@ -303,17 +302,11 @@ public class PushCallback implements MqttCallback {
                     String objK = objKey.replace("\\","/");
                     String imageFileStr = imageFile.replace("\\","/");
                     String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);
-                    json.put("imageUrl", imageUrl);
-                    postParam.setData(json.toJSONString());
-                    postParam.setUrl(url);
-                    postParam.setOnlySend(false);
-                    postParam.setMethod("post");
-                    postParam.setMessageTime(Canstats.dateformat.format(new Date()));
-                    logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
-                    messageProducerService.sendMessage("-2",
-                            JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+                    sendCloud(json,url,postParam,imageUrl);
                 } else {
                     logger.info("====摄像机抓拍失败====");
+                    //拍照失败不影响上行开闸命令
+                    sendCloud(json,url,postParam,"");
                 }
             } else {
                 logger.info("====请选择服务环境====");
@@ -321,6 +314,19 @@ public class PushCallback implements MqttCallback {
         } else {
             logger.info("====请检查摄像机配置表====");
         }
+    }
+
+    private void sendCloud(JSONObject json,String url,PostParam postParam,String imageUrl){
+        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
+        json.put("imageUrl", imageUrl);
+        postParam.setData(json.toJSONString());
+        postParam.setUrl(url);
+        postParam.setOnlySend(false);
+        postParam.setMethod("post");
+        postParam.setMessageTime(Canstats.dateformat.format(new Date()));
+        logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
+        messageProducerService.sendMessage("-2",
+                JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
     }
 
     //刷卡开闸
