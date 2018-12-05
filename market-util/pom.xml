@@ -810,8 +810,8 @@
 				<access.token.url>https://api.weixin.qq.com/cgi-bin/token</access.token.url>
 				<paibo.app.id>wx880aa7250a756969</paibo.app.id>
 				<paibo.app.secret.weixin>f0103f4f490096af95ecb766a27b3077</paibo.app.secret.weixin>
-				<icar.app.id>wx035d31d28ad83427</icar.app.id>
-				<icar.app.secret.weixin>7aa135a141333deffb1ea99a634d1ce5</icar.app.secret.weixin>
+				<icar.app.id>wx79a93cf533c7e664</icar.app.id>
+				<icar.app.secret.weixin>d4216f3e896fb9d3b6bdec441b002b31</icar.app.secret.weixin>
 				<grant.type>client_credential</grant.type>
 				<ticket.url>https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=</ticket.url>
 				<expire.seconds>604800</expire.seconds>
