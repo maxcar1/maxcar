@@ -1251,7 +1251,11 @@
     <select id="selectCarList" parameterType="com.maxcar.stock.vo.CarVo" resultMap="CarVoResultMap">
         SELECT<include refid="carInfoNoId"/>,b.*
         from car a LEFT join car_base b on a.id=b.id
-        where a.isvalid =1 and a.market_id=#{marketId} and a.stock_status in ('1','2','3')
+        where a.isvalid =1
+        <if test="marketId != null and marketId != '' and marketId != '001'">
+            and a.market_id=#{marketId}
+        </if>
+         and a.stock_status in ('1','2','3')
         <if test="brandCode != null and brandCode != ''">
             and b.brand_code = #{brandCode}
         </if>
