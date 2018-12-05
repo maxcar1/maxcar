@@ -234,9 +234,7 @@ public class ReviewStepManageController extends BaseController {
                 result.setCode("600");
                 result.setMsg("删除失败");
             }
-        } catch (Exception e) {
 
-        }
         return result;
     }
 
@@ -327,6 +325,15 @@ public class ReviewStepManageController extends BaseController {
             result.setMsg("该车已经提交过申请，不能重复提交");
             return result;
         }
+        //判断该车是自动还是手动
+        ReviewStep reviewStep = new ReviewStep();
+        reviewStep.setMarketId(carReview.getMarketId());
+        reviewStep.setApplyType(carReview.getIsPledge());
+        FlowStep flowStep = reviewStepService.selectReviewManageByReviewStep(reviewStep);
+        if(flowStep.getIsNeedReview()==0){
+            carReview.setIsPass(1);
+        }
+        carReview.setId(UuidUtils.generateIdentifier());
         carReview.setInsertTime(new Date());
         carReview.setIsValid(1);
         flag = reviewStepService.carOutApply(carReview);
