@@ -11,10 +11,8 @@ import com.maxcar.user.entity.OrganizationsExample;
 import com.maxcar.user.entity.Staff;
 import com.maxcar.user.entity.StaffExample;
 import com.maxcar.user.service.OrganizationsService;
-import com.maxcar.user.service.StaffService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +38,8 @@ public class OrganizationsServiceImpl extends BaseServiceImpl<Organizations,Stri
         example.setOrderByClause("register_time desc"); //升序排列，desc为降序排列。
         OrganizationsExample.Criteria criteria = example.createCriteria();
         criteria.andIsvalidEqualTo(1);
-        if(organizations.getManagerFlag()!=null && organizations.getManagerFlag()==1) {
+        Short managerFlag = organizations.getManagerFlag();
+        if(managerFlag != null && (managerFlag == 1 || managerFlag == 2)) {
             criteria.andMarketIdEqualTo(organizations.getMarketId());
         }
         if(StringUtils.isNotEmpty(organizations.getOrgName())){

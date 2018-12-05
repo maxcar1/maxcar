@@ -100,7 +100,7 @@ public class UserServiceImpl extends BaseServiceImpl<User,String> implements Use
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         //criteria.andIsvalidEqualTo(1);
-        if(user.getManagerFlag()==1) {
+        if(user.getManagerFlag()==1 || user.getManagerFlag()==2) {
             criteria.andMarketIdEqualTo(user.getMarketId());
         }
         List<User> users = new ArrayList<>();
