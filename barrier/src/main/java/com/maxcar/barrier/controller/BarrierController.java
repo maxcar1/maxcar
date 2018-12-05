@@ -32,9 +32,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/barrier")
 public class BarrierController {
-    public BarrierController() {
-        System.out.print(111);
-    }
     Logger logger = LoggerFactory.getLogger(BarrierController.class);
     @Autowired
     private BarrierService barrierService;
