@@ -1106,6 +1106,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             invoice.setType(carSellVo.getCarType());
             invoice.setCarStockStatus(carSellVo.getStockStatus());
             invoice.setTradingType(1);// 售出默认本地交易
+            invoice.setInvoiceStatus(2);// 发票类型已处理
 
             if (carSellVo.getDownTaoBao() == 1 && StringUtils.isNotBlank(carSellVo.getTaobaoId())){
                 downTaoBaoByTBid(carSellVo.getTaobaoId());

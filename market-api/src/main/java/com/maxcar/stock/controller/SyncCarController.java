@@ -1001,7 +1001,8 @@ public class SyncCarController extends BaseController {
 			carPicTemp.setCarId(list.get(0).getId());
 			List<CarPic> picList = carPicService.listCarPic(carPicTemp);
 			list.get(0).setCarPic(picList);
-			if(list.get(0).getRfid().equals(c.getRfid())){
+            String rfid = list.get(0).getRfid();
+            if(rfid.equals(c.getRfid()) || (!rfid.equals(c.getRfid()) && carByRfid == null)){
 				map.put("doNext",true);
 				map.put("msg","该车辆库存状态为出场超时，是否选择重新录入?");
 				map.put("car",list.get(0));
@@ -1011,13 +1012,6 @@ public class SyncCarController extends BaseController {
 			}
 			if(!list.get(0).getRfid().equals(c.getRfid()) && carByRfid != null){
 				interfaceResult.InterfaceResult600("该rfid已经被占用，请输入其他可用rfid！");
-				return interfaceResult;
-			}
-			if(!list.get(0).getRfid().equals(c.getRfid()) && carByRfid == null){
-				map.put("doNext",true);
-				map.put("msg","该车辆库存状态为出场超时，是否选择重新录入?");
-				map.put("car",list.get(0));
-				map.put("carBase",carBase);
 				return interfaceResult;
 			}
 		}

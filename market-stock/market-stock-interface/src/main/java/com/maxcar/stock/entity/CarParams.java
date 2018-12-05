@@ -85,8 +85,6 @@ public class CarParams extends PageBean implements Serializable {
     private String brandCode;
     @NotNull(message="车系code不能为空")
     private String series;
-    @NotNull(message="车系Code不能为空")
-    private String seriesCode;
     @NotNull(message="车系名称不能为空")
     private String seriesName;
 
@@ -140,14 +138,6 @@ public class CarParams extends PageBean implements Serializable {
 
     public void setStockStatus(Integer stockStatus) {
         this.stockStatus = stockStatus;
-    }
-
-    public String getSeriesCode() {
-        return seriesCode;
-    }
-
-    public void setSeriesCode(String seriesCode) {
-        this.seriesCode = seriesCode;
     }
 
     public Integer getCarStatus() {
