@@ -5,17 +5,24 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.JsonTools;
 import com.maxcar.base.util.dasouche.Result;
+import com.maxcar.base.util.kafka.PostParam;
+import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.FlowStep;
 import com.maxcar.stock.pojo.ReviewStep;
 import com.maxcar.stock.service.ReviewStepService;
+import com.maxcar.user.entity.User;
 import com.maxcar.user.service.UserService;
+import org.json.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @RestController
@@ -24,6 +31,9 @@ public class ReviewStepManageController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageProducerService messageProducerService;
 
     @Autowired
     private ReviewStepService reviewStepService;
@@ -305,8 +315,9 @@ public class ReviewStepManageController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/carOutApply", method = RequestMethod.POST)
-    public InterfaceResult carOutApply(@RequestBody CarReview carReview) {
+    public InterfaceResult carOutApply(@RequestBody CarReview carReview, HttpServletRequest request) throws Exception {
         InterfaceResult result = new InterfaceResult();
+        User user = super.getCurrentUser(request);
         int flag = 0;
         carReview.setIsPass(0);
         flag  = reviewStepService.checkCarReview(carReview);
@@ -317,7 +328,19 @@ public class ReviewStepManageController extends BaseController {
         }
         carReview.setInsertTime(new Date());
         carReview.setIsValid(1);
-         flag = reviewStepService.carOutApply(carReview);
+        flag = reviewStepService.carOutApply(carReview);
+        String topic = super.getTopic(user.getMarketId());
+        //同步删除本地车辆状态
+        //组装云端参数
+        PostParam postParam = new PostParam();
+        postParam.setData(JsonTools.toJson(carReview));
+        postParam.setMarket(user.getMarketId());
+        postParam.setUrl("");
+        postParam.setMethod("post");
+        postParam.setOnlySend(false);
+        postParam.setMessageTime(Constants.dateformat.format(new Date()));
+        messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
         if(flag>0){
             result.setCode("200");
         }else {
