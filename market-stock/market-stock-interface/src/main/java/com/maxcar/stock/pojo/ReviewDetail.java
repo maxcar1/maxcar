@@ -11,7 +11,7 @@ import java.util.List;
 public class ReviewDetail implements Serializable {
     private Integer id;
 
-    private Integer reviewId;
+    private String reviewId;
 
     private String reviewPersonId;
 
@@ -41,11 +41,11 @@ public class ReviewDetail implements Serializable {
         this.id = id;
     }
 
-    public Integer getReviewId() {
+    public String getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(Integer reviewId) {
+    public void setReviewId(String reviewId) {
         this.reviewId = reviewId;
     }
 
