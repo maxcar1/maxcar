@@ -7,6 +7,7 @@ import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.Constants;
 import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
@@ -326,6 +327,7 @@ public class ReviewStepManageController extends BaseController {
             result.setMsg("该车已经提交过申请，不能重复提交");
             return result;
         }
+        carReview.setId(UuidUtils.generateIdentifier());
         carReview.setInsertTime(new Date());
         carReview.setIsValid(1);
         flag = reviewStepService.carOutApply(carReview);
@@ -335,7 +337,7 @@ public class ReviewStepManageController extends BaseController {
         PostParam postParam = new PostParam();
         postParam.setData(JsonTools.toJson(carReview));
         postParam.setMarket(user.getMarketId());
-        postParam.setUrl("/barrier/carView/saveOrUpdate");
+        postParam.setUrl("/barrier/carReview/saveOrUpdate");
         postParam.setMethod("post");
         postParam.setOnlySend(false);
         postParam.setMessageTime(Constants.dateformat.format(new Date()));
