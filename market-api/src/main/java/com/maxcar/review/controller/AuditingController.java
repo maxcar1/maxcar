@@ -3,6 +3,10 @@ package com.maxcar.review.controller;
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.kafka.PostParam;
+import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.pojo.*;
@@ -40,6 +44,8 @@ public class AuditingController extends BaseController {
     private OrganizationsService organizationsService;
     @Autowired
     private ReviewDetailService reviewDetailService;
+    @Autowired
+    private MessageProducerService messageProducerService;
 
     @RequestMapping("/checkPendinglist")
     @OperationAnnotation(title = "车辆出场审核待审核列表")
@@ -176,6 +182,22 @@ public class AuditingController extends BaseController {
         //如果审核不通过直接修改car_review状态
         if(reviewDetail.getReviewResult()==2){
             reviewDetailService.updateReviewStatus(reviewDetail);
+            CarReview carReview = new CarReview();
+            carReview.setId(reviewDetail.getReviewId());
+            carReview.setIsPass(reviewDetail.getReviewResult());
+            carReview.setStepLevel(level);
+            String topic = super.getTopic(user.getMarketId());
+            //同步删除本地车辆状态
+            //组装云端参数
+            PostParam postParam = new PostParam();
+            postParam.setData(JsonTools.toJson(carReview));
+            postParam.setMarket(user.getMarketId());
+            postParam.setUrl("/barrier/carView/saveOrUpdate");
+            postParam.setMethod("post");
+            postParam.setOnlySend(false);
+            postParam.setMessageTime(Constants.dateformat.format(new Date()));
+            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
         }
         interfaceResult.InterfaceResult200(b);
         //修改car_review状态   判断会签或签
@@ -203,6 +225,22 @@ public class AuditingController extends BaseController {
                         reviewDetail.setReviewResult(null);
                     }
                     reviewDetailService.updateReviewStatus(reviewDetail);
+                    CarReview carReview = new CarReview();
+                    carReview.setId(reviewDetail.getReviewId());
+                    carReview.setIsPass(reviewDetail.getReviewResult());
+                    carReview.setStepLevel(level);
+                    String topic = super.getTopic(user.getMarketId());
+                    //同步删除本地车辆状态
+                    //组装云端参数
+                    PostParam postParam = new PostParam();
+                    postParam.setData(JsonTools.toJson(carReview));
+                    postParam.setMarket(user.getMarketId());
+                    postParam.setUrl("/barrier/carView/saveOrUpdate");
+                    postParam.setMethod("post");
+                    postParam.setOnlySend(false);
+                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
+                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
                 }
             }else{
                 List<ReviewDetail> list = reviewDetailService.getReviewDetail(reviewDetail);
@@ -216,6 +254,22 @@ public class AuditingController extends BaseController {
                         review.setReviewResult(null);
                     }
                     reviewDetailService.updateReviewStatus(review);
+                    CarReview carReview = new CarReview();
+                    carReview.setId(review.getReviewId());
+                    carReview.setIsPass(review.getReviewResult());
+                    carReview.setStepLevel(review.getLevel());
+                    String topic = super.getTopic(user.getMarketId());
+                    //同步删除本地车辆状态
+                    //组装云端参数
+                    PostParam postParam = new PostParam();
+                    postParam.setData(JsonTools.toJson(carReview));
+                    postParam.setMarket(user.getMarketId());
+                    postParam.setUrl("/barrier/carView/saveOrUpdate");
+                    postParam.setMethod("post");
+                    postParam.setOnlySend(false);
+                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
+                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
                 }
             }
 

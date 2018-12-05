@@ -30,6 +30,16 @@ public class CarReview implements Serializable {
 
     private String desc;
 
+    private int stepLevel;
+
+    public int getStepLevel() {
+        return stepLevel;
+    }
+
+    public void setStepLevel(int stepLevel) {
+        this.stepLevel = stepLevel;
+    }
+
     public String getId() {
         return id;
     }
