@@ -192,7 +192,7 @@ public class AuditingController extends BaseController {
             PostParam postParam = new PostParam();
             postParam.setData(JsonTools.toJson(carReview));
             postParam.setMarket(user.getMarketId());
-            postParam.setUrl("/barrier/carView/saveOrUpdate");
+            postParam.setUrl("/barrier/carReview/saveOrUpdate");
             postParam.setMethod("post");
             postParam.setOnlySend(false);
             postParam.setMessageTime(Constants.dateformat.format(new Date()));
@@ -235,7 +235,7 @@ public class AuditingController extends BaseController {
                     PostParam postParam = new PostParam();
                     postParam.setData(JsonTools.toJson(carReview));
                     postParam.setMarket(user.getMarketId());
-                    postParam.setUrl("/barrier/carView/saveOrUpdate");
+                    postParam.setUrl("/barrier/carReview/saveOrUpdate");
                     postParam.setMethod("post");
                     postParam.setOnlySend(false);
                     postParam.setMessageTime(Constants.dateformat.format(new Date()));
@@ -264,7 +264,7 @@ public class AuditingController extends BaseController {
                     PostParam postParam = new PostParam();
                     postParam.setData(JsonTools.toJson(carReview));
                     postParam.setMarket(user.getMarketId());
-                    postParam.setUrl("/barrier/carView/saveOrUpdate");
+                    postParam.setUrl("/barrier/carReview/saveOrUpdate");
                     postParam.setMethod("post");
                     postParam.setOnlySend(false);
                     postParam.setMessageTime(Constants.dateformat.format(new Date()));
