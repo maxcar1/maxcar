@@ -1,17 +1,17 @@
 package com.maxcar.statistics.dao;
 
-import com.maxcar.statistics.model.entity.CarStockDay;
+import com.maxcar.statistics.model.entity.CarStockDayEntity;
 
 public interface CarStockDayMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(CarStockDay record);
+    int insert(CarStockDayEntity record);
 
-    int insertSelective(CarStockDay record);
+    int insertSelective(CarStockDayEntity record);
 
-    CarStockDay selectByPrimaryKey(Integer id);
+    CarStockDayEntity selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(CarStockDay record);
+    int updateByPrimaryKeySelective(CarStockDayEntity record);
 
-    int updateByPrimaryKey(CarStockDay record);
+    int updateByPrimaryKey(CarStockDayEntity record);
 }

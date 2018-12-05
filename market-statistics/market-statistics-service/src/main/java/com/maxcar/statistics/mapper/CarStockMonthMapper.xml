@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maxcar.statistics.dao.CarStockMonthMapper" >
-  <resultMap id="BaseResultMap" type="com.maxcar.statistics.model.entity.CarStockMonth" >
+  <resultMap id="BaseResultMap" type="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="market_id" property="marketId" jdbcType="VARCHAR" />
     <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
@@ -27,7 +27,7 @@
     delete from carstock_month
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+  <insert id="insert" parameterType="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     insert into carstock_month (id, market_id, tenant_id, 
       report_time, invoice_stock_id, invoice_stock_name, 
       sales_count, isvalid, version, 
@@ -37,7 +37,7 @@
       #{salesCount,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{version,jdbcType=INTEGER}, 
       #{registerTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+  <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     insert into carstock_month
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -104,7 +104,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     update carstock_month
     <set >
       <if test="marketId != null" >
@@ -137,7 +137,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.maxcar.statistics.model.entity.CarStockMonth" >
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     update carstock_month
     set market_id = #{marketId,jdbcType=VARCHAR},
       tenant_id = #{tenantId,jdbcType=VARCHAR},

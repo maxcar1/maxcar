@@ -416,6 +416,11 @@ public class TradingServiceImpl implements TradingService {
         }
         return carpriceDayEntityList;
     }
+
+
+//    public Integer insertInventoryInvoiceDay(){
+//
+//    }
 //
 //    @Override
 //    public Map<String, Object> getAvgPrice(TradingRequest tradingRequest) {

@@ -70,7 +70,7 @@ public class StockController extends BaseController {
     }
 
     /**
-     * 库存总量同比环比
+     * 车位饱和度
      *
      * @param stockRequest
      * @param request
@@ -131,7 +131,7 @@ public class StockController extends BaseController {
     }
 
     /**
-     * 车商库存量分布（个）
+     * 按库存天数分布的车辆
      *
      * @param stockRequest
      * @param request

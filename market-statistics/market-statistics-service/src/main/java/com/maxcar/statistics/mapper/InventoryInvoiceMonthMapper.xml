@@ -379,8 +379,8 @@
         <if test="tenantId != null and tenantId != '' ">
             AND tenant_id = #{tenantId}
         </if>
-        <if test="timeEndDay != null and timeEndDay != '' ">
-            AND report_time = #{timeEndDay}
+        <if test="timeEnd != null and timeEnd != '' ">
+            AND report_time = #{timeEnd}
         </if>
         ORDER BY stocktime_id
     </select>

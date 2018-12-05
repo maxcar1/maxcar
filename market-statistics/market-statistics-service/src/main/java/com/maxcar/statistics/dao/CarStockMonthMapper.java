@@ -1,23 +1,20 @@
 package com.maxcar.statistics.dao;
 
-import com.maxcar.statistics.model.entity.CarStockMonth;
+import com.maxcar.statistics.model.entity.CarStockMonthEntity;
 import com.maxcar.statistics.model.request.StockRequest;
-
-import java.util.List;
-import java.util.Map;
 
 public interface CarStockMonthMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(CarStockMonth record);
+    int insert(CarStockMonthEntity record);
 
-    int insertSelective(CarStockMonth record);
+    int insertSelective(CarStockMonthEntity record);
 
-    CarStockMonth selectByPrimaryKey(Integer id);
+    CarStockMonthEntity selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(CarStockMonth record);
+    int updateByPrimaryKeySelective(CarStockMonthEntity record);
 
-    int updateByPrimaryKey(CarStockMonth record);
+    int updateByPrimaryKey(CarStockMonthEntity record);
 
    Integer getStockPrice(StockRequest stockRequest);
 }
