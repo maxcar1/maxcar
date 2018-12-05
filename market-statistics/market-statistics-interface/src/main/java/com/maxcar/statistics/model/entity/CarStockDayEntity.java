@@ -2,7 +2,7 @@ package com.maxcar.statistics.model.entity;
 
 import java.util.Date;
 
-public class CarStockMonth {
+public class CarStockDayEntity {
     private Integer id;
 
     private String marketId;
