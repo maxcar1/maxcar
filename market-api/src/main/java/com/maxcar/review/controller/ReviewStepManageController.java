@@ -335,7 +335,7 @@ public class ReviewStepManageController extends BaseController {
         PostParam postParam = new PostParam();
         postParam.setData(JsonTools.toJson(carReview));
         postParam.setMarket(user.getMarketId());
-        postParam.setUrl("");
+        postParam.setUrl("/barrier/carView/saveOrUpdate");
         postParam.setMethod("post");
         postParam.setOnlySend(false);
         postParam.setMessageTime(Constants.dateformat.format(new Date()));
