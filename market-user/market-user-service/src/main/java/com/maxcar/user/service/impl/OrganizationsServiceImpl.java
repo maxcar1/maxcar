@@ -39,6 +39,7 @@ public class OrganizationsServiceImpl extends BaseServiceImpl<Organizations,Stri
         OrganizationsExample.Criteria criteria = example.createCriteria();
         criteria.andIsvalidEqualTo(1);
         Short managerFlag = organizations.getManagerFlag();
+        //managerFlag = 1 || managerFlag == 2
         if(managerFlag != null && (managerFlag == 1 || managerFlag == 2)) {
             criteria.andMarketIdEqualTo(organizations.getMarketId());
         }
