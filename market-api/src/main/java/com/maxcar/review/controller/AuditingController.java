@@ -286,7 +286,7 @@ public class AuditingController extends BaseController {
 
     @RequestMapping("/carRecord/{reviewId}/{carId}")
     @OperationAnnotation(title = "车辆出入场记录")
-    public InterfaceResult carRecord(@PathVariable Integer reviewId,@PathVariable String carId,HttpServletRequest request ) throws Exception{
+    public InterfaceResult carRecord(@PathVariable String reviewId,@PathVariable String carId,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         CarReview carReview =  new CarReview();
         carReview.setId(reviewId);
