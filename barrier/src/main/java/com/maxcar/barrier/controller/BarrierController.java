@@ -8,6 +8,7 @@ import com.maxcar.barrier.service.BarrierCameraService;
 import com.maxcar.barrier.service.BarrierControlCarService;
 import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.barrier.service.CarService;
+import com.maxcar.mqtt.service.BasicRemoteClient;
 import com.maxcar.mqtt.service.PushCallback;
 import com.maxcar.mqtt.service.ServerMQTT;
 import com.maxcar.util.CRC16M;
@@ -255,7 +256,9 @@ public class BarrierController {
 
             outParam = outParam + outHex;
             System.out.println(outParam + "------发送数据2");
-            ServerMQTT.send(outParam,topic);
+//            ServerMQTT.send(outParam,topic);
+            BasicRemoteClient.sendMsg(outParam,topic);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             interfaceResult.InterfaceResult500("保存失败");
