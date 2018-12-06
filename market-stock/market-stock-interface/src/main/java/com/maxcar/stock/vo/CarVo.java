@@ -22,7 +22,7 @@ public class CarVo extends PageBean implements Serializable {
 
     private Integer reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private String reviewInsertTime;
 
     private String id;
