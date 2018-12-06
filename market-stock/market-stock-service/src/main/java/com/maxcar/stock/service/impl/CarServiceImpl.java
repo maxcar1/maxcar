@@ -992,6 +992,11 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     }
 
     @Override
+    public Car getStockCarByVin(String vin,String marketId) {
+        return carMapper.getStockCarByVinByMarketId(vin,marketId);
+    }
+
+    @Override
     public InterfaceResult updateStoreCar(CarVo carVo) throws Exception {
         InterfaceResult result = new InterfaceResult();
 

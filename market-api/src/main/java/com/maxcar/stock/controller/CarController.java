@@ -167,7 +167,8 @@ public class CarController extends BaseController {
     @GetMapping("/judge/{vin}")
     InterfaceResult judgeCarByVin(@PathVariable String vin, HttpServletRequest request) throws Exception {
         InterfaceResult result = new InterfaceResult();
-        Car car = carService.getStockCarByVin(vin);
+        User user = getCurrentUser(request);
+        Car car = carService.getStockCarByVin(vin,user.getMarketId());
         if (car!=null){
             result.InterfaceResult200("该vin库存已存在");
         }else {

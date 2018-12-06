@@ -1627,4 +1627,8 @@
         limit 1
     </select>
 
+    <select id="getStockCarByVinByMarketId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from car where stock_status in (1, 2, 3) and vin = #{vin} and market_id= #{marketId} order by update_time desc limit 1;
+    </select>
 </mapper>
