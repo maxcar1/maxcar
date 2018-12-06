@@ -370,7 +370,7 @@
       		<!--and market_id = #{marketId}-->
       	<!--</if>-->
        <!--如果非管理员，只能查看自己名下账号-->
-       <if test="managerFlag != null and managerFlag==1">
+       <if test="managerFlag != null and (managerFlag == 1 or managerFlag == 2)">
          and market_id = #{marketId}
        </if>
       	<if test="pushPeo != null and pushPeo !=''" >

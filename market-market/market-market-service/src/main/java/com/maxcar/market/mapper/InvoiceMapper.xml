@@ -1699,6 +1699,7 @@
       i.id as invoiceId,
       i.vin,
       DATE_FORMAT(i.bill_time, '%Y-%m-%d') AS bill_time,
+      i.insert_time,
       i.car_sources,
       i.price,
       i.invoice_no,
@@ -1966,9 +1967,9 @@
       LEFT JOIN maxcar_tenant_l.user_tenant t
       ON ii.tenant_id = t.id
     <if test="contactName != null and contactName != ''">
-      WHERE t.contact_name LIKE #{contactName}
+      WHERE t.contact_name = #{contactName}
     </if>
-    ORDER BY ii.bill_time DESC
+    ORDER BY ii.insert_time DESC
 
 
 
@@ -2520,6 +2521,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -2731,6 +2744,9 @@
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+    <if test="contactName != null and contactName != ''">
+      where t.contact_name = #{contactName}
+    </if>
     ORDER BY ii.i_time DESC
     )  as  dd
   </select>
@@ -2784,6 +2800,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -2995,6 +3023,9 @@
     ) ii
     LEFT JOIN maxcar_tenant_l.user_tenant t
     ON ii.tenant_id = t.id
+    <if test="contactName != null and contactName != ''">
+      where t.contact_name = #{contactName}
+    </if>
     ORDER BY ii.i_time DESC
       ) as  dd
   </select>
@@ -3059,6 +3090,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -3334,6 +3377,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -3601,6 +3656,18 @@
     ) cc
     ON i.car_id = cc.id
     WHERE 1 = 1
+    <if test="transferType == 0">
+      AND i.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND i.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND i.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND i.trading_type = 2
+    </if>
     <if test="marketId != null and marketId != ''">
       AND i.market_id = #{marketId}
     </if>
@@ -4184,7 +4251,12 @@ FROM
   <!-- 按照 车辆来源 (1:商品车,2:挂靠,3:代办，4散户) 获取交易总价值-->
   <select id="sumPrice" parameterType="com.maxcar.market.model.request.DealRequest" resultType="double">
     SELECT
-    SUM(ni.price) FROM
+    ifnull(SUM(bb.price),0)
+    FROM (
+    SELECT
+    cc.`id`,
+    ni.price
+    FROM
     (SELECT
     mi.*
     FROM maxcar_market_l.`invoice` mi LEFT JOIN maxcar_tenant_l.`user_tenant` mu
@@ -4239,17 +4311,20 @@ FROM
         AND mi.price  > 500000				-- 开票价格
       </if>
     </if>
-    <if test="tradingType != null and tradingType != ''">
-      AND mi.trading_type = #{tradingType}
-    </if>
     <if test="carSources != null and carSources != ''">
       AND mi.car_sources = #{carSources}
     </if>
-    <if test="transferType != null and transferType != ''">
-      AND mi.transfer_type = #{transferType}
+    <if test="transferType == 0">
+      AND mi.transfer_type = 0
     </if>
-    <if test="seriesName != null and seriesName != ''">
-      AND mi.series = #{seriesName}
+    <if test="transferType == 1">
+      AND mi.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND mi.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND mi.trading_type = 2
     </if>
     ) ni LEFT JOIN maxcar_stock_l.car cc ON cc.id = ni.car_id
     WHERE 1 = 1
@@ -4283,12 +4358,23 @@ FROM
         <![CDATA[  AND  90 <= TO_DAYS(ni.bill_time) - TO_DAYS(cc.register_time) ]]>
       </if>
     </if>
+    )
+    bb LEFT JOIN maxcar_stock_l.`car_base` cb
+    ON bb.id = cb.`id`
+    <if test="seriesName != null and seriesName != ''  ">
+    WHERE cb.series_code = #{seriesName}
+    </if>
   </select>
 
   <!-- 按照 车辆来源 (1:商品车,2:挂靠,3:代办，4散户) 获取数量-->
   <select id="countByCarSources"  parameterType="com.maxcar.market.model.request.DealRequest" resultType="double">
     SELECT
-    COUNT(*) FROM
+    count(*)
+    FROM (
+    SELECT
+    cc.`id`,
+    ni.price
+    FROM
     (SELECT
     mi.*
     FROM maxcar_market_l.`invoice` mi LEFT JOIN maxcar_tenant_l.`user_tenant` mu
@@ -4343,17 +4429,20 @@ FROM
         AND mi.price  > 500000				-- 开票价格
       </if>
     </if>
-    <if test="tradingType != null and tradingType != ''">
-      AND mi.trading_type = #{tradingType}
-    </if>
     <if test="carSources != null and carSources != ''">
       AND mi.car_sources = #{carSources}
     </if>
-    <if test="transferType != null and transferType != ''">
-    AND mi.transfer_type = #{transferType}
-  </if>
-    <if test="seriesName != null and seriesName != ''">
-      AND mi.series = #{seriesName}
+    <if test="transferType == 0">
+      AND mi.transfer_type = 0
+    </if>
+    <if test="transferType == 1">
+      AND mi.transfer_type = 1
+    </if>
+    <if test="tradingType == 1">
+      AND mi.trading_type = 1
+    </if>
+    <if test="tradingType == 2">
+      AND mi.trading_type = 2
     </if>
     ) ni LEFT JOIN maxcar_stock_l.car cc ON cc.id = ni.car_id
     WHERE 1 = 1
@@ -4386,6 +4475,12 @@ FROM
       <if test="storeHoldDays == 4 ">
         <![CDATA[  AND  90 <= TO_DAYS(ni.bill_time) - TO_DAYS(cc.register_time) ]]>
       </if>
+    </if>
+    )
+    bb LEFT JOIN maxcar_stock_l.`car_base` cb
+    ON bb.id = cb.`id`
+    <if test="seriesName != null and seriesName != ''  ">
+      WHERE cb.series_code = #{seriesName}
     </if>
   </select>
 </mapper>

@@ -261,6 +261,9 @@ public class CarController extends BaseController {
                 inventoryStatisticalRequest.setStockStatus(stockStatus);
             }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
+            InventoryStatisticalResponse responseAccumulative = carService.accumulativeCar(inventoryStatisticalRequest);
+            response.setValuationTotal(responseAccumulative.getValuationTotal());
+            response.setInventoryTotal(responseAccumulative.getInventoryTotal());
             m.put("InventoryStatisticalResponse", response);
         }
         m.put("listCarVo", pageInfo);
@@ -333,10 +336,10 @@ public class CarController extends BaseController {
                 response.setRegisterTime(Magic.NUll);
             } else {
                 // response.setStockDay(String.valueOf(DatePoor.getDatePoorDay(new Date(), x.getRegisterTime())));
-                response.setRegisterTime(DatePoor.getStringForDateByFormat(x.getRegisterTime(),"yyyy-MM-dd"));
+                response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
-            response.setStockDay(x.getStockDays().toString());
+            response.setStockDay(x.getStockDays()+"");
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);
@@ -356,7 +359,7 @@ public class CarController extends BaseController {
                 }
             }
 
-            response.setInitialLicenceTime(x.getInitialLicenceTime());
+            response.setInitialLicenceTime(x.getInitialLicenceTime()!=null?x.getInitialLicenceTime().substring(0,10):"");
             response.setMileage(x.getMileage());
             response.setMarketPrice(x.getMarketPrice());
             response.setEvaluatePrice(x.getEvaluatePrice());

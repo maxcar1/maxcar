@@ -3,11 +3,19 @@ package com.maxcar.common.gecco;
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.Ajax;
 import com.geccocrawler.gecco.annotation.Gecco;
+import com.geccocrawler.gecco.annotation.Request;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.request.HttpGetRequest;
+import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
+import com.maxcar.base.util.dasouche.HttpClientUtil;
+import com.maxcar.kafka.util.HttpClientUtils;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 江苏省
@@ -20,13 +28,13 @@ public class JiangsuLicence implements HtmlBean {
     static Logger logger = LoggerFactory.getLogger(JiangsuLicence.class);
 
 
-    public static void start(String org,String id,String seqId){
-
+    public void start(String orgId){
         logger.debug("=======start========");
 
-        String url = "http://www.jsgsj.gov.cn:58888/ecipplatform/jiangsu.jsp?org=Rorg&id=Rid&seqId=RseqId&activeTabId=";
-        HttpGetRequest startUrl = new HttpGetRequest(url.replace("Rorg",org).replace("Rid",id).replace("RseqId",seqId));
+        String url = "http://www.jsgsj.gov.cn:58888/province/infoQueryServlet.json?pt&c="+orgId;
+        HttpGetRequest startUrl = new HttpGetRequest(url);
         startUrl.setCharset("UTF-8");
+//        startUrl.setParameters(map);//设置输出参数
         GeccoEngine.create()
                 //Gecco搜索的包路径
                 .classpath("com.maxcar.common.gecco")
@@ -39,11 +47,14 @@ public class JiangsuLicence implements HtmlBean {
                 .run();
     }
     public static void main(String[] rags) {
-//        JiangsuLicence jiangsuLicence = new JiangsuLicence();
-        JiangsuLicence.start("F535388F0BB960F95173C365A0D94436","6C8B64495B4985DB13D95E1209C8BEAF","CEC253DCFA04E08F78DCC26ED9EA4602");
+        String org = "75B161B67BE862B12D2BE5DB01B1A79BC5DFE01C444522D1307B081DE90B23BE3D6B0469F596DD6CBC2A90138B164FB85334496423DC8031A1B7182234F3E58A";
+
+//        JSONObject str = HttpClientUtils.httpGet("http://www.jsgsj.gov.cn:58888/province/infoQueryServlet.json?pt&c=75B161B67BE862B1D4A846A36A45371113638D8B314CF27F1A843F70BA360C747ED6FFABCDEF63AE3F003069BABBFC8BC40C940732D215DEBE613C937889291D","","");
+
+//        System.out.println(str);
+                JiangsuLicence jiangsuLicence = new JiangsuLicence();
+        jiangsuLicence.start(org);
     }
-
-
 
     @RequestParameter("org")
     private String org;
@@ -58,6 +69,16 @@ public class JiangsuLicence implements HtmlBean {
     @Ajax(url="http://www.jsgsj.gov.cn:58888/ecipplatform/publicInfoQueryServlet.json?pageView=true&org={org}&id={id}&seqId={seqId}&abnormal=&activeTabId=&tmp=98")
     private JiangsuResult result;
 
+    public HttpRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(HttpRequest request) {
+        this.request = request;
+    }
+
+    @Request
+    private HttpRequest request;
 
     public JiangsuResult getResult() {
         return result;
@@ -90,7 +111,6 @@ public class JiangsuLicence implements HtmlBean {
     public void setSeqId(String seqId) {
         this.seqId = seqId;
     }
-
     /**
      * 标题
      */
