@@ -806,8 +806,8 @@
         <if test="brandCode != null and brandCode != ''">
             and d.brand_code = #{brandCode}
         </if>
-        <if test="seriesCode != null and seriesCode != ''">
-            and d.series_code = #{seriesCode}
+        <if test="series != null and series != ''">
+            and d.series_code = #{series}
         </if>
         <if test="tenant != null and tenant != ''">
             and a.tenant = #{tenant}
@@ -840,8 +840,8 @@
         <if test="brandCode != null and brandCode != ''">
             and d.brand_code = #{brandCode}
         </if>
-        <if test="seriesCode != null and seriesCode != ''">
-            and d.series_code = #{seriesCode}
+        <if test="series != null and series != ''">
+            and d.series_code = #{series}
         </if>
         <if test="tenant != null and tenant != ''">
             and a.tenant = #{tenant}
