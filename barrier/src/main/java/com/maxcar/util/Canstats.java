@@ -46,7 +46,7 @@ public class Canstats {
     public static String headerBody = "4d43";//协议头
     public static String headerVersion = "01";//协议版本号
 
-
+    public static String first_kz = "8b";
 
     public static String dzType = "0001";//设备类型
     public static String dzVersion = "0001";//设备版本号

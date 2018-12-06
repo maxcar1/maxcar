@@ -318,9 +318,9 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
             BigDecimal beTimeMinute = beTime.multiply(new BigDecimal(60));
             //超过了免费时长,计算出剩余分钟数,超出时间和免费比较，取值大者
             if (beTimeMinute.intValue() > freeTime){
-                restMinute = beTimeMinute.intValue() - minu.intValue() > 0 ? 0:beTimeMinute.intValue() - minu.intValue();
+                restMinute = minu.intValue() - beTimeMinute.intValue();
             }else{
-                restMinute = freeTime - minu.intValue() > 0 ? 0:freeTime - minu.intValue();
+                restMinute = minu.intValue() - freeTime;
             }
             //计算超时的钱
             BigDecimal big = new BigDecimal(restMinute);
@@ -367,8 +367,8 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                 return new BigDecimal(totalFe);
             }
         }
-            //没有超时计费,就算有上限也不收费
-            return zero;
+        //没有超时计费,就算有上限也不收费
+        return zero;
     }
 
     public static Integer getSplitTime(Date dateStart, Date dateEnd, List<FeePeriodTime> ruleList) {

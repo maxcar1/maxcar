@@ -117,11 +117,6 @@ public class ParkingFeeController extends BaseController {
         //0支付宝支付  1  微信支付 2 现金支付 3公众号支付
         params.put("userId",user.getUserId());
         InterfaceResult result = parkingFeeService.charge(params);
-        if (StringUtils.equals(result.getCode(),"200")){
-            JSONObject json = (JSONObject)JSONObject.toJSON(result.getData());
-            String barrierId = json.getString("barrierId");
-            WebSocketServer.sendInfo(json.toJSONString(),barrierId);
-        }
         return result;
     }
 

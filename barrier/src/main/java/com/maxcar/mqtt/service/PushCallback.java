@@ -175,6 +175,36 @@ public class PushCallback implements MqttCallback {
                                 String cardNo = clientData.substring(66, 66 + keyLen1);
                                 doCard(barrier, HexUtils.convertHexToString(cardNo));
                                 break;
+                            case "0b":
+                                if (barrier != null && barrier.getMqttTopic() != null) {
+                                    if (barrier.getStatus().equals("4")) {
+                                        String outParam1 = "";
+                                        String value1 = Canstats.headerBody;
+                                        //字符串长度/2
+                                        String value2 = "leng";//44字节
+                                        //协议版本
+                                        String value3 = Canstats.headerVersion;
+                                        String value4 = Canstats.first_kz;//下发数据
+                                        int time = (int) (System.currentTimeMillis() / 1000);
+                                        String timeStamp = PushCallback.toHexString(time);
+                                        //id长度+id号+时间戳+设备类型+程序版本+设备电量
+                                        //12位数
+                                        String value5 = PushCallback.toHexString(barrier.getBarrierId().length() / 2) + barrier.getBarrierId() + timeStamp + Canstats.dzType + Canstats.dzVersion + Canstats.dzPower;
+                                        String value6 = "000B8B";
+                                        String value7 = "";
+                                        value7 = Canstats.yxcc;//允许开闸
+                                        outParam1 = value1 + value2 + value3 + value4 + value5 + value6 + value7;
+                                        outParam1 = outParam1.replaceAll("leng", PushCallback.toHexStringBy0(outParam1.length() / 2 + 2));
+                                        logger.info("数据初始化，先开闸，服务器发送消息：{}", outParam1);
+                                        String outHex = CRC16M.GetModBusCRC(outParam1);
+
+                                        outParam1 = outParam1 + outHex;
+                                        logger.info("数据初始化，先开闸，服务器发送完整消息:{}", outParam1);
+                                        ServerMQTT.send(outParam1,barrier.getMqttTopic());
+//                                    ServerMQTT.send(outParam1, barrier.getMqttTopic());
+                                    }
+                                }
+                                break;
                             default:
                                 logger.error("====进入了错误处理====clientData==>{}",clientData);
                                 break;
@@ -306,7 +336,7 @@ public class PushCallback implements MqttCallback {
                 } else {
                     logger.info("====摄像机抓拍失败====");
                     //拍照失败不影响上行开闸命令
-                    sendCloud(json,url,postParam,"");
+                    sendCloud(json,url,postParam,null);
                 }
             } else {
                 logger.info("====请选择服务环境====");

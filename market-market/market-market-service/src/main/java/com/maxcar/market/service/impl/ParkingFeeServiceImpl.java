@@ -300,9 +300,13 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             case 0:
                 //刷卡
                 parkingFeeDetail.setCardNo(key);
+                parkingFeeDetail.setAfterImage(imageUrl);
                 ParkingFeeDetail parkingFeeDe = doCard(marketId,barrier,parkingFeeDetail);
-                parkingFeeDe.setAfterImage(imageUrl);
                 json = (JSONObject)JSONObject.toJSON(parkingFeeDe);
+                String inTime = DateUtils.LONG_DATE_FORMAT.format(parkingFeeDe.getBeforeTime());
+                String outTime = DateUtils.LONG_DATE_FORMAT.format(parkingFeeDe.getAfterTime());
+                json.put("inTime",inTime);
+                json.put("outTime",outTime);
                 json.put("type",5);
                 break;
             case 1:
@@ -341,6 +345,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                     parkingFeeDe.setParkingTime(hmsToString);
                     //0元开闸
                     sendMessage(marketId, barrier, -1);
+                    JSONObject json = (JSONObject)JSONObject.toJSON(parkingFeeDetail);
+                    charge(json);
                     return parkingFeeDe;
                 }else {
                     // 超过四小时免费时间,缴过费
@@ -572,7 +578,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             int code = parkingFeeDetailMapper.updateByPrimaryKeySelective(detail);
             if (code == 1) {
                 sendMessage(detail.getMarketId(), ba, -1);
-                ParkingFeeDetail parkingFeeDetail = new ParkingFeeDetail();
+                /*ParkingFeeDetail parkingFeeDetail = new ParkingFeeDetail();
                 parkingFeeDetail.setParkingFeeId(parking.getId());
                 parkingFeeDetail.setMarketId(detail.getMarketId());
                 List<ParkingFeeDetail> parkingFeeDetails = parkingFeeDetailMapper.getThisShiftRecord(parkingFeeDetail);
@@ -584,8 +590,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 json.put("money",total);
                 json.put("barrierId",ba.getBarrierId());
                 //前端推送识别 2为刷卡推送
-                json.put("type",2);
-                result.InterfaceResult200(json);
+                json.put("type",2);*/
+                result.InterfaceResult200("收费成功!");
             } else {
                 result.InterfaceResult600("收费失败!");
             }
