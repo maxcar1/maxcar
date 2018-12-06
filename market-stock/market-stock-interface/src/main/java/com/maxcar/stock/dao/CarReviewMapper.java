@@ -22,7 +22,7 @@ public interface CarReviewMapper {
 
     List<CarReview> selectByExample(CarReviewExample example);
 
-    CarReview selectByPrimaryKey(Integer id);
+    CarReview selectByPrimaryKey(String id);
 
     int updateByExampleSelective(@Param("record") CarReview record, @Param("example") CarReviewExample example);
 
