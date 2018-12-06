@@ -1,30 +1,36 @@
 package com.maxcar.mqtt.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.maxcar.barrier.pojo.*;
-import com.maxcar.barrier.service.*;
+import com.maxcar.barrier.pojo.Barrier;
+import com.maxcar.barrier.pojo.BarrierCamera;
+import com.maxcar.barrier.pojo.Car;
+import com.maxcar.barrier.pojo.InterfaceResult;
+import com.maxcar.barrier.service.ApplicationContextHolder;
+import com.maxcar.barrier.service.BarrierCameraService;
+import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.hikvision.service.HikvisionLinuxService;
 import com.maxcar.hikvision.service.HikvisionService;
 import com.maxcar.kafka.service.MessageProducerService;
+import com.maxcar.util.AliyunOSSClientUtil;
 import com.maxcar.util.CRC16M;
 import com.maxcar.util.Canstats;
 import com.maxcar.util.HexUtils;
+import com.maxcar.util.JsonTools;
+import com.maxcar.util.LoadProperties;
 import com.maxcar.util.PostParam;
-import com.maxcar.util.*;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 发布消息的回调类
@@ -126,9 +132,11 @@ public class PushCallback implements MqttCallback {
                                 outParam = map.get("outParam") + "";
                                 if (barrier != null && barrier.getMqttTopic() != null) {
                                     byte b[] = toBytes(outParam);
-//                                ServerMQTT serverMQTT = new ServerMQTT();
-//                                logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-//                                serverMQTT.send(b, barrier.getMqttTopic());
+                                    if(!barrier.getStatus().equals("4")){
+                                        logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+                                        ServerMQTT serverMQTT = new ServerMQTT();
+                                        serverMQTT.send(b, barrier.getMqttTopic());
+                                    }
                                 }
                                 if (map.get("stockCarInfo") != null) {
                                     Car car = (Car) map.get("stockCarInfo");
@@ -226,7 +234,7 @@ public class PushCallback implements MqttCallback {
                         String value2 = "leng";//44字节
                         //协议版本
                         String value3 = Canstats.headerVersion;
-                        String value4 = "8A";//下发数据
+                        String value4 = Canstats.second_send;//下发数据
                         int time = (int) (System.currentTimeMillis() / 1000);
                         String timeStamp = PushCallback.toHexString(time);
                         //id长度+id号+时间戳+设备类型+程序版本+设备电量
