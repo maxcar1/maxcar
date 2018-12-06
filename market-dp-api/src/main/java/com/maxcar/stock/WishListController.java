@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@RequestMapping("/we/customer")
+@RequestMapping("/market-api/api")
 @RestController
 public class WishListController {
 

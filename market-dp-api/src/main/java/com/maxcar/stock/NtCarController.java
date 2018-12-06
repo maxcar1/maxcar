@@ -122,8 +122,6 @@ public class NtCarController  {
                 }
                 highlights = new ArrayList<>(8);
                 JSONObject jo = JSONObject.fromObject(r.getItem());
-
-
                     for (CarIcon carIcon : illumineList) {
                         if (!jo.containsKey(carIcon.getField())) {
                             continue;
