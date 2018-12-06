@@ -112,15 +112,18 @@ public class TransactionServiceImpl extends BaseServiceImpl<Invoice, String> imp
         }
 //        List<Invoice> invoices = invoiceMapper.selectByExample(invoiceExample);
         List<TradeInformation> tradeInformations = invoiceMapper.detailsExcel(invoice);
-        for(TradeInformation t : tradeInformations){
+        for (TradeInformation t : tradeInformations) {
             String billTime = t.getBillTime();
             String replace = billTime.replace("-", "/");
-            replace = replace.substring(0,7);
+            replace = replace.substring(0, 10);
             t.setBillTime(replace);
-            t.setDealTime(billTime);
-            String initialRegistrationDate = t.getInitialRegistrationDate();
-            String replace1 = initialRegistrationDate.replace("-", "/");
-            replace1 = replace1.substring(0,7);
+            t.setDealTime(replace);
+            String replace1 = "";
+            if (t.getInitialRegistrationDate() != null) {
+                String initialRegistrationDate = t.getInitialRegistrationDate();
+                replace1 = initialRegistrationDate.replace("-", "/");
+                replace1 = replace1.substring(0, 10);
+            }
             t.setInitialRegistrationDate(replace1);
         }
 
