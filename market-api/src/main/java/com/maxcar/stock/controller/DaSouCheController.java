@@ -1,4 +1,4 @@
-package com.maxcar.system.controller;
+package com.maxcar.stock.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.maxcar.BaseController;
@@ -28,9 +28,9 @@ import java.util.List;
  *
  * @author
  */
-@RequestMapping("/app")
+@RequestMapping("/api")
 @RestController
-public class DaSouCheDataController extends BaseController {
+public class DaSouCheController extends BaseController {
 
     @Autowired
     private DaSouCheService daSouCheService;
@@ -113,18 +113,6 @@ public class DaSouCheDataController extends BaseController {
         return result;
     }
 
-    @RequestMapping(value = "/area/{cityCode}", method = RequestMethod.GET)
-    public Result getAreas(@PathVariable("cityCode") Integer cityCode) {
-        Result result = new Result();
-        try {
-            result = daSouCheService.getAreas(cityCode);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setResultCode(500);
-            result.setDatas(e.getMessage());
-        }
-        return result;
-    }
 
     /**
      * 根据vin码去大搜车拿相应的车辆数据
@@ -146,27 +134,32 @@ public class DaSouCheDataController extends BaseController {
         return result;
     }
 
-
     /**
-     * 查询二手车估价
+     * 查询二手车估价2
      *
      * @param params
      * @return
      * @throws Exception TODO
      */
-    @RequestMapping(value = "/car/price", method = RequestMethod.POST)
-    public Result getUsedCarPrice(@RequestBody JSONObject params) throws Exception {
+    @RequestMapping(value = "/car/edit/price", method = RequestMethod.POST)
+    public Result getUsedCarPrice2(@RequestBody JSONObject params, HttpServletRequest request) throws Exception {
         Result result = new Result();
         String scModelCode = null;
         String scCityCode = null;
         Integer mileage = 0;
         String firstLicenseDate = null;
         Integer rank = 0;
+
+        User user = getCurrentUser(request);
+        Market market = marketService.getMarketById(user.getMarketId());
+        String ss = daSouCheService.getAreas(market.getCity()).getItem().toString();
+        scCityCode = JSONObject.parseObject(ss).getString("cityCode");
+
         try {
             scModelCode = params.getString("scModelCode");
             if (null == scModelCode || "".equals(scModelCode)) throw new RuntimeException("scModelCode字段值缺失");
-            scCityCode = params.getString("scCityCode");
-            if (null == scCityCode || "".equals(scCityCode)) throw new RuntimeException("scCityCode字段值缺失");
+//            scCityCode = params.getString("scCityCode");
+//            if (null == scCityCode || "".equals(scCityCode)) throw new RuntimeException("scCityCode字段值缺失");
             mileage = params.getInteger("mileage");
             if (null == mileage || mileage.intValue() == 0) throw new RuntimeException("mileage字段值缺失");
             firstLicenseDate = params.getString("firstLicenseDate");
@@ -200,6 +193,7 @@ public class DaSouCheDataController extends BaseController {
         return result;
 
     }
+
 
     /**
      * 判断是查出的数据是否为空
