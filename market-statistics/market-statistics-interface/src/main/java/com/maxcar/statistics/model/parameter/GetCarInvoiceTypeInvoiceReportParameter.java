@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class GetCarInvoiceTypeInvoiceReportParameter implements Serializable{
+public class GetCarInvoiceTypeInvoiceReportParameter implements Serializable {
 
     private static final long serialVersionUID = 284967010579700456L;
     private String marketId;
@@ -28,5 +28,9 @@ public class GetCarInvoiceTypeInvoiceReportParameter implements Serializable{
     private String startTime;
 
     private String endTime;
+
+    private Integer ageByCar;
+
+    private Integer inventoryCycle;
 
 }

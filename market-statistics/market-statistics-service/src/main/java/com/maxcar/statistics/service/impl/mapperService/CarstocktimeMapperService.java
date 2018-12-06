@@ -1,16 +1,17 @@
 package com.maxcar.statistics.service.impl.mapperService;
 
 import com.maxcar.base.util.StringUtil;
+import com.maxcar.base.util.ToolDataUtils;
 import com.maxcar.statistics.dao.CarstocktimeDayDao;
 import com.maxcar.statistics.dao.CarstocktimeMonthDao;
+import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
+import com.maxcar.statistics.model.parameter.GetInventoryReportParameter;
+import com.maxcar.statistics.model.parameter.InsertTParamter;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryMonthRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceDayRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceMonthRequest;
-import com.maxcar.statistics.model.response.GroupCarstocktimeInventoryDayResponse;
-import com.maxcar.statistics.model.response.GroupCarstocktimeInventoryMonthResponse;
-import com.maxcar.statistics.model.response.GroupCarstocktimeInvoiceDayResponse;
-import com.maxcar.statistics.model.response.GroupCarstocktimeInvoiceMonthResponse;
+import com.maxcar.statistics.model.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ import java.util.List;
 
 @Service
 public class CarstocktimeMapperService {
+
+    @Autowired
+    private ReportMapperService reportMapperService;
 
     @Autowired
     private CarstocktimeDayDao carstocktimeDayDao;
@@ -34,7 +38,13 @@ public class CarstocktimeMapperService {
     public List<GroupCarstocktimeInvoiceDayResponse> groupCarstocktimeInvoiceDay(GroupCarstocktimeInvoiceDayRequest parameter){
 
         if (StringUtil.isEmpty(parameter.getOrderBy())) {
-            parameter.setOrderBy("invoiceCount");
+            parameter.setOrderBy("stocktimeId");
+        }
+
+        try {
+            InsertCarstocktimeDay();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         return carstocktimeDayDao.groupCarstocktimeInvoiceDay(parameter);
@@ -48,7 +58,7 @@ public class CarstocktimeMapperService {
     public  List<GroupCarstocktimeInventoryDayResponse> groupCarstocktimeInventoryDay(GroupCarstocktimeInventoryDayRequest parameter){
 
         if (StringUtil.isEmpty(parameter.getOrderBy())) {
-            parameter.setOrderBy("inventoryCount");
+            parameter.setOrderBy("stocktimeId");
         }
 
         return carstocktimeDayDao.groupCarstocktimeInventoryDay(parameter);
@@ -118,4 +128,282 @@ public class CarstocktimeMapperService {
 
         return carstocktimeMonthDao.groupCarstocktimeInventoryMonth(parameter);
     }
+
+
+
+
+// 以下是车辆库存时长数据插入
+
+    /**
+     * param:
+     * describe: 按天批量插入车辆年限日表(处理好values再调用该方法)
+     * create_date:  lxy   2018/11/22  11:03
+     **/
+    public void InsertCarstocktimeDay() throws Exception {
+
+        // 睡眠10秒后执行 执行操作
+       // Thread.sleep(10000);
+        String dayTime = ToolDataUtils.getreportTimeByDay();
+
+        GetCarInvoiceTypeInvoiceReportParameter getCarInvoiceTypeInvoiceReportParameter = new GetCarInvoiceTypeInvoiceReportParameter();
+        getCarInvoiceTypeInvoiceReportParameter.setStartTime(dayTime);
+        getCarInvoiceTypeInvoiceReportParameter.setEndTime(dayTime);
+
+        // 循环查询指定年限的交易数据
+        for (int i = 1; i <= 10; i++) {
+
+            getCarInvoiceTypeInvoiceReportParameter.setGroupByColumns("carstocktime");
+            getCarInvoiceTypeInvoiceReportParameter.setInventoryCycle(i);
+
+
+            List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCaryearDayList = reportMapperService.getCarInvoiceTypeInvoiceReport(getCarInvoiceTypeInvoiceReportParameter);
+
+            if (null != InvoiceCaryearDayList && !InvoiceCaryearDayList.isEmpty()) {
+                // 插入 交易信息
+                carstocktimeDayDao.InsertT(getInsertCarstocktimeInvoiceDayColumnsAndValues(InvoiceCaryearDayList, i));
+            }
+
+        }
+
+        // 睡眠10秒后执行 执行操作
+        //Thread.sleep(10000);
+
+        GetInventoryReportParameter getInventoryReportParameter = new GetInventoryReportParameter();
+
+        getInventoryReportParameter.setEndTime(ToolDataUtils.getreportTimeByDay());
+
+        for (int i = 1; i <= 10; i++) {
+
+            getInventoryReportParameter.setGroupByColumns("carstocktime");
+            getInventoryReportParameter.setInventoryCycle(i);
+
+            List<GetInventoryReportResponse> inventoryCarbrandDayList = reportMapperService.getInventoryReport(getInventoryReportParameter);
+
+            if (null != inventoryCarbrandDayList && !inventoryCarbrandDayList.isEmpty()) {
+                // 插入 库存信息
+                carstocktimeDayDao.InsertT(getInsertCarstocktimeInventoryDayColumnsAndValues(inventoryCarbrandDayList, i));
+            }
+        }
+        return;
+    }
+
+
+    /**
+     * param:
+     * describe: 车辆年限日表交易sql
+     * create_date:  lxy   2018/11/26  10:41
+     **/
+    private InsertTParamter getInsertCarstocktimeInvoiceDayColumnsAndValues(List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCarbrandDayList, Integer stocktimeId) {
+
+        InsertTParamter parameter = new InsertTParamter();
+
+        parameter.setTable("`maxcar_statistics_l`.`carstocktime_day`");
+        parameter.setColumns("market_id,tenant_id,report_time,stocktime_id,stocktime_name,sales_count,sales_price,sales_avg_price," +
+                "male_count,female_count,age20_count,age25_count,age30_count,age35_count,age40_count,age45_count,age50_count");
+
+        StringBuffer stringBuffer = new StringBuffer(128);
+
+        for (GetCarInvoiceTypeInvoiceReportResponse invoice : InvoiceCarbrandDayList) {
+            stringBuffer.append("(");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getMarketId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getTenantId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByDay());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByDay());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(stocktimeId);
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(BaseMapperService.getNameByInventoryCycleString(stocktimeId));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getInvoiceCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getInvoicePrice());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getAvgPrice(invoice.getInvoicePrice(), invoice.getInvoiceCount()));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getMaleCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getFemaleCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge20Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge25Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge30Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge35Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge40Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge45Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge50Count());
+            stringBuffer.append("'");
+
+
+            stringBuffer.append("),");
+        }
+
+        String values = stringBuffer.toString();
+
+        parameter.setValues(values.substring(1, values.length() - 2));
+
+
+        String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
+                "stocktime_name =  VALUES (stocktime_name),\n" +
+                "sales_count =  VALUES (sales_count),\n" +
+                "sales_price =  VALUES (sales_price),\n" +
+                "sales_avg_price =  VALUES (sales_avg_price),\n" +
+                "male_count =  VALUES(male_count),\n" +
+                "female_count = VALUES (female_count),\n" +
+                "age20_count = VALUES(age20_count),\n" +
+                "age25_count =  VALUES (age25_count),\n" +
+                "age30_count =  VALUES (age30_count),\n" +
+                "age35_count = VALUES (age35_count),\n" +
+                "age40_count = VALUES (age40_count),\n" +
+                "age45_count =VALUES (age45_count),\n" +
+                "age50_count =VALUES (age50_count);\n";
+
+        parameter.setOnUpdate(onUpdate);
+
+        return parameter;
+    }
+
+
+    /**
+     * param:
+     * describe:  车辆年限日表库存sql
+     * create_date:  lxy   2018/12/4  16:38
+     **/
+    private InsertTParamter getInsertCarstocktimeInventoryDayColumnsAndValues(List<GetInventoryReportResponse> inventoryCarbrandDayList, Integer stocktimeId) {
+
+        InsertTParamter parameter = new InsertTParamter();
+
+        parameter.setTable("`maxcar_statistics_l`.`carstocktime_day`");
+        parameter.setColumns("market_id,tenant_id,report_time,stocktime_id,stocktime_name,stock_count,stock_price");
+
+        StringBuffer stringBuffer = new StringBuffer(128);
+
+        for (GetInventoryReportResponse inventory : inventoryCarbrandDayList) {
+            stringBuffer.append("(");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getMarketId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getTenantId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByDay());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(stocktimeId);
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(BaseMapperService.getNameByInventoryCycleString(stocktimeId));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getInventoryCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getInventoryPrice());
+            stringBuffer.append("'");
+
+            stringBuffer.append("),");
+        }
+
+        String values = stringBuffer.toString();
+
+        parameter.setValues(values.substring(1, values.length() - 2));
+
+
+        String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
+                "stocktime_name =  VALUES (stocktime_name),\n" +
+                "stock_count =  VALUES (stock_count),\n" +
+                "stock_price =  VALUES (stock_price);";
+
+        parameter.setOnUpdate(onUpdate);
+
+        return parameter;
+    }
+
 }

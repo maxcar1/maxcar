@@ -235,6 +235,15 @@ public class CartypeMapperService {
 
         insertTParamter.setValues(values.substring(1, values.length() - 2));
 
+
+        String onUpdate ="ON DUPLICATE KEY UPDATE \n" +
+                "type_name = VALUES (type_name),\n " +
+                "sales_count =  VALUES (sales_count),\n" +
+                "sales_price =  VALUES  (sales_price),\n" +
+                "sales_avg_price = VALUES (sales_avg_price);";
+
+        insertTParamter.setOnUpdate(onUpdate);
+
         return insertTParamter;
     }
 
@@ -313,6 +322,14 @@ public class CartypeMapperService {
         String values = stringBuffer.toString();
 
         insertTParamter.setValues(values.substring(1, values.length() - 2));
+
+        String onUpdate ="ON DUPLICATE KEY UPDATE \n" +
+                "type_name = VALUES (type_name),\n " +
+                "sales_count =  VALUES (sales_count),\n" +
+                "sales_price =  VALUES  (sales_price),\n" +
+                "sales_avg_price = VALUES (sales_avg_price);";
+
+        insertTParamter.setOnUpdate(onUpdate);
 
         return insertTParamter;
     }

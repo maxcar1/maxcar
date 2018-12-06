@@ -24,5 +24,8 @@ public class GetInventoryReportParameter implements Serializable{
 
     private String endTime;
 
+    private Integer ageByCar;
+
+    private Integer inventoryCycle;
 
 }

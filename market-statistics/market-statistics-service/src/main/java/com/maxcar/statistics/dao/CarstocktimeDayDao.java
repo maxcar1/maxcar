@@ -1,5 +1,6 @@
 package com.maxcar.statistics.dao;
 
+import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CarstocktimeDayProvider;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceDayRequest;
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
-public interface CarstocktimeDayDao {
+public interface CarstocktimeDayDao extends BaseDao {
 
     /**
      * param:

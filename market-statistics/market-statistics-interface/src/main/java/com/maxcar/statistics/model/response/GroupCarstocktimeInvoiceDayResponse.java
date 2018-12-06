@@ -9,7 +9,7 @@ public class GroupCarstocktimeInvoiceDayResponse implements Serializable{
 
 
     private static final long serialVersionUID = 5729659386390540546L;
-    private String stocktimeId;
+    private Integer stocktimeId;
 
     private Integer invoiceCount;
 

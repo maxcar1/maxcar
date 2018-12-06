@@ -55,12 +55,65 @@ public class BaseMapperService {
                 break;
             case 10:
                 //90天以上
+                inventoryCycleString = " and DATEDIFF(now(),c.register_time) >= 90  ";
                 break;
             default:
                 break;
         }
 
         return inventoryCycleString;
+    }
+
+    public static String getNameByInventoryCycleString(Integer inventoryCycle) {
+
+        String name = "";
+
+        switch (inventoryCycle) {
+            case 1:
+                //10天以内
+                name = "10天以内";
+                break;
+            case 2:
+                //10-20天
+                name = "10-20天";
+                break;
+            case 3:
+                //20-30天
+                name = "20-30天";
+                break;
+            case 4:
+                //30-40天
+                name = "30-40天";
+                break;
+            case 5:
+                //40-50天
+                name = "40-50天";
+                break;
+            case 6:
+                //50-60天
+                name = "50-60天";
+                break;
+            case 7:
+                //60-70天
+                name = "60-70天";
+                break;
+            case 8:
+                //70-80天
+                name = "70-80天";
+                break;
+            case 9:
+                //80-90天
+                name = "80-90天";
+                break;
+            case 10:
+                //90天以上
+                name = "90天以上";
+                break;
+            default:
+                break;
+        }
+
+        return name;
     }
 
     /**
@@ -101,6 +154,39 @@ public class BaseMapperService {
         }
 
         return AgeByCarString;
+    }
+
+
+    public static String getNameByAgeByCarString(Integer ageByCar) {
+
+        String name = "";
+
+        switch (ageByCar) {
+            case 1:
+                //一年以内
+                name = "一年以内";
+                break;
+            case 2:
+                //一 - 三年
+                name = "一 - 三年";
+                break;
+            case 3:
+                //三 - 五年
+                name = "三 - 五年";
+                break;
+            case 4:
+                //五 - 八年
+                name = "五 - 八年";
+                break;
+            case 5:
+                //八年以上
+                name = "八年以上";
+                break;
+            default:
+                break;
+        }
+
+        return name;
     }
 
 

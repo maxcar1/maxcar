@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class GroupCarstocktimeInventoryDayResponse implements Serializable {
 
     private static final long serialVersionUID = 6975898029012052984L;
-    private String stocktimeId;
+    private Integer stocktimeId;
 
     private String inventoryCount;
 

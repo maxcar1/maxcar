@@ -27,21 +27,71 @@ public class ReportMapperService {
     public List<GetCarInvoiceTypeInvoiceReportResponse> getCarInvoiceTypeInvoiceReport(GetCarInvoiceTypeInvoiceReportParameter parameter) {
 
         StringBuffer stringBuffer = new StringBuffer(128);
+        stringBuffer.delete(0, stringBuffer.length());
+
+
         stringBuffer.append(" DATE_FORMAT(i.bill_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D')  ");
         stringBuffer.append(" AND DATE_FORMAT(i.bill_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
 
 
         if ("carInvoiceType".equals(parameter.getGroupByColumns().trim())) {
 
-            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', i.car_invoice_type AS carInvoiceType, IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(i.price), 0) AS invoicePrice ");
+            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', i.car_invoice_type AS 'carInvoiceType', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice' ");
             //stringBuffer.append(" AND i.car_invoice_type != '' ");
+
+            parameter.setGroupByColumns("i.market_id,i.tenant_id," + parameter.getGroupByColumns().trim());
+
         } else if ("brandName".equals(parameter.getGroupByColumns().trim())) {
 
-            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId',cb.brand_name AS 'brandName', IFNULL(COUNT(*), 0) AS invoiceCount, IFNULL(SUM(i.price), 0) AS invoicePrice ");
+            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId',cb.brand_name AS 'brandName', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice'," +
+                    "IFNULL(COUNT(IF(i.sex =1 ,true,null)), 0) AS 'maleCount', " +
+                    "IFNULL(COUNT(IF(i.sex =2 ,true,null)), 0) AS 'femaleCount'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age20Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age25Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age30Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age35Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age40Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age45Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age50Count'");
             //stringBuffer.append(" AND cb.brand_name != '' ");
+
+            parameter.setGroupByColumns("i.market_id,i.tenant_id," + parameter.getGroupByColumns().trim());
+
+        } else if ("caryear".equals(parameter.getGroupByColumns().trim())) {
+
+            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice'," +
+                    "IFNULL(COUNT(IF(i.sex =1 ,true,null)), 0) AS 'maleCount', " +
+                    "IFNULL(COUNT(IF(i.sex =2 ,true,null)), 0) AS 'femaleCount'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age20Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age25Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age30Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age35Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age40Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age45Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age50Count'");
+
+            parameter.setGroupByColumns("i.market_id,i.tenant_id");
+
+            stringBuffer.append(BaseMapperService.getAgeByCarString(parameter.getAgeByCar()));
+
+        } else if ("carstocktime".equals(parameter.getGroupByColumns().trim())) {
+
+            parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice'," +
+                    "IFNULL(COUNT(IF(i.sex =1 ,true,null)), 0) AS 'maleCount', " +
+                    "IFNULL(COUNT(IF(i.sex =2 ,true,null)), 0) AS 'femaleCount'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age20Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age25Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age30Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age35Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age40Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age45Count'," +
+                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age50Count'");
+
+            parameter.setGroupByColumns("i.market_id,i.tenant_id");
+
+            stringBuffer.append(BaseMapperService.getInventoryCycleString(parameter.getInventoryCycle()));
         }
 
-        parameter.setGroupByColumns("i.market_id,i.tenant_id," + parameter.getGroupByColumns());
 
         if (StringUtil.isNotEmpty(parameter.getMarketId())) {
 
@@ -63,7 +113,7 @@ public class ReportMapperService {
         if (StringUtil.isEmpty(parameter.getOrderBy())) {
             parameter.setOrderBy("invoiceCount DESC ");
         } else {
-            parameter.setOrderBy(parameter.getOrderBy() + " DESC ");
+            parameter.setOrderBy(parameter.getOrderBy());
         }
 
         return reportDao.getCarInvoiceTypeInvoiceReport(parameter);
@@ -87,16 +137,35 @@ public class ReportMapperService {
      **/
     public List<GetInventoryReportResponse> getInventoryReport(GetInventoryReportParameter parameter) {
         StringBuffer stringBuffer = new StringBuffer(128);
+        stringBuffer.delete(0, stringBuffer.length());
 
-        stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
-        stringBuffer.append(" AND   DATE_FORMAT(c.insert_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+        // stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
+        stringBuffer.append(" DATE_FORMAT(c.register_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
         stringBuffer.append(" AND  c.stock_status in ('1','2','3') ");
 
         if ("brandName".equals(parameter.getGroupByColumns().trim())) {
 
-            parameter.setSelectColumns("cb.brand_name AS brandName,IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
-            stringBuffer.append("cb.brand_name !=''  ");
+            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',cb.brand_name AS brandName,IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
+
+            stringBuffer.append(" and cb.brand_name !=''  ");
+
+            parameter.setGroupByColumns("c.market_id,c.tenant," + parameter.getGroupByColumns().trim());
+        } else if ("caryear".equals(parameter.getGroupByColumns().trim())) {
+
+            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
+
+            parameter.setGroupByColumns("c.market_id,c.tenant");
+
+            stringBuffer.append(BaseMapperService.getAgeByCarString(parameter.getAgeByCar()));
+        } else if ("carstocktime".equals(parameter.getGroupByColumns().trim())) {
+
+            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
+
+            parameter.setGroupByColumns("c.market_id,c.tenant");
+
+            stringBuffer.append(BaseMapperService.getInventoryCycleString(parameter.getInventoryCycle()));
         }
+
 
         if (StringUtil.isNotEmpty(parameter.getMarketId())) {
 
@@ -113,7 +182,7 @@ public class ReportMapperService {
         if (StringUtil.isEmpty(parameter.getOrderBy())) {
             parameter.setOrderBy(" inventoryCount desc ");
         } else {
-            parameter.setOrderBy(parameter.getOrderBy() + "  desc ");
+            parameter.setOrderBy(parameter.getOrderBy());
         }
 
         return reportDao.getInventoryReport(parameter);

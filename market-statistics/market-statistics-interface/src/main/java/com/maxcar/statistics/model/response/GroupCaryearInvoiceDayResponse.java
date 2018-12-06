@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class GroupCaryearInvoiceDayResponse implements Serializable {
 
     private static final long serialVersionUID = 3102078984486642913L;
-    private String yearId;
+    private Integer yearId;
     
     private Integer invoiceCount;
 

@@ -1,5 +1,6 @@
 package com.maxcar.statistics.service.impl;
 
+import com.maxcar.base.util.StringUtil;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryMonthRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceDayRequest;

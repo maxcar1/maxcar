@@ -142,16 +142,16 @@ public class ReportController extends BaseController {
         List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
 
 
-        for (int i = 0; i < lastYear.size(); i++) {
+        for (int i = 0; i < thisYear.size(); i++) {
 
             // 同比增长率
             GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
 
-            GroupCartypeMonthResponse thisResponse = lastYear.get(i);
+            GroupCartypeMonthResponse thisResponse = thisYear.get(i);
 
             Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
 
-            GroupCartypeMonthResponse lastResponse = thisYear.get(i);
+            GroupCartypeMonthResponse lastResponse = lastYear.get(i);
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
@@ -348,16 +348,16 @@ public class ReportController extends BaseController {
         List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
 
 
-        for (int i = 0; i < lastYear.size(); i++) {
+        for (int i = 0; i < thisYear.size(); i++) {
 
             // 同比增长率
             GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
 
-            GroupCarbrandInvoiceMonthResponse thisResponse = lastYear.get(i);
+            GroupCarbrandInvoiceMonthResponse thisResponse = thisYear.get(i);
 
             Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
 
-            GroupCarbrandInvoiceMonthResponse lastResponse = thisYear.get(i);
+            GroupCarbrandInvoiceMonthResponse lastResponse = lastYear.get(i);
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
@@ -518,7 +518,7 @@ public class ReportController extends BaseController {
 
     /**
      * param:
-     * describe: 车辆品牌交易价格增长率
+     * describe: 车辆年限交易价格增长率
      * create_date:  lxy   2018/12/3  14:57
      **/
     @RequestMapping("/report/growthCaryearByMonth")
@@ -556,16 +556,16 @@ public class ReportController extends BaseController {
         List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
 
 
-        for (int i = 0; i < lastYear.size(); i++) {
+        for (int i = 0; i < thisYear.size(); i++) {
 
             // 同比增长率
             GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
 
-            GroupCaryearInvoiceMonthResponse thisResponse = lastYear.get(i);
+            GroupCaryearInvoiceMonthResponse thisResponse = thisYear.get(i);
 
             Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
 
-            GroupCaryearInvoiceMonthResponse lastResponse = thisYear.get(i);
+            GroupCaryearInvoiceMonthResponse lastResponse = lastYear.get(i);
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
@@ -723,7 +723,7 @@ public class ReportController extends BaseController {
 
     /**
      * param:
-     * describe: 车辆品牌交易价格增长率
+     * describe: 车辆库存时长交易价格增长率
      * create_date:  lxy   2018/12/3  14:57
      **/
     @RequestMapping("/report/growthCarstocktimeByMonth")
@@ -761,16 +761,16 @@ public class ReportController extends BaseController {
         List<GrowthByMonthSequentialPack> sequentialPacks = new ArrayList<>(thisYear.size());
 
 
-        for (int i = 0; i < lastYear.size(); i++) {
+        for (int i = 0; i < thisYear.size(); i++) {
 
             // 同比增长率
             GrowthByMonthYearOnYearPack growthByMonthYearOnYearPack = new GrowthByMonthYearOnYearPack();
 
-            GroupCarstocktimeInvoiceMonthResponse thisResponse = lastYear.get(i);
+            GroupCarstocktimeInvoiceMonthResponse thisResponse = thisYear.get(i);
 
             Double thisResponseAvgPrice = ToolDataUtils.getAvgPrice(thisResponse.getInvoicePrice(), thisResponse.getInvoiceCount());
 
-            GroupCarstocktimeInvoiceMonthResponse lastResponse = thisYear.get(i);
+            GroupCarstocktimeInvoiceMonthResponse lastResponse = lastYear.get(i);
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 

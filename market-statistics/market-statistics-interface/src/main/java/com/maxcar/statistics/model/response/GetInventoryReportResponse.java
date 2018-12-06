@@ -8,6 +8,12 @@ import java.io.Serializable;
 public class GetInventoryReportResponse implements Serializable {
 
     private static final long serialVersionUID = -4627478156736168770L;
+
+    private String marketId;
+
+    private String tenantId;
+
+
     private String brandName;
 
     private String inventoryCount;
