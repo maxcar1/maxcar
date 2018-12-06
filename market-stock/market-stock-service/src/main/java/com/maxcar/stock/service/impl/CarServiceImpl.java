@@ -992,6 +992,115 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     }
 
     @Override
+    public Car getStockCarByVin(String vin,String marketId) {
+        return carMapper.getStockCarByVinByMarketId(vin,marketId);
+    }
+
+    @Override
+    public InterfaceResult updateStoreCar(CarVo carVo) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+
+        if (StringUtils.isBlank(carVo.getId())) {
+            result.InterfaceResult600("车辆id不能为空");
+            return result;
+        }
+        Car car1 = carMapper.selectByPrimaryKey(carVo.getId());
+
+        if (car1 == null) {
+            result.InterfaceResult600("该车辆不存在");
+            return result;
+        }
+        Car car=new Car();
+        CarBaseWithBLOBs carBase=new CarBaseWithBLOBs();
+        car.setId(carVo.getId());
+        carBase.setId(carVo.getId());
+
+        if (StringUtils.isNotBlank(carVo.getVin())) {
+            car.setVin(carVo.getVin());
+        }
+        //市场价
+        if (carVo.getMarketPrice() != null) {
+            carBase.setMarketPrice(carVo.getMarketPrice().doubleValue());
+        }
+        //颜色
+        if (StringUtils.isNotBlank(carVo.getColor())) {
+            carBase.setColor(carVo.getColor());
+        }
+        //公里
+        if (carVo.getMileage() != null) {
+            carBase.setMileage(carVo.getMileage());
+        }
+
+        //座位数
+        if (carVo.getSeatNumber()!=null){
+            carBase.setSeatNumber(carVo.getSeatNumber());
+        }
+        //变速箱
+        if (StringUtils.isNotBlank(carVo.getGearBox())){
+            carBase.setGearBox(carVo.getGearBox());
+        }
+        //新车价
+        if (carVo.getNewPrice()!=null){
+            carBase.setNewPrice(carVo.getNewPrice().doubleValue());
+        }
+        //车身尺寸
+        if (StringUtils.isNotBlank(carVo.getLevel())){
+            carBase.setLevel(carVo.getLevel());
+        }
+        //排放标准
+        if (StringUtils.isNotBlank(carVo.getEnvironmentalStandards())){
+            carBase.setEnvironmentalStandards(carVo.getEnvironmentalStandards());
+        }
+        //估价
+        if (carVo.getEvaluatePrice()!=null){
+            carBase.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
+        }
+        //排量
+        if (carVo.getEngineVolumeUnitl()!=null){
+            carBase.setEngineVolumeUnitl(carVo.getEngineVolumeUnitl());
+        }
+
+        //初次上牌时间
+        if (StringUtils.isNotBlank(carVo.getInitialLicenceTime())) {
+            car.setInitialLicenceTime(DatePoor.getDateForString(carVo.getInitialLicenceTime()));
+            carBase.setInitialLicenceTime(DatePoor.getDateForString(carVo.getInitialLicenceTime()));
+        }
+        if (StringUtils.isNotBlank(carVo.getModelCode())) {
+            Map<String,String> model=daSouCheService.getModelAndSeriesAndBrandByModelCode(carVo.getModelCode());
+            if (model!=null){
+                carBase.setBrandCode(model.get("brandCode"));
+                carBase.setBrandName(model.get("brandName"));
+                carBase.setSeriesCode(model.get("seriesCode"));
+                carBase.setSeriesName(model.get("seriesName"));
+                carBase.setModelCode(model.get("modelCode"));
+                carBase.setModelName(model.get("modelName"));
+                carBase.setModelYear(model.get("modelName").substring(0,4));
+            }
+        }
+
+        car.setUpdateTime(new Date());
+        carBase.setUpdateTime(new Date());
+        carMapper.updateByPrimaryKeySelective(car);
+        carBaseMapper.updateByPrimaryKeySelective(carBase);
+
+        //保存图片
+        if (carVo.getListCarPic()!=null) {
+            carVo.getListCarPic().forEach(pic ->{
+                pic.setUpdateTime(new Date());
+                pic.setCarId(carVo.getId());
+                if (StringUtils.isNotBlank(pic.getId())){//更新
+                    carPicMapper.updateByPrimaryKeySelective(pic);
+                }else {//添加
+                    pic.setId(UuidUtils.generateIdentifier());
+                    carPicMapper.insert(pic);
+                }
+            });
+        }
+
+        return result;
+    }
+
+    @Override
     public List<Car> carByVin(CarChecks c) {
         CarExample example = new CarExample();
         CarExample.Criteria criteria = example.createCriteria();

@@ -11,12 +11,7 @@ import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
-import com.maxcar.stock.pojo.Car;
-import com.maxcar.stock.pojo.CarIcon;
-import com.maxcar.stock.pojo.CarInfo;
-import com.maxcar.stock.pojo.CarPic;
-import com.maxcar.stock.pojo.DpCar;
-import com.maxcar.stock.pojo.TaoBaoCar;
+import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.vo.CarVo;
 
 import java.util.List;
@@ -212,9 +207,13 @@ public interface CarService extends BaseService<Car, String> {
 
     Car getStockCarByVin(String vin);
 
+    InterfaceResult updateStoreCar(CarVo carVo) throws Exception;
+
     List<Car> carByVin(CarChecks c);
 
     Car carInformation(Car car);
 
     InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest inventoryStatisticalRequest);
+
+    Car getStockCarByVin(String vin, String marketId);
 }
