@@ -33,7 +33,7 @@ public class WishListController {
    /* *
      * 扫码跳转心愿单页面
      * @return*/
-    @RequestMapping(value="carWish",method= RequestMethod.GET)
+    @RequestMapping(value="/carWish",method= RequestMethod.GET)
     public ModelAndView wishList(WishList wishList){
         ModelAndView view = new ModelAndView("redirect:http://test.maxcar.com.cn/carWish?userId="+wishList.getUserId()+"&marketId="+wishList.getMarketId()+"");
         try {
