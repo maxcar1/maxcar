@@ -604,7 +604,7 @@
 				<kafka.consumer.topic055>sync_download_055_data_dev</kafka.consumer.topic055>
 
 				<local.servers.address>http://localhost:7960</local.servers.address>
-				<local.servers.parking.address>http://localhost:7950</local.servers.parking.address>
+				<local.servers.parking.address>http://localhost:6950</local.servers.parking.address>
 				<!-- 大搜车接口配置 -->
 				<app.key>84304e368d4153cfd0dbafc967187729</app.key>
 				<app.secret>43f4d794f3b5c95239a092a66bcbede8</app.secret>

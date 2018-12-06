@@ -330,7 +330,6 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         ParkingFeeDetail parkingFeeDe = parkingFeeDetailMapper.getRecordByCardNoOrUnionId(parkingFeeDetail);
         parkingFeeDe.setAfterImage(parkingFeeDetail.getAfterImage());
         parkingFeeDe.setAfterTime(Calendar.getInstance().getTime());
-        parkingFeeDe.setChargePrice(0);
         parkingFeeDe.setPrice(0);
         if (null != parkingFeeDe) {
             parkingFeeDe.setOverTime("0小时0分0秒");
@@ -400,6 +399,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                             parkingFeeDe.setOverTime(DateUtils.getHMSToString(endDate, c.getTime()));
                             parkingFeeDe.setOverTimeFee(totalFee2.intValue());
                             parkingFeeDe.setChargeFee(totalFee2.intValue());
+                            parkingFeeDe.setChargePrice(totalFee2.intValue());
                             int type1 = parkingFeeDe.getChargeFee() == 0 ? -1 : parkingFeeDe.getChargeFee();
                             //0元开闸
                             sendMessage(marketId, barrier, type1);
@@ -418,6 +418,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                         parkingFeeDe.setIntegral(0);
                         parkingFeeDe.setAlreadyPaid(0);
                         parkingFeeDe.setChargeFee(totalFee.intValue());
+                        parkingFeeDe.setChargePrice(totalFee.intValue());
                         parkingFeeDe.setOverTimeFee(0);
                         parkingFeeDe.setParkingTime(hmsToString);
                         int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
@@ -452,6 +453,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 parkingFeeDe.setIntegral(0);
                 parkingFeeDe.setAlreadyPaid(0);
                 parkingFeeDe.setChargeFee(totalFee.intValue());// 应收费用
+                parkingFeeDe.setChargePrice(totalFee.intValue());
                 parkingFeeDe.setOverTimeFee(0);
                 int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
                 //0元开闸
