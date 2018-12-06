@@ -1,13 +1,10 @@
 package com.maxcar.statistics.dao;
 
-import com.maxcar.market.pojo.Invoice;
 import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CarpriceDayMapper {
     int deleteByPrimaryKey(Integer id);
@@ -26,5 +23,5 @@ public interface CarpriceDayMapper {
 
     List<TradingResponse> stockAvgDay(TradingRequest tradingRequest);
 
-    List<Invoice> InsertCarpriceDay();
+    void InsertCarpriceDay();
 }
