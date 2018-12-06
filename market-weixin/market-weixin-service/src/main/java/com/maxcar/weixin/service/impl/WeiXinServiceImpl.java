@@ -901,6 +901,7 @@ public class WeiXinServiceImpl implements WeiXinService {
             record.setBarrierId(barrier.getBarrierId());
             record.setIsValid(1);
             record.setMarketId(marketId);
+            record.setInsertOperator(params.getString("userId"));
             record.setReason(reason);
             if (params.containsKey("detailId")) {
                 record.setParkingDetailId(params.getString("detailId"));

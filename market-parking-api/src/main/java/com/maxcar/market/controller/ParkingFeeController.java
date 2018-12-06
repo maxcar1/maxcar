@@ -135,8 +135,13 @@ public class ParkingFeeController extends BaseController {
     public Object escapeHatch(HttpServletRequest request,@RequestBody JSONObject params)
             throws Exception{
         User user = getCurrentUser(request);
-        params.put("marketId",user.getMarketId());
-        InterfaceResult result = weiXinService.escapeHatch(params);
+        JSONObject json = new JSONObject();
+        if (null != user){
+            json = (JSONObject) JSONObject.toJSON(user);
+        }
+        json.put("reason",params.getString("reason"));
+        json.put("barrierId",params.getString("barrierId"));
+        InterfaceResult result = weiXinService.escapeHatch(json);
         return  result;
     }
 
