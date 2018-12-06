@@ -3,7 +3,7 @@
 <mapper namespace="com.maxcar.stock.dao.ReviewDetailMapper" >
   <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.ReviewDetail" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="review_id" property="reviewId" jdbcType="INTEGER" />
+    <result column="review_id" property="reviewId" jdbcType="VARCHAR" />
     <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
     <result column="review_result" property="reviewResult" jdbcType="INTEGER" />
     <result column="review_desc" property="reviewDesc" jdbcType="VARCHAR" />
@@ -106,7 +106,7 @@
     insert into review_detail (id, review_id, review_person_id, 
       review_result, review_desc, level,
       insert_time)
-    values (#{id,jdbcType=INTEGER}, #{reviewId,jdbcType=INTEGER}, #{reviewPersonId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{reviewId,jdbcType=VARCHAR}, #{reviewPersonId,jdbcType=VARCHAR},
       #{reviewResult,jdbcType=INTEGER}, #{reviewDesc,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER},
       #{insertTime,jdbcType=TIMESTAMP})
   </insert>
@@ -140,7 +140,7 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="reviewId != null" >
-        #{reviewId,jdbcType=INTEGER},
+        #{reviewId,jdbcType=VARCHAR},
       </if>
       <if test="reviewPersonId != null" >
         #{reviewPersonId,jdbcType=VARCHAR},
@@ -172,7 +172,7 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.reviewId != null" >
-        review_id = #{record.reviewId,jdbcType=INTEGER},
+        review_id = #{record.reviewId,jdbcType=VARCHAR},
       </if>
       <if test="record.reviewPersonId != null" >
         review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
@@ -197,7 +197,7 @@
   <update id="updateByExample" parameterType="map" >
     update review_detail
     set id = #{record.id,jdbcType=INTEGER},
-      review_id = #{record.reviewId,jdbcType=INTEGER},
+      review_id = #{record.reviewId,jdbcType=VARCHAR},
       review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
       review_result = #{record.reviewResult,jdbcType=INTEGER},
       review_desc = #{record.reviewDesc,jdbcType=VARCHAR},
@@ -211,7 +211,7 @@
     update review_detail
     <set >
       <if test="reviewId != null" >
-        review_id = #{reviewId,jdbcType=INTEGER},
+        review_id = #{reviewId,jdbcType=VARCHAR},
       </if>
       <if test="reviewPersonId != null" >
         review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
@@ -233,7 +233,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
     update review_detail
-    set review_id = #{reviewId,jdbcType=INTEGER},
+    set review_id = #{reviewId,jdbcType=VARCHAR},
       review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
       review_result = #{reviewResult,jdbcType=INTEGER},
       review_desc = #{reviewDesc,jdbcType=VARCHAR},
