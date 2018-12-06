@@ -4128,18 +4128,18 @@ FROM
     c.mileage,
     c.level
     FROM maxcar_market_l.invoice i LEFT JOIN maxcar_stock_l.car_base c
-    ON i.car_id = c.id WHERE 1=1
+    ON i.car_id = c.id WHERE i.invoice_status = 2
     <if test="marketId != null and marketId != '' ">
       and i.market_id = #{marketId}
     </if>
     <if test="purchacerName != null and purchacerName != '' ">
-      and i.purchacer_name = #{purchacerName}
+      and i.purchacer_name like  #{purchacerName}
     </if>
       <if test="userId != null and userId != '' ">
           and i.user_id = #{userId}
       </if>
     <if test="sellerName != null and sellerName != '' ">
-      and i.seller_name = #{sellerName}
+      and i.seller_name like  #{sellerName}
     </if>
     <if test="invoiceNo != null and invoiceNo != '' ">
       and i.invoice_no = #{invoiceNo}
