@@ -221,25 +221,25 @@ public class AuditingController extends BaseController {
                 if(list!=null){
                     if(lastLevel==level){
                         reviewDetail.setReviewResult(1);
+                        CarReview carReview = new CarReview();
+                        carReview.setId(reviewDetail.getReviewId());
+                        carReview.setIsPass(reviewDetail.getReviewResult());
+                        carReview.setStepLevel(level);
+                        String topic = super.getTopic(user.getMarketId());
+                        //同步删除本地车辆状态
+                        //组装云端参数
+                        PostParam postParam = new PostParam();
+                        postParam.setData(JsonTools.toJson(carReview));
+                        postParam.setMarket(user.getMarketId());
+                        postParam.setUrl("/barrier/carReview/saveOrUpdate");
+                        postParam.setMethod("post");
+                        postParam.setOnlySend(false);
+                        postParam.setMessageTime(Constants.dateformat.format(new Date()));
+                        messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
                     }else{
                         reviewDetail.setReviewResult(null);
                     }
                     reviewDetailService.updateReviewStatus(reviewDetail);
-                    CarReview carReview = new CarReview();
-                    carReview.setId(reviewDetail.getReviewId());
-                    carReview.setIsPass(reviewDetail.getReviewResult());
-                    carReview.setStepLevel(level);
-                    String topic = super.getTopic(user.getMarketId());
-                    //同步删除本地车辆状态
-                    //组装云端参数
-                    PostParam postParam = new PostParam();
-                    postParam.setData(JsonTools.toJson(carReview));
-                    postParam.setMarket(user.getMarketId());
-                    postParam.setUrl("/barrier/carReview/saveOrUpdate");
-                    postParam.setMethod("post");
-                    postParam.setOnlySend(false);
-                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
-                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
 
                 }
             }else{
@@ -250,25 +250,26 @@ public class AuditingController extends BaseController {
                     review.setReviewId(reviewDetail.getReviewId());
                     if(lastLevel==level){
                         review.setReviewResult(1);
+                        CarReview carReview = new CarReview();
+                        carReview.setId(review.getReviewId());
+                        carReview.setIsPass(review.getReviewResult());
+                        carReview.setStepLevel(review.getLevel());
+                        String topic = super.getTopic(user.getMarketId());
+                        //同步删除本地车辆状态
+                        //组装云端参数
+                        PostParam postParam = new PostParam();
+                        postParam.setData(JsonTools.toJson(carReview));
+                        postParam.setMarket(user.getMarketId());
+                        postParam.setUrl("/barrier/carReview/saveOrUpdate");
+                        postParam.setMethod("post");
+                        postParam.setOnlySend(false);
+                        postParam.setMessageTime(Constants.dateformat.format(new Date()));
+                        messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
                     }else{
                         review.setReviewResult(null);
                     }
                     reviewDetailService.updateReviewStatus(review);
-                    CarReview carReview = new CarReview();
-                    carReview.setId(review.getReviewId());
-                    carReview.setIsPass(review.getReviewResult());
-                    carReview.setStepLevel(review.getLevel());
-                    String topic = super.getTopic(user.getMarketId());
-                    //同步删除本地车辆状态
-                    //组装云端参数
-                    PostParam postParam = new PostParam();
-                    postParam.setData(JsonTools.toJson(carReview));
-                    postParam.setMarket(user.getMarketId());
-                    postParam.setUrl("/barrier/carReview/saveOrUpdate");
-                    postParam.setMethod("post");
-                    postParam.setOnlySend(false);
-                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
-                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
 
                 }
             }
