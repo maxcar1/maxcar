@@ -19,6 +19,7 @@
     <dubbo:service interface="com.maxcar.market.service.AreaService" ref="areaService"   timeout="1200000"/>
     <dubbo:service interface="com.maxcar.market.service.AreaShopService" ref="areaShopService"   timeout="1200000"/>
     <dubbo:service interface="com.maxcar.market.service.ParkingFeeRuleService" ref="parkingFeeRuleService"   timeout="1200000"/>
+    <dubbo:service interface="com.maxcar.market.service.OpenBarrierRecordService" ref="openBarrierRecordService"   timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.market.service.InvoiceService" ref="invoiceService" timeout="1200000"/>
 
