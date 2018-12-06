@@ -78,7 +78,7 @@
         <result column="shelfStatus" property="shelfStatus" jdbcType="INTEGER"/>
         <result column="carChannelId" property="carChannelId" jdbcType="VARCHAR"/>
         <result column="out_reason" property="outReason" jdbcType="VARCHAR"/>
-        <result column="review_id" property="reviewId" jdbcType="INTEGER"/>
+        <result column="review_id" property="reviewId" jdbcType="VARCHAR"/>
         <result column="step_level" property="stepLevel" jdbcType="INTEGER"/>
         <result column="is_pass" property="isPass" jdbcType="INTEGER"/>
         <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>

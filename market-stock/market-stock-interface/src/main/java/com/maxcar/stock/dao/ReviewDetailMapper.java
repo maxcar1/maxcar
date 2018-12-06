@@ -36,5 +36,5 @@ public interface ReviewDetailMapper {
 
     List<ReviewDetail> selReviewDetail(ReviewDetail reviewDetail);
 
-    ReviewDetail reviewDetail(@Param("reviewId") Integer reviewId);
+    ReviewDetail reviewDetail(@Param("reviewId") String reviewId);
 }

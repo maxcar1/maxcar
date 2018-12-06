@@ -14,5 +14,5 @@ public interface ReviewDetailService {
 
     ReviewDetail selectReviewDetail(ReviewDetail reviewDetail);
 
-    ReviewDetail reviewDetail (Integer reviewId);
+    ReviewDetail reviewDetail (String reviewId);
 }

@@ -47,7 +47,7 @@ public class ReviewDetailServiceImpl implements ReviewDetailService {
     }
 
     @Override
-    public ReviewDetail reviewDetail(Integer reviewId) {
+    public ReviewDetail reviewDetail(String reviewId) {
         return reviewDetailMapper.reviewDetail(reviewId);
     }
 }

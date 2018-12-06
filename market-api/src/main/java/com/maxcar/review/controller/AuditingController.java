@@ -77,7 +77,7 @@ public class AuditingController extends BaseController {
 
     @RequestMapping("/carReviewDetail/{reviewId}")
     @OperationAnnotation(title = "车辆出场审核详情")
-    public InterfaceResult carReviewDetail(@PathVariable Integer reviewId,HttpServletRequest request ) throws Exception{
+    public InterfaceResult carReviewDetail(@PathVariable String reviewId,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         Map<String, Object> map = new HashMap<>();
         User user = getCurrentUser(request);
@@ -318,7 +318,7 @@ public class AuditingController extends BaseController {
 
     @RequestMapping("/detail/{reviewId}/{carId}")
     @OperationAnnotation(title = "审核结果")
-    public InterfaceResult carReviewDetailList(@PathVariable Integer reviewId,@PathVariable String carId, HttpServletRequest request ) throws Exception{
+    public InterfaceResult carReviewDetailList(@PathVariable String reviewId,@PathVariable String carId, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         User u = getCurrentUser(request);
         Map<String,Object> map = new HashMap<>();
