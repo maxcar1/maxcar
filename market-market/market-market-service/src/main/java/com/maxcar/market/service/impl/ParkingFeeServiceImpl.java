@@ -99,6 +99,9 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
     @Value("${paibo_app_secret_weixin}")
     private String paiboAppSecret;
 
+    @Value("${kefu_send_url}")
+    private String kefuSendUrl;
+
     @Autowired
     private TopicService topicService;
 
@@ -325,6 +328,10 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         Date endDate = Calendar.getInstance().getTime();
         //获取当前卡号最早的一条记录
         ParkingFeeDetail parkingFeeDe = parkingFeeDetailMapper.getRecordByCardNoOrUnionId(parkingFeeDetail);
+        parkingFeeDe.setAfterImage(parkingFeeDetail.getAfterImage());
+        parkingFeeDe.setAfterTime(Calendar.getInstance().getTime());
+        parkingFeeDe.setChargePrice(0);
+        parkingFeeDe.setPrice(0);
         if (null != parkingFeeDe) {
             parkingFeeDe.setOverTime("0小时0分0秒");
             parkingFeeDe.setAfterTime(endDate);
@@ -345,8 +352,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                     parkingFeeDe.setParkingTime(hmsToString);
                     //0元开闸
                     sendMessage(marketId, barrier, -1);
-                    JSONObject json = (JSONObject)JSONObject.toJSON(parkingFeeDetail);
-                    charge(json);
+                    updateParkingFeeDetail(parkingFeeDe,barrier);
                     return parkingFeeDe;
                 }else {
                     // 超过四小时免费时间,缴过费
@@ -367,8 +373,10 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                             }
                             parkingFeeDe.setChargeFee(0);
                             parkingFeeDe.setOverTimeFee(0);
+
                             //0元开闸
                             sendMessage(marketId, barrier, -1);
+                            updateParkingFeeDetail(parkingFeeDe,barrier);
                             return parkingFeeDe;
                         }else {
                             // 超出15分钟免费停留时间
@@ -395,6 +403,9 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                             int type1 = parkingFeeDe.getChargeFee() == 0 ? -1 : parkingFeeDe.getChargeFee();
                             //0元开闸
                             sendMessage(marketId, barrier, type1);
+                            if (type1 == -1){
+                                updateParkingFeeDetail(parkingFeeDe,barrier);
+                            }
                             return parkingFeeDe;
                         }
                     }else {
@@ -412,6 +423,9 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                         int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
                         //0元开闸
                         sendMessage(marketId, barrier, type1);
+                        if (type1 == -1){
+                            updateParkingFeeDetail(parkingFeeDe,barrier);
+                        }
                         return parkingFeeDe;
                     }
 
@@ -442,11 +456,22 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
                 //0元开闸
                 sendMessage(marketId, barrier, type1);
+                if (type1 == -1){
+                    updateParkingFeeDetail(parkingFeeDe,barrier);
+                }
             }
         }
         return parkingFeeDe;
     }
 
+    private void updateParkingFeeDetail(ParkingFeeDetail parkingFeeDe,Barrier barrier){
+            ParkingFee parking = new ParkingFee();
+            parking.setMarketId(parkingFeeDe.getMarketId());
+            parking.setBrakeId(barrier.getBarrierId());
+            ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
+            parkingFeeDe.setParkingFeeId(null == parkingFee ? "" : parkingFee.getId());
+            parkingFeeDetailMapper.updateByPrimaryKeySelective(parkingFeeDe);
+    }
 
     private void doWeixinEvent(String key,Barrier barrier) throws Exception{
         //扫码上行的key,根据key查询微信信息
@@ -489,9 +514,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             parking.put("minute", map1.get("minute"));
             parking.put("second", map1.get("second"));
             String result = weiXinService.doResponseByPaiBo(receiveXmlEntity, 2, parking);
-            String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
             String accessToken = weiXinService.cacheTokenInRedis(paiboAppId,paiboAppSecret,"paibo");
-            String httpUrl = url.replace("ACCESS_TOKEN",accessToken);
+            String httpUrl = kefuSendUrl.replace("ACCESS_TOKEN",accessToken);
             Text text = new Text();
             text.setContent(result);
             TargetMessage targetMessage = new TargetMessage();
@@ -570,7 +594,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             Barrier ba = barrierService.selectByBarrierId(barrierId);
             ParkingFee parking = new ParkingFee();
             parking.setMarketId(detail.getMarketId());
-            parking.setBrakeId(ba.getBarrierId());
+            parking.setBrakeId(barrierId);
             parking.setEmployeesId(userId);
             ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
 

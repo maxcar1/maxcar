@@ -634,6 +634,7 @@
 				<action.name.limit.str>QR_LIMIT_STR_SCENE</action.name.limit.str>
 				<show.ticket.url>https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=</show.ticket.url>
 				<user.info.url>https://api.weixin.qq.com/cgi-bin/user/info?access_token=</user.info.url>
+				<kefu.send.url>https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN</kefu.send.url>
 				<lang>zh_CN</lang>
 				<welcome.icar>\u60a8\u597d\u002c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u0069\u0043\u0061\u0072\u7ba1\u5bb6\u516c\u4f17\u53f7\u0021</welcome.icar>
 				<welcome.paibo>\u60a8\u597d\uff0c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u6d3e\u52c3\u6c7d\u8f66\u516c\u4f17\u53f7\uff0c\u3010\u505c\u8f66\u7f34\u8d39\u3011\u007b\u0055\u0052\u004c\u007d\uff0c\u66f4\u591a\u670d\u52a1\u8bf7\u67e5\u770b\u4e0b\u65b9\u83dc\u5355\u3002</welcome.paibo>
@@ -820,6 +821,7 @@
 				<action.name.limit.str>QR_LIMIT_STR_SCENE</action.name.limit.str>
 				<show.ticket.url>https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=</show.ticket.url>
 				<user.info.url>https://api.weixin.qq.com/cgi-bin/user/info?access_token=</user.info.url>
+				<kefu.send.url>https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN</kefu.send.url>
 				<lang>zh_CN</lang>
 				<welcome.icar>\u60a8\u597d\u002c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u0069\u0043\u0061\u0072\u7ba1\u5bb6\u516c\u4f17\u53f7\u0021</welcome.icar>
 				<welcome.paibo>\u60a8\u597d\uff0c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u6d3e\u52c3\u6c7d\u8f66\u516c\u4f17\u53f7\uff0c\u3010\u505c\u8f66\u7f34\u8d39\u3011\u007b\u0055\u0052\u004c\u007d\uff0c\u66f4\u591a\u670d\u52a1\u8bf7\u67e5\u770b\u4e0b\u65b9\u83dc\u5355\u3002</welcome.paibo>
@@ -1006,6 +1008,7 @@
 				<action.name.limit.str>QR_LIMIT_STR_SCENE</action.name.limit.str>
 				<show.ticket.url>https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=</show.ticket.url>
 				<user.info.url>https://api.weixin.qq.com/cgi-bin/user/info?access_token=</user.info.url>
+				<kefu.send.url>https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN</kefu.send.url>
 				<lang>zh_CN</lang>
 				<welcome.icar>\u60a8\u597d\u002c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u0069\u0043\u0061\u0072\u7ba1\u5bb6\u516c\u4f17\u53f7\u0021</welcome.icar>
 				<welcome.paibo>\u60a8\u597d\uff0c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u6d3e\u52c3\u6c7d\u8f66\u516c\u4f17\u53f7\uff0c\u3010\u505c\u8f66\u7f34\u8d39\u3011\u007b\u0055\u0052\u004c\u007d\uff0c\u66f4\u591a\u670d\u52a1\u8bf7\u67e5\u770b\u4e0b\u65b9\u83dc\u5355\u3002</welcome.paibo>
