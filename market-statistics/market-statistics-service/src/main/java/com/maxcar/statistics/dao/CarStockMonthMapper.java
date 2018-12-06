@@ -17,4 +17,6 @@ public interface CarStockMonthMapper {
     int updateByPrimaryKey(CarStockMonthEntity record);
 
    Integer getStockPrice(StockRequest stockRequest);
+
+    void InsertCarstockMonth();
 }

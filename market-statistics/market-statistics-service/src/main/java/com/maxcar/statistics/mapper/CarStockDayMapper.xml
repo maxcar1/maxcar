@@ -150,4 +150,100 @@
       register_time = #{registerTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="InsertCarpriceDay"  >
+INSERT INTO maxcar_statistics_l.carstock_day(
+market_id,
+tenant_id,
+report_time,
+invoice_stock_id,
+invoice_stock_name,
+stock_count
+)
+SELECT
+ c.market_id,
+ c.tenant,
+ DATE_FORMAT(NOW(), '%Y-%m-%d'),
+(
+    CASE
+      WHEN cb.market_price &lt; 5
+      THEN '0'
+      WHEN 4.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 10
+      THEN '1'
+      WHEN 9.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 15
+      THEN '2'
+      WHEN 14.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 20
+      THEN '3'
+      WHEN 19.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 25
+      THEN '4'
+      WHEN 24.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 30
+      THEN '5'
+      WHEN 29.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 35
+      THEN '6'
+      WHEN 34.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 40
+      THEN '7'
+      WHEN 39.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 45
+      THEN '8'
+      WHEN 44.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 50
+      THEN '9'
+      WHEN 49.9999 &lt; cb.market_price
+      THEN '10'
+    END
+  ) AS invoice_stock_id,
+(
+    CASE
+      WHEN cb.market_price &lt; 5
+      THEN '5万以下'
+      WHEN 4.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 10
+      THEN '5-10万'
+      WHEN 9.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 15
+      THEN '10-15万'
+      WHEN 14.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 20
+      THEN '15-20万'
+      WHEN 19.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 25
+      THEN '20-25万'
+      WHEN 24.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 30
+      THEN '25-30万'
+      WHEN 29.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 35
+      THEN '30-35万'
+      WHEN 34.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 40
+      THEN '35-40万'
+      WHEN 39.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 45
+      THEN '40-45万'
+      WHEN 44.9999 &lt; cb.market_price
+      AND cb.market_price &lt; 50
+      THEN '45-50万'
+      WHEN 49.9999 &lt; cb.market_price
+      THEN '50万以上'
+    END
+  ) AS invoice_stock_name,
+COUNT(c.tenant)
+FROM maxcar_stock_l.car c LEFT JOIN maxcar_stock_l.car_base cb
+  ON c.id = cb.id
+WHERE c.isvalid = 1
+  AND c.stock_status IN (1,2,3)
+  AND c.car_type = 1
+  AND c.insert_time BETWEEN STR_TO_DATE( DATE_FORMAT(NOW(), '%Y-%m-%d'),'%Y-%m-%d %H:%i:%s')
+	AND DATE_ADD(DATE_ADD(STR_TO_DATE(DATE_FORMAT(NOW(), '%Y-%m-%d'), '%Y-%m-%d %H:%i:%s' ),
+      INTERVAL 1 DAY ), INTERVAL - 1 SECOND)
+GROUP BY c.tenant,invoice_stock_id
+  </select>
+
 </mapper>

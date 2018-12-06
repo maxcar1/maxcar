@@ -51,7 +51,17 @@ public interface StockService {
      */
     List<Map<String , Object>> getTenantAvgStockTrend(StockRequest stockRequest);
 
+    /**
+     * 库存价值分布
+     * @param stockRequest
+     * @return
+     */
     Map<String, Object> getStockPrice(StockRequest stockRequest);
 
+    /**
+     * 库存价值趋势
+     * @param stockRequest
+     * @return
+     */
     List<Map<String , Object>> getStockPriceTrend(StockRequest stockRequest);
 }

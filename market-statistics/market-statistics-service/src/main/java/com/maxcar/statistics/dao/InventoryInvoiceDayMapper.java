@@ -41,4 +41,6 @@ public interface InventoryInvoiceDayMapper {
     Map<String,Object> getTenantAvgStockTrend(StockRequest stockRequest);
 
     Map<String,Object> getStockPriceTrend(StockRequest stockRequest);
+
+    void InsertInventoryInvoiceDay();
 }

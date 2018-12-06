@@ -530,4 +530,8 @@
         AND invoice_stock_id = #{carNumType}
         </if>
     </select>
+
+    <select id="InsertInventoryInvoiceDay">
+
+    </select>
 </mapper>
