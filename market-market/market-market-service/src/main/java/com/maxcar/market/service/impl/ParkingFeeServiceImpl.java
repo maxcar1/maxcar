@@ -358,7 +358,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                     if (null != parkingFeeDe.getPayTime()){
                         long time = parkingFeeDe.getPayTime().getTime() + 15*60*1000 - endDate.getTime();
                         ParkingFeeIntegral feeIntegral = parkingFeeIntegralMapper.selectIntegralByDetailId(parkingFeeDe.getId());
-                        if (time <= 0){
+                        if (time > 0){
                             // 未超出15分钟免费停留时间
                             String hmsToString = DateUtils.getHMSToString(parkingFeeDe.getPayTime(), parkingFeeDe.getBeforeTime());
                             BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
