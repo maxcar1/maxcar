@@ -824,7 +824,7 @@
         SELECT
         b.*, c.*, a.id AS review_id,a.is_pass,
         a.out_reason,
-        a.insert_time AS application_time,
+        date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
         d.tenant_name
         FROM
         maxcar_stock_l.car_review a
