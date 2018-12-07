@@ -45,7 +45,8 @@ public class BarrierServiceImpl implements BarrierService {
     @Override
     public Car selectByRFID(String rfid,String marketId) {
         CarExample example = new CarExample();
-        example.createCriteria().andIsvalidEqualTo(1).andRfidEqualTo(rfid).andMarketIdEqualTo(marketId);
+        example.createCriteria().andIsvalidEqualTo(1).andRfidEqualTo(rfid).andMarketIdEqualTo(marketId)
+        .andStockStatusIn(Canstats.STOCKTYPE);
         List<Car> cars = carMapper.selectByExample(example);
 //        StockCarInfo stockCarInfo = stockCarInfoMapper.selectByRFID(rfid);
         return (cars!=null&cars.size()>0)?cars.get(0):null;
