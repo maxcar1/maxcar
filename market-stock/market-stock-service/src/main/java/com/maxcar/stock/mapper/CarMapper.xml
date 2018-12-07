@@ -846,8 +846,8 @@
         <if test="tenant != null and tenant != ''">
             and a.tenant = #{tenant}
         </if>
-        <if test="reviewResult != null and reviewResult != ''">
-            and e.review_result = #{reviewResult}
+        <if test="isPass != null and isPass != ''">
+            and a.is_pass = #{isPass}
         </if>
         <if test="carStatus != null and carStatus != ''">
             and a.car_status= #{carStatus}

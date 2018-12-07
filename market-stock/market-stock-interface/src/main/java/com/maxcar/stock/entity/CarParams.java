@@ -115,6 +115,15 @@ public class CarParams extends PageBean implements Serializable {
     private Integer stockStatus;//库存状态 -1 删除 1:在场 2:在内场 3:出场 4:售出未出场 5 售出已出场
     private Integer reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
     private String reviewPersonId;//审核人id
+    private Integer isPass;
+
+    public Integer getIsPass() {
+        return isPass;
+    }
+
+    public void setIsPass(Integer isPass) {
+        this.isPass = isPass;
+    }
 
     public String getReviewPersonId() {
         return reviewPersonId;
