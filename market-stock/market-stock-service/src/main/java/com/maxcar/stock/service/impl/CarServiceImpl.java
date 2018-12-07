@@ -1005,15 +1005,14 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
             return result;
         }
         Car car1 = carMapper.selectByPrimaryKey(carVo.getId());
+        CarBaseWithBLOBs carBase = carBaseMapper.selectByPrimaryKey(carVo.getId());
 
         if (car1 == null) {
             result.InterfaceResult600("该车辆不存在");
             return result;
         }
         Car car=new Car();
-        CarBaseWithBLOBs carBase=new CarBaseWithBLOBs();
         car.setId(carVo.getId());
-        carBase.setId(carVo.getId());
 
         if (StringUtils.isNotBlank(carVo.getVin())) {
             car.setVin(carVo.getVin());
@@ -1021,43 +1020,63 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         //市场价
         if (carVo.getMarketPrice() != null) {
             carBase.setMarketPrice(carVo.getMarketPrice().doubleValue());
+        }else {
+            carBase.setMarketPrice(null);
         }
         //颜色
         if (StringUtils.isNotBlank(carVo.getColor())) {
             carBase.setColor(carVo.getColor());
+        }else {
+            carBase.setColor(null);
         }
         //公里
         if (carVo.getMileage() != null) {
             carBase.setMileage(carVo.getMileage());
+        }else {
+            carBase.setMileage(null);
         }
 
         //座位数
         if (carVo.getSeatNumber()!=null){
             carBase.setSeatNumber(carVo.getSeatNumber());
+        }else {
+            carBase.setSeatNumber(null);
         }
         //变速箱
         if (StringUtils.isNotBlank(carVo.getGearBox())){
             carBase.setGearBox(carVo.getGearBox());
+        }else {
+            carBase.setGearBox(null);
         }
         //新车价
         if (carVo.getNewPrice()!=null){
             carBase.setNewPrice(carVo.getNewPrice().doubleValue());
+        }else {
+            carBase.setNewPrice(null);
         }
         //车身尺寸
         if (StringUtils.isNotBlank(carVo.getLevel())){
             carBase.setLevel(carVo.getLevel());
+        }else {
+            carBase.setLevel(null);
         }
         //排放标准
         if (StringUtils.isNotBlank(carVo.getEnvironmentalStandards())){
             carBase.setEnvironmentalStandards(carVo.getEnvironmentalStandards());
+        }else {
+            carBase.setEnvironmentalStandards(null);
         }
         //估价
         if (carVo.getEvaluatePrice()!=null){
             carBase.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
+        }else {
+            carBase.setEvaluatePrice(null);
         }
         //排量
         if (carVo.getEngineVolumeUnitl()!=null){
             carBase.setEngineVolumeUnitl(carVo.getEngineVolumeUnitl());
+        }else {
+            carBase.setEngineVolumeUnitl(null);
         }
 
         //初次上牌时间
@@ -1081,7 +1100,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         car.setUpdateTime(new Date());
         carBase.setUpdateTime(new Date());
         carMapper.updateByPrimaryKeySelective(car);
-        carBaseMapper.updateByPrimaryKeySelective(carBase);
+        carBaseMapper.updateByPrimaryKey(carBase);
 
         //保存图片
         if (carVo.getListCarPic()!=null) {
