@@ -10,16 +10,15 @@ import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.market.dao.InvoiceMapper;
 import com.maxcar.market.model.response.InvoicePerson;
-import com.maxcar.market.pojo.Invoice;
-import com.maxcar.market.pojo.InvoiceExample;
-import com.maxcar.market.pojo.InvoicePurchase;
-import com.maxcar.market.pojo.TradeInformation;
+import com.maxcar.market.pojo.*;
 import com.maxcar.stock.pojo.Car;
 import com.maxcar.stock.service.CarService;
 import com.maxcar.tenant.pojo.UserTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,54 +147,15 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     }
 
     @Override
-    public List<Invoice> detailsManage(Invoice invoice) {
-        InvoiceExample invoiceExample = new InvoiceExample();
-        InvoiceExample.Criteria criteria = invoiceExample.createCriteria();
-        if (null != invoice.getRemark() && invoice.getRemark() == 2) {//查询开票申请列表
-            criteria.andInvoicePortofNotEqualTo(2);//非窗口列表
-            criteria.andInvoiceStatusNotEqualTo(0);//非作废状态
+    public List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException {
+        String billTimeEnd = invoice.getBillTimeEnd();
+        if(StringUtil.isNotEmpty(billTimeEnd)){
+            Date date = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+            Date dayEnd = DateUtils.getDayEnd(date);
+            billTimeEnd = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATETIME);
         }
-        if (null != invoice.getRemark() && invoice.getRemark() == 1) {//查询开具发票列表
-            criteria.andInvoiceStatusNotEqualTo(1);//查询为已处理和作废状态
-            if(StringUtil.isNotEmpty(invoice.getUserId())){
-                criteria.andUserIdEqualTo(invoice.getUserId());
-            }
-        }
-        if (null != invoice.getMarketId() && !invoice.getMarketId().equals("")) {
-            criteria.andMarketIdEqualTo(invoice.getMarketId());
-        }
-        if (null != invoice.getPurchacerName() && !invoice.getPurchacerName().equals("")) {
-            criteria.andPurchacerNameLike("%" + invoice.getPurchacerName() + "%");
-        }
-        if (null != invoice.getSellerName() && !invoice.getSellerName().equals("")) {
-            criteria.andSellerNameLike("%" + invoice.getSellerName() + "%");
-        }
-        if (null != invoice.getInvoiceNo() && !invoice.getInvoiceNo().equals("")) {
-            criteria.andInvoiceNoLike("%" + invoice.getInvoiceNo() + "%");
-        }
-        if (null != invoice.getBillTimeStart() && null != invoice.getBillTimeEnd()) {
-            criteria.andBillTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeStart(), "yyyy-MM-dd"));
-            criteria.andBillTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeEnd(), "yyyy-MM-dd"));
-        }
-        if (null != invoice.getSyncTimeStart() && null != invoice.getSyncTimeEnd()) {
-            criteria.andSyncTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeStart(), "yyyy-MM-dd"));
-            criteria.andSyncTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeEnd(), "yyyy-MM-dd"));
-        }
-        if (null != invoice.getInvoicePortof()) {
-            criteria.andInvoicePortofEqualTo(invoice.getInvoicePortof());
-        }
-        if (null != invoice.getInvoiceStatus()) {
-            criteria.andInvoiceStatusEqualTo(invoice.getInvoiceStatus());
-        }
-        if (null != invoice.getCarSources()) {
-            criteria.andCarSourcesEqualTo(invoice.getCarSources());
-        }
-        if (null != invoice.getCurrentNo() && invoice.getCurrentNo() != "") {
-            criteria.andCurrentNoEqualTo(invoice.getCurrentNo());
-        }
-        invoiceExample.setOrderByClause("insert_time desc");
-
-        List<Invoice> lists = invoiceMapper.selectByExample(invoiceExample);
+        invoice.setBillTimeEnd(billTimeEnd);
+        List<InvoiceExcel> lists = invoiceMapper.detailsManage(invoice);
         return lists;
     }
 

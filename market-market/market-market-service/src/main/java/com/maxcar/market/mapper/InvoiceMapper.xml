@@ -4483,4 +4483,57 @@ FROM
       WHERE cb.series_code = #{seriesName}
     </if>
   </select>
+
+
+  <!-- 开票管理导出excel-->
+  <select id="detailsManage"  parameterType="com.maxcar.market.model.request.DealRequest" resultType="com.maxcar.market.pojo.InvoiceExcel">
+    SELECT
+    invoice_no,
+    invoice_code,
+    bill_time,
+    purchacer_name,
+    seller_name,
+    price,
+    (CASE invoice_portof
+    WHEN 0 THEN '自主交易终端'
+    WHEN 1 THEN '商户app'
+    WHEN 2 THEN '窗口'
+    END) AS invoice_portof,
+    (CASE car_sources
+    WHEN 1 THEN '商品车'
+    WHEN 2 THEN '挂靠'
+    WHEN 3 THEN '代办'
+    WHEN 4 THEN '散户' END) AS car_sources,
+    (CASE invoice_status
+    WHEN 1 THEN '未处理'
+    WHEN 0 THEN '作废'
+    WHEN 2 THEN '已处理' END) AS invoice_status,
+    insert_time
+    FROM
+     maxcar_market_l.`invoice`
+    WHERE 1 = 1
+    <if test="purchacerName != null and purchacerName != ''  ">
+      AND purchacer_name LIKE #{purchacerName}
+    </if>
+     <if test="sellerName != null and sellerName != ''  ">
+     AND seller_name LIKE #{sellerName}
+     </if>
+    <if test="invoiceNo != null and invoiceNo != ''  ">
+      AND invoice_code LIKE #{invoiceNo}
+    </if>
+    <if test="invoicePortof != null and invoicePortof != ''  ">
+       AND invoice_portof = #{invoicePortof}
+    </if>
+    <if test="carSources != null and carSources != ''  ">
+       AND car_sources = #{carSources}
+    </if>
+    <if test="invoiceStatus != null and invoiceStatus != ''  ">
+       AND invoice_status = #{invoiceStatus}
+    </if>
+    <if test="billTimeStart != null and billTimeStart != ''  ">
+       AND bill_time BETWEEN #{billTimeStart} AND #{billTimeEnd}
+    </if>
+    ORDER BY insert_time DESC
+  </select>
+
 </mapper>
