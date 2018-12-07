@@ -1085,13 +1085,24 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
 
         //保存图片
         if (carVo.getListCarPic()!=null) {
+            carPicMapper.deleteByCarId(carVo.getId());
+
             carVo.getListCarPic().forEach(pic ->{
-                pic.setUpdateTime(new Date());
-                pic.setCarId(carVo.getId());
-                if (StringUtils.isNotBlank(pic.getId())){//更新
-                    carPicMapper.updateByPrimaryKeySelective(pic);
-                }else {//添加
+                if (pic.getType()==1){
                     pic.setId(UuidUtils.generateIdentifier());
+                    pic.setUpdateTime(new Date());
+                    pic.setCarId(carVo.getId());
+                    carPicMapper.insert(pic);
+                    //添加缩略图
+                    pic.setType(0);
+                    pic.setId(UuidUtils.generateIdentifier());
+                    pic.setUpdateTime(new Date());
+                    pic.setSrc(pic.getSrc()+"?x-oss-process=image/resize,m_fixed,h_150,w_200");
+                    carPicMapper.insert(pic);
+                }else {
+                    pic.setId(UuidUtils.generateIdentifier());
+                    pic.setUpdateTime(new Date());
+                    pic.setCarId(carVo.getId());
                     carPicMapper.insert(pic);
                 }
             });
