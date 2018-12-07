@@ -349,6 +349,7 @@ public class ReviewStepManageController extends BaseController {
         carReview.setIsValid(1);
 
         flag = reviewStepService.carOutApply(carReview);
+        logger.info("kafka同步提出申请======="+JsonTools.toJson(carReview));
         String topic = super.getTopic(user.getMarketId());
         //同步删除本地车辆状态
         //组装云端参数
