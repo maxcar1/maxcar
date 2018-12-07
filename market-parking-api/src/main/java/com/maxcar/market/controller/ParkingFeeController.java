@@ -32,12 +32,32 @@ public class ParkingFeeController extends BaseController {
      *
      * @return
      */
+    @Deprecated
     @GetMapping("/barriers")
     public Object getBarriers(HttpServletRequest request) throws Exception {
         InterfaceResult result = new InterfaceResult();
         User user = getCurrentUser(request);
         List<Barrier> barriers = barrierService.selectBarrierByMarketId(user.getMarketId());
         result.InterfaceResult200(barriers);
+        return result;
+    }
+
+    /**
+     * 根据mac查询道闸信息
+     * @param request
+     * @param barrierMac
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/barrier/{barrierMac}")
+    public Object getBarrier(HttpServletRequest request,@PathVariable("barrierMac")String barrierMac) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        User user = getCurrentUser(request);
+        Barrier barrier = new Barrier();
+        barrier.setMarketId(user.getMarketId());
+        barrier.setBarrierMac(barrierMac);
+        Barrier bar = barrierService.selectBarrierByBarrierMac(barrier);
+        result.InterfaceResult200(bar);
         return result;
     }
 

@@ -60,8 +60,6 @@ public class Canstats {
 
     public static String second_send = "8A";//数据二次发送，例：签名错误
 
-    public static String first_kz = "8B";//先开闸，再发数据
-
     public static String dzOpen = "8180";//开闸命令
 
     public static String dzClose = "81FF";//开闸命令

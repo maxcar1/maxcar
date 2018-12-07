@@ -401,7 +401,7 @@
                 <kafka.producer.topic>sync_upload_data_dev</kafka.producer.topic>
                 <kafka.producer.parking.topic>sync_upload_data_parking_dev</kafka.producer.parking.topic>
                 <kafka.consumer.topic>sync_download_007_data_dev</kafka.consumer.topic>
-                <local.servers.address>http://localhost:8082</local.servers.address>
+                <local.servers.address>http://localhost:9090</local.servers.address>
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
                 <mqtt.server.host>tcp://192.168.3.220:1883</mqtt.server.host>
