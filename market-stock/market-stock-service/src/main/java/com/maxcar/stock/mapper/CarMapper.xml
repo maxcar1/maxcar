@@ -858,7 +858,6 @@
         <if test="stockStatus != null and stockStatus != ''">
             and b.stock_status= #{stockStatus}
         </if>
-
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
