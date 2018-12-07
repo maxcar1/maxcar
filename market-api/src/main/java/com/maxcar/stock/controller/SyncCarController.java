@@ -1018,6 +1018,7 @@ public class SyncCarController extends BaseController {
 				map.put("msg","该车辆库存状态为出场超时，是否选择重新录入?");
 				map.put("car",list.get(0));
 				map.put("carBase",carBase);
+				interfaceResult.InterfaceResult200(map);
 				return interfaceResult;
 			}
 		}
