@@ -265,6 +265,7 @@ public class ReviewStepManageController extends BaseController {
                 flag = reviewStepService.updateFlowStep(flowStep);
                 reviewStepService.deleteReviewStep(flowStep);
             }else {
+                flowStep.setReviewType(1);
                 flag = reviewStepService.updateFlowStep(flowStep);
                 reviewStepService.deleteReviewStep(flowStep);
                 String jsonStr = json.getString("tableData");
