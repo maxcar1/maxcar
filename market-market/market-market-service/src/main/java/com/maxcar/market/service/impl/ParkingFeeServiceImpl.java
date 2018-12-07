@@ -348,6 +348,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                     parkingFeeDe.setAlreadyPaid(0);
                     parkingFeeDe.setChargeFee(0);
                     parkingFeeDe.setOverTimeFee(0);
+                    parkingFeeDe.setChargePrice(0);
                     parkingFeeDe.setParkingTime(hmsToString);
                     //0元开闸
                     sendMessage(marketId, barrier, -1);
@@ -414,11 +415,11 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                         BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
                                 parkingFeeDe.getBeforeTime(), endDate, marketId, 2);
                         parkingFeeDe.setPrice(null == totalFee ? 0 : totalFee.intValue());
-                        parkingFeeDe.setReduction(0);
+                        parkingFeeDe.setReduction(20);
                         parkingFeeDe.setIntegral(0);
                         parkingFeeDe.setAlreadyPaid(0);
-                        parkingFeeDe.setChargeFee(totalFee.intValue());
-                        parkingFeeDe.setChargePrice(totalFee.intValue());
+                        parkingFeeDe.setChargeFee(totalFee.intValue()-20);
+                        parkingFeeDe.setChargePrice(totalFee.intValue()-20);
                         parkingFeeDe.setOverTimeFee(0);
                         parkingFeeDe.setParkingTime(hmsToString);
                         int type1 = parkingFeeDe.getPrice() == 0 ? -1 : parkingFeeDe.getPrice();
