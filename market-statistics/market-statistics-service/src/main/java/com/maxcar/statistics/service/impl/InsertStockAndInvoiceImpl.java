@@ -1,10 +1,14 @@
 package com.maxcar.statistics.service.impl;
 
 import com.maxcar.statistics.dao.*;
+import com.maxcar.statistics.model.entity.CarpriceDayEntity;
 import com.maxcar.statistics.service.InsertStockAndInvoice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 
+@Service("insertStockAndInvoice")
 public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
 
     @Autowired
@@ -24,21 +28,22 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
 
     @Override
     public void InsertCarpriceDay() {
-        //carpriceDayMapper.InsertCarpriceDay();
+        List<CarpriceDayEntity> carpriceDayEntities = carpriceDayMapper.selectCarpriceDay();
+        System.out.println(carpriceDayEntities);
     }
 
-    @Override
-    public void InsertCarstockDay() {
-        //carStockDayMapper.InsertCarstockDay();
-    }
-
-    @Override
-    public void InsertCarstockMonth() {
-        //carStockMonthMapper.InsertCarstockMonth();
-    }
-
-    @Override
-    public void InsertInventoryInvoiceDay() {
-      //  inventoryInvoiceDayMapper.InsertInventoryInvoiceDay();
-    }
+//    @Override
+//    public void InsertCarstockDay() {
+//        carStockDayMapper.InsertCarstockDay();
+//    }
+//
+//    @Override
+//    public void InsertCarstockMonth() {
+//        carStockMonthMapper.InsertCarstockMonth();
+//    }
+//
+//    @Override
+//    public void InsertInventoryInvoiceDay() {
+//        inventoryInvoiceDayMapper.InsertInventoryInvoiceDay();
+//    }
 }

@@ -22,106 +22,6 @@
     <result column="stock_avg_stocktime" property="stockAvgStocktime" jdbcType="DOUBLE"/>
   </resultMap>
 
-    <!--<resultMap id="InvoiceResultMap" type="com.maxcar.market.pojo.Invoice">-->
-      <!--<id column="id" jdbcType="VARCHAR" property="id"/>-->
-      <!--<result column="market_id" jdbcType="VARCHAR" property="marketId"/>-->
-      <!--<result column="bill_time" jdbcType="TIMESTAMP" property="billTime"/>-->
-      <!--<result column="invoice_no" jdbcType="VARCHAR" property="invoiceNo"/>-->
-      <!--<result column="current_no" jdbcType="VARCHAR" property="currentNo"/>-->
-      <!--<result column="contract" jdbcType="VARCHAR" property="contract"/>-->
-      <!--<result column="purchacer_tax_no" jdbcType="VARCHAR" property="purchacerTaxNo"/>-->
-      <!--<result column="purchacer_nationality" jdbcType="VARCHAR" property="purchacerNationality"/>-->
-      <!--<result column="purchacer_name" jdbcType="VARCHAR" property="purchacerName"/>-->
-      <!--<result column="purchacer_type" jdbcType="INTEGER" property="purchacerType"/>-->
-      <!--<result column="purchacer_passport" jdbcType="VARCHAR" property="purchacerPassport"/>-->
-      <!--<result column="purchacer_id_card" jdbcType="VARCHAR" property="purchacerIdCard"/>-->
-      <!--<result column="is_purchacer_code" jdbcType="INTEGER" property="isPurchacerCode"/>-->
-      <!--<result column="purchacer_no" jdbcType="VARCHAR" property="purchacerNo"/>-->
-      <!--<result column="purchacer_address" jdbcType="VARCHAR" property="purchacerAddress"/>-->
-      <!--<result column="purchacer_nation" jdbcType="VARCHAR" property="purchacerNation"/>-->
-      <!--<result column="purchacer_mobile" jdbcType="VARCHAR" property="purchacerMobile"/>-->
-      <!--<result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>-->
-      <!--<result column="is_seller_code" jdbcType="INTEGER" property="isSellerCode"/>-->
-      <!--<result column="seller_nationality" jdbcType="VARCHAR" property="sellerNationality"/>-->
-      <!--<result column="seller_tax_no" jdbcType="VARCHAR" property="sellerTaxNo"/>-->
-      <!--<result column="seller_id_card" jdbcType="VARCHAR" property="sellerIdCard"/>-->
-      <!--<result column="seller_passport" jdbcType="VARCHAR" property="sellerPassport"/>-->
-      <!--<result column="seller_nation" jdbcType="VARCHAR" property="sellerNation"/>-->
-      <!--<result column="seller_name" jdbcType="VARCHAR" property="sellerName"/>-->
-      <!--<result column="seller_type" jdbcType="INTEGER" property="sellerType"/>-->
-      <!--<result column="seller_no" jdbcType="VARCHAR" property="sellerNo"/>-->
-      <!--<result column="seller_address" jdbcType="VARCHAR" property="sellerAddress"/>-->
-      <!--<result column="seller_mobile" jdbcType="VARCHAR" property="sellerMobile"/>-->
-      <!--<result column="transfer_type" jdbcType="INTEGER" property="transferType"/>-->
-      <!--<result column="factory_plate" jdbcType="VARCHAR" property="factoryPlate"/>-->
-      <!--<result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber"/>-->
-      <!--<result column="invoice_portof" jdbcType="INTEGER" property="invoicePortof"/>-->
-      <!--<result column="invoice_status" jdbcType="INTEGER" property="invoiceStatus"/>-->
-      <!--<result column="invoice_code" jdbcType="VARCHAR" property="invoiceCode"/>-->
-      <!--<result column="car_sources" jdbcType="INTEGER" property="carSources"/>-->
-      <!--<result column="car_id" jdbcType="VARCHAR" property="carId"/>-->
-      <!--<result column="car_no" jdbcType="VARCHAR" property="carNo"/>-->
-      <!--<result column="price" jdbcType="INTEGER" property="price"/>-->
-      <!--<result column="registration_no" jdbcType="VARCHAR" property="registrationNo"/>-->
-      <!--<result column="type" jdbcType="INTEGER" property="type"/>-->
-      <!--<result column="vin" jdbcType="VARCHAR" property="vin"/>-->
-      <!--<result column="series" jdbcType="VARCHAR" property="series"/>-->
-      <!--<result column="series_name" jdbcType="VARCHAR" property="seriesName"/>-->
-      <!--<result column="operater" jdbcType="VARCHAR" property="operater"/>-->
-      <!--<result column="status" jdbcType="INTEGER" property="status"/>-->
-      <!--<result column="version" jdbcType="INTEGER" property="version"/>-->
-      <!--<result column="taxno" jdbcType="VARCHAR" property="taxno"/>-->
-      <!--<result column="address" jdbcType="VARCHAR" property="address"/>-->
-      <!--<result column="bank" jdbcType="VARCHAR" property="bank"/>-->
-      <!--<result column="account" jdbcType="VARCHAR" property="account"/>-->
-      <!--<result column="operator_name" jdbcType="VARCHAR" property="operatorName"/>-->
-      <!--<result column="auction" jdbcType="VARCHAR" property="auction"/>-->
-      <!--<result column="auction_address" jdbcType="VARCHAR" property="auctionAddress"/>-->
-      <!--<result column="auction_no" jdbcType="VARCHAR" property="auctionNo"/>-->
-      <!--<result column="auction_bank" jdbcType="VARCHAR" property="auctionBank"/>-->
-      <!--<result column="auction_mobile" jdbcType="VARCHAR" property="auctionMobile"/>-->
-      <!--<result column="market_taxNo" jdbcType="VARCHAR" property="marketTaxno"/>-->
-      <!--<result column="market_address" jdbcType="VARCHAR" property="marketAddress"/>-->
-      <!--<result column="market_bank" jdbcType="VARCHAR" property="marketBank"/>-->
-      <!--<result column="market_phone" jdbcType="VARCHAR" property="marketPhone"/>-->
-      <!--<result column="comment" jdbcType="VARCHAR" property="comment"/>-->
-      <!--<result column="ticket_operator" jdbcType="VARCHAR" property="ticketOperator"/>-->
-      <!--<result column="ticket_market" jdbcType="VARCHAR" property="ticketMarket"/>-->
-      <!--<result column="office" jdbcType="VARCHAR" property="office"/>-->
-      <!--<result column="sync_time" jdbcType="TIMESTAMP" property="syncTime"/>-->
-      <!--<result column="insert_time" jdbcType="TIMESTAMP" property="insertTime"/>-->
-      <!--<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>-->
-      <!--<result column="pay_type" jdbcType="VARCHAR" property="payType"/>-->
-      <!--<result column="is_new_energy" jdbcType="INTEGER" property="isNewEnergy"/>-->
-      <!--<result column="agent_id_card" jdbcType="VARCHAR" property="agentIdCard"/>-->
-      <!--<result column="agent_name" jdbcType="VARCHAR" property="agentName"/>-->
-      <!--<result column="agent_type" jdbcType="INTEGER" property="agentType"/>-->
-      <!--<result column="agent_address" jdbcType="VARCHAR" property="agentAddress"/>-->
-      <!--<result column="agent_tax_no" jdbcType="VARCHAR" property="agentTaxNo"/>-->
-      <!--<result column="agent_mobile" jdbcType="VARCHAR" property="agentMobile"/>-->
-      <!--<result column="agent_nationality" jdbcType="VARCHAR" property="agentNationality"/>-->
-      <!--<result column="agent_no" jdbcType="VARCHAR" property="agentNo"/>-->
-      <!--<result column="agent_passport" jdbcType="VARCHAR" property="agentPassport"/>-->
-      <!--<result column="agent_nation" jdbcType="VARCHAR" property="agentNation"/>-->
-      <!--<result column="is_agent_code" jdbcType="INTEGER" property="isAgentCode"/>-->
-      <!--<result column="is_agent" jdbcType="INTEGER" property="isAgent"/>-->
-      <!--<result column="car_invoice_type" jdbcType="VARCHAR" property="carInvoiceType"/>-->
-      <!--<result column="initial_registration_date" jdbcType="TIMESTAMP" property="initialRegistrationDate"/>-->
-      <!--<result column="invoice_purchase_id" jdbcType="VARCHAR" property="invoicePurchaseId"/>-->
-      <!--<result column="car_stock_status" jdbcType="INTEGER" property="carStockStatus"/>-->
-      <!--<result column="user_id" property="userId" jdbcType="VARCHAR"/>-->
-
-      <!--<result column="current_time" property="currentTime" jdbcType="VARCHAR"/>-->
-      <!--<result column="tenant_name" property="tenantName" jdbcType="VARCHAR"/>-->
-      <!--<result column="contact_name" property="contactName" jdbcType="VARCHAR"/>-->
-      <!--<result column="tenant_area" property="tenantArea" jdbcType="VARCHAR"/>-->
-      <!--<result column="invoice_counts" property="invoiceCounts" jdbcType="INTEGER"/>-->
-      <!--<result column="current_time" property="currentTime" jdbcType="VARCHAR"/>-->
-      <!--<result column="total_counts" property="totalCounts" jdbcType="INTEGER"/>-->
-      <!--<result column="total_price" property="totalPrice" jdbcType="INTEGER"/>-->
-      <!--<result column="trading_type" property="tradingType" jdbcType="INTEGER"/>-->
-    <!--</resultMap>-->
-
   <sql id="Base_Column_List" >
     id, market_id, tenant_id, report_time, invoice_price_id, invoice_price_name, sales_count, 
     stock_avg_stocktime, isvalid, version, register_time
@@ -310,20 +210,11 @@ WHERE isvalid = 1
 GROUP BY invoice_price_id
   </select>
 
-<!--  <insert id="InsertCarpriceDay"  >
-INSERT INTO maxcar_statistics_l.`carprice_day` (
-  market_id,
-  tenant_id,
-  report_time,
-  invoice_price_id,
-  invoice_price_name,
-  sales_count,
-  stock_avg_stocktime
-)
+  <select id="selectCarpriceDay"  resultMap="BaseResultMap" >
 SELECT
   i.market_id,
   i.tenant_id,
-  DATE_FORMAT(NOW(), '%Y-%m-%d'),
+  DATE_FORMAT(NOW(), '%Y-%m-%d') AS report_time,
   (
     CASE
       WHEN i.price &lt; 50000
@@ -394,7 +285,7 @@ SELECT
       THEN '50万以上'
     END
   ) AS invoice_price_name,
-  COUNT(i.price),
+  COUNT(i.price) AS sales_count,
   AVG(
     IFNULL(
       DATEDIFF(i.bill_time, c.register_time),
@@ -422,5 +313,5 @@ WHERE i.invoice_status = 2
     INTERVAL - 1 SECOND
   )
 GROUP BY i.tenant_id,invoice_price_id
-  </insert>-->
+  </select>
 </mapper>

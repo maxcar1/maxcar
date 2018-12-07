@@ -15,5 +15,5 @@ public interface CarStockDayMapper {
 
     int updateByPrimaryKey(CarStockDayEntity record);
 
- /*   int InsertCarstockDay();*/
+    int InsertCarstockDay();
 }

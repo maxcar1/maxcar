@@ -150,8 +150,8 @@
       register_time = #{registerTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-<!--
-  <insert id="InsertCarpriceDay"  >
+
+  <select id="InsertCarpriceDay"  >
 INSERT INTO maxcar_statistics_l.carstock_day(
 market_id,
 tenant_id,
@@ -244,6 +244,6 @@ WHERE c.isvalid = 1
 	AND DATE_ADD(DATE_ADD(STR_TO_DATE(DATE_FORMAT(NOW(), '%Y-%m-%d'), '%Y-%m-%d %H:%i:%s' ),
       INTERVAL 1 DAY ), INTERVAL - 1 SECOND)
 GROUP BY c.tenant,invoice_stock_id
-  </insert>-->
+  </select>
 
 </mapper>

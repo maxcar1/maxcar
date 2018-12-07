@@ -11,18 +11,18 @@ public interface InsertStockAndInvoice {
      * 库存交易日表  定时进行数据统计
      * @return
      */
-    void InsertCarstockDay();
+//    void InsertCarstockDay();
 
     /**
      * 库存交易月表  定时进行数据统计
      * @return
      */
-    void InsertCarstockMonth();
+//    void InsertCarstockMonth();
 
     /**
      * 库存交易日表  定时进行数据统计
      * @return
      */
-    void InsertInventoryInvoiceDay();
+//    void InsertInventoryInvoiceDay();
 }
 

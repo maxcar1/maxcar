@@ -18,5 +18,5 @@ public interface CarStockMonthMapper {
 
    Integer getStockPrice(StockRequest stockRequest);
 
-  /*  int InsertCarstockMonth();*/
+    int InsertCarstockMonth();
 }

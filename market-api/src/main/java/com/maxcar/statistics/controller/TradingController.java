@@ -6,6 +6,7 @@ import com.maxcar.base.util.DateUtils;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
+import com.maxcar.statistics.service.InsertStockAndInvoice;
 import com.maxcar.statistics.service.TradingService;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.service.UserService;
@@ -271,5 +272,26 @@ public class TradingController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         interfaceResult.InterfaceResult200(carpriceDayEntity);
         return interfaceResult;
+    }
+
+
+
+    @Autowired
+    private InsertStockAndInvoice insertStockAndInvoice;
+
+    /**
+     * 导入数据测试
+     * @param tradingRequest
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/test/test")
+    public void test(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
+        getUserMarketId(tradingRequest, request);
+        insertStockAndInvoice.InsertCarpriceDay();
+//        insertStockAndInvoice.InsertCarstockDay();
+//        insertStockAndInvoice.InsertCarstockMonth();
+//        insertStockAndInvoice.InsertInventoryInvoiceDay();
     }
 }
