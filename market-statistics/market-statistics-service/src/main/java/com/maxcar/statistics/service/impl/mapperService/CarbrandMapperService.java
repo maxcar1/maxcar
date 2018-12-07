@@ -34,11 +34,6 @@ public class CarbrandMapperService {
      * create_date:  lxy   2018/12/1  11:15
      **/
     public List<String> getAllBrandName(GetAllBrandNameRequest request) {
-        try {
-            InserteCarbrandIDay();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
         return carbrandDayDao.getAllBrandName(request);
     }
@@ -138,15 +133,23 @@ public class CarbrandMapperService {
 
 // 以下是车辆品牌数据插入
 
+    public void InserteCarbrand() throws Exception {
+        // 睡眠 5秒 后执行 执行操作
+        Thread.sleep(5000);
+        InserteCarbrandDay();
+
+        // 睡眠 5秒 后执行 执行操作
+        Thread.sleep(5000);
+        InserteCarbrandMonth();
+    }
+
     /**
      * param:
-     * describe: 按天批量插入车辆类型日表(处理好values再调用该方法)
+     * describe: 批量插入车辆类型日表(处理好values再调用该方法)
      * create_date:  lxy   2018/11/22  11:03
      **/
-    public void InserteCarbrandIDay() throws Exception {
+    public void InserteCarbrandDay() throws Exception {
 
-        // 睡眠一分钟后执行 执行操作
-       // Thread.sleep(60000);
         String dayTime = ToolDataUtils.getreportTimeByDay();
 
         GetCarInvoiceTypeInvoiceReportParameter getCarInvoiceTypeInvoiceReportParameter = new GetCarInvoiceTypeInvoiceReportParameter();
@@ -156,28 +159,55 @@ public class CarbrandMapperService {
 
         List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCarbrandDayList = reportMapperService.getCarInvoiceTypeInvoiceReport(getCarInvoiceTypeInvoiceReportParameter);
 
-        if (null == InvoiceCarbrandDayList || InvoiceCarbrandDayList.isEmpty()) {
-            return;
-        }
-        // 插入 交易信息
-        carbrandDayDao.InsertT(getInsertCarbrandInvoiceDayColumnsAndValues(InvoiceCarbrandDayList));
+        if (null != InvoiceCarbrandDayList && !InvoiceCarbrandDayList.isEmpty()) {
 
-        // 睡眠一分钟后执行 执行操作
-        //Thread.sleep(60000);
+            // 插入 交易信息
+            carbrandDayDao.InsertT(getInsertCarbrandInvoiceDayColumnsAndValues(InvoiceCarbrandDayList));
+        }
+
+
+        // 睡眠5秒 后执行 执行操作
+        Thread.sleep(5000);
 
         GetInventoryReportParameter getInventoryReportParameter = new GetInventoryReportParameter();
 
         getInventoryReportParameter.setGroupByColumns("brandName");
         getInventoryReportParameter.setEndTime(ToolDataUtils.getreportTimeByDay());
 
-
         List<GetInventoryReportResponse> inventoryCarbrandDayList = reportMapperService.getInventoryReport(getInventoryReportParameter);
 
-        if (null == inventoryCarbrandDayList || inventoryCarbrandDayList.isEmpty()) {
-            return;
+        if (null != inventoryCarbrandDayList && !inventoryCarbrandDayList.isEmpty()) {
+            // 插入 库存信息
+            carbrandDayDao.InsertT(getInsertCarbrandInventoryDayColumnsAndValues(inventoryCarbrandDayList));
         }
-        // 插入 库存信息
-        carbrandDayDao.InsertT(getInsertCarbrandInventoryDayColumnsAndValues(inventoryCarbrandDayList));
+
+
+        return;
+    }
+
+    /**
+     * param:
+     * describe: 批量插入车辆类型月表(处理好values再调用该方法)
+     * create_date:  lxy   2018/11/22  11:03
+     **/
+    public void InserteCarbrandMonth() throws Exception {
+
+        List<GroupCarbrandDayByMonthResponse> InvoiceMonthList = carbrandDayDao.groupCarbrandInvoiceDayByMonth(ToolDataUtils.getreportTimeByDay());
+
+        if (null != InvoiceMonthList && !InvoiceMonthList.isEmpty()) {
+            // 车辆品牌月表插入交易数据
+            carbrandMonthDao.InsertT(getInsertCarbrandInvoiceMonthColumnsAndValues(InvoiceMonthList));
+        }
+
+        // 睡眠5秒 后执行 执行操作
+        Thread.sleep(5000);
+
+        List<GroupCarbrandDayByMonthResponse> InventoryMonthList = carbrandDayDao.groupCarbrandInventoryDayByMonth(ToolDataUtils.getreportTimeByDay());
+
+        if (null != InventoryMonthList && !InventoryMonthList.isEmpty()) {
+            // 车辆品牌月表插入库存数据
+            carbrandMonthDao.InsertT(getInsertCarbrandInventoryMonthColumnsAndValues(InventoryMonthList));
+        }
 
         return;
     }
@@ -318,7 +348,8 @@ public class CarbrandMapperService {
                 "age35_count = VALUES (age35_count),\n" +
                 "age40_count = VALUES (age40_count),\n" +
                 "age45_count =VALUES (age45_count),\n" +
-                "age50_count =VALUES (age50_count);\n";
+                "age50_count =VALUES (age50_count)," +
+                "register_time = now();";
 
         parameter.setOnUpdate(onUpdate);
 
@@ -390,7 +421,215 @@ public class CarbrandMapperService {
 
         String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
                 "stock_count =  VALUES (stock_count),\n" +
-                "stock_price =  VALUES (stock_price);";
+                "stock_price =  VALUES (stock_price)," +
+                "register_time = now();";
+
+        parameter.setOnUpdate(onUpdate);
+
+        return parameter;
+    }
+
+    // 月表 sql
+
+    /**
+     * param:
+     * describe: 车辆品牌月表交易sql
+     * create_date:  lxy   2018/11/26  10:41
+     **/
+    public InsertTParamter getInsertCarbrandInvoiceMonthColumnsAndValues(List<GroupCarbrandDayByMonthResponse> InvoiceCarbrandMonthList) {
+
+        InsertTParamter parameter = new InsertTParamter();
+
+        parameter.setTable("`maxcar_statistics_l`.`carbrand_month`");
+        parameter.setColumns("market_id,tenant_id,report_time,brand_name,sales_count,sales_price,sales_avg_price," +
+                "male_count,female_count,age20_count,age25_count,age30_count,age35_count,age40_count,age45_count,age50_count");
+
+        StringBuffer stringBuffer = new StringBuffer(128);
+
+        for (GroupCarbrandDayByMonthResponse invoice : InvoiceCarbrandMonthList) {
+            stringBuffer.append("(");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getMarketId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getTenantId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByMonth());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getBrandName());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getInvoiceCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getInvoicePrice());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getAvgPrice(invoice.getInvoicePrice(), invoice.getInvoiceCount()));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getMaleCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getFemaleCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge20Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge25Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge30Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge35Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge40Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge45Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge50Count());
+            stringBuffer.append("'");
+
+
+            stringBuffer.append("),");
+        }
+
+        String values = stringBuffer.toString();
+
+        parameter.setValues(values.substring(1, values.length() - 2));
+
+
+        String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
+                "sales_count =  VALUES (sales_count),\n" +
+                "sales_price =  VALUES (sales_price),\n" +
+                "sales_avg_price =  VALUES (sales_avg_price),\n" +
+                "male_count =  VALUES(male_count),\n" +
+                "female_count = VALUES (female_count),\n" +
+                "age20_count = VALUES(age20_count),\n" +
+                "age25_count =  VALUES (age25_count),\n" +
+                "age30_count =  VALUES (age30_count),\n" +
+                "age35_count = VALUES (age35_count),\n" +
+                "age40_count = VALUES (age40_count),\n" +
+                "age45_count =VALUES (age45_count),\n" +
+                "age50_count =VALUES (age50_count),\n" +
+                "register_time = now();";
+
+        parameter.setOnUpdate(onUpdate);
+
+        return parameter;
+    }
+
+    /**
+     * param:
+     * describe:  车辆品牌月表库存sql
+     * create_date:  lxy   2018/12/4  16:38
+     **/
+    public InsertTParamter getInsertCarbrandInventoryMonthColumnsAndValues(List<GroupCarbrandDayByMonthResponse> InventoryCarbrandMonthList) {
+
+        InsertTParamter parameter = new InsertTParamter();
+
+        parameter.setTable("`maxcar_statistics_l`.`carbrand_month`");
+        parameter.setColumns("market_id,tenant_id,report_time,brand_name,stock_count,stock_price");
+
+        StringBuffer stringBuffer = new StringBuffer(128);
+
+        for (GroupCarbrandDayByMonthResponse inventory : InventoryCarbrandMonthList) {
+            stringBuffer.append("(");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getMarketId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getTenantId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByMonth());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getBrandName());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getInventoryCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getInventoryPrice());
+            stringBuffer.append("'");
+
+            stringBuffer.append("),");
+        }
+
+        String values = stringBuffer.toString();
+
+        parameter.setValues(values.substring(1, values.length() - 2));
+
+
+        String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
+                "stock_count =  VALUES (stock_count),\n" +
+                "stock_price =  VALUES (stock_price),\n" +
+                "register_time = now();";
 
         parameter.setOnUpdate(onUpdate);
 

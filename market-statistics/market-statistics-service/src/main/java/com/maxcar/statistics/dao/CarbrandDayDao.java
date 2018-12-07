@@ -5,6 +5,7 @@ import com.maxcar.statistics.dao.provider.CarbrandDayProvider;
 import com.maxcar.statistics.model.request.GetAllBrandNameRequest;
 import com.maxcar.statistics.model.request.GroupCarbrandInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarbrandInvoiceDayRequest;
+import com.maxcar.statistics.model.response.GroupCarbrandDayByMonthResponse;
 import com.maxcar.statistics.model.response.GroupCarbrandInventoryDayResponse;
 import com.maxcar.statistics.model.response.GroupCarbrandInvoiceDayResponse;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -38,5 +39,21 @@ public interface CarbrandDayDao extends BaseDao {
     @SelectProvider(type = CarbrandDayProvider.class, method = "getAllBrandName")
     List<String> getAllBrandName(GetAllBrandNameRequest request);
 
+
+    /**
+     * param:
+     * describe: 统计当前月的车辆品牌日表集合  交易
+     * create_date:  lxy   2018/11/23  11:34
+     **/
+    @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInvoiceDayByMonth")
+    List<GroupCarbrandDayByMonthResponse> groupCarbrandInvoiceDayByMonth(String timeByMonth);
+
+    /**
+     * param:
+     * describe: 统计当前月的车辆品牌日表集合  库存
+     * create_date:  lxy   2018/11/23  11:34
+     **/
+    @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInventoryDayByMonth")
+    List<GroupCarbrandDayByMonthResponse>  groupCarbrandInventoryDayByMonth(String timeByMonth);
 
 }

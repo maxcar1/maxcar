@@ -83,4 +83,36 @@ public class CarstocktimeDayProvider {
         }}.toString();
     }
 
+
+    public String groupCarstocktimeInvoiceDayByMonth(String timeByMonth) {
+        return new SQL() {{
+
+            SELECT(" market_id AS marketId,tenant_id AS tenantId," +
+                    "stocktime_id AS 'stocktimeId',\n" +
+                    "  IFNULL(SUM(sales_count), 0) AS 'invoiceCount',\n" +
+                    "  IFNULL(SUM(sales_price), 0) AS 'invoicePrice'");
+
+            FROM("`maxcar_statistics_l`.`carstocktime_day`");
+            WHERE(" DATE_FORMAT(report_time, '%Y-%m') = DATE_FORMAT(#{timeByMonth}, '%Y-%m')");
+            GROUP_BY(" market_id,tenant_id,stocktime_id;");
+
+        }}.toString();
+    }
+
+
+    public String groupCarstocktimeInventoryDayByMonth(String timeByMonth) {
+        return new SQL() {{
+            SELECT(" market_id AS marketId,tenant_id AS tenantId," +
+                    " stocktime_id AS 'stocktimeId',\n" +
+                    "  IFNULL(SUM(stock_count), 0) AS 'inventoryCount',\n" +
+                    "  IFNULL(SUM(stock_price), 0) AS 'inventoryPrice'");
+
+            FROM("`maxcar_statistics_l`.`carstocktime_day`");
+
+            WHERE(" DATE_FORMAT(report_time, '%Y-%m-%D') = DATE_FORMAT(#{timeByMonth}, '%Y-%m-%D')");
+            GROUP_BY(" market_id,tenant_id,stocktime_id;");
+
+        }}.toString();
+    }
+
 }

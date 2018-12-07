@@ -122,6 +122,16 @@ public class CaryearMapperService {
 
 // 以下是车辆年限数据插入
 
+    public void InsertCaryear() throws Exception {
+
+        InsertCaryearDay();
+
+        // 睡眠5秒后执行 执行操作
+        Thread.sleep(5000);
+
+        InsertCaryearMonth();
+    }
+
     /**
      * param:
      * describe: 按天批量插入车辆年限日表(处理好values再调用该方法)
@@ -129,8 +139,6 @@ public class CaryearMapperService {
      **/
     public void InsertCaryearDay() throws Exception {
 
-        // 睡眠10秒后执行 执行操作
-        Thread.sleep(10000);
         String dayTime = ToolDataUtils.getreportTimeByDay();
 
         GetCarInvoiceTypeInvoiceReportParameter getCarInvoiceTypeInvoiceReportParameter = new GetCarInvoiceTypeInvoiceReportParameter();
@@ -143,7 +151,6 @@ public class CaryearMapperService {
             getCarInvoiceTypeInvoiceReportParameter.setGroupByColumns("caryear");
             getCarInvoiceTypeInvoiceReportParameter.setAgeByCar(i);
 
-
             List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCaryearDayList = reportMapperService.getCarInvoiceTypeInvoiceReport(getCarInvoiceTypeInvoiceReportParameter);
 
             if (null != InvoiceCaryearDayList && !InvoiceCaryearDayList.isEmpty()) {
@@ -153,8 +160,8 @@ public class CaryearMapperService {
 
         }
 
-        // 睡眠10秒后执行 执行操作
-        Thread.sleep(10000);
+        // 睡眠5秒后执行 执行操作
+        Thread.sleep(5000);
 
         GetInventoryReportParameter getInventoryReportParameter = new GetInventoryReportParameter();
 
@@ -172,6 +179,33 @@ public class CaryearMapperService {
                 caryearDayDao.InsertT(getInsertCaryearInventoryDayColumnsAndValues(inventoryCarbrandDayList, i));
             }
         }
+        return;
+    }
+
+    /**
+     * param:
+     * describe: 按天批量插入车辆年限月表(处理好values再调用该方法)
+     * create_date:  lxy   2018/11/22  11:03
+     **/
+    public void InsertCaryearMonth() throws Exception {
+
+        List<GroupCaryearDayByMOnthResponse> InvoiceMonthList = caryearDayDao.groupCaryearInvoiceDayByMOnth(ToolDataUtils.getreportTimeByDay());
+
+        if (null != InvoiceMonthList && !InvoiceMonthList.isEmpty()) {
+            // 车辆品牌月表插入交易数据
+            caryearMonthDao.InsertT(getInsertCaryearInvoiceMonthColumnsAndValues(InvoiceMonthList));
+        }
+
+        // 睡眠5秒 后执行 执行操作
+        Thread.sleep(5000);
+
+        List<GroupCaryearDayByMOnthResponse> InventoryMonthList = caryearDayDao.groupCaryearInventoryDayByMonth(ToolDataUtils.getreportTimeByDay());
+
+        if (null != InventoryMonthList && !InventoryMonthList.isEmpty()) {
+            // 车辆品牌月表插入库存数据
+            caryearMonthDao.InsertT(getInsertCaryearInventoryMonthColumnsAndValues(InventoryMonthList));
+        }
+
         return;
     }
 
@@ -202,11 +236,6 @@ public class CaryearMapperService {
 
             stringBuffer.append("'");
             stringBuffer.append(invoice.getTenantId());
-            stringBuffer.append("'");
-            stringBuffer.append(",");
-
-            stringBuffer.append("'");
-            stringBuffer.append(ToolDataUtils.getreportTimeByDay());
             stringBuffer.append("'");
             stringBuffer.append(",");
 
@@ -316,7 +345,8 @@ public class CaryearMapperService {
                 "age35_count = VALUES (age35_count),\n" +
                 "age40_count = VALUES (age40_count),\n" +
                 "age45_count =VALUES (age45_count),\n" +
-                "age50_count =VALUES (age50_count);\n";
+                "age50_count =VALUES (age50_count)," +
+                "register_time = now();";
 
         parameter.setOnUpdate(onUpdate);
 
@@ -387,7 +417,226 @@ public class CaryearMapperService {
         String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
                 "year_name =  VALUES (year_name),\n" +
                 "stock_count =  VALUES (stock_count),\n" +
-                "stock_price =  VALUES (stock_price);";
+                "stock_price =  VALUES (stock_price)," +
+                "register_time = now();";
+
+        parameter.setOnUpdate(onUpdate);
+
+        return parameter;
+    }
+
+// 以下是月表  插入sql
+
+
+    /**
+     * param:
+     * describe: 车辆年限月表交易sql
+     * create_date:  lxy   2018/11/26  10:41
+     **/
+    private InsertTParamter getInsertCaryearInvoiceMonthColumnsAndValues(List<GroupCaryearDayByMOnthResponse> InvoiceMonthList) {
+
+        InsertTParamter parameter = new InsertTParamter();
+
+        parameter.setTable("`maxcar_statistics_l`.`caryear_month`");
+        parameter.setColumns("market_id,tenant_id,report_time,year_id,year_name,sales_count,sales_price,sales_avg_price," +
+                "male_count,female_count,age20_count,age25_count,age30_count,age35_count,age40_count,age45_count,age50_count");
+
+        StringBuffer stringBuffer = new StringBuffer(128);
+
+        for (GroupCaryearDayByMOnthResponse invoice : InvoiceMonthList) {
+            stringBuffer.append("(");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getMarketId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getTenantId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByMonth());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getYearId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(BaseMapperService.getNameByAgeByCarString(invoice.getYearId()));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getInvoiceCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getInvoicePrice());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getAvgPrice(invoice.getInvoicePrice(), invoice.getInvoiceCount()));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getMaleCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getFemaleCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge20Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge25Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge30Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge35Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge40Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge45Count());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(invoice.getAge50Count());
+            stringBuffer.append("'");
+
+
+            stringBuffer.append("),");
+        }
+
+        String values = stringBuffer.toString();
+
+        parameter.setValues(values.substring(1, values.length() - 2));
+
+
+        String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
+                "year_name =  VALUES (year_name),\n" +
+                "sales_count =  VALUES (sales_count),\n" +
+                "sales_price =  VALUES (sales_price),\n" +
+                "sales_avg_price =  VALUES (sales_avg_price),\n" +
+                "male_count =  VALUES(male_count),\n" +
+                "female_count = VALUES (female_count),\n" +
+                "age20_count = VALUES(age20_count),\n" +
+                "age25_count =  VALUES (age25_count),\n" +
+                "age30_count =  VALUES (age30_count),\n" +
+                "age35_count = VALUES (age35_count),\n" +
+                "age40_count = VALUES (age40_count),\n" +
+                "age45_count =VALUES (age45_count),\n" +
+                "age50_count =VALUES (age50_count)," +
+                "register_time = now();";
+
+        parameter.setOnUpdate(onUpdate);
+
+        return parameter;
+    }
+
+
+    /**
+     * param:
+     * describe:  车辆年限月表库存sql
+     * create_date:  lxy   2018/12/4  16:38
+     **/
+    private InsertTParamter getInsertCaryearInventoryMonthColumnsAndValues( List<GroupCaryearDayByMOnthResponse> InventoryMonthList) {
+
+        InsertTParamter parameter = new InsertTParamter();
+
+        parameter.setTable("`maxcar_statistics_l`.`caryear_month`");
+        parameter.setColumns("market_id,tenant_id,report_time,year_id,year_name,stock_count,stock_price");
+
+        StringBuffer stringBuffer = new StringBuffer(128);
+
+        for (GroupCaryearDayByMOnthResponse inventory : InventoryMonthList) {
+            stringBuffer.append("(");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getMarketId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getTenantId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(ToolDataUtils.getreportTimeByMonth());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getYearId());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(BaseMapperService.getNameByAgeByCarString(inventory.getYearId()));
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getInventoryCount());
+            stringBuffer.append("'");
+            stringBuffer.append(",");
+
+            stringBuffer.append("'");
+            stringBuffer.append(inventory.getInventoryPrice());
+            stringBuffer.append("'");
+
+            stringBuffer.append("),");
+        }
+
+        String values = stringBuffer.toString();
+
+        parameter.setValues(values.substring(1, values.length() - 2));
+
+
+        String onUpdate = "ON DUPLICATE KEY  UPDATE \n" +
+                "year_name =  VALUES (year_name),\n" +
+                "stock_count =  VALUES (stock_count),\n" +
+                "stock_price =  VALUES (stock_price)," +
+                "register_time = now();";
 
         parameter.setOnUpdate(onUpdate);
 

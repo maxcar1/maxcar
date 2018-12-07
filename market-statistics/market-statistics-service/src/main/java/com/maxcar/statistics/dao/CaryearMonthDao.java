@@ -1,5 +1,6 @@
 package com.maxcar.statistics.dao;
 
+import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CaryearMonthProvider;
 import com.maxcar.statistics.model.request.GroupCaryearInventoryMonthRequest;
 import com.maxcar.statistics.model.request.GroupCaryearInvoiceMonthRequest;
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
-public interface CaryearMonthDao {
+public interface CaryearMonthDao extends BaseDao {
 
 
     /**
@@ -17,7 +18,7 @@ public interface CaryearMonthDao {
      * describe: 分组查询车辆年限月表 交易
      * create_date:  lxy   2018/11/26  15:29
      **/
-    @SelectProvider(type = CaryearMonthProvider.class,method = "groupCaryearInvoiceMonth")
+    @SelectProvider(type = CaryearMonthProvider.class, method = "groupCaryearInvoiceMonth")
     List<GroupCaryearInvoiceMonthResponse> groupCaryearInvoiceMonth(GroupCaryearInvoiceMonthRequest parameter);
 
 
@@ -26,7 +27,7 @@ public interface CaryearMonthDao {
      * describe: 分组查询车辆年限月表 库存
      * create_date:  lxy   2018/11/26  15:29
      **/
-    @SelectProvider(type = CaryearMonthProvider.class,method = "groupCaryearInventoryMonth")
+    @SelectProvider(type = CaryearMonthProvider.class, method = "groupCaryearInventoryMonth")
     List<GroupCaryearInventoryMonthResponse> groupCaryearInventoryMonth(GroupCaryearInventoryMonthRequest parameter);
 
 }

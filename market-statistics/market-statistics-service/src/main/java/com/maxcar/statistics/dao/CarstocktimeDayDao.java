@@ -4,6 +4,7 @@ import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CarstocktimeDayProvider;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryDayRequest;
 import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceDayRequest;
+import com.maxcar.statistics.model.response.GroupCarstocktimeDayByMonthResponse;
 import com.maxcar.statistics.model.response.GroupCarstocktimeInventoryDayResponse;
 import com.maxcar.statistics.model.response.GroupCarstocktimeInvoiceDayResponse;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -27,4 +28,21 @@ public interface CarstocktimeDayDao extends BaseDao {
      **/
     @SelectProvider(type = CarstocktimeDayProvider.class, method = "groupCarstocktimeInventoryDay")
     List<GroupCarstocktimeInventoryDayResponse> groupCarstocktimeInventoryDay(GroupCarstocktimeInventoryDayRequest parameter);
+
+    /**
+     * param:
+     * describe: 统计当前月的车辆库存天数日表集合  交易
+     * create_date:  lxy   2018/11/23  11:34
+     **/
+    @SelectProvider(type = CarstocktimeDayProvider.class, method = "groupCarstocktimeInvoiceDayByMonth")
+    List<GroupCarstocktimeDayByMonthResponse> groupCarstocktimeInvoiceDayByMonth(String timeByMonth);
+
+    /**
+     * param:
+     * describe: 统计当前月的车辆库存天数日表集合  库存
+     * create_date:  lxy   2018/11/23  11:34
+     **/
+    @SelectProvider(type = CarstocktimeDayProvider.class, method = "groupCarstocktimeInventoryDayByMonth")
+    List<GroupCarstocktimeDayByMonthResponse> groupCarstocktimeInventoryDayByMonth(String timeByMonth);
+
 }

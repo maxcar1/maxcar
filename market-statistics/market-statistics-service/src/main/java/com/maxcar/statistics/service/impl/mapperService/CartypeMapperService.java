@@ -87,7 +87,6 @@ public class CartypeMapperService {
     }
 
 
-
 //    以下是 车辆类型 需要入库的任务统计
 
     /**
@@ -112,7 +111,7 @@ public class CartypeMapperService {
      * describe: 按天批量插入车辆类型日表(处理好values再调用该方法)
      * create_date:  lxy   2018/11/22  11:03
      **/
-    public boolean InsertCartypeDay() {
+    public void InsertCartypeDay() {
 
         String dayTime = ToolDataUtils.getreportTimeByDay();
 
@@ -124,10 +123,12 @@ public class CartypeMapperService {
         List<GetCarInvoiceTypeInvoiceReportResponse> InvoiceCartypeDayList = reportMapperService.getCarInvoiceTypeInvoiceReport(parameter);
 
         if (null == InvoiceCartypeDayList || InvoiceCartypeDayList.isEmpty()) {
-            return false;
+            return;
         }
 
-        return cartypeDayDao.InsertT(getInsertCartypeDayColumnsAndValues(InvoiceCartypeDayList));
+        cartypeDayDao.InsertT(getInsertCartypeDayColumnsAndValues(InvoiceCartypeDayList));
+
+        return;
     }
 
     /**
@@ -135,7 +136,7 @@ public class CartypeMapperService {
      * describe: 按月批量插入车辆类型月表(处理好values再调用该方法)
      * create_date:  lxy   2018/11/22  11:03
      **/
-    public boolean InsertCartypeMonth() {
+    public void InsertCartypeMonth() {
 
         // 今天是否似当月最后一天 不是则不执行
       /*  if (!ToolDataUtils.isLastDayByMonth()) {
@@ -146,16 +147,12 @@ public class CartypeMapperService {
         List<GroupCartypeDayByMonthResponse> InvoiceMonthList = cartypeDayDao.groupCartypeDayByMonth(ToolDataUtils.getreportTimeByDay());
 
         if (null == InvoiceMonthList || InvoiceMonthList.isEmpty()) {
-            return false;
+            return;
         }
 
-    /*    parameter.setColumns("market_id,tenant_id,report_time,brand_name,stock_count,stock_price," +
-                "sales_count,sales_price,sales_avg_price,male_count,female_count," +
-                "age20_count,age25_count,age30_count,age35_count,age40_count,age45_count,age50_count");
+        cartypeMonthDao.InsertT(getInsertCartypeMonthColumnsAndValues(InvoiceMonthList));
 
-*/
-
-        return cartypeMonthDao.InsertT(getInsertCartypeMonthColumnsAndValues(InvoiceMonthList));
+        return;
     }
 
 
@@ -236,11 +233,12 @@ public class CartypeMapperService {
         insertTParamter.setValues(values.substring(1, values.length() - 2));
 
 
-        String onUpdate ="ON DUPLICATE KEY UPDATE \n" +
+        String onUpdate = "ON DUPLICATE KEY UPDATE \n" +
                 "type_name = VALUES (type_name),\n " +
                 "sales_count =  VALUES (sales_count),\n" +
                 "sales_price =  VALUES  (sales_price),\n" +
-                "sales_avg_price = VALUES (sales_avg_price);";
+                "sales_avg_price = VALUES (sales_avg_price)," +
+                "register_time = now();";
 
         insertTParamter.setOnUpdate(onUpdate);
 
@@ -323,11 +321,12 @@ public class CartypeMapperService {
 
         insertTParamter.setValues(values.substring(1, values.length() - 2));
 
-        String onUpdate ="ON DUPLICATE KEY UPDATE \n" +
+        String onUpdate = "ON DUPLICATE KEY UPDATE \n" +
                 "type_name = VALUES (type_name),\n " +
                 "sales_count =  VALUES (sales_count),\n" +
                 "sales_price =  VALUES  (sales_price),\n" +
-                "sales_avg_price = VALUES (sales_avg_price);";
+                "sales_avg_price = VALUES (sales_avg_price)," +
+                "register_time = now();";
 
         insertTParamter.setOnUpdate(onUpdate);
 
