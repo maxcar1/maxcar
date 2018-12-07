@@ -838,25 +838,25 @@
             and a.market_id = #{market}
         </if>
         <if test="brandCode != null and brandCode != ''">
-            and d.brand_code = #{brandCode}
+            and c.brand_code = #{brandCode}
         </if>
         <if test="series != null and series != ''">
-            and d.series_code = #{series}
+            and c.series_code = #{series}
         </if>
         <if test="tenant != null and tenant != ''">
-            and a.tenant = #{tenant}
+            and b.tenant = #{tenant}
         </if>
         <if test="isPass != null and isPass != ''">
             and a.is_pass = #{isPass}
         </if>
         <if test="carStatus != null and carStatus != ''">
-            and a.car_status= #{carStatus}
+            and b.car_status= #{carStatus}
         </if>
         <if test="vin != null and vin != ''">
-            and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+            and b.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
         </if>
         <if test="stockStatus != null and stockStatus != ''">
-            and a.stock_status= #{stockStatus}
+            and b.stock_status= #{stockStatus}
         </if>
 
     </select>
