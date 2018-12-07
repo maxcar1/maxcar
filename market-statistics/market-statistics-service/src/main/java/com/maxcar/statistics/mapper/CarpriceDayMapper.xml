@@ -210,7 +210,7 @@ WHERE isvalid = 1
 GROUP BY invoice_price_id
   </select>
 
-  <select id="selectCarpriceDay"  resultMap="BaseResultMap" >
+  <select id="selectCarpriceDay"   >
 SELECT
   i.market_id,
   i.tenant_id,

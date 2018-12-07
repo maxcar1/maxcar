@@ -254,6 +254,9 @@
     <dubbo:reference interface="com.maxcar.statistics.service.ReportCarstocktimeService" id="reportCarstocktimeService"
                      check="false" retries="0" timeout="20000"/>
 
+    <dubbo:reference interface="com.maxcar.statistics.service.InsertStockAndInvoice" id="insertStockAndInvoice"
+                     check="false" retries="0" timeout="20000"/>
+
 
     <!-- 统计交易 -->
     <dubbo:reference interface="com.maxcar.statistics.service.TradingService" id="tradingService"
