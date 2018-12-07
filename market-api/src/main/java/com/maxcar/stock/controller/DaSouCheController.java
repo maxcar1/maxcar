@@ -161,7 +161,17 @@ public class DaSouCheController extends BaseController {
 //            scCityCode = params.getString("scCityCode");
 //            if (null == scCityCode || "".equals(scCityCode)) throw new RuntimeException("scCityCode字段值缺失");
             mileage = params.getInteger("mileage");
-            if (null == mileage || mileage.intValue() == 0) throw new RuntimeException("mileage字段值缺失");
+            if (null == mileage || mileage.intValue() == 0) {
+                throw new RuntimeException("mileage字段值缺失");
+            }else {
+                //公里转万公里
+                //不足一万按一万算
+                if (mileage / 10000 < 1) {
+                    mileage = 1;
+                } else {
+                    mileage = mileage / 10000;
+                }
+            }
             firstLicenseDate = params.getString("firstLicenseDate");
             if (null == firstLicenseDate || "".equals(firstLicenseDate))
                 throw new RuntimeException("firstLicenseDate字段值缺失");
