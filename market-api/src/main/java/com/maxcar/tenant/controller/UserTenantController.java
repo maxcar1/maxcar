@@ -9,6 +9,7 @@ import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.Constants;
 import com.maxcar.base.util.MatrixToImageWriter;
+import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.UuidUtils;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.model.request.DealRequest;
@@ -111,7 +112,7 @@ public class UserTenantController extends BaseController {
         String marketId = getCurrentUser(request).getMarketId();
         userTenant.setMarketId(marketId);
         String tenantName = userTenant.getTenantName();
-        if("".equals(tenantName) || tenantName == null){
+        if ("".equals(tenantName) || tenantName == null) {
             interfaceResult.InterfaceResult600("商户名称不能为空");
             return interfaceResult;
         }
@@ -175,7 +176,7 @@ public class UserTenantController extends BaseController {
      */
     @RequestMapping(value = "/userTenant/getUserTenantDetail/{id}/{currentPage}/{pageSize}")
     @OperationAnnotation(title = "查询商户详情")
-    public InterfaceResult getUserTenantDetail(@PathVariable(value = "id") String id, @PathVariable(value = "currentPage") Integer currentPage, @PathVariable(value = "pageSize") Integer pageSize,HttpServletRequest request) throws Exception {
+    public InterfaceResult getUserTenantDetail(@PathVariable(value = "id") String id, @PathVariable(value = "currentPage") Integer currentPage, @PathVariable(value = "pageSize") Integer pageSize, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
 
         UserTenant userTenant = new UserTenant();
@@ -295,8 +296,6 @@ public class UserTenantController extends BaseController {
     }
 
 
-
-
     /**
      * 生成商户二维码
      *
@@ -347,7 +346,23 @@ public class UserTenantController extends BaseController {
     public InterfaceResult list(@RequestBody UserTenant userTenant, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = getCurrentUser(request);
-        userTenant.setMarketId(user.getMarketId());
+        // userTenant.setMarketId(user.getMarketId());
+
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            userTenant.setMarketId(user.getMarketId());
+        } else {
+
+            if (StringUtil.isEmpty(userTenant.getMarketId())){
+                return getInterfaceResult("600", "请选择市场");
+            }
+
+        }
+
         List<UserTenant> list = userTenantService.list(userTenant);
         interfaceResult.InterfaceResult200(list);
         return interfaceResult;

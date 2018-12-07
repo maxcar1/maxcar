@@ -530,8 +530,9 @@
         AND invoice_stock_id = #{carNumType}
         </if>
     </select>
+<!--
+    <select id="InsertInventoryInvoiceDay" resultType="java.util.Map"
+            parameterType="com.maxcar.statistics.model.request.StockRequest">
 
-    <select id="InsertInventoryInvoiceDay">
-
-    </select>
+    </select>-->
 </mapper>

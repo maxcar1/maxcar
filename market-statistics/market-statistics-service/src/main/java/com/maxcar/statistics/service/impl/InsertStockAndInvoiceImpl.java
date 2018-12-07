@@ -24,21 +24,21 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
 
     @Override
     public void InsertCarpriceDay() {
-        carpriceDayMapper.InsertCarpriceDay();
+        //carpriceDayMapper.InsertCarpriceDay();
     }
 
     @Override
     public void InsertCarstockDay() {
-        carStockDayMapper.InsertCarstockDay();
+        //carStockDayMapper.InsertCarstockDay();
     }
 
     @Override
     public void InsertCarstockMonth() {
-        carStockMonthMapper.InsertCarstockMonth();
+        //carStockMonthMapper.InsertCarstockMonth();
     }
 
     @Override
     public void InsertInventoryInvoiceDay() {
-        inventoryInvoiceDayMapper.InsertInventoryInvoiceDay();
+      //  inventoryInvoiceDayMapper.InsertInventoryInvoiceDay();
     }
 }

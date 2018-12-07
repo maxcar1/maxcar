@@ -23,5 +23,5 @@ public interface CarpriceDayMapper {
 
     List<TradingResponse> stockAvgDay(TradingRequest tradingRequest);
 
-    void InsertCarpriceDay();
+    /*int InsertCarpriceDay();*/
 }
