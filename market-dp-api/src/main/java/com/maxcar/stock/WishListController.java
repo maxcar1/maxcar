@@ -92,6 +92,7 @@ public class WishListController {
             redireuri = prop.getProperty("redireuri");
             wxouthurl = wxouthurl.replace("APPID" ,wxappid).replace("APPSECRET",wxsecret).replace("CODE",code);
             String result = HttpClientUtils.sendGet(wxouthurl);
+            logger.info("返回结果=============="+result);
             JSONObject json = JSONObject.parseObject(result);
 
            userId = json.getString("openid");
@@ -100,6 +101,7 @@ public class WishListController {
         }
 
         ModelAndView view = new ModelAndView("redirect:"+redireuri+"?userId="+userId+"&marketId=007");
+        logger.info("用户id==============="+userId);
 
         return  view;
     }
