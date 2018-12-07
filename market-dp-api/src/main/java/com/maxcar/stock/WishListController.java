@@ -80,6 +80,7 @@ public class WishListController {
     @RequestMapping(value="/wishListButton",method= RequestMethod.GET)
     public ModelAndView wishListButton(HttpServletRequest request){
         String userId = null;
+        String redireuri=null;
         try {
             String code = request.getParameter("code");
             logger.info("code==================="+code);
@@ -88,6 +89,7 @@ public class WishListController {
             String wxappid = prop.getProperty("wxappid");
             String wxsecret = prop.getProperty("wxsecret");
             String wxouthurl = prop.getProperty("wxouthurl");
+            redireuri = prop.getProperty("redireuri");
             wxouthurl = wxouthurl.replace("APPID" ,wxappid).replace("APPSECRET",wxsecret).replace("CODE",code);
             String result = HttpClientUtils.sendGet(wxouthurl);
             JSONObject json = JSONObject.parseObject(result);
@@ -96,7 +98,8 @@ public class WishListController {
         }catch (Exception e ){
             e.printStackTrace();
         }
-        ModelAndView view = new ModelAndView("redirect:http://xfz.maxcar.com.cn/carWish?userId="+userId+"&marketId=007");
+
+        ModelAndView view = new ModelAndView("redirect:"+redireuri+"?userId="+userId+"&marketId=007");
 
         return  view;
     }
