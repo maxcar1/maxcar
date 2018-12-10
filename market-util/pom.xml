@@ -830,6 +830,7 @@
 				<pay.account.app.id>wxcf5003ae31ab9bbf</pay.account.app.id>
 				<pay.tenant.num>1513688731</pay.tenant.num>
 				<pay.QR.url>weixin://wxpay/bizpayurl?</pay.QR.url>
+				<pay.account.app.secret>df64feec406058be81aca5ae3969e68d</pay.account.app.secret>
 				<weixin.pay.app.key>YLpaibo8618176438893861817643889</weixin.pay.app.key>
 				<save.img.file.path>/opt/image</save.img.file.path>
 				<!-- 模式一支付回调-->
