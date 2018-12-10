@@ -83,7 +83,7 @@
         <result column="is_pass" property="isPass" jdbcType="INTEGER"/>
         <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>
         <result column="application_time" property="applicationTime" jdbcType="TIMESTAMP"/>
-        <result column="is_complete" property="isComplete" jdbcType="TIMESTAMP"/>
+        <result column="is_complete" property="isComplete" jdbcType="INTEGER"/>
     </resultMap>
     <!-- carVo END -->
     <resultMap id="taoBaoCarMap" type="com.maxcar.stock.pojo.TaoBaoCar">
