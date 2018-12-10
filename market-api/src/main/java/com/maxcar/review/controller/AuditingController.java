@@ -12,6 +12,7 @@ import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.service.*;
 import com.maxcar.stock.vo.CarVo;
+import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.entity.Organizations;
 import com.maxcar.user.entity.User;
@@ -94,6 +95,8 @@ public class AuditingController extends BaseController {
             List<CarDetails> list = carBaseService.getCarBaseById(carReview.getCarId());
             CarDetails carDetails = list.get(0);
             if(carDetails != null){
+                UserTenant userTenant = userTenantService.selectByPrimaryKey(carDetails.getTenant());
+                carDetails.setTenantName(userTenant.getTenantName());
                 map.put("car",carDetails);
             }
             if(carDetails.getTenant() != null){
