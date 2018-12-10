@@ -53,13 +53,42 @@ public class CarReviewServiceImpl implements CarReviewService {
         return carReviews;
     }
 
+    @Override
+    public List<CarReview> selectAllCarReview() {
+        return carReviewMapper.selectAllCarReview();
+    }
+
     /**
-     * 定时扫描
+     * 定时扫描出场未归的车辆改变状态为6,  到了申请记录的返场时间将该条申请记录改完以完成  代表此次申请已经结束
      */
     @Override
     public void updateTimeoutNotreturnCarStockStatus() throws Exception{
+
+        // 返场时间到达以后将申请记录结束掉
+        List<CarReview> carReviewList = selectAllCarReview();
+        if (carReviewList != null && carReviewList.size() > 0){
+            for (CarReview c: carReviewList) {
+                if (c.getBackTime().getTime() < System.currentTimeMillis()){
+                    c.setIsComplete(1);
+                    carReviewMapper.updateByPrimaryKeySelective(c);
+                    String topic = messageProducerService.getTopic(c.getMarketId());
+                    //同步删除本地车辆状态
+                    //组装云端参数
+                    PostParam postParam = new PostParam();
+                    postParam.setData(JsonTools.toJson(c));
+                    postParam.setMarket(c.getMarketId());
+                    postParam.setUrl("/barrier/carReview/saveOrUpdate");
+                    postParam.setMethod("post");
+                    postParam.setOnlySend(false);
+                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
+                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+                }
+            }
+        }
+
+        // 到达返场时间未归的的车辆,改为出场超时
         List<CarReviewVo> carReviews = selectAllCarReviewByIsPass();
-        if (carReviews.size() > 0) {
+        if (carReviews != null && carReviews.size() > 0) {
             for (CarReviewVo cr : carReviews) {
                 Car car = new Car();
                 car.setId(cr.getCarId());
@@ -69,6 +98,7 @@ public class CarReviewServiceImpl implements CarReviewService {
             }
         }
     }
+
 
     private void updateCarStockStatus(Car car)throws Exception{
             carService.updateByPrimaryKeySelective(car);
