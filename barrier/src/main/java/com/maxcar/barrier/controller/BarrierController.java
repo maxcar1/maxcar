@@ -244,7 +244,8 @@ public class BarrierController {
                 value8 = "金额"+type+"元";
                 byte[] b = value8.getBytes("gbk");
                 //最小7字节,最大9字节,直接补0
-                value7 = "FF0"+b.length;
+                String hex = Integer.toHexString(b.length).toUpperCase();
+                value7 = "FF0"+hex;
             }
             outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
             outParam = outParam.replaceAll("leng", PushCallback.toHexStringBy0(outParam.length()/2+2));
