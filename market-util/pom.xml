@@ -793,7 +793,7 @@
 				<kafka.consumer.topic054>sync_download_054_data_test</kafka.consumer.topic054>
 				<kafka.consumer.topic055>sync_download_055_data_test</kafka.consumer.topic055>
 				<local.servers.address>http://ylc-t.maxcar.com.cn</local.servers.address>
-				<local.servers.parking.address>http://ylc-t.maxcar.com.cn</local.servers.parking.address>
+				<local.servers.parking.address>http://ylc-t.maxcar.com.cn:7950</local.servers.parking.address>
 				<!-- 大搜车接口配置 -->
 				<app.key>84304e368d4153cfd0dbafc967187729</app.key>
 				<app.secret>43f4d794f3b5c95239a092a66bcbede8</app.secret>
