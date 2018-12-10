@@ -372,7 +372,7 @@ public class CarController extends BaseController {
                 if (0 == x.getIsNewCar()) {
                     response.setIsNewCar("新车");
                 } else if (1 == x.getIsNewCar()) {
-                    response.setIsNewCar("旧车");
+                    response.setIsNewCar("二手车");
                 } else {
                     response.setIsNewCar(Magic.NUll);
                 }
