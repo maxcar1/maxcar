@@ -445,4 +445,12 @@
     cr.is_pass = 1 AND cr.is_valid = 1 AND now() >= cr.back_time AND c.stock_status = 3
   </select>
 
+  <select id="selectAllCarReview" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from car_review
+    where is_valid = 1
+  </select>
+
+
 </mapper>

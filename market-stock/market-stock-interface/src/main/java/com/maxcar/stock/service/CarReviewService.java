@@ -14,5 +14,7 @@ public interface CarReviewService {
 
     List<CarReviewVo> selectAllCarReviewByIsPass();
 
+    List<CarReview> selectAllCarReview();
+
     void updateTimeoutNotreturnCarStockStatus() throws Exception;
 }

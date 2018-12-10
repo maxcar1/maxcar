@@ -48,4 +48,6 @@ public interface CarReviewMapper {
      * @return
      */
     List<CarReviewVo> selectAllTimeoutNotreturnCarReview();
+
+    List<CarReview> selectAllCarReview();
 }
