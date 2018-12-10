@@ -770,15 +770,17 @@
 
     <select id="listReview" parameterType="com.maxcar.stock.entity.CarParams" resultMap="CarVoResultMap">
         SELECT
-        a.*, d.*, b.id AS review_id,
+        a.id as carId , a.car_no ,a.vin ,a.rfid,a.tenant,a.area_id,a.stock_status ,
+        a.car_status,a.car_type ,a.initial_licence_time,a.staff_id,a.market_id
+        , d.*, b.id AS review_id,
         b.out_reason,
         c.tenant_name,
         b.step_level,
         b.is_complete,
-        date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
+        date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time
         FROM
         maxcar_stock_l.car a
-        LEFT JOIN maxcar_stock_l.car_review b ON a.id = b.car_id
+        LEFT JOIN maxcar_stock_l.car_review b ON a.carId = b.car_id
         LEFT JOIN maxcar_tenant_l.user_tenant c ON a.tenant = c.id
         LEFT JOIN maxcar_stock_l.car_base d ON a.id = d.id
         WHERE
@@ -833,7 +835,7 @@
         d.tenant_name
         FROM
         maxcar_stock_l.car_review a
-        LEFT JOIN car b ON a.car_id = b.id
+        LEFT JOIN car b ON a.car_id = b.carId
         LEFT JOIN car_base c ON a.car_id = c.id
         LEFT JOIN maxcar_tenant_l.user_tenant d ON b.tenant = d.id
         WHERE
