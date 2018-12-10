@@ -191,8 +191,8 @@
     </if>
   </select>
 
-<!--
-  <insert id="InsertCarstockMonth"  >
+
+  <select id="InsertCarstockMonth"  >
    INSERT INTO maxcar_statistics_l.carstock_month(
 market_id,
 tenant_id,
@@ -283,6 +283,6 @@ WHERE c.isvalid = 1
   AND c.car_type = 1
   AND c.insert_time BETWEEN DATE_ADD(CURDATE(),INTERVAL - DAY(CURDATE()) + 1 DAY) AND  DATE_ADD(DATE_ADD(STR_TO_DATE(LAST_DAY(CURDATE()),'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY ), INTERVAL - 1 SECOND)
 GROUP BY c.tenant,invoice_stock_id
-  </insert>-->
+  </select>
 
 </mapper>
