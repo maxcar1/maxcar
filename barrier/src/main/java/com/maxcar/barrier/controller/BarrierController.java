@@ -317,7 +317,7 @@ public class BarrierController {
 
             outParam = outParam + outHex;
             logger.info(outParam + "------发送数据2");
-            ServerMQTT.send(outParam,topic);
+            BasicRemoteClient.sendMsg(outParam,topic);
         }catch (Exception e){
             result.InterfaceResult500("保存失败");
             e.printStackTrace();
