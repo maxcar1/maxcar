@@ -111,19 +111,23 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
     public BigDecimal figureOutParkingFee(Date begin, Date end, String marketId, Integer carType) throws Exception {
         //根据marketId取规则
         ParkingFeeTotalExample example = new ParkingFeeTotalExample();
+        FeePeriodTimeExample feePeriodTimeExample = new FeePeriodTimeExample();
         if (carType == 0) {
             example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
                     .andCarTypeEqualTo(1);
+            //读取计费时段配置
+            feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
+                    .andIsValidEqualTo(1).andCarTypeEqualTo(1);
         } else {
             example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
                     .andCarTypeEqualTo(carType);
+            //读取计费时段配置
+            feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
+                    .andIsValidEqualTo(1).andCarTypeEqualTo(carType);
         }
         List<ParkingFeeTotal> parkingFeeTotals = parkingFeeTotalMapper.selectByExample(example);
 
-        //读取计费时段配置
-        FeePeriodTimeExample feePeriodTimeExample = new FeePeriodTimeExample();
-        feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
-                .andIsValidEqualTo(1).andCarTypeEqualTo(carType);
+
         List<FeePeriodTime> feePeriodTimes = feePeriodTimeMapper.selectByExample(feePeriodTimeExample);
         Date intime1 = null;
         BigDecimal total = new BigDecimal(0);
