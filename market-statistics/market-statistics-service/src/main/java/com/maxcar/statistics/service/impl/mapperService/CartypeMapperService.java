@@ -96,12 +96,12 @@ public class CartypeMapperService {
      **/
     public void InsertCartype() throws Exception {
 
-        // 睡眠一分钟后执行 执行日表操作
-        Thread.sleep(60000);
+        // 睡眠5秒后执行 执行日表操作
+        Thread.sleep(5000);
         InsertCartypeDay();
 
-        // 睡眠一分钟后执行 执行月表操作
-        Thread.sleep(60000);
+        // 睡眠5秒后执行 执行月表操作
+        Thread.sleep(5000);
         InsertCartypeMonth();
     }
 

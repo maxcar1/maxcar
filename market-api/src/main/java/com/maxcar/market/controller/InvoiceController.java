@@ -137,12 +137,21 @@ public class InvoiceController extends BaseController {
     public InterfaceResult getInvoiceList(@RequestBody Invoice invoice, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         User currentUser = getCurrentUser(request);
-        if (null != currentUser.getMarketId() && currentUser.getMarketId() != "") {
+        String userId = currentUser.getUserId();
+        if (null != currentUser.getMarketId() &&  !"".equals(currentUser.getMarketId())) {
             invoice.setMarketId(currentUser.getMarketId());
         }
-        invoice.setUserId(currentUser.getUserId());
+        User user = userService.selectByPrimaryKey(userId);
+        if(user.getManagerFlag() == 0) {
+            invoice.setMarketId(null);
+        }else if(user.getManagerFlag() == 2){
+            invoice.setMarketId(currentUser.getMarketId());
+        }else {
+            invoice.setUserId(currentUser.getUserId());
+        }
         PageInfo pageInfo = invoiceService.getInvoiceList(invoice);
         interfaceResult.InterfaceResult200(pageInfo);
+
         return interfaceResult;
     }
 

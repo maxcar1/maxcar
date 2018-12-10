@@ -72,7 +72,9 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         }
         if (null != invoice.getRemark() && invoice.getRemark() == 1) {//查询开具发票列表
             criteria.andInvoiceStatusNotEqualTo(1);//查询为已处理和作废状态
-            criteria.andUserIdEqualTo(invoice.getUserId());
+            if(StringUtil.isNotEmpty(invoice.getUserId())){
+                criteria.andUserIdEqualTo(invoice.getUserId());
+            }
         }
         if (null != invoice.getMarketId() && !invoice.getMarketId().equals("")) {
             criteria.andMarketIdEqualTo(invoice.getMarketId());
