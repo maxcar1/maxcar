@@ -126,19 +126,6 @@ public class SyncCarController extends BaseController {
             GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest request = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
 			request.setTenantId(carCheck.getTenant());
 			request.setMarketId(carCheck.getMarket());
-			/*request.setPageSize(100);
-			request.setCurPage(1);*/
-			/*List<PropertyContractDetail> lists = propertyContractService.getPropertyContractDetailListByTenantId(request);
-			for (PropertyContractDetail list : lists) {
-				if ((Magic.CONTRACT_CATEGORY_CAR_SPACE).equals(list.getContractCategory())) {
-					inventoryNumber += list.getAreaTotal();
-				}
-				if(Magic.CONTRACT_CATEGORY_EXHIBITION.equals(list.getContractCategory())){
-					double carAreaNum = list.getAreaTotal()/Magic.CAR_AREA;
-					BigDecimal bd = new BigDecimal(carAreaNum).setScale(0, BigDecimal.ROUND_HALF_UP);
-					inventoryNumber += Integer.parseInt(bd.toString());
-				}
-			}*/
 			GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse response = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(request);
 			if(response == null){
 				interfaceResult.InterfaceResult600("请联系管理员，配置相关参数");
@@ -180,9 +167,9 @@ public class SyncCarController extends BaseController {
 	}
 	//0录车，1该标签
 	@RequestMapping(value = "/car/{type}", method = RequestMethod.POST)
-	public InterfaceResult getCar(@RequestBody CarChecks carCheck,@PathVariable("type")Integer type) throws Exception{
+	public InterfaceResult getCar(@RequestBody CarChecks carCheck,@PathVariable("type")Integer type,HttpServletRequest r) throws Exception{
 		InterfaceResult interfaceResult = new InterfaceResult();
-
+		User user = getCurrentUser(r);
 			Map map;
 			if (null == carCheck) {
 				interfaceResult.InterfaceResult600("参数格式错误");
@@ -192,24 +179,27 @@ public class SyncCarController extends BaseController {
 				interfaceResult.InterfaceResult600("rfid/vin码缺一不可");
 				return interfaceResult;
 			}
-
 			if (null != carCheck.getStaffId() && "" != carCheck.getStaffId()) {
 				Car staffIdCar = new Car();
 				staffIdCar.setStaffId(carCheck.getStaffId());
 				staffIdCar.setMarketId(carCheck.getMarket());
 				Integer counts = 0;
 				counts = carService.selectCountsByCar(staffIdCar);
-				Integer value = 2;
-
-				/*List<Configuration> list = configurationService.searchConfigurationByMarketId(carCheck.getMarket());
-				for (int i = 0; i < list.size(); i++) {
-					if (list.get(i).getConfigurationKey().equals("staff_car_market") ) {
-						value = Integer.parseInt(list.get(i).getConfigurationValue());
-					}
-					if (list.get(i).getConfigurationKey().equals("staff_car_tenant") ) {
-						value = Integer.parseInt(list.get(i).getConfigurationValue());
-					}
-				}*/
+				Integer value = 0;
+				if(carCheck.getType() == 2){//市场员工车
+					Configuration configuration1 = new Configuration();
+					configuration1.setMarketId(user.getMarketId());
+					configuration1.setConfigurationKey("staff_car_market");
+					List<Configuration> configurationList = configurationService.searchConfiguration(configuration1);
+					value = Integer.parseInt(configurationList.get(0).getConfigurationValue());
+				}
+				if(carCheck.getType() == 3){//商户员工车
+					Configuration configuration1 = new Configuration();
+					configuration1.setMarketId(user.getMarketId());
+					configuration1.setConfigurationKey("staff_car_tenant");
+					List<Configuration> configurationList = configurationService.searchConfiguration(configuration1);
+					value = Integer.parseInt(configurationList.get(0).getConfigurationValue());
+				}
 				if (counts >= value) {
 					map = new HashMap();
 					map.put("msg", "该员工已达绑定上限(" + value + "辆)");
@@ -223,7 +213,6 @@ public class SyncCarController extends BaseController {
 					Car carRfid = new Car();
 					carRfid.setMarketId(carCheck.getMarket());
 					carRfid.setRfid(carCheck.getRfid());
-
 
 					Car carByVin = carService.getCar(carVin);
 					Car carByRfid = carService.getCar(carRfid);
