@@ -711,9 +711,13 @@ public class CarController extends BaseController {
 
         String wzjs = null;
         String vin = params.get("vin").toString();
+        String carId = params.get("carId").toString();
         //String marketId = params.get("marketId").toString();
         try {
-            String check = carCheckService.getCarCheckByVin(vin);
+            CarCheck carCheck = new CarCheck();
+            carCheck.setVin(vin);
+            carCheck.setCarId(carId);
+            String check = carCheckService.getCarCheckByVin(carCheck);
             if (check != null && !"".equals(check)) {
                 wzjs = check;
             } else {
@@ -746,8 +750,10 @@ public class CarController extends BaseController {
                     checkNew.setId(UuidUtils.getUUID());
                     checkNew.setCompanyId("2");
                     checkNew.setVin(vin);
+
                     //checkNew.setCarId();
                     checkNew.setData(wzjs);
+                    checkNew.setCarId(carId);
                     checkNew.setInsertTime(new Date());
                     carCheckService.insertCarCheck(checkNew);
                 }

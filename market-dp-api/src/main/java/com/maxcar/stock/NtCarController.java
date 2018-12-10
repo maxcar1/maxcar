@@ -209,7 +209,7 @@ public class NtCarController  {
     public InterfaceResult getQrcode(WishList wishList){
         InterfaceResult response = new InterfaceResult();
         try {
-            String marketId = wishList.getMarketId();
+            String marketId = wishList.getMarket();
             String carId = wishList.getCarId();
             String[] carIds = carId.split(",");
             List<String> carIdList = Arrays.asList(carIds);

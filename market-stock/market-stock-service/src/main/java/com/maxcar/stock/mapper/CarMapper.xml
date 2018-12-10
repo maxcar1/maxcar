@@ -83,6 +83,7 @@
         <result column="is_pass" property="isPass" jdbcType="INTEGER"/>
         <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>
         <result column="application_time" property="applicationTime" jdbcType="TIMESTAMP"/>
+        <result column="is_complete" property="isComplete" jdbcType="TIMESTAMP"/>
     </resultMap>
     <!-- carVo END -->
     <resultMap id="taoBaoCarMap" type="com.maxcar.stock.pojo.TaoBaoCar">
@@ -773,6 +774,8 @@
         b.out_reason,
         c.tenant_name,
         b.step_level,
+        b.is_complete,
+        date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
         FROM
         maxcar_stock_l.car a
         LEFT JOIN maxcar_stock_l.car_review b ON a.id = b.car_id
@@ -822,7 +825,9 @@
 
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
         SELECT
-        b.*, c.*, a.id AS review_id,a.is_pass,
+        b.id as carId , b.car_no ,b.vin ,b.rfid,b.tenant,b.area_id,b.stock_status ,
+        b.car_status,b.car_type ,b.initial_licence_time,b.staff_id,b.market_id,
+        c.*, a.id AS review_id,a.is_pass,
         a.out_reason,
         date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
         d.tenant_name

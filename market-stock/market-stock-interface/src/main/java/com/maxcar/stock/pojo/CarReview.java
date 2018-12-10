@@ -32,6 +32,16 @@ public class CarReview implements Serializable {
 
     private int stepLevel;
 
+    private int isComplete;
+
+    public int getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(int isComplete) {
+        this.isComplete = isComplete;
+    }
+
     public int getStepLevel() {
         return stepLevel;
     }

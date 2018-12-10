@@ -254,8 +254,10 @@
     <if test="reviewResult != null and reviewResult != ''">
       , is_pass = #{reviewResult}
     </if>
+    <if test="isComplete != null and isComplete != ''">
+      , is_complete = #{isComplete}
+    </if>
     where id = #{reviewId}
-    and 1=1
   </update>
   <select id="selectReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
 
