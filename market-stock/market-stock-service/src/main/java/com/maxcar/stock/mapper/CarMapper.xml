@@ -843,27 +843,26 @@
             and a.market_id = #{market}
         </if>
         <if test="brandCode != null and brandCode != ''">
-            and d.brand_code = #{brandCode}
+            and c.brand_code = #{brandCode}
         </if>
         <if test="series != null and series != ''">
-            and d.series_code = #{series}
+            and c.series_code = #{series}
         </if>
         <if test="tenant != null and tenant != ''">
-            and a.tenant = #{tenant}
+            and b.tenant = #{tenant}
         </if>
-        <if test="reviewResult != null and reviewResult != ''">
-            and e.review_result = #{reviewResult}
+        <if test="isPass != null and isPass != ''">
+            and a.is_pass = #{isPass}
         </if>
         <if test="carStatus != null and carStatus != ''">
-            and a.car_status= #{carStatus}
+            and b.car_status= #{carStatus}
         </if>
         <if test="vin != null and vin != ''">
-            and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+            and b.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
         </if>
         <if test="stockStatus != null and stockStatus != ''">
-            and a.stock_status= #{stockStatus}
+            and b.stock_status= #{stockStatus}
         </if>
-
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
@@ -1355,29 +1354,14 @@
         WHERE a.id=#{id}
     </select>
 
-    <select id="getCarPic" resultMap="CarPicMap" parameterType="String">
-		SELECT id,src,car_id,type from car_pic where car_id=#{car} and src is
-		not null <![CDATA[ and src <>''
-        ]]>
-        and type in (1,2,3,4,5,6,7,8,9,10,11,12)
-    </select>
-
-    <update id="modifyCarInfo" parameterType="com.maxcar.stock.pojo.CarInfo"
-            flushCache="true">
-        update car
-        <if test="taobao_id != null and taobao_id != ''">
-            set taobao_id = #{taobao_id},
-        </if>
-        <if test="taobao_url != null and taobao_url != ''">
-            taobao_url = #{taobao_url}
-        </if>
-        where id=#{id}
-    </update>
-
     <select id="selectCarList" parameterType="com.maxcar.stock.vo.CarVo" resultMap="CarVoResultMap">
         SELECT<include refid="carInfoNoId"/>,b.*
         from car a LEFT join car_base b on a.id=b.id
-        where a.isvalid =1 and a.market_id=#{marketId} and a.stock_status in ('1','2','3')
+        where a.isvalid =1
+        <if test="marketId != null and marketId != '' and marketId != '001'">
+            and a.market_id=#{marketId}
+        </if>
+        and a.stock_status in ('1','2','3')
         <if test="brandCode != null and brandCode != ''">
             and b.brand_code = #{brandCode}
         </if>
@@ -1493,6 +1477,25 @@
             order by a.insert_time desc
         </if>
     </select>
+
+    <select id="getCarPic" resultMap="CarPicMap" parameterType="String">
+		SELECT id,src,car_id,type from car_pic where car_id=#{car} and src is
+		not null <![CDATA[ and src <>''
+        ]]>
+        and type in (1,2,3,4,5,6,7,8,9,10,11,12)
+    </select>
+
+    <update id="modifyCarInfo" parameterType="com.maxcar.stock.pojo.CarInfo"
+            flushCache="true">
+        update car
+        <if test="taobao_id != null and taobao_id != ''">
+            set taobao_id = #{taobao_id},
+        </if>
+        <if test="taobao_url != null and taobao_url != ''">
+            taobao_url = #{taobao_url}
+        </if>
+        where id=#{id}
+    </update>
 
     <!-- 根据 marketId 查询可以过户的车辆列表 可分页  -->
     <select id="getCarListByMarketIdAndTenant"
@@ -1816,4 +1819,8 @@
         limit 1
     </select>
 
+    <select id="getStockCarByVinByMarketId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from car where stock_status in (1, 2, 3) and vin = #{vin} and market_id= #{marketId} order by update_time desc limit 1;
+    </select>
 </mapper>

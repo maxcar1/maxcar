@@ -12,4 +12,6 @@ public interface CarModelMapper {
     List<Map<String,Object>> getCarModelBySeriesCode(@Param("seriesCode") String seriesCode) throws Exception;
 
     List<CarModel> getAllModel(String seriesId);
+
+    Map<String,String> getModelAndSeriesAndBrandByModelCode(String modelCode);
 }
