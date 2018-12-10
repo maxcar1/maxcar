@@ -430,7 +430,7 @@
                 <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
                 <system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
                 <!--卡夫卡-->
-                <kafka.consumer.zookeeper.connect>192.168.3.60:3001</kafka.consumer.zookeeper.connect>
+                <kafka.consumer.zookeeper.connect>192.168.3.50:2181</kafka.consumer.zookeeper.connect>
                 <kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>
                 <kafka.producer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.producer.servers>
                 <kafka.producer.topic>sync_upload_data_test</kafka.producer.topic>
