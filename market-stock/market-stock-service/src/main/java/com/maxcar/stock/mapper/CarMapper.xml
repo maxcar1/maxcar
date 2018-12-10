@@ -733,6 +733,9 @@
         t.stock_status in ('1','2','3') and
         t.isvalid=1 and t.market_id = #{marketId}
         AND t.car_type =1
+        <if test="tenant != null and tenant != ''">
+            and t.tenant = #{tenant}
+        </if>
         <include refid="car_vo_where"/>
         order by t.register_time desc
     </select>
