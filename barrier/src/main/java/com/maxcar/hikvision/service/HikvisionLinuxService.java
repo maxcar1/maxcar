@@ -84,6 +84,7 @@ public class HikvisionLinuxService {
     public static Map requestDll(BarrierCamera barrierCamera) {
         Map map = new HashMap(2);
         boolean initSuc = hCNetSDK.NET_DVR_Init();
+        logger.info("摄像机初始化状态==>{}",initSuc);
         if (initSuc) {
             //参考海康威视官网SDK，模拟登录网络摄像机
             //    m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V30();
