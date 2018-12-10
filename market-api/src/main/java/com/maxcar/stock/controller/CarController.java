@@ -410,7 +410,7 @@ public class CarController extends BaseController {
                 response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
-            response.setStockDay(x.getStockDays() + "");
+            response.setStockDay(x.getStockDays());
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);

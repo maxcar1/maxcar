@@ -30,7 +30,7 @@ public class ExportResponse implements Serializable {
     private String registerTime;
 
     // 库存天数
-    private String stockDay;
+    private Integer stockDay;
 
     // 库存状态
     private String stockStatus;
@@ -123,11 +123,11 @@ public class ExportResponse implements Serializable {
         this.vin = vin;
     }
 
-    public String getStockDay() {
+    public Integer getStockDay() {
         return stockDay;
     }
 
-    public void setStockDay(String stockDay) {
+    public void setStockDay(Integer stockDay) {
         this.stockDay = stockDay;
     }
 
