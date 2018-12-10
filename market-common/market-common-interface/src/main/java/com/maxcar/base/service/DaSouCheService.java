@@ -46,4 +46,6 @@ public interface DaSouCheService {
     int syncDaSouCheBrand(List<CarBrand> carBrands);
     int syncDaSouCheSeries(List<CarSeries> carSeries);
     int syncDaSouCheModel(List<CarModel> carModels);
+
+    Map<String,String> getModelAndSeriesAndBrandByModelCode(String modelCode);
 }

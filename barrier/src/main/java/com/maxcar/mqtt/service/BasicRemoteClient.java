@@ -16,7 +16,7 @@ import java.util.UUID;
  * Created by 罗顺锋 on 2018/11/31.
  * MQTT客户端的简单实现
  */
-public class BasicRemoteClient implements RemoteClient, IMqttMessageListener {
+public class BasicRemoteClient implements RemoteClient, IMqttMessageListener,MqttCallback {
 
     static Logger logger = LoggerFactory.getLogger(BasicRemoteClient.class);
 
@@ -45,7 +45,7 @@ public class BasicRemoteClient implements RemoteClient, IMqttMessageListener {
         password = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.password");
         //host为主机名,test为clientid即连接MQTT的客户端ID,一般以客户端唯一标识符表示,MemoryPersistence设置clientid的保存形式,默认为以内存保存
         client = new MqttClient(broker, clientId, new MemoryPersistence());
-
+        client.setCallback(this);//设置回调
         subscribeInfo = new HashMap<>();
         MemoryPersistence persistence = new MemoryPersistence();
         client = new MqttClient(broker, clientId, persistence);
@@ -79,16 +79,8 @@ public class BasicRemoteClient implements RemoteClient, IMqttMessageListener {
     @Override
     public void unSubscribe(String topic) throws MqttException {
         client.unsubscribe(topic);
+        logger.info("取消订阅"+topic);
         subscribeInfo.remove(topic);
-    }
-
-    @Override
-    public void close() throws IOException {
-        try {
-            client.disconnect();
-        } catch (MqttException e) {
-            throw new IOException(e);
-        }
     }
 
     @Override
@@ -96,12 +88,35 @@ public class BasicRemoteClient implements RemoteClient, IMqttMessageListener {
         //获取监听器
         OnMessageListener listener = subscribeInfo.get(topic);
         if (null != listener) {
+            logger.info("监听信息："+mqttMessage.toString());
             listener.handleMessage(topic, mqttMessage.toString());
         }
     }
+    //消息发送成功方法
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+        logger.info("deliveryComplete---------" + iMqttDeliveryToken.isComplete());
+    }
+    ///////////////////////////////////开始回调//////////////////////////////////////////////////
+    @Override
+    public void close() throws IOException {
+        try {
+            logger.info("断开客户端");
+            client.disconnect();
+        } catch (MqttException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public void connectionLost(Throwable throwable) {
+        // 连接丢失后，一般在这里面进行重连
+        logger.info("客户端已经断开");
+    }
+
 
     public static String getTestString(){
-        String dzId = "05DAFF373438594D43035239";
+        String dzId = "05D4FF373438594D43035359";
         String outParam = "";
         String value1 = Canstats.headerBody;
         //字符串长度/2
@@ -132,16 +147,16 @@ public class BasicRemoteClient implements RemoteClient, IMqttMessageListener {
     }
 
     public static void sendMsg(String msg,String topic)throws Exception{
-        RemoteClient client = new BasicRemoteClient();
-        client.init();
-        client.subscribe(topic, (t, m) -> {
+        RemoteClient remoteClient = new BasicRemoteClient();
+        remoteClient.init();
+        remoteClient.subscribe(topic, (t, m) -> {
             logger.info(t + "|" + m);
         });
-        client.publish(topic, msg, Canstats.qos1);
+        remoteClient.publish(topic, msg, Canstats.qos1);
 
         Thread.sleep(5000);//停3秒
-        client.unSubscribe(topic);
-        client.close();
+        remoteClient.unSubscribe(topic);
+        remoteClient.close();
     }
 
     public static  void main(String[] args){

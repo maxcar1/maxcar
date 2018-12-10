@@ -2,8 +2,8 @@ package com.maxcar.stock.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
-import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.base.pojo.Magic;
+import com.maxcar.base.model.VehicleBrand;
+import com.maxcar.base.pojo.*;
 import com.maxcar.base.service.DaSouCheService;
 import com.maxcar.base.util.*;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
@@ -71,6 +71,116 @@ public class CarController extends BaseController {
     @Autowired
     private AreaService areaService;
 
+    /**
+     * 选择品牌车系
+     * @return
+     */
+    @GetMapping("/brand/choose")
+    public InterfaceResult hierarchyIn(){
+        InterfaceResult result = new InterfaceResult();
+        List<VehicleBrand> request = new ArrayList<>();
+        List<CarBrand> carBrandList = daSouCheService.getAllBrand();
+
+        for(CarBrand carBrand:carBrandList){
+            VehicleBrand vehicleBrand = new VehicleBrand();
+//            vehicleBrand.setLogoUrl(carBrand.getLogoUrl());
+            vehicleBrand.setName(carBrand.getBrandName());
+            vehicleBrand.setCode(carBrand.getBrandCode());
+            List<CarSeries> carSeriesList = daSouCheService.getAllSeries(carBrand.getId());
+            List<VehicleBrand> chooseList = new ArrayList<>();
+            for(CarSeries carSeries:carSeriesList){
+                VehicleBrand choose = new VehicleBrand();
+                choose.setName(carSeries.getSeriesName());
+                choose.setCode(carSeries.getSeriesCode());
+                choose.setId(carSeries.getId());
+                chooseList.add(choose);
+            }
+            vehicleBrand.setChildren(chooseList);
+            request.add(vehicleBrand);
+        }
+        String[] letters = {"A", "B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        Map<String, ArrayList> map = new HashMap<>(32);
+        for (String letter : letters) {
+            map.put(letter, new ArrayList<>());
+        }
+        for (VehicleBrand res:request){
+            for (String key : map.keySet()) {
+                if (HanyuPinyinHelper.getFirstLetter(res.getName()).equals(key)){
+                    map.get(key).add(res);
+                }
+            }
+        }
+        result.InterfaceResult200(map);
+        return result;
+    }
+
+    /**
+     * 根据车系选车型
+     * @param seriesId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/series/models/{seriesId}")
+    public InterfaceResult listModelBySeries(@PathVariable("seriesId") String seriesId) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        List<CarModel> list = daSouCheService.getAllModel(seriesId);
+        Map<String,List<CarModel>> listMap =new LinkedHashMap<>();
+        list.forEach(carModel->{
+            List<CarModel> carModels;
+            String ss=carModel.getModelName().substring(0,4);
+            if (listMap.get(ss)!=null){
+                carModels=listMap.get(ss);
+            }else {
+                carModels=new ArrayList<>();
+            }
+            carModels.add(carModel);
+            listMap.put(ss,carModels);
+        });
+        Map<String, List<CarModel>> listMap1 = new CollectionSort<String, List<CarModel>>().sortMapByKey(listMap);
+        interfaceResult.InterfaceResult200(listMap1);
+        return interfaceResult;
+    }
+
+    /**
+     * 根据车系选车型
+     * @param seriesCode
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/models/{seriesCode}")
+    public InterfaceResult listModelBySeriescode(@PathVariable("seriesCode") String seriesCode) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        CarSeries carSeries = daSouCheService.getCarSeries(seriesCode);
+        List<CarModel> allModel = daSouCheService.getAllModel(carSeries.getId());
+
+        interfaceResult.InterfaceResult200(allModel);
+        return interfaceResult;
+    }
+
+    /**
+     * 根据vin判断是否存在库存车
+     * @param vin
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/judge/{vin}")
+    InterfaceResult judgeCarByVin(@PathVariable String vin, HttpServletRequest request) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        User user = getCurrentUser(request);
+        Car car = carService.getStockCarByVin(vin,user.getMarketId());
+        if (car!=null){
+            result.InterfaceResult200("该vin库存已存在");
+        }else {
+            result.InterfaceResult200("未查到此车");
+        }
+        return result;
+    }
+
+    @PostMapping("/update")
+    InterfaceResult updateCar(@RequestBody CarVo carVo, HttpServletRequest request) throws Exception {
+        return carService.updateStoreCar(carVo);
+    }
 
     /**
      * 获取库存列表
@@ -139,7 +249,7 @@ public class CarController extends BaseController {
             inventoryStatisticalRequest.setMarketId(user.getMarketId());
             inventoryStatisticalRequest.setTenantId(carVo.getTenant());
             String registerTimeStart = carVo.getRegisterTimeStart();
-            if(StringUtil.isNotEmpty(registerTimeStart)){
+            if (StringUtil.isNotEmpty(registerTimeStart)) {
                 inventoryStatisticalRequest.setRegisterTimeStart(registerTimeStart);
                 String registerTimeEnd = carVo.getRegisterTimeEnd();
                 Date date = DateUtils.parseDate(registerTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
@@ -148,7 +258,7 @@ public class CarController extends BaseController {
                 inventoryStatisticalRequest.setRegisterTimeEnd(s);
             }
             Integer stockStatus = carVo.getStockStatus();
-            if(stockStatus != null && stockStatus != 0){
+            if (stockStatus != null && stockStatus != 0) {
                 inventoryStatisticalRequest.setStockStatus(stockStatus);
             }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
@@ -199,7 +309,7 @@ public class CarController extends BaseController {
 
             ExportResponse response = new ExportResponse();
 
-           // response.setCarNo(x.getCarNo());
+            // response.setCarNo(x.getCarNo());
             response.setVin(x.getVin());
             UserTenant tenant = userTenantService.selectByPrimaryKey(x.getTenant());
             if (null != tenant) {
@@ -211,15 +321,40 @@ public class CarController extends BaseController {
             if (null == x.getIsNewCar()) {
                 response.setIsNewCar(Magic.NUll);
             } else {
-                String isNewCar = configurationService.getNameByKeyAndValue("is_new_car", x.getIsNewCar().toString());
-                response.setIsNewCar(null == isNewCar ? Magic.NUll : isNewCar);
+              /*  String isNewCar = configurationService.getNameByKeyAndValue("is_new_car", x.getIsNewCar().toString());
+                response.setIsNewCar(null == isNewCar ? Magic.NUll : isNewCar);*/
+
+                if (0 == x.getIsNewCar()) {
+                    response.setIsNewCar("新车");
+                } else if (1 == x.getIsNewCar()) {
+                    response.setIsNewCar("旧车");
+                } else {
+                    response.setIsNewCar(Magic.NUll);
+                }
+
             }
 
             if (null == x.getStockStatus()) {
                 response.setStockStatus(Magic.NUll);
             } else {
-                String stockStatus = configurationService.getNameByKeyAndValue("stock_status", x.getStockStatus().toString());
-                response.setStockStatus(null == stockStatus ? Magic.NUll : stockStatus);
+                /*String stockStatus = configurationService.getNameByKeyAndValue("stock_status", x.getStockStatus().toString());
+                response.setStockStatus(null == stockStatus ? Magic.NUll : stockStatus);*/
+                if (-1 == x.getStockStatus()) {
+                    response.setStockStatus("删除");
+                } else if (1 == x.getStockStatus()) {
+                    response.setStockStatus("在场");
+                } else if (2 == x.getStockStatus()) {
+                    response.setStockStatus("在内场");
+                } else if (3 == x.getStockStatus()) {
+                    response.setStockStatus("出场");
+                } else if (4 == x.getStockStatus()) {
+                    response.setStockStatus("售出未出场");
+                } else if (5 == x.getStockStatus()) {
+                    response.setStockStatus("售出已出场");
+                } else {
+                    response.setStockStatus(Magic.NUll);
+                }
+
             }
 
             if (null == x.getRegisterTime()) {
@@ -230,13 +365,20 @@ public class CarController extends BaseController {
                 response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
-            response.setStockDay(x.getStockDays()+"");
+            response.setStockDay(x.getStockDays() + "");
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);
             } else {
-                String carStatus = configurationService.getNameByKeyAndValue("car_status", x.getCarStatus().toString());
-                response.setCarStatus(null == carStatus ? Magic.NUll : carStatus);
+               /* String carStatus = configurationService.getNameByKeyAndValue("car_status", x.getCarStatus().toString());
+                response.setCarStatus(null == carStatus ? Magic.NUll : carStatus);*/
+                if (1 == x.getCarStatus()) {
+                    response.setCarStatus("质押");
+                } else if (2 == x.getCarStatus()) {
+                    response.setCarStatus("非质押");
+                } else {
+                    response.setCarStatus(Magic.NUll);
+                }
             }
 
             if (null == x.getAreaId()) {
@@ -250,7 +392,7 @@ public class CarController extends BaseController {
                 }
             }
 
-            response.setInitialLicenceTime(x.getInitialLicenceTime()!=null?x.getInitialLicenceTime().substring(0,10):"");
+            response.setInitialLicenceTime(x.getInitialLicenceTime() != null ? x.getInitialLicenceTime().substring(0, 10) : "");
             response.setMileage(x.getMileage());
             response.setMarketPrice(x.getMarketPrice());
             response.setEvaluatePrice(x.getEvaluatePrice());

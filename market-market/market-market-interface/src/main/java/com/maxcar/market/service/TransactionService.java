@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.market.model.request.GetAllTransactionRequest;
 import com.maxcar.market.pojo.Invoice;
+import com.maxcar.market.pojo.TradeInformation;
 
 import java.text.ParseException;
 import java.util.List;
@@ -42,5 +43,5 @@ public interface TransactionService extends BaseService<Invoice, String> {
      * @return
      * @throws ParseException
      */
-    List<Map> getAllTransactionExcel(GetAllTransactionRequest request) throws ParseException;
+    List<TradeInformation> getAllTransactionExcel(GetAllTransactionRequest request) throws ParseException;
 }
