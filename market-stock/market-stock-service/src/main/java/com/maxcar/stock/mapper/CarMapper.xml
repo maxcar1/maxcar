@@ -771,7 +771,7 @@
     <select id="listReview" parameterType="com.maxcar.stock.entity.CarParams" resultMap="CarVoResultMap">
         SELECT
         a.id as carId , a.car_no ,a.vin ,a.rfid,a.tenant,a.area_id,a.stock_status ,
-        a.car_status,a.car_type ,a.initial_licence_time,a.staff_id,a.market_id
+        a.car_status,a.car_type ,a.staff_id,a.market_id
         , d.*, b.id AS review_id,
         b.out_reason,
         c.tenant_name,
@@ -828,7 +828,7 @@
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
         SELECT
         b.id as carId , b.car_no ,b.vin ,b.rfid,b.tenant,b.area_id,b.stock_status ,
-        b.car_status,b.car_type ,b.initial_licence_time,b.staff_id,b.market_id,
+        b.car_status,b.car_type ,b.staff_id,b.market_id,
         c.*, a.id AS review_id,a.is_pass,
         a.out_reason,
         date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
