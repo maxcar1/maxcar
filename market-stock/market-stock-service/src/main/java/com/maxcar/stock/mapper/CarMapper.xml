@@ -823,11 +823,17 @@
         </if>
     </select>
 
+    <sql id="Car_Review_Detail_List">
+    b.id, b.car_no, b.vin, b.rfid, b.tenant, b.area_id, b.is_new_car, b.stock_status, b.car_status, b.car_type,
+    b.register_time, b.initial_licence_time, b.isvalid, b.staff_id, b.market_id, b.update_operator,b.check_result,
+    b.inster_operator, b.insert_time, b.update_time,c.brand_name,c.brand_code,c.series_name,c.series_code,c.model_year,c.model_name,
+    c.model_code,c.mileage,c.evaluate_price,new_price,c.market_price,color,c.engine_volume_unitl,c.environmental_standards,c.gear_box,c.seat_number,
+    c.fuel_form,c.fuel_number,c.check_company_id,
+  </sql>
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
         SELECT
-        b.id as carId , b.car_no ,b.vin ,b.rfid,b.tenant,b.area_id,b.stock_status ,
-        b.car_status,b.car_type ,b.initial_licence_time,b.staff_id,b.market_id,
-        c.*, a.id AS review_id,a.is_pass,
+        <include refid="Car_Review_Detail_List"/>
+        a.id AS review_id,a.is_pass,
         a.out_reason,
         date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
         d.tenant_name
