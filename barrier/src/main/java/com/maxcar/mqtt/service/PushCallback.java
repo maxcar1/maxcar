@@ -308,6 +308,7 @@ public class PushCallback implements MqttCallback {
 
     private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {
         Map map = new HashMap();
+        logger.info("上行到云端的json==>{}",json);
         BarrierCameraService barrierCameraService = ApplicationContextHolder.getBean("barrierCameraService");
         BarrierCamera barrierCamera = new BarrierCamera();
         barrierCamera.setBarrierId(barrier.getBarrierId());
