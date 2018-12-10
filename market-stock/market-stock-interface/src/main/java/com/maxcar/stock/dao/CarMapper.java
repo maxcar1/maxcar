@@ -131,4 +131,10 @@ public interface CarMapper extends BaseDao<Car, String> {
 
 
     Car getStockCarByVin(String vin);
+
+    Car carInformation(Car car);
+
+    InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response);
+
+    Car getStockCarByVinByMarketId(@Param("vin")String vin,@Param("marketId") String marketId);
 }

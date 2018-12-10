@@ -1,6 +1,7 @@
 package com.maxcar.system.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.maxcar.BaseController;
 import com.maxcar.base.pojo.CarBrand;
 import com.maxcar.base.pojo.CarModel;
 import com.maxcar.base.pojo.CarSeries;
@@ -9,10 +10,14 @@ import com.maxcar.base.service.CityService;
 import com.maxcar.base.service.DaSouCheService;
 import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.base.util.dasouche.TimeStampUtils;
+import com.maxcar.user.entity.Market;
+import com.maxcar.user.entity.User;
+import com.maxcar.user.service.MarketService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -25,12 +30,14 @@ import java.util.List;
  */
 @RequestMapping("/app")
 @RestController
-public class DaSouCheDataController {
+public class DaSouCheDataController extends BaseController {
 
     @Autowired
     private DaSouCheService daSouCheService;
     @Autowired
     private CityService cityService;
+    @Autowired
+    private MarketService marketService;
 
     /**
      * 查询所有品牌车系
@@ -138,6 +145,7 @@ public class DaSouCheDataController {
         }
         return result;
     }
+
 
     /**
      * 查询二手车估价

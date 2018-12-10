@@ -17,6 +17,7 @@ import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.stock.dao.CarBaseMapper;
 import com.maxcar.stock.dao.CarMapper;
 import com.maxcar.stock.dao.CarPicMapper;
+import com.maxcar.stock.entity.CarChecks;
 import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
@@ -407,7 +408,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         } else {
             car.setInitialLicenceTime(null);
         }
-        car.setStockStatus(1);
+        car.setStockStatus(carParams.getStatus() == null ? 1:carParams.getStatus());
         car.setCarStatus(carParams.getCarStatus());
         car.setLimitStatus(1);
         car.setRemark(carParams.getRemark());
@@ -441,7 +442,8 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         car.setBrandName(carParams.getBrandName());
         car.setModelCode(carParams.getModelCode());
         car.setModelName(carParams.getModelName());
-        car.setAccidentType(carParams.getAccidentType());
+        car.setAccidentType(carParams.getAccidentType());//
+        car.setRemark(carParams.getRemark());//备注
 //		car.setModelYear(carParams.);无
         if (carParams.getInitialLicenceTimeStr() != null && !carParams.getInitialLicenceTimeStr().equals("")) {
             car.setInitialLicenceTime(DateUtils.parseDate(carParams.getInitialLicenceTimeStr(), "yyyy-MM-dd hh:mm:ss"));
@@ -987,6 +989,168 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     @Override
     public Car getStockCarByVin(String vin) {
         return carMapper.getStockCarByVin(vin);
+    }
+
+    @Override
+    public Car getStockCarByVin(String vin,String marketId) {
+        return carMapper.getStockCarByVinByMarketId(vin,marketId);
+    }
+
+    @Override
+    public InterfaceResult updateStoreCar(CarVo carVo) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+
+        if (StringUtils.isBlank(carVo.getId())) {
+            result.InterfaceResult600("车辆id不能为空");
+            return result;
+        }
+        Car car1 = carMapper.selectByPrimaryKey(carVo.getId());
+        CarBaseWithBLOBs carBase = carBaseMapper.selectByPrimaryKey(carVo.getId());
+
+        if (car1 == null) {
+            result.InterfaceResult600("该车辆不存在");
+            return result;
+        }
+        Car car=new Car();
+        car.setId(carVo.getId());
+
+        if (StringUtils.isNotBlank(carVo.getVin())) {
+            car.setVin(carVo.getVin());
+        }
+        //市场价
+        if (carVo.getMarketPrice() != null) {
+            carBase.setMarketPrice(carVo.getMarketPrice().doubleValue());
+        }else {
+            carBase.setMarketPrice(null);
+        }
+        //颜色
+        if (StringUtils.isNotBlank(carVo.getColor())) {
+            carBase.setColor(carVo.getColor());
+        }else {
+            carBase.setColor(null);
+        }
+        //公里
+        if (carVo.getMileage() != null) {
+            carBase.setMileage(carVo.getMileage());
+        }else {
+            carBase.setMileage(null);
+        }
+
+        //座位数
+        if (carVo.getSeatNumber()!=null){
+            carBase.setSeatNumber(carVo.getSeatNumber());
+        }else {
+            carBase.setSeatNumber(null);
+        }
+        //变速箱
+        if (StringUtils.isNotBlank(carVo.getGearBox())){
+            carBase.setGearBox(carVo.getGearBox());
+        }else {
+            carBase.setGearBox(null);
+        }
+        //新车价
+        if (carVo.getNewPrice()!=null){
+            carBase.setNewPrice(carVo.getNewPrice().doubleValue());
+        }else {
+            carBase.setNewPrice(null);
+        }
+        //车身尺寸
+        if (StringUtils.isNotBlank(carVo.getLevel())){
+            carBase.setLevel(carVo.getLevel());
+        }else {
+            carBase.setLevel(null);
+        }
+        //排放标准
+        if (StringUtils.isNotBlank(carVo.getEnvironmentalStandards())){
+            carBase.setEnvironmentalStandards(carVo.getEnvironmentalStandards());
+        }else {
+            carBase.setEnvironmentalStandards(null);
+        }
+        //估价
+        if (carVo.getEvaluatePrice()!=null){
+            carBase.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
+        }else {
+            carBase.setEvaluatePrice(null);
+        }
+        //排量
+        if (carVo.getEngineVolumeUnitl()!=null){
+            carBase.setEngineVolumeUnitl(carVo.getEngineVolumeUnitl());
+        }else {
+            carBase.setEngineVolumeUnitl(null);
+        }
+
+        //初次上牌时间
+        if (StringUtils.isNotBlank(carVo.getInitialLicenceTime())) {
+            car.setInitialLicenceTime(DatePoor.getDateForString(carVo.getInitialLicenceTime()));
+            carBase.setInitialLicenceTime(DatePoor.getDateForString(carVo.getInitialLicenceTime()));
+        }
+        if (StringUtils.isNotBlank(carVo.getModelCode())) {
+            Map<String,String> model=daSouCheService.getModelAndSeriesAndBrandByModelCode(carVo.getModelCode());
+            if (model!=null){
+                carBase.setBrandCode(model.get("brandCode"));
+                carBase.setBrandName(model.get("brandName"));
+                carBase.setSeriesCode(model.get("seriesCode"));
+                carBase.setSeriesName(model.get("seriesName"));
+                carBase.setModelCode(model.get("modelCode"));
+                carBase.setModelName(model.get("modelName"));
+                carBase.setModelYear(model.get("modelName").substring(0,4));
+            }
+        }
+
+        car.setUpdateTime(new Date());
+        carBase.setUpdateTime(new Date());
+        carMapper.updateByPrimaryKeySelective(car);
+        carBaseMapper.updateByPrimaryKey(carBase);
+
+        //保存图片
+        if (carVo.getListCarPic()!=null) {
+            carPicMapper.deleteByCarId(carVo.getId());
+
+            carVo.getListCarPic().forEach(pic ->{
+                if (pic.getType()==1){
+                    pic.setId(UuidUtils.generateIdentifier());
+                    pic.setUpdateTime(new Date());
+                    pic.setCarId(carVo.getId());
+                    carPicMapper.insert(pic);
+                    //添加缩略图
+                    pic.setType(0);
+                    pic.setId(UuidUtils.generateIdentifier());
+                    pic.setUpdateTime(new Date());
+                    pic.setSrc(pic.getSrc()+"?x-oss-process=image/resize,m_fixed,h_150,w_200");
+                    carPicMapper.insert(pic);
+                }else {
+                    pic.setId(UuidUtils.generateIdentifier());
+                    pic.setUpdateTime(new Date());
+                    pic.setCarId(carVo.getId());
+                    carPicMapper.insert(pic);
+                }
+            });
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<Car> carByVin(CarChecks c) {
+        CarExample example = new CarExample();
+        CarExample.Criteria criteria = example.createCriteria();
+        criteria.andMarketIdEqualTo(c.getMarket()).andVinEqualTo(c.getVin()).andIsvalidEqualTo(1).andStockStatusEqualTo(6).andCarTypeEqualTo(1);
+        List<Car> list = carMapper.selectByExample(example);
+        return list;
+    }
+
+    @Override
+    public Car carInformation(Car car) {
+        return carMapper.carInformation(car);
+    }
+    @Override
+    public InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response) {
+        if (null == response) {
+            return null;
+        }
+        InventoryStatisticalResponse inventoryStatisticalResponse = carMapper.accumulativeCar(response);
+
+        return inventoryStatisticalResponse;
     }
 
 

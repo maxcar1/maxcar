@@ -100,18 +100,18 @@ public class PushCallback implements MqttCallback {
             // subscribe后得到的消息会执行到这里面
             logger.info("接收消息主题 : " + topic);
 //            logger.info("接收消息Qos : " + message.getQos());
-            //           logger.info("接收消息message : " + String.valueOf(message.getPayload()));
-            String str = new String(message.getPayload(), "gbk");
+ //           logger.info("接收消息message : " + String.valueOf(message.getPayload()));
+            String str = new String(message.getPayload(),"gbk");
             logger.info("接收消息转换前内容 : " + str);
             //第一步过滤链接请求
             if (str.replace(" ", "").indexOf("101800044D51545") == -1) {
                 String data = bytesToHexString(message.getPayload());
                 logger.info("转换后消息内容 : " + data);
-                String clientData = data.substring(6, data.length());
+                String clientData = data.substring(6,data.length());
                 String hex = CRC16M.GetModBusCRC(clientData.substring(0, clientData.length() - 4));
                 String check = clientData.substring(clientData.length() - 4);
                 //校验数据是否正确
-                logger.info("签名前：" + check + "签名后:" + hex);
+                logger.info("签名前：" + check+"签名后:"+hex);
                 if (hex.equalsIgnoreCase(check)) {//校验数据准确性
                     String outParam = "";
                     //请求初始化配置参数,获取请求类型01rfid，02请求参数配置
@@ -120,7 +120,7 @@ public class PushCallback implements MqttCallback {
                     BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
                     String barrierId = clientData.substring(14, 38);
                     Barrier barrier = barrierService.selectByBarrierId(barrierId.toUpperCase());
-                    logger.info(barrierId.toUpperCase() + "是否查到配置" + barrier + "查询配置结束时间：" + fmt1.format(new Date()));
+                    logger.info(barrierId.toUpperCase()+"是否查到配置"+barrier+"查询配置结束时间：" + fmt1.format(new Date()));
                     if (barrier == null) {//配置有误
                         outParam = failDz(clientData);
                     } else {
@@ -134,8 +134,9 @@ public class PushCallback implements MqttCallback {
                                     byte b[] = toBytes(outParam);
                                     if(!barrier.getStatus().equals("4")){
                                         logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                        ServerMQTT serverMQTT = new ServerMQTT();
-                                        serverMQTT.send(b, barrier.getMqttTopic());
+//                                    ServerMQTT serverMQTT = new ServerMQTT();
+//                                    serverMQTT.send(b, barrier.getMqttTopic());
+                                        BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
                                     }
                                 }
                                 if (map.get("stockCarInfo") != null) {
@@ -148,9 +149,10 @@ public class PushCallback implements MqttCallback {
                                 outParam = initDz(clientData, barrier);
                                 if (barrier != null && barrier.getMqttTopic() != null) {
                                     byte b[] = toBytes(outParam);
-                                    ServerMQTT serverMQTT = new ServerMQTT();
+                                    BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
+//                                serverMQTT = new ServerMQTT();
                                     logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                    serverMQTT.send(b, barrier.getMqttTopic());
+//                                serverMQTT.send(b, barrier.getMqttTopic());
                                 }
                                 break;
                             case "07":
@@ -208,17 +210,12 @@ public class PushCallback implements MqttCallback {
 
                                         outParam1 = outParam1 + outHex;
                                         logger.info("数据初始化，先开闸，服务器发送完整消息:{}", outParam1);
-                                        ServerMQTT.send(outParam1,barrier.getMqttTopic());
-//                                    ServerMQTT.send(outParam1, barrier.getMqttTopic());
-                                    }
+                                        BasicRemoteClient.sendMsg(outParam1,barrier.getMqttTopic());
                                 }
-                                break;
-                            default:
-                                logger.error("====进入了错误处理====clientData==>{}",clientData);
-                                break;
+                            }
                         }
                     }
-                } else {
+                }else {
                     logger.info("=====签名错误处理开始,消息二次发送====");
                     //如果签名错误,取data前六位
                     String barrierId = data.substring(0, 6);
@@ -250,10 +247,10 @@ public class PushCallback implements MqttCallback {
 
                         outParam = outParam + outHex;
                         logger.info("签名错误，服务器发送完整消息:{}", outParam);
-                        ServerMQTT.send(outParam, barrier.getMqttTopic());
+                        BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
                     }
                 }
-            } else {
+            }else{
                 logger.info("错误的请求");
             }
         } catch (Exception ex) {
@@ -382,19 +379,19 @@ public class PushCallback implements MqttCallback {
         String value7 = "";// 81语音并显示  87只语音不显示
         String value8 = "";
         String value9 = "";//欢迎词
-        if (StringUtils.equals(result.getCode(), "200")) {
+        if (StringUtils.equals(result.getCode(),"200")) {
             JSONObject json = (JSONObject) JSONObject.toJSON(result.getData());
             if (StringUtils.equals(json.getString("code"), "200")) {
                 value4 = "81";
                 value7 = "81";
                 value8 = Canstats.yxcc;//允许开闸
                 value9 = String.valueOf(result.getData());
-            } else if (StringUtils.equals(json.getString("code"), "600")) {
+            }else if (StringUtils.equals(json.getString("code"),"600")){
                 value4 = "87";
                 value7 = "87";
                 value9 = result.getMsg();//12字节
                 value8 = "FF0C";//禁止重复入场
-            } else if (StringUtils.equals(json.getString("code"), "500")) {
+            }else if(StringUtils.equals(json.getString("code"),"500")){
                 value4 = "81";
                 value7 = "81";
                 value9 = result.getMsg();//8字节
