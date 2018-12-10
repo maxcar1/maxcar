@@ -224,7 +224,7 @@ public class AuditingController extends BaseController {
                 if(list!=null){
                     if(lastLevel==level){
                         reviewDetail.setReviewResult(1);
-                        reviewDetail.setIsComplete(1);
+
                         CarReview carReview = new CarReview();
                         carReview.setId(reviewDetail.getReviewId());
                         carReview.setIsPass(reviewDetail.getReviewResult());
@@ -255,7 +255,6 @@ public class AuditingController extends BaseController {
                     review.setReviewId(reviewDetail.getReviewId());
                     if(lastLevel==level){
                         review.setReviewResult(1);
-                        reviewDetail.setIsComplete(1);
                         CarReview carReview = new CarReview();
                         carReview.setId(review.getReviewId());
                         carReview.setIsPass(review.getReviewResult());
