@@ -2,13 +2,19 @@ package com.maxcar.stock.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
+import com.maxcar.base.model.VehicleBrand;
+import com.maxcar.base.pojo.CarBrand;
+import com.maxcar.base.pojo.CarModel;
+import com.maxcar.base.pojo.CarSeries;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Magic;
 import com.maxcar.base.service.DaSouCheService;
+import com.maxcar.base.util.CollectionSort;
 import com.maxcar.base.util.CollectionUtil;
 import com.maxcar.base.util.Constants;
 import com.maxcar.base.util.DatePoor;
 import com.maxcar.base.util.DateUtils;
+import com.maxcar.base.util.HanyuPinyinHelper;
 import com.maxcar.base.util.HttpClientUtils;
 import com.maxcar.base.util.JsonTools;
 import com.maxcar.base.util.JsonUtils;
@@ -74,6 +80,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -108,13 +115,118 @@ public class CarController extends BaseController {
     @Autowired
     private CarChannelService carChannelService;
     @Autowired
-    private ConfigurationService configurationService;
-    @Autowired
     private AreaService areaService;
 
-    @Autowired
-    private RedisService redisService;
+    /**
+     * 选择品牌车系
+     * @return
+     */
+    @GetMapping("/brand/choose")
+    public InterfaceResult hierarchyIn(){
+        InterfaceResult result = new InterfaceResult();
+        List<VehicleBrand> request = new ArrayList<>();
+        List<CarBrand> carBrandList = daSouCheService.getAllBrand();
 
+        for(CarBrand carBrand:carBrandList){
+            VehicleBrand vehicleBrand = new VehicleBrand();
+//            vehicleBrand.setLogoUrl(carBrand.getLogoUrl());
+            vehicleBrand.setName(carBrand.getBrandName());
+            vehicleBrand.setCode(carBrand.getBrandCode());
+            List<CarSeries> carSeriesList = daSouCheService.getAllSeries(carBrand.getId());
+            List<VehicleBrand> chooseList = new ArrayList<>();
+            for(CarSeries carSeries:carSeriesList){
+                VehicleBrand choose = new VehicleBrand();
+                choose.setName(carSeries.getSeriesName());
+                choose.setCode(carSeries.getSeriesCode());
+                choose.setId(carSeries.getId());
+                chooseList.add(choose);
+            }
+            vehicleBrand.setChildren(chooseList);
+            request.add(vehicleBrand);
+        }
+        String[] letters = {"A", "B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        Map<String, ArrayList> map = new HashMap<>(32);
+        for (String letter : letters) {
+            map.put(letter, new ArrayList<>());
+        }
+        for (VehicleBrand res:request){
+            for (String key : map.keySet()) {
+                if (HanyuPinyinHelper.getFirstLetter(res.getName()).equals(key)){
+                    map.get(key).add(res);
+                }
+            }
+        }
+        result.InterfaceResult200(map);
+        return result;
+    }
+
+    /**
+     * 根据车系选车型
+     * @param seriesId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/series/models/{seriesId}")
+    public InterfaceResult listModelBySeries(@PathVariable("seriesId") String seriesId) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        List<CarModel> list = daSouCheService.getAllModel(seriesId);
+        Map<String,List<CarModel>> listMap =new LinkedHashMap<>();
+        list.forEach(carModel->{
+            List<CarModel> carModels;
+            String ss=carModel.getModelName().substring(0,4);
+            if (listMap.get(ss)!=null){
+                carModels=listMap.get(ss);
+            }else {
+                carModels=new ArrayList<>();
+            }
+            carModels.add(carModel);
+            listMap.put(ss,carModels);
+        });
+        Map<String, List<CarModel>> listMap1 = new CollectionSort<String, List<CarModel>>().sortMapByKey(listMap);
+        interfaceResult.InterfaceResult200(listMap1);
+        return interfaceResult;
+    }
+
+    /**
+     * 根据车系选车型
+     * @param seriesCode
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/models/{seriesCode}")
+    public InterfaceResult listModelBySeriescode(@PathVariable("seriesCode") String seriesCode) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        CarSeries carSeries = daSouCheService.getCarSeries(seriesCode);
+        List<CarModel> allModel = daSouCheService.getAllModel(carSeries.getId());
+
+        interfaceResult.InterfaceResult200(allModel);
+        return interfaceResult;
+    }
+
+    /**
+     * 根据vin判断是否存在库存车
+     * @param vin
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/judge/{vin}")
+    InterfaceResult judgeCarByVin(@PathVariable String vin, HttpServletRequest request) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        User user = getCurrentUser(request);
+        Car car = carService.getStockCarByVin(vin,user.getMarketId());
+        if (car!=null){
+            result.InterfaceResult200("该vin库存已存在");
+        }else {
+            result.InterfaceResult200("未查到此车");
+        }
+        return result;
+    }
+
+    @PostMapping("/update")
+    InterfaceResult updateCar(@RequestBody CarVo carVo, HttpServletRequest request) throws Exception {
+        return carService.updateStoreCar(carVo);
+    }
 
     /**
      * 获取库存列表

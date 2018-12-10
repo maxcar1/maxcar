@@ -11,8 +11,8 @@ import java.io.File;
  */
 public class SourceMaterial {
 
-    private static final String APP_ID = "wx880aa7250a756969";
-    private static final String APP_SECRET = "f0103f4f490096af95ecb766a27b3077";
+    private static final String APP_ID = "wx79a93cf533c7e664";
+    private static final String APP_SECRET = "d4216f3e896fb9d3b6bdec441b002b31";
 
     private static String access_toen_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
 
@@ -43,7 +43,8 @@ public class SourceMaterial {
             String newUrl1 = upload_url.replace("ACCESS_TOKEN",aToken);
             //工具类生成media和url
             //{"media_id":"amP7tCi9fdPygahpdJCvt16GHKFUoG-UbNtlwHj09XM","url":"http://mmbiz.qpic.cn/mmbiz_jpg/Iz7Q9eRSCFbprEuMhFD23AWd5tlMicUelw4bW9frojc2cxvWDia65kFFYdkBp1mgaI6CagUBPZMH7O3STCd4jEdg/0?wx_fmt=jpeg"}
-            File file1 = new File("C:\\Users\\Administrator\\Desktop\\0.jpg");
+            //{"media_id":"56iStkzJ52DytyE1tfb-4FYyriKw-8vBaq9Gy33101Q","url":"http:\/\/mmbiz.qpic.cn\/mmbiz_png\/JCPYnZibazppyoyGofosTWKJbicuYfiaunveoZK67hvIZbN0YW43oANJBLexcuILGH8MjUjktnkQ5RHAD94GpzkBg\/0?wx_fmt=png"}
+            File file1 = new File("C:\\Users\\Administrator\\Desktop\\23.png");
             res1 = HttpClientUtils.sendPost(newUrl1,file1);
         }else if (type == 2){
             String newUrl1 = uploadimg_url.replace("ACCESS_TOKEN",aToken);
@@ -57,7 +58,7 @@ public class SourceMaterial {
     }
 
     public static void main(String[] args){
-        addPic(2);
+        addPic(1);
     }
 
 }

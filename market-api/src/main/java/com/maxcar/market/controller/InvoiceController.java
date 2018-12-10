@@ -724,9 +724,21 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "开票导出Excel")
     public InterfaceResult detailsExcel(@RequestBody Invoice invoice, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-        User user = super.getCurrentUser(request);
-        invoice.setUserId(user.getUserId());
-        invoice.setMarketId(user.getMarketId());
+
+        User currentUser = getCurrentUser(request);
+        String userId = currentUser.getUserId();
+        if (null != currentUser.getMarketId() && !"".equals(currentUser.getMarketId())) {
+            invoice.setMarketId(currentUser.getMarketId());
+        }
+        User user = userService.selectByPrimaryKey(userId);
+        if (user.getManagerFlag() == 0) {
+            invoice.setMarketId(null);
+        } else if (user.getManagerFlag() == 2) {
+            invoice.setMarketId(currentUser.getMarketId());
+        } else {
+            invoice.setUserId(currentUser.getUserId());
+        }
+
 //        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
         List<Invoice> lists = invoiceService.detailsManage(invoice);
         List<Map> list = new ArrayList<>();

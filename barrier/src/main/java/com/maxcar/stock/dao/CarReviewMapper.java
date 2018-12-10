@@ -1,12 +1,13 @@
 package com.maxcar.stock.dao;
 
+import com.maxcar.base.dao.BaseDao;
 import com.maxcar.stock.pojo.CarReview;
 import com.maxcar.stock.pojo.CarReviewExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface CarReviewMapper {
+public interface CarReviewMapper extends BaseDao<CarReview,String> {
     int countByExample(CarReviewExample example);
 
     int deleteByExample(CarReviewExample example);

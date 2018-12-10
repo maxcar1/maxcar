@@ -288,7 +288,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP}
       </if>
     </where>
-    order by type asc
+    order by type asc,update_time asc
   </select>
 
   <insert id="insertCarPicList" parameterType="java.util.List" >

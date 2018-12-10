@@ -8,6 +8,7 @@ import com.maxcar.barrier.service.BarrierCameraService;
 import com.maxcar.barrier.service.BarrierControlCarService;
 import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.barrier.service.CarService;
+import com.maxcar.mqtt.service.BasicRemoteClient;
 import com.maxcar.mqtt.service.PushCallback;
 import com.maxcar.mqtt.service.ServerMQTT;
 import com.maxcar.util.CRC16M;
@@ -31,9 +32,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/barrier")
 public class BarrierController {
-    public BarrierController() {
-        System.out.print(111);
-    }
     Logger logger = LoggerFactory.getLogger(BarrierController.class);
     @Autowired
     private BarrierService barrierService;
@@ -255,7 +253,9 @@ public class BarrierController {
 
             outParam = outParam + outHex;
             System.out.println(outParam + "------发送数据2");
-            ServerMQTT.send(outParam,topic);
+//            ServerMQTT.send(outParam,topic);
+            BasicRemoteClient.sendMsg(outParam,topic);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             interfaceResult.InterfaceResult500("保存失败");
