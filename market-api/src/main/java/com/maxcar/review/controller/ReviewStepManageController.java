@@ -289,7 +289,6 @@ public class ReviewStepManageController extends BaseController {
                 }
             }
 
-
         if(flag>0){
             result.setCode("200");
         }else {
@@ -338,6 +337,8 @@ public class ReviewStepManageController extends BaseController {
             result.setMsg("该车已经提交过申请，不能重复提交");
             return result;
         }
+        //判断该车下是否有审核步骤
+
         //判断该车是自动还是手动
         ReviewStep reviewStep = new ReviewStep();
         reviewStep.setMarketId(carReview.getMarketId());
@@ -371,5 +372,10 @@ public class ReviewStepManageController extends BaseController {
         }
         return  result;
     }
+    @RequestMapping(value = "/chechkCarOut", method = RequestMethod.POST)
+    public InterfaceResult chechkCarOut(@RequestBody  HttpServletRequest request) throws Exception {
+        InterfaceResult result = new InterfaceResult();
 
+        return result;
+    }
 }

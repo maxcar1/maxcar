@@ -179,6 +179,16 @@ public class CarVo extends PageBean implements Serializable {
 
     private Double invoicePrice;// 实际售价
 
+    private Integer isComplete;
+
+    public Integer getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(Integer isComplete) {
+        this.isComplete = isComplete;
+    }
+
     public Integer getIsPass() {
         return isPass;
     }

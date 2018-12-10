@@ -35,7 +35,7 @@ public class WishListController {
      * @return*/
     @RequestMapping(value="/carWish",method= RequestMethod.GET)
     public ModelAndView wishList(WishList wishList){
-        ModelAndView view = new ModelAndView("redirect:http://test.maxcar.com.cn/carWish?userId="+wishList.getUserId()+"&marketId="+wishList.getMarketId()+"");
+        ModelAndView view = new ModelAndView("redirect:http://test.maxcar.com.cn/carWish?userId="+wishList.getUserId()+"&market="+wishList.getMarket()+"");
         try {
 
         }catch (Exception e ){
@@ -100,7 +100,7 @@ public class WishListController {
             e.printStackTrace();
         }
 
-        ModelAndView view = new ModelAndView("redirect:"+redireuri+"?userId="+userId+"&marketId=007");
+        ModelAndView view = new ModelAndView("redirect:"+redireuri+"?userId="+userId+"&market=007");
         logger.info("用户id==============="+userId);
 
         return  view;

@@ -177,13 +177,16 @@ public class AuditingController extends BaseController {
     public InterfaceResult saveReviewDetail(@RequestBody ReviewDetail reviewDetail,HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = getCurrentUser(request);
+        CarReview carReviewNew = new CarReview();
         int level = reviewDetail.getLevel()+1;
         reviewDetail.setReviewPersonId(user.getUserId());
         reviewDetail.setInsertTime(new Date());
         reviewDetail.setLevel(level);
+        carReviewNew.setStepLevel(level);
         boolean b = reviewDetailService.saveReviewDetail(reviewDetail);
         //如果审核不通过直接修改car_review状态
         if(reviewDetail.getReviewResult()==2){
+            reviewDetail.setIsComplete(1);
             reviewDetailService.updateReviewStatus(reviewDetail);
             CarReview carReview = new CarReview();
             carReview.setId(reviewDetail.getReviewId());
@@ -224,10 +227,12 @@ public class AuditingController extends BaseController {
                 if(list!=null){
                     if(lastLevel==level){
                         reviewDetail.setReviewResult(1);
+
                         CarReview carReview = new CarReview();
                         carReview.setId(reviewDetail.getReviewId());
                         carReview.setIsPass(reviewDetail.getReviewResult());
                         carReview.setStepLevel(level);
+                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
@@ -257,6 +262,7 @@ public class AuditingController extends BaseController {
                         carReview.setId(review.getReviewId());
                         carReview.setIsPass(review.getReviewResult());
                         carReview.setStepLevel(review.getLevel());
+                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数

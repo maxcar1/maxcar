@@ -23,8 +23,18 @@ public class ReviewDetail implements Serializable {
 
     private Date insertTime;
 
+
     private Integer carStatus;
 
+    private Integer isComplete;
+
+    public Integer getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(Integer isComplete) {
+        this.isComplete = isComplete;
+    }
     public Integer getCarStatus() {
         return carStatus;
     }
