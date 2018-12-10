@@ -44,6 +44,7 @@ public class ReviewListServiceImpl implements ReviewListService {
         List<HisWarning> list = carReviewMapper.selectByHisWarning(warning);
         for (int i = 0; i<list.size();i++) {
             HisWarning hisWarning = list.get(i);
+
             UserTenant userTenant = userTenantService.selectByPrimaryKey(hisWarning.getTenant());
             hisWarning.setTenantName(userTenant.getTenantName());
             if (userTenant != null) {
