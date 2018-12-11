@@ -307,7 +307,7 @@ public class AuditingController extends BaseController {
             exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
             exportReviewResponse.setModelName(carVo.getModelName());
             exportReviewResponse.setTenantName(carVo.getTenantName());
-            exportReviewResponse.setInsertTime(carVo.getReviewInsertTime()==null?"":carVo.getReviewInsertTime());
+            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getReviewInsertTime());
             exportReviewResponse.setCarStatus(carVo.getCarStatus()==1?"质押":"非质押");
             exportReviewResponse.setOutReason(carVo.getOutReason());
             if(carVo.getEvaluatePrice() == null){
