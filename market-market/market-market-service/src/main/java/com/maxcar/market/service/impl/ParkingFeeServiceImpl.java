@@ -473,6 +473,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             parking.setBrakeId(barrier.getBarrierId());
             ParkingFee parkingFee = parkingFeeMapper.selectEmployeeNewRecord(parking);
             parkingFeeDe.setParkingFeeId(null == parkingFee ? "" : parkingFee.getId());
+            parkingFeeDe.setPayType(2);
             parkingFeeDetailMapper.updateByPrimaryKeySelective(parkingFeeDe);
     }
 
