@@ -881,6 +881,7 @@
         <if test="stockStatus != null and stockStatus != ''">
             and b.stock_status= #{stockStatus}
         </if>
+        order  by a.insert_time
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
@@ -1194,9 +1195,9 @@
         <include refid="car_vo_where"/>
     </select>
     <select id="getCarList" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select car_type,stock_status,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
-            and isvalid = 1
+            and isvalid = 1 and stock_status in (1,2,3)
             <if test="carType != null">
                 and car_type = #{carType,jdbcType=INTEGER}
             </if>
