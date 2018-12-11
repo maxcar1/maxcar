@@ -12,7 +12,7 @@ public class CarWarningExcel implements Serializable {
 
     private String carStatus;//车辆状态 1质押 2 非质押',
 
-    private String reasonDesc;//出场原因
+    private String outReason;//出场原因
 
     private Double evaluateRrice;//估价
 
@@ -57,12 +57,12 @@ public class CarWarningExcel implements Serializable {
         this.carStatus = carStatus;
     }
 
-    public String getReasonDesc() {
-        return reasonDesc;
+    public String getOutReason() {
+        return outReason;
     }
 
-    public void setReasonDesc(String reasonDesc) {
-        this.reasonDesc = reasonDesc;
+    public void setOutReason(String outReason) {
+        this.outReason = outReason;
     }
 
     public Double getEvaluateRrice() {
