@@ -31,7 +31,7 @@ public class RankingServiceImpl implements RankingService {
      **/
     @Override
     public List<GetInvoiceRankingResponse> getYesterdayInvoiceRanking(GetYesterdayInvoiceRankingRequest request) {
-
+/*
         String selectCondition = " DATE_FORMAT(i.bill_time, '%Y-%m-%D') = DATE_FORMAT(CURDATE() - 1, '%Y-%m-%D')  ";
 
         if (StringUtil.isNotEmpty(request.getMarketId())) {
@@ -46,7 +46,8 @@ public class RankingServiceImpl implements RankingService {
 
         parameter.setSelectCondition(selectCondition);
 
-        return rankingMapperService.getInvoiceRanking(parameter);
+        return rankingMapperService.getInvoiceRanking(parameter);*/
+        return null;
     }
 
 
@@ -57,8 +58,8 @@ public class RankingServiceImpl implements RankingService {
      **/
     @Override
     public List<GetInventoryRankingResponse> getYesterdayInventoryRanking(GetYesterdayInventoryRankingRequest request) {
-        String selectCondition = " DATE_FORMAT(c.insert_time, '%Y-%m-%D') < DATE_FORMAT(CURDATE(), '%Y-%m-%D')  ";
-        selectCondition+= " AND  c.stock_status in ('1','2','3') ";
+       /* String selectCondition = " DATE_FORMAT(c.insert_time, '%Y-%m-%D') < DATE_FORMAT(CURDATE(), '%Y-%m-%D')  ";
+        selectCondition += " AND  c.stock_status in ('1','2','3') ";
 
         if (StringUtil.isNotEmpty(request.getMarketId())) {
             selectCondition += " AND c.market_id = #{marketId}  ";
@@ -71,7 +72,8 @@ public class RankingServiceImpl implements RankingService {
 
         getInventoryRankingParameter.setSelectCondition(selectCondition);
 
-        return rankingMapperService.getInventoryRanking(getInventoryRankingParameter);
+        return rankingMapperService.getInventoryRanking(getInventoryRankingParameter);*/
+        return null;
     }
 
 
@@ -83,7 +85,7 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public List<GetInvoiceRankingResponse> getInvoiceRankingByCondition(GetInvoiceRankingByConditionRequest request) {
 
-        GetInvoiceRankingParameter parameter = new GetInvoiceRankingParameter();
+       /* GetInvoiceRankingParameter parameter = new GetInvoiceRankingParameter();
 
         StringBuffer stringBuffer = new StringBuffer(128);
 
@@ -131,7 +133,8 @@ public class RankingServiceImpl implements RankingService {
 
         parameter.setSelectCondition(stringBuffer.toString());
 
-        return rankingMapperService.getInvoiceRanking(parameter);
+        return rankingMapperService.getInvoiceRanking(parameter);*/
+        return null;
 
     }
 
@@ -144,7 +147,7 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public List<GetInventoryRankingResponse> getInventoryRankingByCondition(GetInventoryRankingByConditionRequest request) {
 
-        GetInventoryRankingParameter parameter = new GetInventoryRankingParameter();
+     /*   GetInventoryRankingParameter parameter = new GetInventoryRankingParameter();
 
         StringBuffer stringBuffer = new StringBuffer(128);
         stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
@@ -186,7 +189,8 @@ public class RankingServiceImpl implements RankingService {
 
         parameter.setSelectCondition(stringBuffer.toString());
 
-        return rankingMapperService.getInventoryRanking(parameter);
+        return rankingMapperService.getInventoryRanking(parameter);*/
+        return null;
     }
 
 
