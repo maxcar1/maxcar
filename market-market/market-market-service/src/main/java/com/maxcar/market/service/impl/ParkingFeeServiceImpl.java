@@ -1294,6 +1294,10 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 sb1.append(map2.get("second"));
                 sb1.append("秒");
                 parkingFeeDetail.setParkingTime(sb1.toString());
+                ParkingFeeIntegral parkingFeeIntegral = parkingFeeIntegralMapper.selectIntegralByDetailId(parkingFeeDetail.getId());
+                if (null != parkingFeeIntegral){
+                    totalPublic += parkingFeeIntegral.getPrice();
+                }
                 switch (parkingFeeDetail.getPayType()){
                     case 0:
                         totalIpay += parkingFeeDetail.getChargePrice();
