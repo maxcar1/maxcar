@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maxcar.statistics.dao.CarpriceDayMapper" >
   <resultMap id="BaseResultMap" type="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
-    <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
-    <result column="report_time" property="reportTime" jdbcType="VARCHAR" />
-    <result column="invoice_price_id" property="invoicePriceId" jdbcType="VARCHAR" />
-    <result column="invoice_price_name" property="invoicePriceName" jdbcType="VARCHAR" />
-    <result column="sales_count" property="salesCount" jdbcType="INTEGER" />
-    <result column="stock_avg_stocktime" property="stockAvgStocktime" jdbcType="INTEGER" />
-    <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
-    <result column="version" property="version" jdbcType="INTEGER" />
-    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
-  </resultMap>
+  <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+  <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
+  <result column="report_time" property="reportTime" jdbcType="VARCHAR" />
+  <result column="invoice_price_id" property="invoicePriceId" jdbcType="VARCHAR" />
+  <result column="invoice_price_name" property="invoicePriceName" jdbcType="VARCHAR" />
+  <result column="sales_count" property="salesCount" jdbcType="INTEGER" />
+  <result column="stock_avg_stocktime" property="stockAvgStocktime" jdbcType="DOUBLE" />
+  <result column="isvalid" property="isvalid" jdbcType="INTEGER" />
+  <result column="version" property="version" jdbcType="INTEGER" />
+  <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+</resultMap>
 
   <resultMap id="ResponseResultMap" type="com.maxcar.statistics.model.response.TradingResponse">
     <id column="month" property="month" jdbcType="VARCHAR"/>
@@ -210,108 +210,27 @@ WHERE isvalid = 1
 GROUP BY invoice_price_id
   </select>
 
-  <select id="selectCarpriceDay"   >
-SELECT
-  i.market_id,
-  i.tenant_id,
-  DATE_FORMAT(NOW(), '%Y-%m-%d') AS report_time,
-  (
-    CASE
-      WHEN i.price &lt; 50000
-      THEN '0'
-      WHEN 49999 &lt; i.price
-      AND i.price &lt; 100000
-      THEN '1'
-      WHEN 99999 &lt; i.price
-      AND i.price &lt; 150000
-      THEN '2'
-      WHEN 149999 &lt; i.price
-      AND i.price &lt; 200000
-      THEN '3'
-      WHEN 199999 &lt; i.price
-      AND i.price &lt; 250000
-      THEN '4'
-      WHEN 249999 &lt; i.price
-      AND i.price &lt; 300000
-      THEN '5'
-      WHEN 299999 &lt; i.price
-      AND i.price &lt; 350000
-      THEN '6'
-      WHEN 349999 &lt; i.price
-      AND i.price &lt; 400000
-      THEN '7'
-      WHEN 399999 &lt; i.price
-      AND i.price &lt; 450000
-      THEN '8'
-      WHEN 449999 &lt; i.price
-      AND i.price &lt; 500000
-      THEN '9'
-      WHEN 499999 &lt; i.price
-      THEN '10'
-    END
-  ) AS invoice_price_id,
-  (
-    CASE
-      WHEN i.price &lt; 50000
-      THEN '5万以下'
-      WHEN 49999 &lt; i.price
-      AND i.price &lt; 100000
-      THEN '5-10万'
-      WHEN 99999 &lt; i.price
-      AND i.price &lt; 150000
-      THEN '10-15万'
-      WHEN 149999 &lt; i.price
-      AND i.price &lt; 200000
-      THEN '15-20万'
-      WHEN 199999 &lt; i.price
-      AND i.price &lt; 250000
-      THEN '20-25万'
-      WHEN 249999 &lt; i.price
-      AND i.price &lt; 300000
-      THEN '25-30万'
-      WHEN 299999 &lt; i.price
-      AND i.price &lt; 350000
-      THEN '30-35万'
-      WHEN 349999 &lt; i.price
-      AND i.price &lt; 400000
-      THEN '35-40万'
-      WHEN 399999 &lt; i.price
-      AND i.price &lt; 450000
-      THEN '40-45万'
-      WHEN 449999 &lt; i.price
-      AND i.price &lt; 500000
-      THEN '45-50万'
-      WHEN 499999 &lt; i.price
-      THEN '50万以上'
-    END
-  ) AS invoice_price_name,
-  COUNT(i.price) AS sales_count,
-  AVG(
-    IFNULL(
-      DATEDIFF(i.bill_time, c.register_time),
-      0
-    )
-  ) AS stock_avg_stocktime
-FROM
-  maxcar_market_l.`invoice` i
-  LEFT JOIN maxcar_stock_l.`car` c
+  <select id="selectCarpriceDay"  resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    SELECT
+    i.market_id,
+    i.tenant_id,
+    DATE_FORMAT(NOW(), '%Y-%m-%d') AS report_time,
+    COUNT(*) AS sales_count,
+    AVG( IFNULL(DATEDIFF(i.bill_time, c.register_time), 0)) AS stock_avg_stocktime
+    FROM
+    maxcar_market_l.`invoice` i
+    LEFT JOIN maxcar_stock_l.`car` c
     ON i.car_id = c.id
-WHERE i.invoice_status = 2
-  AND i.car_sources = 1
-  AND i.bill_time BETWEEN STR_TO_DATE(
-    DATE_FORMAT(NOW(), '%Y-%m-%d'),
-    '%Y-%m-%d %H:%i:%s'
-  )
-  AND DATE_ADD(
-    DATE_ADD(
-      STR_TO_DATE(
-        DATE_FORMAT(NOW(), '%Y-%m-%d'),
-        '%Y-%m-%d %H:%i:%s'
-      ),
-      INTERVAL 1 DAY
-    ),
-    INTERVAL - 1 SECOND
-  )
-GROUP BY i.tenant_id,invoice_price_id
+    WHERE i.invoice_status = 2
+    AND i.car_sources = 1
+    AND i.bill_time BETWEEN STR_TO_DATE(DATE_FORMAT(NOW(), '%Y-%m-%d'),'%Y-%m-%d %H:%i:%s')
+    AND DATE_ADD(DATE_ADD(STR_TO_DATE(DATE_FORMAT(NOW(), '%Y-%m-%d'), '%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY),INTERVAL - 1 SECOND)
+    <if test="priceStart != 0 ">
+      AND #{priceStart} &lt;= i.`price`
+    </if>
+    <if test="priceEnd != 0 ">
+      AND i.`price` &lt; #{priceEnd}
+    </if>
+    GROUP BY i.tenant_id,i.market_id
   </select>
 </mapper>

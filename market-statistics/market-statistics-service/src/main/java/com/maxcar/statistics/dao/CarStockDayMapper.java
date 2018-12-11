@@ -1,6 +1,9 @@
 package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.model.entity.CarStockDayEntity;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CarStockDayMapper {
     int deleteByPrimaryKey(Integer id);
@@ -15,5 +18,5 @@ public interface CarStockDayMapper {
 
     int updateByPrimaryKey(CarStockDayEntity record);
 
-    int InsertCarstockDay();
+    List<CarStockDayEntity> selectCarpriceDay(@Param("priceStart") int priceStart , @Param("priceEnd") int priceEnd);
 }

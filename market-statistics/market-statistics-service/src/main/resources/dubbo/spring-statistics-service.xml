@@ -36,4 +36,9 @@
             id="configurationService"
             check="false" retries="0" timeout="20000"/>
 
+    <dubbo:reference
+            interface="com.maxcar.market.service.PropertyContractService"
+            id="propertyContractService"
+            check="false" retries="0" timeout="20000"/>
+
 </beans>

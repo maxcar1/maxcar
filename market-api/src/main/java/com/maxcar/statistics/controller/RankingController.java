@@ -7,23 +7,18 @@ import com.maxcar.market.model.request.GetCarSpaceAndOfficeByMarketIdOrAreaIdReq
 import com.maxcar.market.model.response.GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse;
 import com.maxcar.market.service.InvoiceService;
 import com.maxcar.market.service.PropertyContractService;
-import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
-import com.maxcar.statistics.model.request.GetInventoryRankingByConditionRequest;
-import com.maxcar.statistics.model.request.GetInvoiceRankingByConditionRequest;
-import com.maxcar.statistics.model.request.GetYesterdayInvoiceRankingRequest;
 import com.maxcar.statistics.model.request.RankingRequest;
 import com.maxcar.statistics.service.RankingService;
-import com.maxcar.statistics.service.StockService;
 import com.maxcar.stock.service.CarService;
+import com.maxcar.user.entity.Market;
 import com.maxcar.user.entity.User;
-import org.apache.http.HttpRequest;
+import com.maxcar.user.service.MarketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,6 +104,9 @@ public class RankingController extends BaseController {
     }
 
 
+    @Autowired
+    private MarketService marketService;
+
     @RequestMapping("/ranking/test")
     public InterfaceResult getPropertyContractAll() throws Exception {
         rankingService.getYesterdayInvoiceRanking(null);
@@ -121,30 +119,59 @@ public class RankingController extends BaseController {
         Short managerFlag = currentUser.getManagerFlag();
         String marketId = rankingRequest.getMarketId();
         String tenantId = rankingRequest.getTenantId();
+
         if (managerFlag != 0) {
             marketId = currentUser.getMarketId();
         }
+        if(managerFlag == 0){
+            marketId = null;
+        }
         InterfaceResult interfaceResult = new InterfaceResult();
         Map<String, Object> map = carService.nowRanking(marketId, tenantId);
+        if(managerFlag == 0 && !StringUtil.isNotEmpty(marketId) && !StringUtil.isNotEmpty(tenantId)){
+            GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
+            List<Market> marketList = marketService.selectAll();
+            int parkCount = 0;
+           for(Market market : marketList){
+               String name = market.getName();
+               String marketNo = market.getMarketNo();
+               if(marketNo.equals("001")){
+                   continue;
+               }
+               requests.setMarketId(marketNo);
+               GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
+               if (responses == null ) {
+                   interfaceResult.InterfaceResult600(name+"，没有配置车位浮动数！");
+                   return interfaceResult;
+               }
+            parkCount += (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
+           }
 
-        GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
-        if (StringUtil.isNotEmpty(marketId)) {
-            requests.setMarketId(marketId);
-        }
-        if (StringUtil.isNotEmpty(tenantId)) {
-            requests.setTenantId(tenantId);
-        }
-        GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-        if (responses == null) {
-            interfaceResult.InterfaceResult600("请联系管理员，配置相关参数！");
-            return interfaceResult;
-        }
-        int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
+            Integer count = Integer.parseInt(map.get("inMarketCarCount").toString());
 
-        Integer count = Integer.parseInt(map.get("inMarketCarCount").toString());
+            double saturability = Math.round(count / parkCount * 100) / 100.0;
+            map.put("saturability", saturability);
 
-        double saturability = Math.round((parkCount - count) * 100) / 100.0;
-        map.put("saturability", saturability);
+            interfaceResult.InterfaceResult200(map);
+        } else {
+            GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
+            if (StringUtil.isNotEmpty(marketId)) {
+                requests.setMarketId(marketId);
+            }
+            if (StringUtil.isNotEmpty(tenantId)) {
+                requests.setTenantId(tenantId);
+            }
+            GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
+            if (responses == null ) {
+                interfaceResult.InterfaceResult600("请联系管理员，配置相关参数！");
+                return interfaceResult;
+            }
+            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
+
+            Integer count = Integer.parseInt(map.get("inMarketCarCount").toString());
+
+            double saturability = Math.round(count / parkCount * 100) / 100.0;
+            map.put("saturability", saturability);
 
         interfaceResult.InterfaceResult200(map);
 

@@ -290,8 +290,9 @@ public class TradingController extends BaseController {
     public void test(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
         getUserMarketId(tradingRequest, request);
         insertStockAndInvoice.InsertCarpriceDay();
-//        insertStockAndInvoice.InsertCarstockDay();
-//        insertStockAndInvoice.InsertCarstockMonth();
-//        insertStockAndInvoice.InsertInventoryInvoiceDay();
+        insertStockAndInvoice.InsertCarstockDay();
+        insertStockAndInvoice.InsertCarstockMonth();
+        insertStockAndInvoice.InsertInventoryInvoiceDay();
+        insertStockAndInvoice.InsertInventoryInvoiceMonth();
     }
 }

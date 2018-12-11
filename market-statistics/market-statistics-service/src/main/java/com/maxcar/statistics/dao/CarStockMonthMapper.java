@@ -2,6 +2,9 @@ package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.model.entity.CarStockMonthEntity;
 import com.maxcar.statistics.model.request.StockRequest;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CarStockMonthMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,5 +21,5 @@ public interface CarStockMonthMapper {
 
    Integer getStockPrice(StockRequest stockRequest);
 
-    int InsertCarstockMonth();
+    List<CarStockMonthEntity> selectCarstockMonth(@Param("priceStart") int priceStart , @Param("priceEnd") int priceEnd);
 }
