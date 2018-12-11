@@ -9,6 +9,7 @@ import com.maxcar.market.service.InvoiceService;
 import com.maxcar.market.service.PropertyContractService;
 import com.maxcar.statistics.model.request.GetInventoryRankingByConditionRequest;
 import com.maxcar.statistics.model.request.GetInvoiceRankingByConditionRequest;
+import com.maxcar.statistics.model.request.GroupYesterdayRankingRequest;
 import com.maxcar.statistics.model.request.RankingRequest;
 import com.maxcar.statistics.service.RankingService;
 import com.maxcar.stock.service.CarService;
@@ -46,6 +47,16 @@ public class RankingController extends BaseController {
 
     @Autowired
     private MarketService marketService;
+
+
+    @RequestMapping("/ranking/test")
+    public InterfaceResult getInvoiceRankingByCondition() {
+
+        rankingService.test();
+        
+        return getInterfaceResult("200", null);
+    }
+
 
     /**
      * param:
@@ -110,12 +121,39 @@ public class RankingController extends BaseController {
         return getInterfaceResult("200", rankingService.getInventoryRankingByCondition(getInventoryRankingByConditionRequest));
     }
 
+    /**
+     * param:
+     * describe: 总览——获取昨日市场排行  商户排行
+     * create_date:  lxy   2018/12/11  16:33
+     **/
+    @RequestMapping("/ranking/getYesterdayRanking")
+    public InterfaceResult getYesterdayRanking(@RequestBody @Valid GroupYesterdayRankingRequest groupYesterdayRankingRequest,
+                                               BindingResult result, HttpServletRequest request) throws Exception {
 
-    @RequestMapping("/ranking/test")
-    public InterfaceResult getPropertyContractAll() throws Exception {
-        rankingService.getYesterdayInvoiceRanking(null);
-        return getInterfaceResult("200", null);
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                return getInterfaceResult("600", error.getDefaultMessage());
+            }
+        }
+
+        User user = getCurrentUser(request);
+        if (null == user) {
+            return getInterfaceResult("200", "用户过期");
+        }
+
+        if (!isManagerFlag(request)) {
+
+            if (null == user.getMarketId()) {
+                return getInterfaceResult("600", "账号异常");
+            }
+
+            groupYesterdayRankingRequest.setMarketId(user.getMarketId());
+        }
+
+        return getInterfaceResult("200", rankingService.getYesterdayRanking(groupYesterdayRankingRequest));
+
     }
+
 
     @PostMapping("/ranking/stock")
     public InterfaceResult getNowStock(@RequestBody RankingRequest rankingRequest, HttpServletRequest request) throws Exception {
@@ -127,25 +165,25 @@ public class RankingController extends BaseController {
         if (managerFlag != 0) {
             marketId = currentUser.getMarketId();
         }
-        if(managerFlag == 0){
+        if (managerFlag == 0) {
             marketId = null;
         }
         InterfaceResult interfaceResult = new InterfaceResult();
         Map<String, Object> map = carService.nowRanking(marketId, tenantId);
-        if(managerFlag == 0 && !StringUtil.isNotEmpty(marketId) && !StringUtil.isNotEmpty(tenantId)){
+        if (managerFlag == 0 && !StringUtil.isNotEmpty(marketId) && !StringUtil.isNotEmpty(tenantId)) {
             GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
             List<Market> marketList = marketService.selectAll();
             int parkCount = 0;
-            for(Market market : marketList){
+            for (Market market : marketList) {
                 String name = market.getName();
                 String marketNo = market.getMarketNo();
-                if(marketNo.equals("001")){
+                if (marketNo.equals("001")) {
                     continue;
                 }
                 requests.setMarketId(marketNo);
                 GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-                if (responses == null ) {
-                    interfaceResult.InterfaceResult600(name+"，没有配置车位浮动数！");
+                if (responses == null) {
+                    interfaceResult.InterfaceResult600(name + "，没有配置车位浮动数！");
                     return interfaceResult;
                 }
                 parkCount += (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
@@ -166,7 +204,7 @@ public class RankingController extends BaseController {
                 requests.setTenantId(tenantId);
             }
             GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-            if (responses == null ) {
+            if (responses == null) {
                 interfaceResult.InterfaceResult600("请联系管理员，配置相关参数！");
                 return interfaceResult;
             }
@@ -192,7 +230,7 @@ public class RankingController extends BaseController {
             marketId = currentUser.getMarketId();
         }
         InterfaceResult interfaceResult = new InterfaceResult();
-        Map<String , Object> map = invoiceService.nowDeal(marketId,tenantId);
+        Map<String, Object> map = invoiceService.nowDeal(marketId, tenantId);
 
         interfaceResult.InterfaceResult200(map);
 

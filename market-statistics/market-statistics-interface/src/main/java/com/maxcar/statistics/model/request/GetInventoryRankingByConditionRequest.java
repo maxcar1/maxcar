@@ -22,6 +22,8 @@ public class GetInventoryRankingByConditionRequest implements Serializable {
 
     private String type;
 
+    private String parameter;
+
     // 车辆类型
     private String typeId;
 
@@ -33,7 +35,6 @@ public class GetInventoryRankingByConditionRequest implements Serializable {
 
     // 车辆年限
     private String yearId;
-
 
 
 }

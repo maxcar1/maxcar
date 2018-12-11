@@ -22,6 +22,8 @@ public class GetInvoiceRankingByConditionRequest implements Serializable {
 
     private String type;
 
+    private String parameter;
+
     // 车辆类型
     private String typeId;
 

@@ -35,6 +35,37 @@
     id, market_id, tenant_id, report_time, stock_count, stock_price, stock_day_avg, out_library_count, 
     tenant_space, sales_count, sales_price, sales_avg_price, version, isvalid, register_time
   </sql>
+
+    <!-- 查询 昨日市场排名  -->
+    <select id="groupYesterdayRanking" resultType="com.maxcar.statistics.model.response.GroupYesterdayRankingResponse"
+            parameterType="com.maxcar.statistics.model.request.GroupYesterdayRankingRequest">
+        select
+        iid.market_id AS marketId,
+        m.name as 'marketName',
+        <if test="marketId != null">
+            iid.tenant_id as 'tenantId',
+            ut.tenant_name as 'tenantName'
+        </if>
+        IFNULL(SUM(iid.sales_count), 0) AS invoiceCount,
+        IFNULL(SUM(iid.sales_price), 0) AS invoicePrice,
+        IFNULL(SUM(iid.stock_count), 0) AS inventoryCount,
+        IFNULL(SUM(iid.stock_price), 0) AS inventoryPrice
+
+        from inventory_invoice_day iid
+        LEFT JOIN maxcar_user_l.`market` AS m ON iid.market_id = m.id
+        LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut ON iid.tenant_id = ut.id
+        where DATE_FORMAT(iid.report_time, '%Y-%m-%D') = DATE_FORMAT(CURDATE() - 1, '%Y-%m-%D')
+        <if test="marketId == null">
+            group by iid.market_id
+        </if>
+        <if test="marketId != null">
+            group by iid.market_id,iid.tenant_id
+        </if>
+
+        ORDER BY #{orderBy} DESC LIMIT 10
+    </select>
+
+
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
@@ -288,7 +319,7 @@
             AND report_time BETWEEN #{timeStart} and #{timeEnd}
         </if>
         GROUP BY tenant_id) aa
-        WHERE  1 = 1
+        WHERE 1 = 1
         <if test="carNumType == 0">
             AND aa.sales_count &lt; 5
         </if>
@@ -397,7 +428,7 @@
             AND tenant_id = #{tenantId}
         </if>
         <if test="monthNum != null and monthNum != '' ">
-            AND report_time =  #{monthNum}
+            AND report_time = #{monthNum}
         </if>
         <if test="carNumType == 0">
             AND stock_count &lt; 5
@@ -438,12 +469,12 @@
     <select id="getTenantStockBranch" resultType="java.util.Map"
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
-        SUM(stock_count  &lt; 10) AS '10台以下',
-        SUM(9  &lt; stock_count AND stock_count  &lt; 20) AS '10-20台',
-        SUM(19  &lt; stock_count AND stock_count  &lt; 30) AS '20-30台',
-        SUM(29  &lt; stock_count AND stock_count  &lt; 40) AS '30-40台',
-        SUM(39  &lt; stock_count AND stock_count  &lt; 50) AS '40-50台',
-        SUM(49  &lt; stock_count) AS '50台以上'
+        SUM(stock_count &lt; 10) AS '10台以下',
+        SUM(9 &lt; stock_count AND stock_count &lt; 20) AS '10-20台',
+        SUM(19 &lt; stock_count AND stock_count &lt; 30) AS '20-30台',
+        SUM(29 &lt; stock_count AND stock_count &lt; 40) AS '30-40台',
+        SUM(39 &lt; stock_count AND stock_count &lt; 50) AS '40-50台',
+        SUM(49 &lt; stock_count) AS '50台以上'
         FROM
         `inventory_invoice_day`
         WHERE
@@ -455,7 +486,7 @@
             AND tenant_id = #{tenantId}
         </if>
         <if test="timeEnd != null and timeEnd != '' ">
-            AND report_time =  #{timeEnd}
+            AND report_time = #{timeEnd}
         </if>
     </select>
 
@@ -473,7 +504,7 @@
             AND tenant_id = #{tenantId}
         </if>
         <if test="timeStart != null and timeStart != '' ">
-            AND report_time =  #{timeStart}
+            AND report_time = #{timeStart}
         </if>
         <if test="carNumType == 0">
             AND stock_count &lt; 5
@@ -524,10 +555,10 @@
             AND tenant_id = #{tenantId}
         </if>
         <if test="timeEnd != null and timeEnd != '' ">
-            AND report_time =  #{timeEnd}
+            AND report_time = #{timeEnd}
         </if>
         <if test="carNumType != null and carNumType != '' ">
-        AND invoice_stock_id = #{carNumType}
+            AND invoice_stock_id = #{carNumType}
         </if>
     </select>
 
