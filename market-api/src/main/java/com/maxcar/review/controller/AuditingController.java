@@ -61,6 +61,7 @@ public class AuditingController extends BaseController {
         reviewStep.setOrgld(user.getOrgId());
         List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
         //查询该用户是否在审核列表下
+        carParams.setMarket(user.getMarketId());
         pageInfo = carService.listReview(carParams);
         logger.info("=============="+pageInfo.getList());
         //过滤相同人不同审核等级
@@ -234,7 +235,6 @@ public class AuditingController extends BaseController {
                         carReview.setId(reviewDetail.getReviewId());
                         carReview.setIsPass(reviewDetail.getReviewResult());
                         carReview.setStepLevel(level);
-                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
@@ -264,7 +264,6 @@ public class AuditingController extends BaseController {
                         carReview.setId(review.getReviewId());
                         carReview.setIsPass(review.getReviewResult());
                         carReview.setStepLevel(review.getLevel());
-                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数

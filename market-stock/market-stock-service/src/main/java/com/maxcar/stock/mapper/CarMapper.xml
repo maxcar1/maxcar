@@ -830,7 +830,7 @@
         <if test="vin != null and vin != ''">
             and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
         </if>
-        order by application_time desc
+        order  by b.insert_time desc
     </select>
 
     <sql id="Car_Review_Detail_List">
@@ -885,7 +885,7 @@
         <if test="stockStatus != null and stockStatus != ''">
             and b.stock_status= #{stockStatus}
         </if>
-        order  by a.insert_time
+        order  by a.insert_time desc
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
@@ -1804,7 +1804,7 @@
              end as stockStatus,
         case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
         date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
-        IFNULL(CAST(cb.mileage/10000 AS decimal(16,2)),0) as mileage,
+        cb.mileage as mileage,
         IFNULL(cb.evaluate_price,0) as evaluatePrice,
         IFNULL(cb.market_price,0) as marketPrice,
         invoice.price AS invoicePrice,
