@@ -45,48 +45,48 @@ public class SystemInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) throws Exception {
         logger.info("用户认证方法调用之前");
         InterfaceResult interfaceResult = new InterfaceResult();
-//        String resource = request.getServletPath();
-//        //设置返回中文乱码
-//        request.setCharacterEncoding("UTF-8");
-//        response.setCharacterEncoding("UTF-8");
-//        //第一步，验证资源是否存在
-////        String resourceId = validResource(resource);
-////        if (StringUtils.isEmpty(resourceId)) {
-////            interfaceResult.InterfaceResult404();
-////        } else {
-//        //第二步从头部获取token信息，验证用户
-//        String userToken = request.getHeader("userToken");
-//        if (StringUtils.isNotEmpty(userToken)) {
-//            InterfaceResult result = ssoService.getUserByToken(userToken);
-//            if (result != null && result.getCode().equals("200")) {
-//                ssoService.setKeyTime(userToken, -1);//时间周期往后设置
-//                String res = result.getData().toString();
-//                String userId = null;
-//                User user = null;
-//                if (res.indexOf("userId") == -1) {
-//                    userId = res;
-//                    user = userService.selectByPrimaryKey(userId);
-//                    if (user == null) {//用户不存在
-//                        interfaceResult.InterfaceResult403();
-//                    } else {
-//                        //第三步，这里验证角色权限
-////                        if (validRoleResource(resourceId, resource)) {//有角色
-//                        return true;
-////                        } else {
-////                            interfaceResult.InterfaceResult401();
-////                        }
-//                    }
-//                }
-//                return true;//外部请求直接放行
-//            } else {
-//                interfaceResult.InterfaceResult403();
-//            }
+        String resource = request.getServletPath();
+        //设置返回中文乱码
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        //第一步，验证资源是否存在
+//        String resourceId = validResource(resource);
+//        if (StringUtils.isEmpty(resourceId)) {
+//            interfaceResult.InterfaceResult404();
 //        } else {
-//            interfaceResult.InterfaceResult403();
+        //第二步从头部获取token信息，验证用户
+        String userToken = request.getHeader("userToken");
+        if (StringUtils.isNotEmpty(userToken)) {
+            InterfaceResult result = ssoService.getUserByToken(userToken);
+            if (result != null && result.getCode().equals("200")) {
+                ssoService.setKeyTime(userToken, -1);//时间周期往后设置
+                String res = result.getData().toString();
+                String userId = null;
+                User user = null;
+                if (res.indexOf("userId") == -1) {
+                    userId = res;
+                    user = userService.selectByPrimaryKey(userId);
+                    if (user == null) {//用户不存在
+                        interfaceResult.InterfaceResult403();
+                    } else {
+                        //第三步，这里验证角色权限
+//                        if (validRoleResource(resourceId, resource)) {//有角色
+                        return true;
+//                        } else {
+//                            interfaceResult.InterfaceResult401();
+//                        }
+                    }
+                }
+                return true;//外部请求直接放行
+            } else {
+                interfaceResult.InterfaceResult403();
+            }
+        } else {
+            interfaceResult.InterfaceResult403();
+        }
 //        }
-////        }
-//        response.getWriter().write(JsonTools.toJson(interfaceResult));
-        return true;
+        response.getWriter().write(JsonTools.toJson(interfaceResult));
+        return false;
     }
 
 
