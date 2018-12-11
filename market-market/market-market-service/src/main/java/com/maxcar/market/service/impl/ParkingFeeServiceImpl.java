@@ -418,8 +418,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                         parkingFeeDe.setReduction(20);
                         parkingFeeDe.setIntegral(0);
                         parkingFeeDe.setAlreadyPaid(0);
-                        parkingFeeDe.setChargeFee(totalFee.intValue()-20);
-                        parkingFeeDe.setChargePrice(totalFee.intValue()-20);
+                        parkingFeeDe.setChargeFee(totalFee.intValue()-20 < 0 ? 0 : totalFee.intValue() - 20);
+                        parkingFeeDe.setChargePrice(totalFee.intValue()-20 < 0 ? 0 : totalFee.intValue() - 20);
                         parkingFeeDe.setOverTimeFee(0);
                         parkingFeeDe.setParkingTime(hmsToString);
                         int type1 = parkingFeeDe.getChargeFee() == 0 ? -1 : parkingFeeDe.getChargeFee();
