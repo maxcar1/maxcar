@@ -231,7 +231,6 @@ public class AuditingController extends BaseController {
                         carReview.setId(reviewDetail.getReviewId());
                         carReview.setIsPass(reviewDetail.getReviewResult());
                         carReview.setStepLevel(level);
-                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
@@ -261,7 +260,6 @@ public class AuditingController extends BaseController {
                         carReview.setId(review.getReviewId());
                         carReview.setIsPass(review.getReviewResult());
                         carReview.setStepLevel(review.getLevel());
-                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
