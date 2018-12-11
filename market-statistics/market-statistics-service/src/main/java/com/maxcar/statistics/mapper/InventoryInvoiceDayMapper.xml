@@ -44,7 +44,7 @@
         m.name as 'marketName',
         <if test="marketId != null">
             iid.tenant_id as 'tenantId',
-            ut.tenant_name as 'tenantName'
+            ut.tenant_name as 'tenantName',
         </if>
         IFNULL(SUM(iid.sales_count), 0) AS invoiceCount,
         IFNULL(SUM(iid.sales_price), 0) AS invoicePrice,

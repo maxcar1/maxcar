@@ -248,7 +248,7 @@ public class CaryearMapperService {
 
         InsertTParamter parameter = new InsertTParamter();
 
-        parameter.setTable("`maxcar_statistics_l`.`cartype_day`");
+        parameter.setTable("`maxcar_statistics_l`.`caryear_day`");
         parameter.setColumns("market_id,tenant_id,report_time,year_id,year_name,sales_count,sales_price,sales_avg_price," +
                 "male_count,female_count,age20_count,age25_count,age30_count,age35_count,age40_count,age45_count,age50_count");
 
