@@ -96,7 +96,10 @@ public class AuditingController extends BaseController {
             CarDetails carDetails = list.get(0);
             if(carDetails != null){
                 UserTenant userTenant = userTenantService.selectByPrimaryKey(carDetails.getTenant());
-                carDetails.setTenantName(userTenant.getTenantName());
+
+                if(userTenant!=null){
+                        carDetails.setTenantName(userTenant.getTenantName());
+                }
                 map.put("car",carDetails);
             }
             if(carDetails.getTenant() != null){
@@ -320,6 +323,7 @@ public class AuditingController extends BaseController {
             if(carVo.getStockStatus()!=null){
                 exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
             }
+
             exportReviewResponse.setVin(carVo.getVin());
             exportList.add(exportReviewResponse);
         }
