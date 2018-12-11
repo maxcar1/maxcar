@@ -55,6 +55,38 @@ public class CarbrandMapperService {
 
     /**
      * param:
+     * describe: 日表交易排名
+     * create_date:  lxy   2018/12/11  11:22
+     **/
+    public List<GetInvoiceRankingResponse> groupCarbrandInvoiceDayRanking(GetInvoiceRankingByConditionRequest parameter) {
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("invoiceCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+        return carbrandDayDao.groupCarbrandInvoiceDayRanking(parameter);
+    }
+
+    /**
+     * param:
+     * describe: 日表库存排名
+     * create_date:  lxy   2018/12/11  11:22
+     **/
+    public List<GetInventoryRankingResponse> groupCarbrandInventoryDayRanking(GetInventoryRankingByConditionRequest parameter) {
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("inventoryCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+        return carbrandDayDao.groupCarbrandInventoryDayRanking(parameter);
+    }
+
+    /**
+     * param:
      * describe: 根据结束日期查询 库存量与库存价值
      * create_date:  lxy   2018/11/26  14:28
      **/

@@ -7,12 +7,10 @@ import com.maxcar.statistics.dao.CartypeDayDao;
 import com.maxcar.statistics.dao.CartypeMonthDao;
 import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
 import com.maxcar.statistics.model.parameter.InsertTParamter;
+import com.maxcar.statistics.model.request.GetInvoiceRankingByConditionRequest;
 import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
 import com.maxcar.statistics.model.request.GroupCartypeMonthRequest;
-import com.maxcar.statistics.model.response.GetCarInvoiceTypeInvoiceReportResponse;
-import com.maxcar.statistics.model.response.GroupCartypeDayByMonthResponse;
-import com.maxcar.statistics.model.response.GroupCartypeDayResponse;
-import com.maxcar.statistics.model.response.GroupCartypeMonthResponse;
+import com.maxcar.statistics.model.response.*;
 import com.maxcar.user.service.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +50,22 @@ public class CartypeMapperService {
         }
 
         return cartypeDayDao.groupCartypeDay(parameter);
+    }
+
+    /**
+     * param:
+     * describe: 日表交易排名
+     * create_date:  lxy   2018/12/11  13:04
+     **/
+    public List<GetInvoiceRankingResponse> groupCartypeDayRanking(GetInvoiceRankingByConditionRequest parameter){
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("invoiceCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+        return cartypeDayDao.groupCartypeDayRanking(parameter);
     }
 
     /**

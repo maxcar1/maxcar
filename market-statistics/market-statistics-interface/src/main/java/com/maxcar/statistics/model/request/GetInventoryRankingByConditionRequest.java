@@ -11,7 +11,6 @@ public class GetInventoryRankingByConditionRequest implements Serializable {
     private static final long serialVersionUID = -7650748245757452644L;
     private String marketId;
 
-    @NotNull(message = "排序字段不能为null")
     private String orderBy;
 
     @NotNull(message = "起始时间不能为null")
@@ -20,14 +19,21 @@ public class GetInventoryRankingByConditionRequest implements Serializable {
     @NotNull(message = "终止时间不能为null")
     private String endTime;
 
+
+    private String type;
+
+    // 车辆类型
+    private String typeId;
+
     //车辆品牌
     private String brandName;
 
     // 库存周期
-    private Integer inventoryCycle;
+    private String stocktimeId;
 
     // 车辆年限
-    private Integer AgeByCar;
+    private String yearId;
+
 
 
 }

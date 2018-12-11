@@ -7,10 +7,7 @@ import com.maxcar.statistics.dao.CaryearMonthDao;
 import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
 import com.maxcar.statistics.model.parameter.GetInventoryReportParameter;
 import com.maxcar.statistics.model.parameter.InsertTParamter;
-import com.maxcar.statistics.model.request.GroupCaryearInventoryDayRequest;
-import com.maxcar.statistics.model.request.GroupCaryearInventoryMonthRequest;
-import com.maxcar.statistics.model.request.GroupCaryearInvoiceDayRequest;
-import com.maxcar.statistics.model.request.GroupCaryearInvoiceMonthRequest;
+import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +39,38 @@ public class CaryearMapperService {
         }
 
         return caryearDayDao.groupCaryearInvoiceDay(parameter);
+    }
+
+    /**
+     * param:
+     * describe: 日表交易排名
+     * create_date:  lxy   2018/12/11  13:27
+     **/
+    public List<GetInvoiceRankingResponse> groupCaryearInvoiceDayRanking(GetInvoiceRankingByConditionRequest parameter) {
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("invoiceCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+        return caryearDayDao.groupCaryearInvoiceDayRanking(parameter);
+    }
+
+    /**
+     * param:
+     * describe: 日表库存排名
+     * create_date:  lxy   2018/12/11  13:27
+     **/
+    public  List<GetInventoryRankingResponse> groupCaryearInventoryDayRaning(GetInventoryRankingByConditionRequest parameter){
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("inventoryCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+        return caryearDayDao.groupCaryearInventoryDayRaning(parameter);
     }
 
     /**
@@ -577,7 +606,7 @@ public class CaryearMapperService {
      * describe:  车辆年限月表库存sql
      * create_date:  lxy   2018/12/4  16:38
      **/
-    private InsertTParamter getInsertCaryearInventoryMonthColumnsAndValues( List<GroupCaryearDayByMOnthResponse> InventoryMonthList) {
+    private InsertTParamter getInsertCaryearInventoryMonthColumnsAndValues(List<GroupCaryearDayByMOnthResponse> InventoryMonthList) {
 
         InsertTParamter parameter = new InsertTParamter();
 

@@ -2,12 +2,8 @@ package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CarbrandDayProvider;
-import com.maxcar.statistics.model.request.GetAllBrandNameRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInventoryDayRequest;
-import com.maxcar.statistics.model.request.GroupCarbrandInvoiceDayRequest;
-import com.maxcar.statistics.model.response.GroupCarbrandDayByMonthResponse;
-import com.maxcar.statistics.model.response.GroupCarbrandInventoryDayResponse;
-import com.maxcar.statistics.model.response.GroupCarbrandInvoiceDayResponse;
+import com.maxcar.statistics.model.request.*;
+import com.maxcar.statistics.model.response.*;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
@@ -19,9 +15,24 @@ public interface CarbrandDayDao extends BaseDao {
      * describe: 统计当前的车辆品牌日表交易集合
      * create_date:  lxy   2018/11/26  11:46
      **/
-
     @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInvoiceDay")
     List<GroupCarbrandInvoiceDayResponse> groupCarbrandInvoiceDay(GroupCarbrandInvoiceDayRequest parameter);
+
+    /**
+     * param:
+     * describe: 日表交易排名
+     * create_date:  lxy   2018/12/11  11:22
+     **/
+    @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInvoiceDayRanking")
+    List<GetInvoiceRankingResponse> groupCarbrandInvoiceDayRanking(GetInvoiceRankingByConditionRequest parameter);
+
+    /**
+     * param:
+     * describe: 日表库存排名
+     * create_date:  lxy   2018/12/11  13:58
+     **/
+    @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInventoryDayRanking")
+    List<GetInventoryRankingResponse>  groupCarbrandInventoryDayRanking(GetInventoryRankingByConditionRequest parameter);
 
     /**
      * param:
@@ -54,6 +65,6 @@ public interface CarbrandDayDao extends BaseDao {
      * create_date:  lxy   2018/11/23  11:34
      **/
     @SelectProvider(type = CarbrandDayProvider.class, method = "groupCarbrandInventoryDayByMonth")
-    List<GroupCarbrandDayByMonthResponse>  groupCarbrandInventoryDayByMonth(String timeByMonth);
+    List<GroupCarbrandDayByMonthResponse> groupCarbrandInventoryDayByMonth(String timeByMonth);
 
 }
