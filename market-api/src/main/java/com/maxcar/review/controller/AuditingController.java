@@ -96,7 +96,10 @@ public class AuditingController extends BaseController {
             CarDetails carDetails = list.get(0);
             if(carDetails != null){
                 UserTenant userTenant = userTenantService.selectByPrimaryKey(carDetails.getTenant());
-                carDetails.setTenantName(userTenant.getTenantName());
+
+                if(userTenant!=null){
+                        carDetails.setTenantName(userTenant.getTenantName());
+                }
                 map.put("car",carDetails);
             }
             if(carDetails.getTenant() != null){
@@ -304,7 +307,7 @@ public class AuditingController extends BaseController {
             exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
             exportReviewResponse.setModelName(carVo.getModelName());
             exportReviewResponse.setTenantName(carVo.getTenantName());
-            exportReviewResponse.setInsertTime(carVo.getReviewInsertTime()==null?"":carVo.getReviewInsertTime());
+            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getReviewInsertTime());
             exportReviewResponse.setCarStatus(carVo.getCarStatus()==1?"质押":"非质押");
             exportReviewResponse.setOutReason(carVo.getOutReason());
             if(carVo.getEvaluatePrice() == null){
@@ -318,6 +321,7 @@ public class AuditingController extends BaseController {
             if(carVo.getStockStatus()!=null){
                 exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
             }
+
             exportReviewResponse.setVin(carVo.getVin());
             exportList.add(exportReviewResponse);
         }

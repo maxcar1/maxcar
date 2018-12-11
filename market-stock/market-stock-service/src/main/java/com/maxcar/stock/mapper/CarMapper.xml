@@ -722,7 +722,7 @@
     </update>
     <select id="listCarVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
        SELECT
-        t.*,cr.is_valid as review_id,
+        t.*,cr.is_complete,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>
         FROM

@@ -432,7 +432,7 @@
     )
     AND market_id = #{marketId,jdbcType=VARCHAR}
     ORDER BY
-    backTime DESC
+    backTime asc
 
   </select>
 
