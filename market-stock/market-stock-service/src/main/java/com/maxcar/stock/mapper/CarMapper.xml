@@ -728,14 +728,11 @@
         FROM
         car t left join
         car_base cb on t.id = cb.id
-        left join car_review cr on cr.car_id = cb.id
+        left join car_review cr on cr.car_id = t.id
         WHERE
         t.stock_status in ('1','2','3') and
         t.isvalid=1 and t.market_id = #{marketId}
         AND t.car_type =1
-        <if test="tenant != null and tenant != ''">
-            and t.tenant = #{tenant}
-        </if>
         <include refid="car_vo_where"/>
         order by t.register_time desc
     </select>
@@ -845,19 +842,25 @@
   </sql>
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
         SELECT
-        <include refid="Car_Review_Detail_List"/>
-        a.id AS review_id,a.is_pass,
-        a.out_reason,
-        date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
-        d.tenant_name
+        <include refid="List_Review"/>
+        b.id AS review_id,b.is_pass,
+        b.out_reason,
+        date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
+        ut.tenant_name,
+        rd.review_result
         FROM
-        maxcar_stock_l.car_review a
-        LEFT JOIN car b ON a.car_id = b.id
-        LEFT JOIN car_base c ON a.car_id = c.id
-        LEFT JOIN maxcar_tenant_l.user_tenant d ON b.tenant = d.id
-        WHERE
-        a.is_pass != 0
-        AND b.isvalid = 1
+        review_detail rd
+        LEFT JOIN car_review b ON rd.review_id = b.id
+        LEFT JOIN car a ON b.car_id = a.id
+        LEFT JOIN car_base d ON d.id = b.id
+        left join maxcar_tenant_l.user_tenant ut on a.tenant = ut.id
+        where 1=1
+        <if test="reviewResult != null and reviewResult != ''">
+            and rd.review_result= #{reviewResult}
+        </if>
+        <if test="reviewPersonId != null and reviewPersonId != ''">
+            and rd.review_person_id = #{reviewPersonId}
+        </if>
         <if test="market != null and market != ''">
             and a.market_id = #{market}
         </if>
@@ -1217,7 +1220,7 @@
         order by insert_time desc
     </select>
     <select id="getCarListByTenant" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id,id from car
         <where>
             and isvalid = 1 and car_type = 3
             and tenant in
