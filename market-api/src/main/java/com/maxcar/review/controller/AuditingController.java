@@ -300,7 +300,7 @@ public class AuditingController extends BaseController {
     public InterfaceResult export(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
         List<CarVo> list = carService.exportList(carParams);
-        List<ExportReviewResponse> exportList = new ArrayList<>();;
+        List<ExportReviewResponse> exportList = new ArrayList<>();
         for(CarVo carVo:list){
             ExportReviewResponse exportReviewResponse = new ExportReviewResponse();
             exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
@@ -314,8 +314,12 @@ public class AuditingController extends BaseController {
             }else{
                 exportReviewResponse.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
             }
-            exportReviewResponse.setReviewResult(carVo.getReviewResult()==1?"审核通过":"审核不通过");
-            exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
+            if(carVo.getReviewResult()!=null){
+                exportReviewResponse.setReviewResult(carVo.getReviewResult()==1?"审核通过":"审核不通过");
+            }
+            if(carVo.getStockStatus()!=null){
+                exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
+            }
             exportReviewResponse.setVin(carVo.getVin());
             exportList.add(exportReviewResponse);
         }
