@@ -114,7 +114,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
         FeePeriodTimeExample feePeriodTimeExample = new FeePeriodTimeExample();
         if (carType == 0) {
             example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
-                    .andCarTypeEqualTo(1);
+                    .andCarTypeEqualTo(2);
             //读取计费时段配置
             feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
                     .andIsValidEqualTo(1).andCarTypeEqualTo(1);
