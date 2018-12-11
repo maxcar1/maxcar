@@ -61,6 +61,7 @@ public class AuditingController extends BaseController {
         reviewStep.setOrgld(user.getOrgId());
         List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
         //查询该用户是否在审核列表下
+        carParams.setMarket(user.getMarketId());
         pageInfo = carService.listReview(carParams);
         logger.info("=============="+pageInfo.getList());
         //过滤相同人不同审核等级
