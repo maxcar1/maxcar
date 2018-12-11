@@ -252,7 +252,9 @@
         <where>
             is_valid =1
             and brake_id = #{brakeId,jdbcType=VARCHAR}
-            and employees_id = #{employeesId,jdbcType=VARCHAR}
+            <if test="employeesId != null and employeesId != ''">
+                and employees_id = #{employeesId,jdbcType=VARCHAR}
+            </if>
             and market_id = #{marketId,jdbcType=VARCHAR}
             and leave_time is null
         </where>
