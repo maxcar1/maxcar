@@ -7,6 +7,8 @@ import com.maxcar.market.model.request.GetCarSpaceAndOfficeByMarketIdOrAreaIdReq
 import com.maxcar.market.model.response.GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse;
 import com.maxcar.market.service.InvoiceService;
 import com.maxcar.market.service.PropertyContractService;
+import com.maxcar.statistics.model.request.GetInventoryRankingByConditionRequest;
+import com.maxcar.statistics.model.request.GetInvoiceRankingByConditionRequest;
 import com.maxcar.statistics.model.request.RankingRequest;
 import com.maxcar.statistics.service.RankingService;
 import com.maxcar.stock.service.CarService;
@@ -14,6 +16,8 @@ import com.maxcar.user.entity.Market;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.service.MarketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +44,9 @@ public class RankingController extends BaseController {
     @Autowired
     private InvoiceService invoiceService;
 
+    @Autowired
+    private MarketService marketService;
+
     /**
      * param:
      * describe: 排名统计——获取指定条件市场排行  商户排行 --> 交易 condition
@@ -56,7 +63,7 @@ public class RankingController extends BaseController {
 
         User user = getCurrentUser(request);
         if (null == user) {
-            return getInterfaceResult("200","用户过期");
+            return getInterfaceResult("200", "用户过期");
         }
 
         if (!isManagerFlag(request)) {
@@ -79,7 +86,7 @@ public class RankingController extends BaseController {
      **/
     @RequestMapping("/ranking/getInventoryRankingByCondition")
     public InterfaceResult getInventoryRankingByCondition(@RequestBody @Valid GetInventoryRankingByConditionRequest getInventoryRankingByConditionRequest,
-                                                        BindingResult result, HttpServletRequest request) throws Exception {
+                                                          BindingResult result, HttpServletRequest request) throws Exception {
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
                 return getInterfaceResult("600", error.getDefaultMessage());
@@ -88,7 +95,7 @@ public class RankingController extends BaseController {
 
         User user = getCurrentUser(request);
         if (null == user) {
-            return getInterfaceResult("200","用户过期");
+            return getInterfaceResult("200", "用户过期");
         }
 
         if (!isManagerFlag(request)) {
@@ -103,9 +110,6 @@ public class RankingController extends BaseController {
         return getInterfaceResult("200", rankingService.getInventoryRankingByCondition(getInventoryRankingByConditionRequest));
     }
 
-
-    @Autowired
-    private MarketService marketService;
 
     @RequestMapping("/ranking/test")
     public InterfaceResult getPropertyContractAll() throws Exception {
@@ -132,20 +136,20 @@ public class RankingController extends BaseController {
             GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
             List<Market> marketList = marketService.selectAll();
             int parkCount = 0;
-           for(Market market : marketList){
-               String name = market.getName();
-               String marketNo = market.getMarketNo();
-               if(marketNo.equals("001")){
-                   continue;
-               }
-               requests.setMarketId(marketNo);
-               GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-               if (responses == null ) {
-                   interfaceResult.InterfaceResult600(name+"，没有配置车位浮动数！");
-                   return interfaceResult;
-               }
-            parkCount += (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
-           }
+            for(Market market : marketList){
+                String name = market.getName();
+                String marketNo = market.getMarketNo();
+                if(marketNo.equals("001")){
+                    continue;
+                }
+                requests.setMarketId(marketNo);
+                GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
+                if (responses == null ) {
+                    interfaceResult.InterfaceResult600(name+"，没有配置车位浮动数！");
+                    return interfaceResult;
+                }
+                parkCount += (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
+            }
 
             Integer count = Integer.parseInt(map.get("inMarketCarCount").toString());
 
@@ -173,8 +177,8 @@ public class RankingController extends BaseController {
             double saturability = Math.round(count / parkCount * 100) / 100.0;
             map.put("saturability", saturability);
 
-        interfaceResult.InterfaceResult200(map);
-
+            interfaceResult.InterfaceResult200(map);
+        }
         return interfaceResult;
     }
 
@@ -188,11 +192,12 @@ public class RankingController extends BaseController {
             marketId = currentUser.getMarketId();
         }
         InterfaceResult interfaceResult = new InterfaceResult();
-        Map<String, Object> map = invoiceService.nowDeal(marketId, tenantId);
+        Map<String , Object> map = invoiceService.nowDeal(marketId,tenantId);
 
         interfaceResult.InterfaceResult200(map);
 
         return interfaceResult;
     }
+
 
 }
