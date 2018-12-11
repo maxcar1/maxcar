@@ -2,7 +2,9 @@ package com.maxcar.statistics.dao;
 
 import com.maxcar.statistics.dao.base.BaseDao;
 import com.maxcar.statistics.dao.provider.CartypeDayProvider;
+import com.maxcar.statistics.model.request.GetInvoiceRankingByConditionRequest;
 import com.maxcar.statistics.model.request.GroupCartypeDayRequest;
+import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import com.maxcar.statistics.model.response.GroupCartypeDayByMonthResponse;
 import com.maxcar.statistics.model.response.GroupCartypeDayResponse;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -28,6 +30,14 @@ public interface CartypeDayDao extends BaseDao {
      **/
     @SelectProvider(type = CartypeDayProvider.class, method = "groupCartypeDay")
     List<GroupCartypeDayResponse> groupCartypeDay(GroupCartypeDayRequest parameter);
+
+    /**
+     * param:
+     * describe: 日表交易排名
+     * create_date:  lxy   2018/12/11  13:03
+     **/
+    @SelectProvider(type = CartypeDayProvider.class, method = "groupCartypeDayRanking")
+    List<GetInvoiceRankingResponse> groupCartypeDayRanking(GetInvoiceRankingByConditionRequest parameter);
 
 
 }

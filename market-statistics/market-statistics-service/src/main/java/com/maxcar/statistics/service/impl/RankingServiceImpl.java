@@ -1,8 +1,6 @@
 package com.maxcar.statistics.service.impl;
 
 import com.maxcar.base.util.StringUtil;
-import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
-import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
 import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
@@ -104,11 +102,30 @@ public class RankingServiceImpl implements RankingService {
 
     /**
      * param: 起止时间
-     * describe: 实时查询__排名统计——获取指定条件市场排行  商户排行 --> 交易 condition
+     * describe: 排名统计——获取指定条件市场排行  商户排行 --> 交易 condition
      * create_date:  lxy   2018/11/15  15:47
      **/
     @Override
     public List<GetInvoiceRankingResponse> getInvoiceRankingByCondition(GetInvoiceRankingByConditionRequest request) {
+
+        if ("brandName".equals(request.getType())) {
+
+            return carbrandMapperService.groupCarbrandInvoiceDayRanking(request);
+
+        } else if ("carType".equals(request.getType())) {
+
+            return cartypeMapperService.groupCartypeDayRanking(request);
+
+        } else if ("carYear".equals(request.getType())) {
+
+            return caryearMapperService.groupCaryearInvoiceDayRanking(request);
+
+        } else if ("carStocktime".equals(request.getType())) {
+
+            return carstocktimeMapperService.groupCarstocktimeInvoiceDayRanking(request);
+        }
+
+        return null;
 
        /* GetInvoiceRankingParameter parameter = new GetInvoiceRankingParameter();
 
@@ -159,18 +176,30 @@ public class RankingServiceImpl implements RankingService {
         parameter.setSelectCondition(stringBuffer.toString());
 
         return rankingMapperService.getInvoiceRanking(parameter);*/
-        return null;
-
     }
 
 
     /**
      * param:
-     * describe: 实时查询 —获取指定条件 市场排行  商户排行 --> 库存 condition
+     * describe:获取指定条件 市场排行  商户排行 --> 库存 condition
      * create_date:  lxy   2018/11/14  18:07
      **/
     @Override
     public List<GetInventoryRankingResponse> getInventoryRankingByCondition(GetInventoryRankingByConditionRequest request) {
+        if ("brandName".equals(request.getType())) {
+
+            return carbrandMapperService.groupCarbrandInventoryDayRanking(request);
+
+        } else if ("carYear".equals(request.getType())) {
+
+            return caryearMapperService.groupCaryearInventoryDayRaning(request);
+
+        } else if ("carStocktime".equals(request.getType())) {
+
+            return carstocktimeMapperService.groupCarstocktimeInventoryDayRanking(request);
+        }
+
+        return null;
 
      /*   GetInventoryRankingParameter parameter = new GetInventoryRankingParameter();
 
@@ -215,7 +244,6 @@ public class RankingServiceImpl implements RankingService {
         parameter.setSelectCondition(stringBuffer.toString());
 
         return rankingMapperService.getInventoryRanking(parameter);*/
-        return null;
     }
 
 

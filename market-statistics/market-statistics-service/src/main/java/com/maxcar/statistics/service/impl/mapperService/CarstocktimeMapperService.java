@@ -7,10 +7,7 @@ import com.maxcar.statistics.dao.CarstocktimeMonthDao;
 import com.maxcar.statistics.model.parameter.GetCarInvoiceTypeInvoiceReportParameter;
 import com.maxcar.statistics.model.parameter.GetInventoryReportParameter;
 import com.maxcar.statistics.model.parameter.InsertTParamter;
-import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryDayRequest;
-import com.maxcar.statistics.model.request.GroupCarstocktimeInventoryMonthRequest;
-import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceDayRequest;
-import com.maxcar.statistics.model.request.GroupCarstocktimeInvoiceMonthRequest;
+import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +42,39 @@ public class CarstocktimeMapperService {
         return carstocktimeDayDao.groupCarstocktimeInvoiceDay(parameter);
     }
 
+    /**
+     * param:
+     * describe: 日表交易排名
+     * create_date:  lxy   2018/12/11  13:33
+     **/
+    public List<GetInvoiceRankingResponse>  groupCarstocktimeInvoiceDayRanking(GetInvoiceRankingByConditionRequest parameter){
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("invoiceCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+
+        return carstocktimeDayDao.groupCarstocktimeInvoiceDayRanking(parameter);
+    }
+
+    /**
+     * param:
+     * describe: 日表库存排名
+     * create_date:  lxy   2018/12/11  14:48
+     **/
+    public  List<GetInventoryRankingResponse> groupCarstocktimeInventoryDayRanking(GetInventoryRankingByConditionRequest parameter){
+
+        if (StringUtil.isEmpty(parameter.getOrderBy())) {
+            parameter.setOrderBy("inventoryCount");
+        }
+
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
+
+        return carstocktimeDayDao.groupCarstocktimeInventoryDayRanking(parameter);
+    }
     /**
      * param:
      * describe: 统计当前的车辆库存天数日表库存集合
