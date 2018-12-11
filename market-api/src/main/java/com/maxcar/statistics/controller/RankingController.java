@@ -44,8 +44,8 @@ public class RankingController extends BaseController {
 
     @RequestMapping("/ranking/test")
     public InterfaceResult getPropertyContractAll() throws Exception {
-
-        return null;
+        rankingService.getYesterdayInvoiceRanking(null);
+        return getInterfaceResult("200",null);
     }
 
     @PostMapping("/ranking/stock")

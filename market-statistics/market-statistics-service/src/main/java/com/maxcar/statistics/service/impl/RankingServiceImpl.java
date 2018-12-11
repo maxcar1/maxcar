@@ -7,8 +7,7 @@ import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
 import com.maxcar.statistics.service.RankingService;
-import com.maxcar.statistics.service.impl.mapperService.BaseMapperService;
-import com.maxcar.statistics.service.impl.mapperService.RankingMapperService;
+import com.maxcar.statistics.service.impl.mapperService.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,19 @@ public class RankingServiceImpl implements RankingService {
     @Autowired
     private RankingMapperService rankingMapperService;
 
+
+    @Autowired
+    private CartypeMapperService cartypeMapperService;
+
+    @Autowired
+    private CarbrandMapperService carbrandMapperService;
+
+    @Autowired
+    private CaryearMapperService caryearMapperService;
+
+    @Autowired
+    private CarstocktimeMapperService carstocktimeMapperService;
+
     /**
      * param:
      * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 交易 condition
@@ -31,7 +43,20 @@ public class RankingServiceImpl implements RankingService {
      **/
     @Override
     public List<GetInvoiceRankingResponse> getYesterdayInvoiceRanking(GetYesterdayInvoiceRankingRequest request) {
-/*
+
+        try {
+
+            cartypeMapperService.InsertCartype();
+            carbrandMapperService.InserteCarbrand();
+            caryearMapperService.InsertCaryear();
+            carstocktimeMapperService.InsertCarstocktime();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
+        /*
         String selectCondition = " DATE_FORMAT(i.bill_time, '%Y-%m-%D') = DATE_FORMAT(CURDATE() - 1, '%Y-%m-%D')  ";
 
         if (StringUtil.isNotEmpty(request.getMarketId())) {
