@@ -115,52 +115,62 @@ public class CarReviewExample {
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(Integer value) {
+        public Criteria andIdEqualTo(String value) {
             addCriterion("id =", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(Integer value) {
+        public Criteria andIdNotEqualTo(String value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(Integer value) {
+        public Criteria andIdGreaterThan(String value) {
             addCriterion("id >", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andIdGreaterThanOrEqualTo(String value) {
             addCriterion("id >=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(Integer value) {
+        public Criteria andIdLessThan(String value) {
             addCriterion("id <", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(Integer value) {
+        public Criteria andIdLessThanOrEqualTo(String value) {
             addCriterion("id <=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<Integer> values) {
+        public Criteria andIdLike(String value) {
+            addCriterion("id like", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotLike(String value) {
+            addCriterion("id not like", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdIn(List<String> values) {
             addCriterion("id in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<Integer> values) {
+        public Criteria andIdNotIn(List<String> values) {
             addCriterion("id not in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(Integer value1, Integer value2) {
+        public Criteria andIdBetween(String value1, String value2) {
             addCriterion("id between", value1, value2, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andIdNotBetween(String value1, String value2) {
             addCriterion("id not between", value1, value2, "id");
             return (Criteria) this;
         }
@@ -812,6 +822,126 @@ public class CarReviewExample {
 
         public Criteria andIsValidNotBetween(Integer value1, Integer value2) {
             addCriterion("is_valid not between", value1, value2, "isValid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelIsNull() {
+            addCriterion("step_level is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelIsNotNull() {
+            addCriterion("step_level is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelEqualTo(Integer value) {
+            addCriterion("step_level =", value, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelNotEqualTo(Integer value) {
+            addCriterion("step_level <>", value, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelGreaterThan(Integer value) {
+            addCriterion("step_level >", value, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelGreaterThanOrEqualTo(Integer value) {
+            addCriterion("step_level >=", value, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelLessThan(Integer value) {
+            addCriterion("step_level <", value, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelLessThanOrEqualTo(Integer value) {
+            addCriterion("step_level <=", value, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelIn(List<Integer> values) {
+            addCriterion("step_level in", values, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelNotIn(List<Integer> values) {
+            addCriterion("step_level not in", values, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelBetween(Integer value1, Integer value2) {
+            addCriterion("step_level between", value1, value2, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andStepLevelNotBetween(Integer value1, Integer value2) {
+            addCriterion("step_level not between", value1, value2, "stepLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteIsNull() {
+            addCriterion("is_complete is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteIsNotNull() {
+            addCriterion("is_complete is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteEqualTo(Integer value) {
+            addCriterion("is_complete =", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteNotEqualTo(Integer value) {
+            addCriterion("is_complete <>", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteGreaterThan(Integer value) {
+            addCriterion("is_complete >", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteGreaterThanOrEqualTo(Integer value) {
+            addCriterion("is_complete >=", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteLessThan(Integer value) {
+            addCriterion("is_complete <", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteLessThanOrEqualTo(Integer value) {
+            addCriterion("is_complete <=", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteIn(List<Integer> values) {
+            addCriterion("is_complete in", values, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteNotIn(List<Integer> values) {
+            addCriterion("is_complete not in", values, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteBetween(Integer value1, Integer value2) {
+            addCriterion("is_complete between", value1, value2, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteNotBetween(Integer value1, Integer value2) {
+            addCriterion("is_complete not between", value1, value2, "isComplete");
             return (Criteria) this;
         }
     }

@@ -81,7 +81,7 @@ public class ReviewListServiceImpl implements ReviewListService {
                 }else {
                     carWarningExcel.setCarStatus("非质押车" );
                 }
-                carWarningExcel.setReasonDesc(hisWarning.getReasonDesc());
+                carWarningExcel.setOutReason(hisWarning.getOutReason());
                 carWarningExcel.setEvaluateRrice(hisWarning.getEvaluatePrice());
                 carWarningExcel.setBackTime(hisWarning.getBackTime());
                 carWarningExcel.setVin(hisWarning.getVin());

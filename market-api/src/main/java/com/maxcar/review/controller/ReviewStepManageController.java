@@ -372,10 +372,24 @@ public class ReviewStepManageController extends BaseController {
         }
         return  result;
     }
-    @RequestMapping(value = "/chechkCarOut", method = RequestMethod.POST)
-    public InterfaceResult chechkCarOut(@RequestBody  HttpServletRequest request) throws Exception {
-        InterfaceResult result = new InterfaceResult();
 
+    /**
+     * 判断该车是否有审核步骤
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/checkCarOut", method = RequestMethod.POST)
+    public InterfaceResult checkCarOut(@RequestBody ReviewStep reviewStep, HttpServletRequest request) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        //判断该类型车是否有审核步骤
+        List<ReviewStep> reviewStepList = reviewStepService.getReviewStep(reviewStep);
+        if(reviewStepList!=null&&!reviewStepList.isEmpty()){
+            result.setCode("200");
+        }else{
+            result.setCode("600");
+            result.setMsg("请完善审核步骤");
+        }
         return result;
     }
 }
