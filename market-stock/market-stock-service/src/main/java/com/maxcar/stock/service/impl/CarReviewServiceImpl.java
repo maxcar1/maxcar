@@ -54,8 +54,8 @@ public class CarReviewServiceImpl implements CarReviewService {
     }
 
     @Override
-    public List<CarReview> selectAllCarReview() {
-        return carReviewMapper.selectAllCarReview();
+    public List<CarReview> selectAllCarReviewByBackTime() {
+        return carReviewMapper.selectAllCarReviewByBackTime();
     }
 
     /**
@@ -65,7 +65,7 @@ public class CarReviewServiceImpl implements CarReviewService {
     public void updateTimeoutNotreturnCarStockStatus() throws Exception{
 
         // 返场时间到达以后将申请记录结束掉
-        List<CarReview> carReviewList = selectAllCarReview();
+         List<CarReview> carReviewList = selectAllCarReviewByBackTime();
         if (carReviewList != null && carReviewList.size() > 0){
             for (CarReview c: carReviewList) {
                 if (c.getBackTime().getTime() < System.currentTimeMillis()){
