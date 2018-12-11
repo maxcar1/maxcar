@@ -15,7 +15,7 @@ public class InventoryInvoiceDayEntity {
 
     private Double stockPrice;
 
-    private Integer stockDayAvg;
+    private Double stockDayAvg;
 
     private Integer outLibraryCount;
 
@@ -81,11 +81,11 @@ public class InventoryInvoiceDayEntity {
         this.stockPrice = stockPrice;
     }
 
-    public Integer getStockDayAvg() {
+    public Double getStockDayAvg() {
         return stockDayAvg;
     }
 
-    public void setStockDayAvg(Integer stockDayAvg) {
+    public void setStockDayAvg(Double stockDayAvg) {
         this.stockDayAvg = stockDayAvg;
     }
 

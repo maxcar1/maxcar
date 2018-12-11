@@ -1,5 +1,6 @@
 package com.maxcar.statistics.dao;
 
+import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.request.TradingRequest;
@@ -41,4 +42,6 @@ public interface InventoryInvoiceMonthMapper {
     List<Map<String , Object>> getTenantAvgStockTrend(StockRequest stockRequest);
 
     List<Map<String,Object>> getStockPriceTrend(StockRequest stockRequest);
+
+    List<InventoryInvoiceMonthEntity> selectInventoryInvoiceMonth();
 }

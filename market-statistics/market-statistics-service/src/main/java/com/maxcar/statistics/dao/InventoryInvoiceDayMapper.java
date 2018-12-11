@@ -42,5 +42,6 @@ public interface InventoryInvoiceDayMapper {
 
     Map<String,Object> getStockPriceTrend(StockRequest stockRequest);
 
-   void InsertInventoryInvoiceDay();
+    List<InventoryInvoiceDayEntity> selectInventoryInvoiceDay();
+
 }

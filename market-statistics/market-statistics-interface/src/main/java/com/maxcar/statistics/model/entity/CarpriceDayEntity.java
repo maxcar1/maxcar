@@ -19,7 +19,7 @@ public class CarpriceDayEntity implements Serializable {
 
     private Integer salesCount;
 
-    private Integer stockAvgStocktime;
+    private Double stockAvgStocktime;
 
     private Integer isvalid;
 
@@ -83,11 +83,11 @@ public class CarpriceDayEntity implements Serializable {
         this.salesCount = salesCount;
     }
 
-    public Integer getStockAvgStocktime() {
+    public Double getStockAvgStocktime() {
         return stockAvgStocktime;
     }
 
-    public void setStockAvgStocktime(Integer stockAvgStocktime) {
+    public void setStockAvgStocktime(Double stockAvgStocktime) {
         this.stockAvgStocktime = stockAvgStocktime;
     }
 

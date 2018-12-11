@@ -122,6 +122,13 @@ public class MarketServiceImpl extends BaseServiceImpl<Market, String> implement
     }
 
     @Override
+    public List<Market> selectAll() throws Exception {
+        MarketExample marketExample = new MarketExample();
+        List<Market> markets = marketMapper.selectByExample(marketExample);
+        return markets;
+    }
+
+    @Override
     public Market getMarketById(String id) {
         Market market = new Market();
         try {

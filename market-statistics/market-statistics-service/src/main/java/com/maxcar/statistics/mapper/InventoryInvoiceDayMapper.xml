@@ -8,7 +8,7 @@
         <result column="report_time" property="reportTime" jdbcType="VARCHAR"/>
         <result column="stock_count" property="stockCount" jdbcType="INTEGER"/>
         <result column="stock_price" property="stockPrice" jdbcType="DOUBLE"/>
-        <result column="stock_day_avg" property="stockDayAvg" jdbcType="INTEGER"/>
+        <result column="stock_day_avg" property="stockDayAvg" jdbcType="DOUBLE"/>
         <result column="out_library_count" property="outLibraryCount" jdbcType="INTEGER"/>
         <result column="tenant_space" property="tenantSpace" jdbcType="INTEGER"/>
         <result column="sales_count" property="salesCount" jdbcType="INTEGER"/>
@@ -530,9 +530,28 @@
         AND invoice_stock_id = #{carNumType}
         </if>
     </select>
-<!--
-    <select id="InsertInventoryInvoiceDay" resultType="java.util.Map"
-            parameterType="com.maxcar.statistics.model.request.StockRequest">
 
-    </select>-->
+    <select id="selectInventoryInvoiceDay" resultMap="BaseResultMap">
+        SELECT
+        i.market_id,
+        i.tenant_id,
+        DATE_FORMAT(NOW(), '%Y-%m-%d') AS report_time,
+        COUNT(i.price) AS sales_count,
+        IFNULL(SUM(i.price),0) AS sales_price,
+        AVG(i.price) AS sales_avg_price,
+        AVG(IFNULL(TO_DAYS(i.bill_time) - TO_DAYS(c.register_time),0)) AS stock_day_price_avg,
+        COUNT(*) AS stock_count,
+        SUM(cb.`market_price`) AS stock_price,
+        AVG(TO_DAYS(NOW()) - TO_DAYS(c.register_time)) AS stock_day_avg,
+        (SELECT COUNT(*) FROM maxcar_stock_l.car WHERE stock_status IN (4,5) AND update_time BETWEEN DATE_ADD(CURDATE(),INTERVAL - DAY(CURDATE()) + 1 DAY) AND  DATE_ADD(DATE_ADD(STR_TO_DATE(LAST_DAY(CURDATE()),'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY ), INTERVAL - 1 SECOND) AND tenant = i.tenant_id) AS out_library_count
+        FROM
+          (maxcar_market_l.`invoice` i LEFT JOIN maxcar_stock_l.`car` c
+          ON i.car_id = c.id) LEFT JOIN maxcar_stock_l.`car_base` cb ON c.id = cb.id
+        WHERE invoice_status = 2
+          AND c.stock_status IN (1,2,3)
+          AND c.car_type = 1
+          AND c.isvalid = 1
+          AND i.bill_time BETWEEN DATE_ADD(CURDATE(),INTERVAL - DAY(CURDATE()) + 1 DAY) AND  NOW()
+        GROUP BY i.tenant_id,i.market_id
+    </select>
 </mapper>
