@@ -37,7 +37,7 @@
 	<import resource="mybatis/spring-mybatis.xml"/>
 	<import resource="classpath:spring/spring-aop.xml" />
 	<import resource="dubbo/spring-statistics-service.xml"/>
-<!--	<import resource="classpath:spring/spring-quartz.xml" />-->
+	<import resource="classpath:spring/spring-quartz.xml" />
 
 	<!-- 定时扫描注解任务 -->
 	<task:annotation-driven/>

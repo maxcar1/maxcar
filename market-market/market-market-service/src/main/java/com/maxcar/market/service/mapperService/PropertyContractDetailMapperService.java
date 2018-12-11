@@ -174,28 +174,32 @@ public class PropertyContractDetailMapperService {
      **/
     private void endContract(GetPropertyContractDetailListRequest request, Integer status) {
         List<PropertyContractDetail> list = propertyContractDetailMapper.getAllByPropertyContractId(request);
+        if (null == list || list.isEmpty()) {
+            return;
+        }
         // 根据子合同 更新主合同状态
-        if (null != list && !list.isEmpty()) {
-            //每更改一个子合同状态需要查询主合同下是否还有其他子合同状态 如果其他子合同没有正常的 则合同状态为到期
-            list.forEach(x -> {
-                // 更改子合同状态
-                PropertyContractDetail updatePropertyContractDetail = new PropertyContractDetail();
-                updatePropertyContractDetail.setId(x.getId());
-                updatePropertyContractDetail.setPropertyContractDetailStatus(status);
-                updatePropertyContractDetail.setUpdateTime(new Date());
+      /*  if (null != list && !list.isEmpty()) {*/
+        //每更改一个子合同状态需要查询主合同下是否还有其他子合同状态 如果其他子合同没有正常的 则合同状态为到期
+        list.forEach(x -> {
+            // 更改子合同状态
+            PropertyContractDetail updatePropertyContractDetail = new PropertyContractDetail();
+            updatePropertyContractDetail.setId(x.getId());
+            updatePropertyContractDetail.setPropertyContractDetailStatus(status);
+            updatePropertyContractDetail.setUpdateTime(new Date());
 
-                if (ToolUtils.isOperationSuccess(propertyContractDetailMapper.updateByPrimaryKeySelective(updatePropertyContractDetail))) {
-                    // 释放物业状态
-                    String[] areaIds = x.getAreaId().split(",");
+            if (ToolUtils.isOperationSuccess(propertyContractDetailMapper.updateByPrimaryKeySelective(updatePropertyContractDetail))) {
+                // 释放物业状态
+                  /*  String[] areaIds = x.getAreaId().split(",");
                     for (int i = 0; i < areaIds.length; i++) {
                         areaShopService.updateRentById(areaIds[i], Magic.AREA_SHOP_RENT_STATUS_NOTRENT);
-                    }
-                    // 更新主合同状态
-                    updatePropertyContractDetail(x.getPropertyContractId(), status);
-                }
+                    }*/
+                areaShopService.updateRentById(x.getAreaId(), Magic.AREA_SHOP_RENT_STATUS_NOTRENT);
+                // 更新主合同状态
+                updatePropertyContractDetail(x.getPropertyContractId(), status);
+            }
 
-            });
-        }
+        });
+        /*}*/
     }
 
 
@@ -214,17 +218,20 @@ public class PropertyContractDetailMapperService {
             // 没有正常的子合同 更新主合同
             PropertyContract propertyContract = propertyContractMapper.selectByPrimaryKey(propertyContractId);
 
-            if (null != propertyContract && !status.equals(propertyContract.getStatus())) {
-                // 该主合同下没有正常的合同 修改合同状态
-                PropertyContract record = new PropertyContract();
-                record.setId(propertyContractId);
-                record.setStatus(status);
-                record.setUpdateTime(new Date());
-                if (ToolUtils.isOperationSuccess(propertyContractMapper.updateByPrimaryKeySelective(record))) {
-                    // 更改商户信息
-                    updateTenant(propertyContract.getTenantId(), status);
-                }
+            if (null == propertyContract || status.equals(propertyContract.getStatus())) {
+                return;
             }
+            /*if (null !=  propertyContract && !status.equals(propertyContract.getStatus())) {*/
+            // 该主合同下没有正常的合同 修改合同状态
+            PropertyContract record = new PropertyContract();
+            record.setId(propertyContractId);
+            record.setStatus(status);
+            record.setUpdateTime(new Date());
+            if (ToolUtils.isOperationSuccess(propertyContractMapper.updateByPrimaryKeySelective(record))) {
+                // 更改商户信息
+                updateTenant(propertyContract.getTenantId(), status, propertyContract.getMarketId());
+            }
+           /* }*/
         }
         return;
     }
@@ -234,7 +241,7 @@ public class PropertyContractDetailMapperService {
      * describe: 查看并更新商户状态
      * create_date:  lxy   2018/8/23  14:44
      **/
-    private void updateTenant(String tenantId, Integer status) {
+    private void updateTenant(String tenantId, Integer status, String markerId) {
         // 查看该商户下是否存在正常的合同 不存在修改商户信息
         GetPropertyContractAllRequest request = new GetPropertyContractAllRequest();
         request.setTenantId(tenantId);
@@ -244,6 +251,7 @@ public class PropertyContractDetailMapperService {
             //没有正常的主合同 更新商户
             UserTenant tenant = new UserTenant();
             tenant.setId(tenantId);
+            tenant.setMarketId(markerId);
             UserTenant userTenant = userTenantService.selectUserTenant(tenant);
             if (null != userTenant && !status.equals(userTenant.getStatus())) {
                 UserTenant updateUserTenant = new UserTenant();

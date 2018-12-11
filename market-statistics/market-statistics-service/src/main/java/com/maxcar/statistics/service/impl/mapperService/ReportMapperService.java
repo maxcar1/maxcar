@@ -108,6 +108,9 @@ public class ReportMapperService {
             stringBuffer.append(" AND i.car_invoice_type = #{carInvoiceType} ");
         }
 
+        stringBuffer.append("AND i.invoice_status  = '2' ");
+
+
         parameter.setSelectCondition(stringBuffer.toString());
 
         if (StringUtil.isEmpty(parameter.getOrderBy())) {

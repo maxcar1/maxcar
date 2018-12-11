@@ -13,16 +13,16 @@ import java.util.List;
 
 @Service
 public class RankingMapperService {
-
+/*
     @Autowired
-    private RankingDao rankingDao;
+    private RankingDao rankingDao;*/
 
     /**
      * param:
      * describe: 实时查询__总览——获取市场排行  商户排行 --> 交易 condition
      * create_date:  lxy   2018/11/14  18:03
      **/
-    public List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingParameter parameter) {
+   /* public List<GetInvoiceRankingResponse> getInvoiceRanking(GetInvoiceRankingParameter parameter) {
 
         String selectColumns = " i.market_id AS marketId,m.name AS marketName, IFNULL(COUNT(*), 0) AS invoiceCount,IFNULL(SUM(i.price), 0) AS invoicePrice ";
         String groupByColumns = " i.market_id ";
@@ -42,7 +42,7 @@ public class RankingMapperService {
         }
 
         return rankingDao.getInvoiceRanking(parameter);
-    }
+    }*/
 
 
     /**
@@ -50,7 +50,7 @@ public class RankingMapperService {
      * describe: 实时查询__总览——获取市场排行  商户排行 --> 库存 condition
      * create_date:  lxy   2018/11/14  18:07
      **/
-    public List<GetInventoryRankingResponse> getInventoryRanking(GetInventoryRankingParameter request) {
+   /* public List<GetInventoryRankingResponse> getInventoryRanking(GetInventoryRankingParameter request) {
         String selectColumns = " c.market_id AS marketId, m.name AS marketName, IFNULL(COUNT(*),0) AS 'inventoryCount',IFNULL(SUM(cb.evaluate_price),0) AS 'inventoryPrice' ";
         String groupByColumns = "c.market_id ";
 
@@ -69,6 +69,6 @@ public class RankingMapperService {
         }
 
         return rankingDao.getInventoryRanking(request);
-    }
+    }*/
 
 }
