@@ -1090,7 +1090,7 @@
         order by insert_time desc
     </select>
     <select id="getCarListByTenant" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id,id from car
         <where>
             and isvalid = 1 and car_type = 3
             and tenant in
