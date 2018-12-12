@@ -36,9 +36,9 @@ public class SyncContrat extends SyncStrategyInterface{
         try {
             propertyContractPayService.addPropertyContractPay();
             propertyContractService.endPropertyContract();
-            outMarketCarService.delCarByOutMarketTime();
-            outMarketCarService.downTaoBao();
-            carReviewService.updateTimeoutNotreturnCarStockStatus();
+//            outMarketCarService.delCarByOutMarketTime();
+//            outMarketCarService.downTaoBao();
+//            carReviewService.updateTimeoutNotreturnCarStockStatus();
         } catch (Exception e) {
             logger.error("每月统计数据出错");
             e.printStackTrace();

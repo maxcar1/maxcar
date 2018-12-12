@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.util.Date;
-
 
 /**
  * @program: maxcar-util
@@ -19,8 +17,15 @@ import java.util.Date;
  * @author: 罗顺锋
  * @create: 2018-04-23 09:50
  **/
-public class SyncCenter extends QuartzJobBean {
-    private static final Logger logger = LoggerFactory.getLogger(SyncCenter.class);
+public class SyncCarReview extends QuartzJobBean {
+    private static final Logger logger = LoggerFactory.getLogger(SyncCarReview.class);
+//    @Autowired
+//    private AsyncExecutorTaskService asyncExecutorTaskService;
+    @Autowired
+    private PropertyContractPayService propertyContractPayService;
+
+    @Autowired
+    private PropertyContractService propertyContractService;
 
     @Autowired
     private OutMarketCarService outMarketCarService;
@@ -34,8 +39,8 @@ public class SyncCenter extends QuartzJobBean {
 //        SyncContrat syncContrat = new SyncContrat();
 //        asyncExecutorTaskService.doJob(syncContrat);
         try {
-//            propertyContractPayService.addPropertyContractPay();
-//            propertyContractService.endPropertyContract();
+            propertyContractPayService.addPropertyContractPay();
+            propertyContractService.endPropertyContract();
             outMarketCarService.delCarByOutMarketTime();
             outMarketCarService.downTaoBao();
             carReviewService.updateTimeoutNotreturnCarStockStatus();

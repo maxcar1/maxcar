@@ -15,6 +15,7 @@
         <property name="triggers">
             <list>
                 <ref bean="dayReportTrigger" />
+                <ref bean="dayReportTriggerReview" />
             </list>
         </property>
     </bean>
@@ -29,6 +30,20 @@
     <!--定义任务时间-->
     <bean id="dayReportTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="dayReport" />
-        <property name="cronExpression" value="0/10 * * * * ?" />
+        <property name="cronExpression" value="0 0 19 * * ? *" />
+    </bean>
+
+    <!--定义job-->
+    <bean id="dayReportReview" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass">
+            <value>com.maxcar.market.quartz.SyncCarReview</value>
+        </property>
+        <property name="durability" value="true" />
+        <property name="requestsRecovery" value="true" />
+    </bean>
+    <!--定义任务时间-->
+    <bean id="dayReportTriggerReview" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="dayReportReview" />
+        <property name="cronExpression" value="0/11 * * * * ?" />
     </bean>
 </beans>
