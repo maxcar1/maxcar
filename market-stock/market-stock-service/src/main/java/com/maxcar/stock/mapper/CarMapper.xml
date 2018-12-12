@@ -1790,8 +1790,8 @@
         case when t.stock_status = 1 then '在场'
              when t.stock_status = 2 then '在场'
              when t.stock_status = 3 then '出场'
-             when t.stock_status = 4 then '售出出场'
-             when t.stock_status = 5 then '售出在场'
+             when t.stock_status = 4 then '售出在场'
+             when t.stock_status = 5 then '售出出场'
              end as stockStatus,
         case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
         date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
