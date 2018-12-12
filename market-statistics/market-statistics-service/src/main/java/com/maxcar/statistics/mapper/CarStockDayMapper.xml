@@ -30,11 +30,11 @@
   <insert id="insert" parameterType="com.maxcar.statistics.model.entity.CarStockDayEntity" >
     insert into carstock_day (id, market_id, tenant_id, 
       report_time, invoice_stock_id, invoice_stock_name, 
-      sales_count, isvalid, version, 
+      isvalid, version,
       register_time)
     values (#{id,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, 
       #{reportTime,jdbcType=VARCHAR}, #{invoiceStockId,jdbcType=VARCHAR}, #{invoiceStockName,jdbcType=VARCHAR}, 
-      #{salesCount,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{version,jdbcType=INTEGER}, 
+      #{isvalid,jdbcType=INTEGER}, #{version,jdbcType=INTEGER},
       #{registerTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarStockDayEntity" >

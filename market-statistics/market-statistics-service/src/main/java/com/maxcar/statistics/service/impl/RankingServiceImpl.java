@@ -44,6 +44,13 @@ public class RankingServiceImpl implements RankingService {
             carbrandMapperService.InserteCarbrand();
             caryearMapperService.InsertCaryear();
             carstocktimeMapperService.InsertCarstocktime();
+
+            InsertStockAndInvoiceImpl insertStockAndInvoice = new InsertStockAndInvoiceImpl();
+            insertStockAndInvoice.InsertCarpriceDay();
+            insertStockAndInvoice.InsertCarstockDay();
+            insertStockAndInvoice.InsertCarstockMonth();
+            insertStockAndInvoice.InsertInventoryInvoiceDay();
+            insertStockAndInvoice.InsertInventoryInvoiceMonth();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

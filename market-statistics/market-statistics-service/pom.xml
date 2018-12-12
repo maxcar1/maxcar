@@ -17,13 +17,9 @@
             <groupId>com.maxcar</groupId>
             <artifactId>market-market-interface</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-		<dependency>
-			<groupId>com.maxcar</groupId>
-			<artifactId>market-market-interface</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+    </dependencies>
     <parent>
 		<groupId>com.maxcar</groupId>
 		<artifactId>market-statistics</artifactId>
