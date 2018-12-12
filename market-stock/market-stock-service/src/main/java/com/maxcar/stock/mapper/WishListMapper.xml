@@ -49,8 +49,8 @@
       </if>
         )
       and cp.type=0
-    <if test="marketId != null" >
-      AND ca.market_id = #{marketId}
+    <if test="market != null" >
+      AND ca.market_id = #{market}
     </if>
 
 

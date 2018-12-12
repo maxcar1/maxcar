@@ -37,4 +37,11 @@ public class RoleResourceOptionServiceImpl extends BaseServiceImpl<RoleResourceO
         map.put("parentRoleId",parentRoleId);
         return roleResourceOptionMapper.getResourceOptionaByRoleIdOrResourceId(map);
     }
+
+    @Override
+    public List<ResourceOption> getResourceOptionByUserIdAndResourceId(Map map){
+        return null;
+    }
+
+
 }

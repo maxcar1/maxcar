@@ -18,4 +18,12 @@ public interface MessageProducerService {
      */
     Result sendMessage(String topic, Object data, Boolean ifPartition,
                        Integer partitionNum, String role);
+
+    /**
+     * 根据市场获取同步topic
+     * @param marketId
+     * @return
+     * @throws Exception
+     */
+    String getTopic(String marketId)throws Exception;
 }
