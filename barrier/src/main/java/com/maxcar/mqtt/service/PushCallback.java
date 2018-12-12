@@ -309,6 +309,7 @@ public class PushCallback implements MqttCallback {
     private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {
         Map map = new HashMap();
         logger.info("上行到云端的json==>{}",json);
+        long picBegin = System.currentTimeMillis();
         BarrierCameraService barrierCameraService = ApplicationContextHolder.getBean("barrierCameraService");
         BarrierCamera barrierCamera = new BarrierCamera();
         barrierCamera.setBarrierId(barrier.getBarrierId());
@@ -329,6 +330,8 @@ public class PushCallback implements MqttCallback {
                 default:
                     break;
             }
+            long picEnd = System.currentTimeMillis();
+            logger.info("海康拍照处理耗时==>{}s",(picEnd - picBegin)/1000);
             if (!map.isEmpty()) {
                 boolean result = (Boolean) map.get("result");
                 if (result) {
@@ -338,6 +341,7 @@ public class PushCallback implements MqttCallback {
                     String objK = objKey.replace("\\","/");
                     String imageFileStr = imageFile.replace("\\","/");
                     String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);
+                    logger.info("图片上传阿里云处理耗时==>{}s",(System.currentTimeMillis() - picEnd)/1000);
                     sendCloud(json,url,postParam,imageUrl);
                 } else {
                     logger.info("====摄像机抓拍失败====");
