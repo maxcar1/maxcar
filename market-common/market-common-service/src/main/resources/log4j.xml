@@ -8,12 +8,6 @@
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d [%p] %c{1} - %m%n" />
         </layout>
-        <!--过滤器设置输出的级别 -->
-        <filter class="com.maxcar.base.util.cuslogs.CustomerLogFilter">
-            <param name="levelMin" value="DEBUG" />
-            <param name="levelMax" value="Customer" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
     </appender>
 
     <appender name="dailyRollingFile" class="org.apache.log4j.DailyRollingFileAppender">
@@ -24,12 +18,6 @@
             <param name="ConversionPattern"
                    value="%d{yyyy-MM-dd HH:mm:ss\} %m%n"></param>
         </layout>
-        <!--过滤器设置输出的级别 -->
-        <filter class="com.maxcar.base.util.cuslogs.CustomerLogFilter">
-            <param name="levelMin" value="Customer" />
-            <param name="levelMax" value="Customer" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
     </appender>
 
     <appender name="dailyRollingFile_System" class="org.apache.log4j.DailyRollingFileAppender">
@@ -40,18 +28,12 @@
             <param name="ConversionPattern"
                    value="%d [%p] %c{1} - %m%n"></param>
         </layout>
-        <!--过滤器设置输出的级别 -->
-        <filter class="com.maxcar.base.util.cuslogs.CustomerLogFilter">
-            <param name="levelMin" value="DEBUG" />
-            <param name="levelMax" value="Customer" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
     </appender>
 
     <!-- 根logger的设置-->
     <root>
         <priority value ="INFO"/>
-        <priority value ="DEBUG"/>
+        <priority value ="info"/>
         <appender-ref ref="Console"/>
         <appender-ref ref="dailyRollingFile"/>
         <appender-ref ref="dailyRollingFile_System"/>
