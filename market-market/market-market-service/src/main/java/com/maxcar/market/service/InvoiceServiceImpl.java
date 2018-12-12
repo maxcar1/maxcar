@@ -59,7 +59,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
 
 
     @Override
-    public PageInfo getInvoiceList(Invoice invoice) {
+    public PageInfo getInvoiceList(Invoice invoice) throws ParseException {
         InvoiceExample invoiceExample = new InvoiceExample();
         InvoiceExample.Criteria criteria = invoiceExample.createCriteria();
         if (null != invoice.getRemark() && invoice.getRemark() == 2) {//查询开票申请列表
@@ -86,11 +86,17 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         }
         if (null != invoice.getBillTimeStart() && null != invoice.getBillTimeEnd()) {
             criteria.andBillTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeStart(), "yyyy-MM-dd"));
-            criteria.andBillTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getBillTimeEnd(), "yyyy-MM-dd"));
+            String billTimeEnd = invoice.getBillTimeEnd();
+            Date date = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+            Date dayEnd = DateUtils.getDayEnd(date);
+            criteria.andBillTimeLessThanOrEqualTo(dayEnd);
         }
         if (null != invoice.getSyncTimeStart() && null != invoice.getSyncTimeEnd()) {
             criteria.andSyncTimeGreaterThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeStart(), "yyyy-MM-dd"));
-            criteria.andSyncTimeLessThanOrEqualTo(DateUtils.getDateFromString(invoice.getSyncTimeEnd(), "yyyy-MM-dd"));
+            String syncTimeEnd = invoice.getSyncTimeEnd();
+            Date date = DateUtils.parseDate(syncTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+            Date dayEnd = DateUtils.getDayEnd(date);
+            criteria.andSyncTimeLessThanOrEqualTo(dayEnd);
         }
         if (null != invoice.getInvoicePortof()) {
             criteria.andInvoicePortofEqualTo(invoice.getInvoicePortof());
