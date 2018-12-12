@@ -87,11 +87,8 @@ public class AuditingController extends BaseController {
         c.setReviewId(reviewId);
         CarReview carReview = carReviewService.getCarReview(c);
         if(carReview != null){
-            /*User user = new User();
-            User user = new User();
-            //user.setUserId(carReview.getUserId());
-             user = userService.selectByPrimaryKey(carReview.getUserId());*/
-            carReview.setUserName(user.getUserName());
+            User u= userService.selectByPrimaryKey(carReview.getUserId());
+            carReview.setUserName(u.getUserName());
             map.put("carReview",carReview);
             List<CarDetails> list = carBaseService.getCarBaseById(carReview.getCarId());
             CarDetails carDetails = list.get(0);
