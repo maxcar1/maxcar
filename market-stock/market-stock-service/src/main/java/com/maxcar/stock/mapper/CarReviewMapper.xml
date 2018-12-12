@@ -362,77 +362,79 @@
 
 
   <select id="selectByHisWarning" resultType="com.maxcar.stock.pojo.HisWarning">
-    SELECT
-    cc.rfid,
-    cc.vin,
-    cc.carStatus,
-    cc.tenant,
-    cc.carId,
-    cc.brandCode,
-    cc.brandName,
-    cc.seriesCode,
-    cc.seriesName,
-    cc.stockStatus,
-    cc.modelName,
-    cr.user_id 'userId',
-    cr.out_reason 'outReason',
-    cr.id,
-    cr.back_time 'backTime',
-    cr.is_pass 'isPass',
-    cr.reason_desc 'reasonDesc',
-    cr.is_pledge 'isPledge',
-    cr.is_valid 'isValid',
-    cr.market_id 'matketId'
-    FROM
-    car_review cr
-    RIGHT JOIN (
-    SELECT
-    c.rfid,
-    c.vin,
-    c.car_status 'carStatus',
-    c.tenant,
-    c.stock_status 'stockStatus',
-    c.id 'carId',
-    cb.brand_code AS 'brandCode',
-    cb.brand_name AS 'brandName',
-    cb.model_name AS 'modelName',
-    cb.series_code 'seriesCode',
-    cb.series_name AS 'seriesName'
-    FROM
-    car c
-    LEFT JOIN car_base cb ON c.id = cb.id
-    WHERE 1=1
-    <if test="brandCode != null and brandCode != ''" >
-      and cb.brand_code = #{brandCode,jdbcType=VARCHAR}
-    </if>
-    <if test="seriesCode != null and seriesCode != ''" >
-      and cb.series_code = #{seriesCode,jdbcType=VARCHAR}
-    </if>
-    <if test="tenant != null and tenant != ''" >
-      and c.tenant = #{tenant,jdbcType=VARCHAR}
-    </if>
-    <if test="vin != null and vin != ''" >
-      and c.vin like concat(concat('%',#{vin}),'%')
-    </if>
-    <if test="rfid != null and rfid != ''" >
-      and c.rfid = #{rfid,jdbcType=VARCHAR}
-    </if>
-) cc on cc.carId = cr.car_id
-    WHERE
-    cr.is_pledge = 1
-    AND cr.is_pass = 1
-    AND cr.is_valid = 1
-    AND cc.stockStatus = 3
-    OR (
-    cr.is_pledge = 2
-    AND (
-    cr.back_time > NOW()
-    AND date_add(NOW(), INTERVAL 1 HOUR) > cr.back_time
-    )
-    )
-    AND market_id = #{marketId,jdbcType=VARCHAR}
-    ORDER BY
-    backTime asc
+      SELECT
+      cc.rfid,
+      cc.vin,
+      cc.carStatus,
+      cc.tenant,
+      cc.carId,
+      cc.brandCode,
+      cc.brandName,
+      cc.seriesCode,
+      cc.seriesName,
+      cc.stockStatus,
+      cc.modelName,
+      cr.user_id 'userId',
+      cr.out_reason 'outReason',
+      cr.id,
+      cr.back_time 'backTime',
+      cr.is_pass 'isPass',
+      cr.reason_desc 'reasonDesc',
+      cr.is_pledge 'isPledge',
+      cr.is_valid 'isValid',
+      cr.market_id 'matketId'
+      FROM
+      car_review cr
+      RIGHT JOIN (
+      SELECT
+      c.rfid,
+      c.vin,
+      c.car_status 'carStatus',
+      c.tenant,
+      c.stock_status 'stockStatus',
+      c.id 'carId',
+      cb.brand_code AS 'brandCode',
+      cb.brand_name AS 'brandName',
+      cb.model_name AS 'modelName',
+      cb.series_code 'seriesCode',
+      cb.series_name AS 'seriesName'
+      FROM
+      car c
+      LEFT JOIN car_base cb ON c.id = cb.id
+      WHERE 1=1
+      <if test="brandCode != null and brandCode != ''" >
+          and cb.brand_code = #{brandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="seriesCode != null and seriesCode != ''" >
+          and cb.series_code = #{seriesCode,jdbcType=VARCHAR}
+      </if>
+      <if test="tenant != null and tenant != ''" >
+          and c.tenant = #{tenant,jdbcType=VARCHAR}
+      </if>
+      <if test="vin != null and vin != ''" >
+          and c.vin like concat(concat('%',#{vin}),'%')
+      </if>
+      <if test="rfid != null and rfid != ''" >
+          and c.rfid = #{rfid,jdbcType=VARCHAR}
+      </if>
+      ) cc on cc.carId = cr.car_id
+      WHERE
+      (
+      cr.is_pledge = 1
+      OR (
+      cr.is_pledge = 2
+      AND (
+      cr.back_time > NOW()
+      AND date_add(NOW(), INTERVAL 1 HOUR) > cr.back_time
+      )
+      )
+      )
+      AND market_id = #{marketId,jdbcType=VARCHAR}
+      AND cr.is_valid = 1
+      and cc.stockStatus = 3
+      AND cr.is_pass = 1
+      ORDER BY
+      backTime asc
 
   </select>
 
