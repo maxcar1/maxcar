@@ -14,6 +14,7 @@
         <result column="sales_count" property="salesCount" jdbcType="INTEGER"/>
         <result column="sales_price" property="salesPrice" jdbcType="DOUBLE"/>
         <result column="sales_avg_price" property="salesAvgPrice" jdbcType="DOUBLE"/>
+        <result column="stock_day_price_avg" property="stockDayPriceAvg" jdbcType="DOUBLE"/>
         <result column="version" property="version" jdbcType="INTEGER"/>
         <result column="isvalid" property="isvalid" jdbcType="INTEGER"/>
         <result column="register_time" property="registerTime" jdbcType="TIMESTAMP"/>
@@ -49,13 +50,13 @@
     insert into inventory_invoice_day (id, market_id, tenant_id, 
       report_time, stock_count, stock_price, 
       stock_day_avg, out_library_count, tenant_space, 
-      sales_count, sales_price, sales_avg_price, 
+      sales_count, sales_price, sales_avg_price, stock_day_price_avg ,
       version, isvalid, register_time
       )
     values (#{id,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, 
-      #{reportTime,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{stockPrice,jdbcType=DOUBLE}, 
+      #{reportTime,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{stockPrice,jdbcType=DOUBLE},
       #{stockDayAvg,jdbcType=INTEGER}, #{outLibraryCount,jdbcType=INTEGER}, #{tenantSpace,jdbcType=INTEGER}, 
-      #{salesCount,jdbcType=INTEGER}, #{salesPrice,jdbcType=DOUBLE}, #{salesAvgPrice,jdbcType=DOUBLE}, 
+      #{salesCount,jdbcType=INTEGER}, #{salesPrice,jdbcType=DOUBLE}, #{salesAvgPrice,jdbcType=DOUBLE}, #{stockDayPriceAvg,jdbcType=DOUBLE},
       #{version,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{registerTime,jdbcType=TIMESTAMP}
       )
   </insert>

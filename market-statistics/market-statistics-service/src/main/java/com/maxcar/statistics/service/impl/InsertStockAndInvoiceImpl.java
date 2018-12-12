@@ -1,5 +1,8 @@
 package com.maxcar.statistics.service.impl;
 
+import com.maxcar.base.util.StringUtil;
+import com.maxcar.market.model.request.GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest;
+import com.maxcar.market.model.response.GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse;
 import com.maxcar.market.service.PropertyContractService;
 import com.maxcar.statistics.dao.*;
 import com.maxcar.statistics.model.entity.*;
@@ -123,6 +126,9 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
                             break;
                     }
                     car.setInvoicePriceName(invoicePriceName);
+                    car.setIsvalid(1);
+                    car.setVersion(1);
+                    car.setRegisterTime(new Date());
                     carpriceDayMapper.insert(car);
                 }
             }
@@ -335,6 +341,20 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
     public void InsertInventoryInvoiceDay() throws Exception {
         List<InventoryInvoiceDayEntity> inventoryInvoiceDayEntities = inventoryInvoiceDayMapper.selectInventoryInvoiceDay();
         for(InventoryInvoiceDayEntity invpice : inventoryInvoiceDayEntities){
+            String tenantId = invpice.getTenantId();
+            String marketId = invpice.getMarketId();
+
+            GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
+            requests.setMarketId(marketId);
+            if(StringUtil.isNotEmpty(tenantId)) {
+                requests.setTenantId(tenantId);
+            }
+            GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
+            if(responses == null){
+                System.out.println("定时任务 库存交易，"+marketId+"市场没有配置浮动车位");
+            }
+            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal() );
+            invpice.setTenantSpace(parkCount);
             invpice.setIsvalid(1);
             invpice.setVersion(1);
             invpice.setRegisterTime(new Date());
@@ -346,6 +366,21 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
     public void InsertInventoryInvoiceMonth() throws Exception {
         List<InventoryInvoiceMonthEntity> inventoryInvoiceMonthEntities = inventoryInvoiceMonthMapper.selectInventoryInvoiceMonth();
         for(InventoryInvoiceMonthEntity invpice : inventoryInvoiceMonthEntities){
+            String tenantId = invpice.getTenantId();
+            String marketId = invpice.getMarketId();
+
+            GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
+            requests.setMarketId(marketId);
+            if(StringUtil.isNotEmpty(tenantId)) {
+                requests.setTenantId(tenantId);
+            }
+            GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
+            if(responses == null){
+                System.out.println("定时任务 库存交易，"+marketId+"市场没有配置浮动车位");
+            }
+            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal() );
+            invpice.setTenantSpace(parkCount);
+
             invpice.setIsvalid(1);
             invpice.setVersion(1);
             invpice.setRegisterTime(new Date());

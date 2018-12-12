@@ -33,6 +33,16 @@ public class InventoryInvoiceDayEntity {
 
     private Date registerTime;
 
+    private Double stockDayPriceAvg;
+
+    public Double getStockDayPriceAvg() {
+        return stockDayPriceAvg;
+    }
+
+    public void setStockDayPriceAvg(Double stockDayPriceAvg) {
+        this.stockDayPriceAvg = stockDayPriceAvg;
+    }
+
     public Integer getId() {
         return id;
     }
