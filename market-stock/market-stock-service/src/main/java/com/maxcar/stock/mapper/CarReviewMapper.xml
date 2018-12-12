@@ -439,7 +439,7 @@
   </select>
 
   <select id="getCarRecord" parameterType="com.maxcar.stock.pojo.CarReview" resultMap="CarRecordVoMap">
-    SELECT a.id as review_id,c.insert_time as time,c.type,d.barrier_position
+    SELECT a.id as review_id,date_format(c.insert_time, '%Y-%m-%d %H:%i:%s') AS time,c.type,d.barrier_position
     from car_review a
     LEFT JOIN car b
     on a.car_id = b.id
