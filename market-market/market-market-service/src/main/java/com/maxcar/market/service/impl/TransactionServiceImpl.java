@@ -109,6 +109,24 @@ public class TransactionServiceImpl extends BaseServiceImpl<Invoice, String> imp
             String s = DateUtils.formatDate(dayEnd);
             invoice.setBillTimeStart(request.getBillTimeStart());
             invoice.setBillTimeEnd(s);
+        } else {
+            Date date = new Date();
+            Date dayEnd = DateUtils.getDayEnd(date);
+            String s = DateUtils.formatDate(dayEnd);
+            String[] split = s.split("-");
+            Integer year = Integer.parseInt(split[0]);
+            Integer month = Integer.parseInt(split[1]);
+            String day = split[2];
+            for (int i = 0; i < 3; i++) {
+                if (month == 1) {
+                    month = month - 1;
+                } else {
+                    year = year - 1;
+                    month = 12;
+                }
+                invoice.setBillTimeStart(year.toString() + month.toString() + day);
+                invoice.setBillTimeEnd(s);
+            }
         }
 //        List<Invoice> invoices = invoiceMapper.selectByExample(invoiceExample);
         List<TradeInformation> tradeInformations = invoiceMapper.detailsExcel(invoice);

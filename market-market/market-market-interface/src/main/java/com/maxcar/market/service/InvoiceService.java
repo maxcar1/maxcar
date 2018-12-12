@@ -22,7 +22,7 @@ public interface InvoiceService extends BaseService<Invoice, String> {
 
     Invoice selectInvoiceTotalCount();
 
-    PageInfo getInvoiceList(Invoice invoice);
+    PageInfo getInvoiceList(Invoice invoice) throws ParseException;
 
     Invoice selectInvoiceDetailById(String id);
 
