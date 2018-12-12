@@ -61,6 +61,18 @@
       #{salesCount,jdbcType=INTEGER}, #{salesPrice,jdbcType=DOUBLE}, #{salesAvgPrice,jdbcType=DOUBLE}, 
       #{version,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{registerTime,jdbcType=TIMESTAMP}
       )
+      ON DUPLICATE KEY  UPDATE
+      stock_count = VALUES (stockCount),
+      stock_price = VALUES (stockPrice),
+      stock_day_avg = VALUES (stockDayAvg),
+      out_library_count = VALUES (outLibraryCount),
+       tenant_space = VALUES (tenantSpace),
+      sales_count = VALUES (salesCount),
+      sales_price = VALUES (salesPrice),
+       sales_avg_price = VALUES (salesAvgPrice),
+      version = VALUES (version),
+      isvalid = VALUES (isvalid),
+      register_time = now();
   </insert>
     <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity">
         insert into inventory_invoice_month

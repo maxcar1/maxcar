@@ -1,9 +1,11 @@
 package com.maxcar.statistics.service.impl;
 
 import com.maxcar.base.util.StringUtil;
+import com.maxcar.statistics.dao.InventoryInvoiceDayMapper;
 import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
 import com.maxcar.statistics.model.response.GetInventoryRankingResponse;
+import com.maxcar.statistics.model.response.GroupYesterdayRankingResponse;
 import com.maxcar.statistics.service.RankingService;
 import com.maxcar.statistics.service.impl.mapperService.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,6 @@ import java.util.List;
 @Service("rankingService")
 public class RankingServiceImpl implements RankingService {
 
-    @Autowired
-    private RankingMapperService rankingMapperService;
-
 
     @Autowired
     private CartypeMapperService cartypeMapperService;
@@ -34,70 +33,44 @@ public class RankingServiceImpl implements RankingService {
     @Autowired
     private CarstocktimeMapperService carstocktimeMapperService;
 
-    /**
-     * param:
-     * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 交易 condition
-     * create_date:  lxy   2018/11/14  18:03
-     **/
+    @Autowired
+    private InventoryInvoiceDayMapper inventoryInvoiceDayMapper;
+
     @Override
-    public List<GetInvoiceRankingResponse> getYesterdayInvoiceRanking(GetYesterdayInvoiceRankingRequest request) {
+    public void  test(){
 
         try {
-
             cartypeMapperService.InsertCartype();
             carbrandMapperService.InserteCarbrand();
             caryearMapperService.InsertCaryear();
             carstocktimeMapperService.InsertCarstocktime();
 
+            InsertStockAndInvoiceImpl insertStockAndInvoice = new InsertStockAndInvoiceImpl();
+            insertStockAndInvoice.InsertCarpriceDay();
+            insertStockAndInvoice.InsertCarstockDay();
+            insertStockAndInvoice.InsertCarstockMonth();
+            insertStockAndInvoice.InsertInventoryInvoiceDay();
+            insertStockAndInvoice.InsertInventoryInvoiceMonth();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-
-        /*
-        String selectCondition = " DATE_FORMAT(i.bill_time, '%Y-%m-%D') = DATE_FORMAT(CURDATE() - 1, '%Y-%m-%D')  ";
-
-        if (StringUtil.isNotEmpty(request.getMarketId())) {
-            selectCondition += " AND i.market_id = #{marketId} ";
-            selectCondition += " AND i.tenant_id != '' ";
-        }
-
-        GetInvoiceRankingParameter parameter = new GetInvoiceRankingParameter();
-
-        parameter.setMarketId(request.getMarketId());
-        parameter.setOrderBy(request.getOrderBy());
-
-        parameter.setSelectCondition(selectCondition);
-
-        return rankingMapperService.getInvoiceRanking(parameter);*/
-        return null;
     }
-
-
     /**
      * param:
-     * describe: 实时查询__总览——获取昨日市场排行  商户排行 --> 库存 condition
-     * create_date:  lxy   2018/11/14  18:07
+     * describe: 总览——获取昨日市场排行  商户排行
+     * create_date:  lxy   2018/11/14  18:03
      **/
     @Override
-    public List<GetInventoryRankingResponse> getYesterdayInventoryRanking(GetYesterdayInventoryRankingRequest request) {
-       /* String selectCondition = " DATE_FORMAT(c.insert_time, '%Y-%m-%D') < DATE_FORMAT(CURDATE(), '%Y-%m-%D')  ";
-        selectCondition += " AND  c.stock_status in ('1','2','3') ";
+    public List<GroupYesterdayRankingResponse> getYesterdayRanking(GroupYesterdayRankingRequest request) {
 
-        if (StringUtil.isNotEmpty(request.getMarketId())) {
-            selectCondition += " AND c.market_id = #{marketId}  ";
-            selectCondition += " AND c.tenant != '' ";
+        if (StringUtil.isEmpty(request.getOrderBy())){
+            request.setOrderBy("invoiceCount");
         }
 
-        GetInventoryRankingParameter getInventoryRankingParameter = new GetInventoryRankingParameter();
-        getInventoryRankingParameter.setMarketId(request.getMarketId());
-        getInventoryRankingParameter.setOrderBy(request.getOrderBy());
-
-        getInventoryRankingParameter.setSelectCondition(selectCondition);
-
-        return rankingMapperService.getInventoryRanking(getInventoryRankingParameter);*/
-        return null;
+        return inventoryInvoiceDayMapper.groupYesterdayRanking(request);
     }
+
 
 
     /**
@@ -110,17 +83,25 @@ public class RankingServiceImpl implements RankingService {
 
         if ("brandName".equals(request.getType())) {
 
+            request.setBrandName(request.getParameter());
+
             return carbrandMapperService.groupCarbrandInvoiceDayRanking(request);
 
-        } else if ("carType".equals(request.getType())) {
+        } else if ("car_invoice_type".equals(request.getType())) {
+
+            request.setTypeId(request.getParameter());
 
             return cartypeMapperService.groupCartypeDayRanking(request);
 
-        } else if ("carYear".equals(request.getType())) {
+        } else if ("car_year".equals(request.getType())) {
+
+            request.setYearId(request.getParameter());
 
             return caryearMapperService.groupCaryearInvoiceDayRanking(request);
 
-        } else if ("carStocktime".equals(request.getType())) {
+        } else if ("car_stocktime".equals(request.getType())) {
+
+            request.setStocktimeId(request.getParameter());
 
             return carstocktimeMapperService.groupCarstocktimeInvoiceDayRanking(request);
         }
@@ -188,13 +169,19 @@ public class RankingServiceImpl implements RankingService {
     public List<GetInventoryRankingResponse> getInventoryRankingByCondition(GetInventoryRankingByConditionRequest request) {
         if ("brandName".equals(request.getType())) {
 
+            request.setBrandName(request.getParameter());
+
             return carbrandMapperService.groupCarbrandInventoryDayRanking(request);
 
-        } else if ("carYear".equals(request.getType())) {
+        } else if ("car_year".equals(request.getType())) {
+
+            request.setYearId(request.getParameter());
 
             return caryearMapperService.groupCaryearInventoryDayRaning(request);
 
-        } else if ("carStocktime".equals(request.getType())) {
+        } else if ("car_stocktime".equals(request.getType())) {
+
+            request.setTypeId(request.getParameter());
 
             return carstocktimeMapperService.groupCarstocktimeInventoryDayRanking(request);
         }

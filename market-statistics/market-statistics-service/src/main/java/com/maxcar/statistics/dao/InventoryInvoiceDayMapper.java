@@ -1,8 +1,10 @@
 package com.maxcar.statistics.dao;
 import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
+import com.maxcar.statistics.model.request.GroupYesterdayRankingRequest;
 import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.request.TradingRequest;
+import com.maxcar.statistics.model.response.GroupYesterdayRankingResponse;
 import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.model.response.TradingResponse;
 
@@ -44,4 +46,10 @@ public interface InventoryInvoiceDayMapper {
 
     List<InventoryInvoiceDayEntity> selectInventoryInvoiceDay();
 
+    /**
+     * param:
+     * describe: 查询昨日排名
+     * create_date:  lxy   2018/12/11  16:22
+     **/
+    List<GroupYesterdayRankingResponse> groupYesterdayRanking(GroupYesterdayRankingRequest request);
 }

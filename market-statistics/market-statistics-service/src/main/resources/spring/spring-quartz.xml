@@ -29,6 +29,6 @@
     <!--定义任务时间-->
     <bean id="dayReportTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="dayReport" />
-        <property name="cronExpression" value="00 12 12 * * ?" />
+        <property name="cronExpression" value="00 20 19 * * ?" />
     </bean>
 </beans>
