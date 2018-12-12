@@ -215,7 +215,7 @@ public class ParkingFeeController extends BaseController {
         return result;
     }
 
-    @GetMapping("/working/{parkingId}")
+    @GetMapping("/working/parking/{parkingId}")
     public InterfaceResult getWorkingTimeAndPrice(HttpServletRequest request,
                                                   @PathVariable("parkingId") String parkingId) throws Exception{
         User user = getCurrentUser(request);
