@@ -291,10 +291,6 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "车辆出场审核已审核列表")
     public InterfaceResult carReviewDetailList(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
-        User user = super.getCurrentUser(request);
-        if (carParams.getMarket() == null){
-            carParams.setMarket(user.getMarketId());
-        }
         PageInfo pageInfo = carService.carReviewDetailList(carParams);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
