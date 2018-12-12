@@ -61,6 +61,7 @@ public class AuditingController extends BaseController {
         reviewStep.setOrgld(user.getOrgId());
         List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
         //查询该用户是否在审核列表下
+        carParams.setMarket(user.getMarketId());
         pageInfo = carService.listReview(carParams);
         logger.info("=============="+pageInfo.getList());
         //过滤相同人不同审核等级
@@ -290,6 +291,10 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "车辆出场审核已审核列表")
     public InterfaceResult carReviewDetailList(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        User user = super.getCurrentUser(request);
+        if (carParams.getMarket() == null){
+            carParams.setMarket(user.getMarketId());
+        }
         PageInfo pageInfo = carService.carReviewDetailList(carParams);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
