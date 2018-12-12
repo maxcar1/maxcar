@@ -1091,11 +1091,7 @@
         order by insert_time desc
     </select>
     <select id="getCarListByTenant" resultMap="BaseResultMap">
-<<<<<<< HEAD
-        select id,car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
-=======
         select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id,id from car
->>>>>>> 7d2e984dcf106565fd67dd973d38adc8ddfeb815
         <where>
             and isvalid = 1 and car_type = 3 and stock_status != -1
             and tenant in
