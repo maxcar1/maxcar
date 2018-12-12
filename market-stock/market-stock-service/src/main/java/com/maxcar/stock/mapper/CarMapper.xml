@@ -842,25 +842,16 @@
   </sql>
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
         SELECT
-        <include refid="List_Review"/>
-        b.id AS review_id,b.is_pass,
-        b.out_reason,
-        date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
-        ut.tenant_name,
-        rd.review_result
-        FROM
-        review_detail rd
-        LEFT JOIN car_review b ON rd.review_id = b.id
-        LEFT JOIN car a ON b.car_id = a.id
-        LEFT JOIN car_base d ON d.id = b.id
-        left join maxcar_tenant_l.user_tenant ut on a.tenant = ut.id
-        where 1=1
-        <if test="reviewResult != null and reviewResult != ''">
-            and rd.review_result= #{reviewResult}
-        </if>
-        <if test="reviewPersonId != null and reviewPersonId != ''">
-            and rd.review_person_id = #{reviewPersonId}
-        </if>
+        <include refid="Car_Review_Detail_List"/>
+        a.id AS review_id,a.is_pass,
+        a.out_reason,
+        date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
+        ut.tenant_name
+        FROM car_review a
+        LEFT JOIN car b ON a.car_id = b.id
+        LEFT JOIN car_base c ON b.id = c.id
+        left join maxcar_tenant_l.user_tenant ut on b.tenant = ut.id
+        where a.is_valid = 1 and a.is_pass != 0
         <if test="market != null and market != ''">
             and a.market_id = #{market}
         </if>
