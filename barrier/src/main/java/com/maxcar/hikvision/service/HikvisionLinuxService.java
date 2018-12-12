@@ -98,7 +98,6 @@ public class HikvisionLinuxService {
             NativeLong nlUserID = LoginDevice(new DeviceInfo(sDVRIP, (short)iPort, userName,
                     password, null, null));
 
-            logger.info("===摄像机登录的userId为==>{}",nlUserID);
             int userID = nlUserID.intValue();
             logger.info("摄像机登录的userId为==>{}",userID);
             try {
@@ -124,7 +123,6 @@ public class HikvisionLinuxService {
         Map map = new HashMap(2);
         boolean flag = false;
         //DVR工作状态
-        //    m_strWorkstate = new HCNetSDK.NET_DVR_WORKSTATE_V30();
         m_strWorkstate = new HCNetSDKLinux.NET_DVR_WORKSTATE_V30();
 
         if (hCNetSDK.NET_DVR_GetDVRWorkState_V30(lUserID, m_strWorkstate)) {
@@ -168,6 +166,8 @@ public class HikvisionLinuxService {
             // 返回Boolean值，判断是否获取设备能力
             logger.info("返回设备状态失败，错误代码==>{}",hCNetSDK.NET_DVR_GetLastError());
         }
+        hCNetSDK.NET_DVR_Logout(lUserID);
+        hCNetSDK.NET_DVR_Cleanup();
         map.put("result",flag);
         return map;
     }

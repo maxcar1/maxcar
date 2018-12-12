@@ -214,4 +214,15 @@ public class ParkingFeeController extends BaseController {
         InterfaceResult result = parkingFeeService.goOffWork(params);
         return result;
     }
+
+    @GetMapping("/working/{parkingId}")
+    public InterfaceResult getWorkingTimeAndPrice(HttpServletRequest request,
+                                                  @PathVariable("parkingId") String parkingId) throws Exception{
+        User user = getCurrentUser(request);
+        InterfaceResult result =  null;
+        if (null != user){
+             result = parkingFeeService.getWorkingTimeAndPrice(user.getMarketId(),parkingId);
+        }
+        return result;
+    }
 }

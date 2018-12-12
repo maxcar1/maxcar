@@ -305,17 +305,22 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 parkingFeeDetail.setCardNo(key);
                 parkingFeeDetail.setAfterImage(imageUrl);
                 ParkingFeeDetail parkingFeeDe = doCard(marketId,barrier,parkingFeeDetail);
-                json = (JSONObject)JSONObject.toJSON(parkingFeeDe);
-                String inTime = DateUtils.LONG_DATE_FORMAT.format(parkingFeeDe.getBeforeTime());
-                String outTime = DateUtils.LONG_DATE_FORMAT.format(parkingFeeDe.getAfterTime());
-                json.put("inTime",inTime);
-                json.put("outTime",outTime);
-                json.put("type",5);
+                if (null != parkingFeeDe){
+                    json = (JSONObject)JSONObject.toJSON(parkingFeeDe);
+                    String inTime = DateUtils.LONG_DATE_FORMAT.format(parkingFeeDe.getBeforeTime());
+                    String outTime = DateUtils.LONG_DATE_FORMAT.format(parkingFeeDe.getAfterTime());
+                    json.put("inTime",inTime);
+                    json.put("outTime",outTime);
+                    json.put("type",1);
+                }else{
+                    json.put("type",2);
+                    json.put("message","无入场记录!");
+                }
                 break;
             case 1:
                 doWeixinEvent(key,barrier);
                 json.put("imageUrl",imageUrl);
-                json.put("type",6);
+                json.put("type",3);
                 break;
             default:
                 break;
@@ -372,6 +377,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                                 parkingFeeDe.setAlreadyPaid(null == feeIntegral.getPrice()? 0 : feeIntegral.getPrice());
                             }
                             parkingFeeDe.setChargeFee(0);
+                            parkingFeeDe.setChargePrice(0);
                             parkingFeeDe.setOverTimeFee(0);
 
                             //0元开闸
@@ -463,6 +469,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                     updateParkingFeeDetail(parkingFeeDe,barrier);
                 }
             }
+        }else{
+            return  null;
         }
         return parkingFeeDe;
     }
@@ -1220,6 +1228,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             json.put("workTime", sb);
             json.put("staffName",staff.getStaffName());
             json.put("position",barrier.getBarrierPosition());
+            json.put("parkingId",parking.getId());
             if (flag){
                 json.put("money","0元");
             }else{
@@ -1230,6 +1239,10 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 int total = 0;
                 for(ParkingFeeDetail parkingFeeDetail:parkingFeeDetails){
                     total +=parkingFeeDetail.getChargePrice();
+                    ParkingFeeIntegral parkingFeeIntegral = parkingFeeIntegralMapper.selectIntegralByDetailId(parkingFeeDetail.getId());
+                    if (null != parkingFeeIntegral){
+                        total += parkingFeeIntegral.getPrice();
+                    }
                 };
                 json.put("money",total+"元");
             }
@@ -1237,6 +1250,37 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         }else{
             result.InterfaceResult600("道闸配置错误!");
         }
+        return result;
+    }
+
+    @Override
+    public InterfaceResult getWorkingTimeAndPrice(String marketId,String parkingFeeId) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        JSONObject json = new JSONObject();
+        ParkingFee parkingFee = parkingFeeMapper.selectByPrimaryKey(parkingFeeId);
+        Map map = DateUtils.getHMS(Calendar.getInstance().getTime(), parkingFee.getArrivalTime());
+        StringBuilder sb = new StringBuilder();
+        sb.append(map.get("hour"));
+        sb.append("时");
+        sb.append(map.get("minute"));
+        sb.append("分");
+        sb.append(map.get("second"));
+        sb.append("秒");
+        json.put("workTime", sb);
+        ParkingFeeDetail detail = new ParkingFeeDetail();
+        detail.setParkingFeeId(parkingFee.getId());
+        detail.setMarketId(marketId);
+        List<ParkingFeeDetail> parkingFeeDetails = parkingFeeDetailMapper.getThisShiftRecord(detail);
+        int total = 0;
+        for(ParkingFeeDetail parkingFeeDetail:parkingFeeDetails){
+            total +=parkingFeeDetail.getChargePrice();
+            ParkingFeeIntegral parkingFeeIntegral = parkingFeeIntegralMapper.selectIntegralByDetailId(parkingFeeDetail.getId());
+            if (null != parkingFeeIntegral){
+                total += parkingFeeIntegral.getPrice();
+            }
+        };
+        json.put("money",total+"元");
+        result.setData(json);
         return result;
     }
 
@@ -1297,6 +1341,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 ParkingFeeIntegral parkingFeeIntegral = parkingFeeIntegralMapper.selectIntegralByDetailId(parkingFeeDetail.getId());
                 if (null != parkingFeeIntegral){
                     totalPublic += parkingFeeIntegral.getPrice();
+                    totalMoney += totalPublic;
                 }
                 switch (parkingFeeDetail.getPayType()){
                     case 0:
