@@ -3,7 +3,6 @@ package com.maxcar.stock.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maxcar.base.dao.BaseDao;
-import com.maxcar.base.model.VehicleBrand;
 import com.maxcar.base.pojo.CarBrand;
 import com.maxcar.base.pojo.CarSeries;
 import com.maxcar.base.service.DaSouCheService;
@@ -14,9 +13,12 @@ import com.maxcar.stock.dao.CarPicMapper;
 import com.maxcar.stock.entity.Request.SearchCarRequest;
 import com.maxcar.stock.entity.Response.CarBaseResponse;
 import com.maxcar.stock.entity.Response.CarDetails;
-import com.maxcar.stock.pojo.*;
+import com.maxcar.stock.pojo.CarBase;
+import com.maxcar.stock.pojo.CarBaseExample;
+import com.maxcar.stock.pojo.CarBaseWithBLOBs;
 import com.maxcar.stock.service.CarBaseService;
 import com.maxcar.stock.vo.CarBaseVo;
+import com.maxcar.stock.vo.VehicleBrandVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,21 +210,21 @@ public class CarBaseServiceImpl extends BaseServiceImpl<CarBase,String> implemen
         return carBaseMapper.getCarBaseByVin(vin);
     }
     @Override
-    public List<VehicleBrand> getBrandTop10(String marketId) {
+    public List<VehicleBrandVo> getBrandTop10(String marketId) {
         CarBase carBase=new CarBase();
         carBase.setMarketId(marketId);
-        List<VehicleBrand>  vehicleBrandList= carBaseMapper.getBrandTop10(carBase);
-        for(VehicleBrand carBrand : vehicleBrandList){
+        List<VehicleBrandVo>  vehicleBrandList= carBaseMapper.getBrandTop10(carBase);
+        for(VehicleBrandVo carBrand : vehicleBrandList){
             CarBrand carBrand1=daSouCheService.getCarBrand(carBrand.getCode());
             carBrand.setLogoUrl(carBrand1.getLogoUrl());
             carBrand.setName(carBrand1.getBrandName());
             CarBaseExample carBaseExample=new CarBaseExample();
             carBaseExample.createCriteria().andBrandCodeEqualTo(carBrand.getCode());
             CarBrand carBrand2 = daSouCheService.getCarBrand(carBrand.getCode());
-            List<VehicleBrand> chooseList = new ArrayList<>();
+            List<VehicleBrandVo> chooseList = new ArrayList<>();
             List<CarSeries> carSeriesList = daSouCheService.getAllSeries(carBrand2.getId());
             for(CarSeries carSeries:carSeriesList){
-                VehicleBrand choose = new VehicleBrand();
+                VehicleBrandVo choose = new VehicleBrandVo();
                 choose.setName(carSeries.getSeriesName());
                 choose.setCode(carSeries.getSeriesCode());
                 chooseList.add(choose);

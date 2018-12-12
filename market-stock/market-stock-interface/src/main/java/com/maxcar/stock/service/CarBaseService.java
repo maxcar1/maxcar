@@ -1,14 +1,12 @@
 package com.maxcar.stock.service;
 
 import com.github.pagehelper.PageInfo;
-import com.maxcar.base.model.VehicleBrand;
-import com.maxcar.base.pojo.CarBrand;
-import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.stock.entity.Request.SearchCarRequest;
 import com.maxcar.stock.entity.Response.CarDetails;
 import com.maxcar.stock.pojo.CarBase;
 import com.maxcar.stock.pojo.CarBaseWithBLOBs;
+import com.maxcar.stock.vo.VehicleBrandVo;
 
 import javax.security.auth.login.Configuration;
 import java.util.List;
@@ -51,5 +49,5 @@ public interface CarBaseService extends BaseService<CarBase,String> {
 
     CarBase getCarBaseByVin(String vin);
 
-    List<VehicleBrand> getBrandTop10(String marketId);
+    List<VehicleBrandVo> getBrandTop10(String marketId);
 }

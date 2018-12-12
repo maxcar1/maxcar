@@ -1,11 +1,13 @@
 package com.maxcar.stock.dao;
 
 import com.maxcar.base.dao.BaseDao;
-import com.maxcar.base.model.VehicleBrand;
 import com.maxcar.stock.entity.Request.SearchCarRequest;
 import com.maxcar.stock.entity.Response.CarBaseResponse;
 import com.maxcar.stock.entity.Response.CarDetails;
-import com.maxcar.stock.pojo.*;
+import com.maxcar.stock.pojo.CarBase;
+import com.maxcar.stock.pojo.CarBaseExample;
+import com.maxcar.stock.pojo.CarBaseWithBLOBs;
+import com.maxcar.stock.vo.VehicleBrandVo;
 import org.apache.ibatis.annotations.Param;
 
 import javax.security.auth.login.Configuration;
@@ -62,6 +64,6 @@ public interface CarBaseMapper extends BaseDao<CarBase, String> {
 
     CarBase getCarBase(String id);
 
-    List<VehicleBrand> getBrandTop10(CarBase carBase);
+    List<VehicleBrandVo> getBrandTop10(CarBase carBase);
 
 }
