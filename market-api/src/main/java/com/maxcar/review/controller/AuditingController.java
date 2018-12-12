@@ -15,8 +15,10 @@ import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.entity.Organizations;
+import com.maxcar.user.entity.Staff;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.service.OrganizationsService;
+import com.maxcar.user.service.StaffService;
 import com.maxcar.user.service.UserService;
 import com.maxcar.web.aop.OperationAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,8 @@ public class AuditingController extends BaseController {
     private ReviewDetailService reviewDetailService;
     @Autowired
     private MessageProducerService messageProducerService;
+    @Autowired
+    private StaffService staffService;
 
     @RequestMapping("/checkPendinglist")
     @OperationAnnotation(title = "车辆出场审核待审核列表")
@@ -88,7 +92,10 @@ public class AuditingController extends BaseController {
         CarReview carReview = carReviewService.getCarReview(c);
         if(carReview != null){
             User u= userService.selectByPrimaryKey(carReview.getUserId());
-            carReview.setUserName(u.getUserName());
+            Staff staff = staffService.selectByPrimaryId(u.getStaffId());
+            if(staff != null){
+                carReview.setUserName(staff.getStaffName());
+            }
             map.put("carReview",carReview);
             List<CarDetails> list = carBaseService.getCarBaseById(carReview.getCarId());
             CarDetails carDetails = list.get(0);
@@ -296,7 +303,6 @@ public class AuditingController extends BaseController {
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
     }
-
 
     @RequestMapping("/export")
     @OperationAnnotation(title = "导出")
