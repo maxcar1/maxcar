@@ -1,6 +1,8 @@
 package com.maxcar.stock.service.impl;
 
 import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.DatePoor;
+import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.JsonTools;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
@@ -14,6 +16,8 @@ import com.maxcar.stock.service.CarService;
 import com.maxcar.stock.vo.CarReviewVo;
 import com.maxcar.stock.vo.CarVo;
 import org.apache.velocity.runtime.directive.Foreach;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ public class CarReviewServiceImpl implements CarReviewService {
     @Autowired
     private MessageProducerService messageProducerService;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
@@ -71,6 +76,7 @@ public class CarReviewServiceImpl implements CarReviewService {
                 if (c.getBackTime().getTime() < System.currentTimeMillis()){
                     c.setIsComplete(1);
                     carReviewMapper.updateByPrimaryKeySelective(c);
+                    logger.info("kafka同步结束申请记录======="+JsonTools.toJson(DatePoor.getStringForDate(new Date())));
                     String topic = messageProducerService.getTopic(c.getMarketId());
                     //同步删除本地车辆状态
                     //组装云端参数
@@ -102,6 +108,7 @@ public class CarReviewServiceImpl implements CarReviewService {
 
     private void updateCarStockStatus(Car car)throws Exception{
             carService.updateByPrimaryKeySelective(car);
+            logger.info("kafka同步修改车辆状态为出场超时======="+JsonTools.toJson(DatePoor.getStringForDate(new Date())));
             String topic = messageProducerService.getTopic(car.getMarketId());
             PostParam postParam = new PostParam();
             postParam.setData(JsonTools.toJson(car));
