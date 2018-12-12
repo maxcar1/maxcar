@@ -61,6 +61,7 @@ public class AuditingController extends BaseController {
         reviewStep.setOrgld(user.getOrgId());
         List<ReviewStep> reviewStepList = reviewStepService.reviewStepList(reviewStep);
         //查询该用户是否在审核列表下
+        carParams.setMarket(user.getMarketId());
         pageInfo = carService.listReview(carParams);
         logger.info("=============="+pageInfo.getList());
         //过滤相同人不同审核等级
@@ -96,7 +97,10 @@ public class AuditingController extends BaseController {
             CarDetails carDetails = list.get(0);
             if(carDetails != null){
                 UserTenant userTenant = userTenantService.selectByPrimaryKey(carDetails.getTenant());
-                carDetails.setTenantName(userTenant.getTenantName());
+
+                if(userTenant!=null){
+                        carDetails.setTenantName(userTenant.getTenantName());
+                }
                 map.put("car",carDetails);
             }
             if(carDetails.getTenant() != null){
@@ -231,7 +235,6 @@ public class AuditingController extends BaseController {
                         carReview.setId(reviewDetail.getReviewId());
                         carReview.setIsPass(reviewDetail.getReviewResult());
                         carReview.setStepLevel(level);
-                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
@@ -261,7 +264,6 @@ public class AuditingController extends BaseController {
                         carReview.setId(review.getReviewId());
                         carReview.setIsPass(review.getReviewResult());
                         carReview.setStepLevel(review.getLevel());
-                        carReview.setIsComplete(1);
                         String topic = super.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
@@ -289,6 +291,10 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "车辆出场审核已审核列表")
     public InterfaceResult carReviewDetailList(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        User user = super.getCurrentUser(request);
+        if (carParams.getMarket() == null){
+            carParams.setMarket(user.getMarketId());
+        }
         PageInfo pageInfo = carService.carReviewDetailList(carParams);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
@@ -306,7 +312,7 @@ public class AuditingController extends BaseController {
             exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
             exportReviewResponse.setModelName(carVo.getModelName());
             exportReviewResponse.setTenantName(carVo.getTenantName());
-            exportReviewResponse.setInsertTime(carVo.getReviewInsertTime()==null?"":carVo.getReviewInsertTime());
+            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getApplicationTime());
             exportReviewResponse.setCarStatus(carVo.getCarStatus()==1?"质押":"非质押");
             exportReviewResponse.setOutReason(carVo.getOutReason());
             if(carVo.getEvaluatePrice() == null){
@@ -314,12 +320,13 @@ public class AuditingController extends BaseController {
             }else{
                 exportReviewResponse.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
             }
-            if(carVo.getReviewResult()!=null){
-                exportReviewResponse.setReviewResult(carVo.getReviewResult()==1?"审核通过":"审核不通过");
+            if(carVo.getIsPass()!=null){
+                exportReviewResponse.setReviewResult(carVo.getIsPass()==1?"审核通过":"审核不通过");
             }
             if(carVo.getStockStatus()!=null){
                 exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
             }
+
             exportReviewResponse.setVin(carVo.getVin());
             exportList.add(exportReviewResponse);
         }

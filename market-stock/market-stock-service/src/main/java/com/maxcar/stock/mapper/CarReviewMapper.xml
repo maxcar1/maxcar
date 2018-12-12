@@ -471,7 +471,7 @@
     select
     <include refid="Base_Column_List" />
     from car_review
-    where is_valid = 1 and now() >= back_time
+    where is_valid = 1 and now() >= back_time and is_complete = 0
   </select>
 
 

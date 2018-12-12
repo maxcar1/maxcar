@@ -722,20 +722,17 @@
     </update>
     <select id="listCarVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
        SELECT
-        t.*,cr.is_valid as review_id,
+        t.*,cr.is_complete,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>
         FROM
         car t left join
         car_base cb on t.id = cb.id
-        left join car_review cr on cr.car_id = cb.id
+        left join car_review cr on cr.car_id = t.id
         WHERE
         t.stock_status in ('1','2','3') and
         t.isvalid=1 and t.market_id = #{marketId}
         AND t.car_type =1
-        <if test="tenant != null and tenant != ''">
-            and t.tenant = #{tenant}
-        </if>
         <include refid="car_vo_where"/>
         order by t.register_time desc
     </select>
@@ -833,6 +830,7 @@
         <if test="vin != null and vin != ''">
             and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
         </if>
+        order  by b.insert_time desc
     </select>
 
     <sql id="Car_Review_Detail_List">
@@ -848,15 +846,12 @@
         a.id AS review_id,a.is_pass,
         a.out_reason,
         date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
-        d.tenant_name
-        FROM
-        maxcar_stock_l.car_review a
+        ut.tenant_name
+        FROM car_review a
         LEFT JOIN car b ON a.car_id = b.id
-        LEFT JOIN car_base c ON a.car_id = c.id
-        LEFT JOIN maxcar_tenant_l.user_tenant d ON b.tenant = d.id
-        WHERE
-        a.is_pass != 0
-        AND b.isvalid = 1
+        LEFT JOIN car_base c ON b.id = c.id
+        left join maxcar_tenant_l.user_tenant ut on b.tenant = ut.id
+        where a.is_valid = 1 and a.is_pass != 0
         <if test="market != null and market != ''">
             and a.market_id = #{market}
         </if>
@@ -881,7 +876,7 @@
         <if test="stockStatus != null and stockStatus != ''">
             and b.stock_status= #{stockStatus}
         </if>
-        order  by a.insert_time
+        order  by a.insert_time desc
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
@@ -1216,7 +1211,7 @@
         order by insert_time desc
     </select>
     <select id="getCarListByTenant" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id,id from car
         <where>
             and isvalid = 1 and car_type = 3
             and tenant in
@@ -1800,7 +1795,7 @@
              end as stockStatus,
         case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
         date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
-        IFNULL(CAST(cb.mileage/10000 AS decimal(16,2)),0) as mileage,
+        cb.mileage as mileage,
         IFNULL(cb.evaluate_price,0) as evaluatePrice,
         IFNULL(cb.market_price,0) as marketPrice,
         invoice.price AS invoicePrice,
