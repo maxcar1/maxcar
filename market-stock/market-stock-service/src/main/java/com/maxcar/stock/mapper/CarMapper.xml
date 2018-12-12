@@ -842,7 +842,7 @@
   </sql>
     <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
         SELECT
-        <include refid="List_Review"/>
+        <include refid="Car_Review_Detail_List"/>
         b.id AS review_id,b.is_pass,
         b.out_reason,
         date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
