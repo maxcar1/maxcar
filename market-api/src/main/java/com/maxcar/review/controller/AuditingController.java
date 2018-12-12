@@ -92,7 +92,7 @@ public class AuditingController extends BaseController {
         CarReview carReview = carReviewService.getCarReview(c);
         if(carReview != null){
             User u= userService.selectByPrimaryKey(carReview.getUserId());
-            Staff staff = staffService.selectByPrimaryId(u.getStaffId());
+            Staff staff = staffService.selectByPrimaryKey(u.getStaffId());
             if(staff != null){
                 carReview.setUserName(staff.getStaffName());
             }
