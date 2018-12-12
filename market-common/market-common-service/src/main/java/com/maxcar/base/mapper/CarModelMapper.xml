@@ -149,4 +149,12 @@
   <select id="getAllModel" resultMap="BaseResultMap" useCache="true">
     select <include refid="Base_Column_List"/> from car_model where series_id = #{seriesId}
   </select>
+
+  <select id="getModelAndSeriesAndBrandByModelCode" resultType="java.util.Map" parameterType="java.lang.String">
+    select c.brand_code 'brandCode',c.brand_name 'brandName',b.series_code 'seriesCode',
+    b.series_name 'seriesName',a.model_code 'modelCode',a.model_name 'modelName'
+    from car_model a left join car_series b on b.id = a.series_id
+    left join car_brand c on c.id = b.brand_id
+    where  a.model_code = #{modelCode}
+  </select>
 </mapper>
