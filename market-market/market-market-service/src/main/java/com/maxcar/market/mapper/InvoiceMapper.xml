@@ -620,6 +620,12 @@
       <if test="tradingType != null">
         trading_type,
       </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
 
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -886,6 +892,12 @@
       </if>
       <if test="tradingType != null">
           #{tradingType,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

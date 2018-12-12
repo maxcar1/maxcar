@@ -203,6 +203,24 @@ public class Invoice extends PageBean {
     private String syncTimeEnd;
     private Integer remark;//1：查询开具发票列表 2：查询开票申请列表（非窗口列表，invoicePortof ！=2）
 
+    private Integer sex;
+    private Integer age;
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 
     public String getSyncTimeStart() {
         return syncTimeStart;
