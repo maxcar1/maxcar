@@ -690,38 +690,38 @@
 				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
 				<system.jdbc.url.stock>jdbc:mysql://localhost:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
 				<system.jdbc.user.stock>root</system.jdbc.user.stock>
-				<system.jdbc.password.stock>Maxcar#2017</system.jdbc.password.stock>
+				<system.jdbc.password.stock>Maxcar#2018tj</system.jdbc.password.stock>
 				<!-- 云端数据源配置datasource物业、商户-->
 				<system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
 				<system.jdbc.url.market>jdbc:mysql://localhost:3306/maxcar_market_l?characterEncoding=utf-8</system.jdbc.url.market>
 				<system.jdbc.user.market>root</system.jdbc.user.market>
-				<system.jdbc.password.market>Maxcar#2017</system.jdbc.password.market>
+				<system.jdbc.password.market>Maxcar#2018tj</system.jdbc.password.market>
 				<!-- 云端数据源配置datasource用户，配置-->
 				<system.jdbc.driver.user>com.mysql.jdbc.Driver</system.jdbc.driver.user>
 				<system.jdbc.url.user>jdbc:mysql://localhost:3306/maxcar_user_l?characterEncoding=utf-8</system.jdbc.url.user>
 				<system.jdbc.user.user>root</system.jdbc.user.user>
-				<system.jdbc.password.user>Maxcar#2017</system.jdbc.password.user>
+				<system.jdbc.password.user>Maxcar#2018tj</system.jdbc.password.user>
 				<!-- 云端数据源配置datasource道闸-->
 				<system.jdbc.driver.base>com.mysql.jdbc.Driver</system.jdbc.driver.base>
 				<system.jdbc.url.base>jdbc:mysql://localhost:3306/maxcar_base_l?characterEncoding=utf-8</system.jdbc.url.base>
 				<system.jdbc.user.base>root</system.jdbc.user.base>
-				<system.jdbc.password.base>Maxcar#2017</system.jdbc.password.base>
+				<system.jdbc.password.base>Maxcar#2018tj</system.jdbc.password.base>
 				<!-- 云端数据源配置datasource商户-->
 				<system.jdbc.driver.tenant>com.mysql.jdbc.Driver</system.jdbc.driver.tenant>
 				<system.jdbc.url.tenant>jdbc:mysql://localhost:3306/maxcar_tenant_l?characterEncoding=utf-8</system.jdbc.url.tenant>
 				<system.jdbc.user.tenant>root</system.jdbc.user.tenant>
-				<system.jdbc.password.tenant>Maxcar#2017</system.jdbc.password.tenant>
+				<system.jdbc.password.tenant>Maxcar#2018tj</system.jdbc.password.tenant>
 				<!-- 云端数据源配置datasource道闸-->
 				<system.jdbc.driver.barrier>com.mysql.jdbc.Driver</system.jdbc.driver.barrier>
 				<system.jdbc.url.barrier>jdbc:mysql://localhost:3306/maxcar_barrier_l?characterEncoding=utf-8</system.jdbc.url.barrier>
 				<system.jdbc.user.barrier>root</system.jdbc.user.barrier>
-				<system.jdbc.password.barrier>Maxcar#2017</system.jdbc.password.barrier>
+				<system.jdbc.password.barrier>Maxcar#2018tj</system.jdbc.password.barrier>
 
 				<!-- 商户app-->
 				<system.jdbc.driver.tenant.app>com.mysql.jdbc.Driver</system.jdbc.driver.tenant.app>
 				<system.jdbc.url.tenant.app>jdbc:mysql://localhost:3306/maxcar_tenant_app_l?characterEncoding=utf-8</system.jdbc.url.tenant.app>
 				<system.jdbc.user.tenant.app>root</system.jdbc.user.tenant.app>
-				<system.jdbc.password.tenant.app>Maxcar#2017</system.jdbc.password.tenant.app>
+				<system.jdbc.password.tenant.app>Maxcar#2018tj</system.jdbc.password.tenant.app>
 
 
 				<!-- 统计平台-->
