@@ -307,7 +307,7 @@ public class AuditingController extends BaseController {
             exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
             exportReviewResponse.setModelName(carVo.getModelName());
             exportReviewResponse.setTenantName(carVo.getTenantName());
-            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getReviewInsertTime());
+            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getApplicationTime());
             exportReviewResponse.setCarStatus(carVo.getCarStatus()==1?"质押":"非质押");
             exportReviewResponse.setOutReason(carVo.getOutReason());
             if(carVo.getEvaluatePrice() == null){
@@ -315,7 +315,7 @@ public class AuditingController extends BaseController {
             }else{
                 exportReviewResponse.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
             }
-            if(carVo.getReviewResult()!=null){
+            if(carVo.getIsPass()!=null){
                 exportReviewResponse.setReviewResult(carVo.getIsPass()==1?"审核通过":"审核不通过");
             }
             if(carVo.getStockStatus()!=null){
