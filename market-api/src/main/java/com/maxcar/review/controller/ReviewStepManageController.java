@@ -94,7 +94,7 @@ public class ReviewStepManageController extends BaseController {
         }
         int flag = reviewStepService.selectMarketCode(flowStep);
         if(flag>0){
-            result.setMsg("该code重复");
+            result.setMsg("流程编码不能重复");
             result.setCode("600");
         }else{
             result.setCode("200");
