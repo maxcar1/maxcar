@@ -23,10 +23,10 @@ public class SyncCenter extends QuartzJobBean {
     private static final Logger logger = LoggerFactory.getLogger(SyncCenter.class);
 
     @Autowired
-    private OutMarketCarService outMarketCarService;
+    private PropertyContractPayService propertyContractPayService;
 
     @Autowired
-    private CarReviewService carReviewService;
+    private PropertyContractService propertyContractService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {
@@ -34,11 +34,11 @@ public class SyncCenter extends QuartzJobBean {
 //        SyncContrat syncContrat = new SyncContrat();
 //        asyncExecutorTaskService.doJob(syncContrat);
         try {
-//            propertyContractPayService.addPropertyContractPay();
-//            propertyContractService.endPropertyContract();
-            outMarketCarService.delCarByOutMarketTime();
-            outMarketCarService.downTaoBao();
-            carReviewService.updateTimeoutNotreturnCarStockStatus();
+            propertyContractPayService.addPropertyContractPay();
+            propertyContractService.endPropertyContract();
+//            outMarketCarService.delCarByOutMarketTime();
+//            outMarketCarService.downTaoBao();
+//            carReviewService.updateTimeoutNotreturnCarStockStatus();
         }catch (Exception ex){
             ex.printStackTrace();
         }

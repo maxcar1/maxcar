@@ -39,8 +39,8 @@ public class SyncCarReview extends QuartzJobBean {
 //        SyncContrat syncContrat = new SyncContrat();
 //        asyncExecutorTaskService.doJob(syncContrat);
         try {
-            propertyContractPayService.addPropertyContractPay();
-            propertyContractService.endPropertyContract();
+//            propertyContractPayService.addPropertyContractPay();
+//            propertyContractService.endPropertyContract();
             outMarketCarService.delCarByOutMarketTime();
             outMarketCarService.downTaoBao();
             carReviewService.updateTimeoutNotreturnCarStockStatus();
