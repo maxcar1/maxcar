@@ -1069,7 +1069,7 @@
         <include refid="car_vo_where"/>
     </select>
     <select id="getCarList" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select car_type,stock_status,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,stock_status,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
             and isvalid = 1 and stock_status in (1,2,3)
             <if test="carType != null">
@@ -1078,10 +1078,11 @@
         </where>
     </select>
     <select id="getCarListByStaffId" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
             and isvalid = 1
             and car_type = 2
+            and stock_status != -1
             and staff_id in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1090,9 +1091,9 @@
         order by insert_time desc
     </select>
     <select id="getCarListByTenant" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
-            and isvalid = 1 and car_type = 3
+            and isvalid = 1 and car_type = 3 and stock_status != -1
             and tenant in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
