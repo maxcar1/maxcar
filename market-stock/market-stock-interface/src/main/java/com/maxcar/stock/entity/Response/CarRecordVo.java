@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class CarRecordVo implements Serializable {
 
-    private Integer reviewId;//审核id
+    private String reviewId;//审核id
 
     private String time;//出入场时间
 
@@ -12,11 +12,11 @@ public class CarRecordVo implements Serializable {
 
     private String barrierPosition;
 
-    public Integer getReviewId() {
+    public String getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(Integer reviewId) {
+    public void setReviewId(String reviewId) {
         this.reviewId = reviewId;
     }
 
