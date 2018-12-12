@@ -21,11 +21,11 @@ public class SyncCarReview extends QuartzJobBean {
     private static final Logger logger = LoggerFactory.getLogger(SyncCarReview.class);
 //    @Autowired
 //    private AsyncExecutorTaskService asyncExecutorTaskService;
-    @Autowired
-    private PropertyContractPayService propertyContractPayService;
-
-    @Autowired
-    private PropertyContractService propertyContractService;
+//    @Autowired
+//    private PropertyContractPayService propertyContractPayService;
+//
+//    @Autowired
+//    private PropertyContractService propertyContractService;
 
     @Autowired
     private OutMarketCarService outMarketCarService;
