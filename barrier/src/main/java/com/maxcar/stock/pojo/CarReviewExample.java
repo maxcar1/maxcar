@@ -884,6 +884,66 @@ public class CarReviewExample {
             addCriterion("step_level not between", value1, value2, "stepLevel");
             return (Criteria) this;
         }
+
+        public Criteria andIsCompleteIsNull() {
+            addCriterion("is_complete is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteIsNotNull() {
+            addCriterion("is_complete is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteEqualTo(Integer value) {
+            addCriterion("is_complete =", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteNotEqualTo(Integer value) {
+            addCriterion("is_complete <>", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteGreaterThan(Integer value) {
+            addCriterion("is_complete >", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteGreaterThanOrEqualTo(Integer value) {
+            addCriterion("is_complete >=", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteLessThan(Integer value) {
+            addCriterion("is_complete <", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteLessThanOrEqualTo(Integer value) {
+            addCriterion("is_complete <=", value, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteIn(List<Integer> values) {
+            addCriterion("is_complete in", values, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteNotIn(List<Integer> values) {
+            addCriterion("is_complete not in", values, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteBetween(Integer value1, Integer value2) {
+            addCriterion("is_complete between", value1, value2, "isComplete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCompleteNotBetween(Integer value1, Integer value2) {
+            addCriterion("is_complete not between", value1, value2, "isComplete");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
