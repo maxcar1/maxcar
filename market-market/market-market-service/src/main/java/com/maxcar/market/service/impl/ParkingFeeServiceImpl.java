@@ -1223,8 +1223,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             sb.append("时");
             sb.append(map.get("minute"));
             sb.append("分");
-            sb.append(map.get("second"));
-            sb.append("秒");
+            /*sb.append(map.get("second"));
+            sb.append("秒");*/
             json.put("workTime", sb);
             json.put("staffName",staff.getStaffName());
             json.put("position",barrier.getBarrierPosition());
@@ -1265,8 +1265,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         sb.append(map.get("minute"));
         sb.append("分");
         sb.append(map.get("second"));
-        sb.append("秒");
-        json.put("workTime", sb);
+        /*sb.append("秒");
+        json.put("workTime", sb);*/
         ParkingFeeDetail detail = new ParkingFeeDetail();
         detail.setParkingFeeId(parkingFee.getId());
         detail.setMarketId(marketId);
