@@ -321,7 +321,7 @@ public class AuditingController extends BaseController {
                 exportReviewResponse.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
             }
             if(carVo.getReviewResult()!=null){
-                exportReviewResponse.setReviewResult(carVo.getReviewResult()==1?"审核通过":"审核不通过");
+                exportReviewResponse.setReviewResult(carVo.getIsPass()==1?"审核通过":"审核不通过");
             }
             if(carVo.getStockStatus()!=null){
                 exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
