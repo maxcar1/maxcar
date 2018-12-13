@@ -2,8 +2,6 @@ package com.maxcar.stock.service;
 
 import com.github.pagehelper.PageInfo;
 import com.maxcar.base.model.VehicleBrand;
-import com.maxcar.base.pojo.CarBrand;
-import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.stock.entity.Request.SearchCarRequest;
 import com.maxcar.stock.entity.Response.CarDetails;
