@@ -1372,7 +1372,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
             json.put("totalWeixin",totalWeixin);
             json.put("totalCash",totalCash);
             json.put("totalPublic",totalPublic);
-            json.put("totalMoney",totalMoney + totalMoney);
+            json.put("totalMoney",totalMoney + totalPublic);
             PageInfo parkingPage = new PageInfo<>(parkingFeeDetails);
             json.put("parkingList",parkingPage);
             result.InterfaceResult200(json);
