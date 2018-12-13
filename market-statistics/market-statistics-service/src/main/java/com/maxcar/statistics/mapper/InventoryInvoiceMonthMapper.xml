@@ -62,14 +62,14 @@
       #{version,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{registerTime,jdbcType=TIMESTAMP}
       )
       ON DUPLICATE KEY  UPDATE
-      stock_count = VALUES (stockCount),
-      stock_price = VALUES (stockPrice),
-      stock_day_avg = VALUES (stockDayAvg),
-      out_library_count = VALUES (outLibraryCount),
-       tenant_space = VALUES (tenantSpace),
-      sales_count = VALUES (salesCount),
-      sales_price = VALUES (salesPrice),
-       sales_avg_price = VALUES (salesAvgPrice),
+      stock_count = VALUES (stock_count),
+      stock_price = VALUES (stock_price),
+      stock_day_avg = VALUES (stock_day_avg),
+      out_library_count = VALUES (out_library_count),
+       tenant_space = VALUES (tenant_space),
+      sales_count = VALUES (sales_count),
+      sales_price = VALUES (sales_price),
+       sales_avg_price = VALUES (sales_avg_price),
       version = VALUES (version),
       isvalid = VALUES (isvalid),
       register_time = now();
