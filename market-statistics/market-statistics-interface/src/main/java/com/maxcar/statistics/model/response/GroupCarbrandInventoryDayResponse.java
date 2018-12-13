@@ -10,9 +10,9 @@ public class GroupCarbrandInventoryDayResponse implements Serializable {
     private static final long serialVersionUID = -2705152203114914658L;
     private String brandName;
 
-    private String inventoryCount;
+    private Integer inventoryCount;
 
-    private String inventoryPrice;
+    private Double inventoryPrice;
 
 
 }

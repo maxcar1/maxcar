@@ -1,9 +1,11 @@
 package com.maxcar.statistics.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.maxcar.BaseController;
 
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.ToolDataUtils;
 import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.*;
@@ -248,7 +250,23 @@ public class ReportController extends BaseController {
             groupCarbrandInvoiceDayRequest.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportByCarbrandService.groupCarbrandInvoiceDay(groupCarbrandInvoiceDayRequest));
+        List<GroupCarbrandInvoiceDayResponse> list = reportByCarbrandService.groupCarbrandInvoiceDay(groupCarbrandInvoiceDayRequest);
+
+        Integer count = 0;
+        Double price = 0.0;
+
+        if (tIsNotEmpty(list)) {
+            count = list.stream().filter(x -> tIsNotEmpty(x.getInvoiceCount())).mapToInt(GroupCarbrandInvoiceDayResponse::getInvoiceCount).sum();
+            price = list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).mapToDouble(GroupCarbrandInvoiceDayResponse::getInvoicePrice).sum();
+        }
+
+        JSONObject json = new JSONObject();
+
+        json.put("list", list);
+        json.put("count", count);
+        json.put("price", df.format(price));
+
+        return getInterfaceResult("200",json);
     }
 
 
@@ -276,8 +294,26 @@ public class ReportController extends BaseController {
 
             groupCarbrandInventoryDayRequest.setMarketId(user.getMarketId());
         }
-        return getInterfaceResult("200", reportByCarbrandService.groupCarbrandInventoryDay(groupCarbrandInventoryDayRequest));
+
+        List<GroupCarbrandInventoryDayResponse> list = reportByCarbrandService.groupCarbrandInventoryDay(groupCarbrandInventoryDayRequest);
+
+        Integer count = 0;
+        Double price = 0.0;
+
+        if (tIsNotEmpty(list)) {
+            count = list.stream().filter(x -> tIsNotEmpty(x.getInventoryCount())).mapToInt(GroupCarbrandInventoryDayResponse::getInventoryCount).sum();
+            price = list.stream().filter(x -> tIsNotEmpty(x.getInventoryPrice())).mapToDouble(GroupCarbrandInventoryDayResponse::getInventoryPrice).sum();
+        }
+
+        JSONObject json = new JSONObject();
+
+        json.put("list", list);
+        json.put("count", count);
+        json.put("price", df.format(price));
+
+        return getInterfaceResult("200", json);
     }
+
 
     /**
      * param:
@@ -315,7 +351,7 @@ public class ReportController extends BaseController {
      **/
     @RequestMapping("/report/growthCarbrandByMonth")
     public InterfaceResult growthCarbrandByMonth(@RequestBody @Valid GroupCarbrandInvoiceMonthRequest groupCarbrandInvoiceMonthRequest,
-                                                BindingResult result, HttpServletRequest request) throws Exception {
+                                                 BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
@@ -396,7 +432,6 @@ public class ReportController extends BaseController {
 
         return getInterfaceResult("200", growthByMonthResponse);
     }
-
 
 
     /**
@@ -523,7 +558,7 @@ public class ReportController extends BaseController {
      **/
     @RequestMapping("/report/growthCaryearByMonth")
     public InterfaceResult growthCaryearByMonth(@RequestBody @Valid GroupCaryearInvoiceMonthRequest parameter,
-                                                 BindingResult result, HttpServletRequest request) throws Exception {
+                                                BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {
@@ -728,7 +763,7 @@ public class ReportController extends BaseController {
      **/
     @RequestMapping("/report/growthCarstocktimeByMonth")
     public InterfaceResult growthCarstocktimeByMonth(@RequestBody @Valid GroupCarstocktimeInvoiceMonthRequest parameter,
-                                                BindingResult result, HttpServletRequest request) throws Exception {
+                                                     BindingResult result, HttpServletRequest request) throws Exception {
 
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {

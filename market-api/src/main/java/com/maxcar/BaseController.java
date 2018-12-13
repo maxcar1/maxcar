@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
@@ -41,6 +42,9 @@ public class BaseController {
     private UserRoleService userRoleService;
     @Autowired
     private StaffService staffService;
+
+    // double 保留两位小数
+    public DecimalFormat df = new DecimalFormat("######0.00");
 
     @Value("${kafka.producer.topic}")
     public String producerTopic;
@@ -145,6 +149,7 @@ public class BaseController {
     public String consumerTopic54;
     @Value("${kafka.consumer.topic055}")
     public String consumerTopic55;
+
 
     /**
      * @Description：获取cookie中的token

@@ -55,7 +55,17 @@
         from inventory_invoice_day iid
         LEFT JOIN maxcar_user_l.`market` AS m ON iid.market_id = m.id
         LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut ON iid.tenant_id = ut.id
+
         where DATE_FORMAT(iid.report_time, '%Y-%m-%D') = DATE_FORMAT(CURDATE() - 1, '%Y-%m-%D')
+
+        <if test="marketId != null">
+            AND  iid.market_id = #{marketId}
+        </if>
+
+        <if test="tenantId != null">
+            AND iid.tenant_id = #{tenantId}
+        </if>
+
         <if test="marketId == null">
             group by iid.market_id
         </if>

@@ -144,7 +144,7 @@ public class ReportMapperService {
 
         // stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
         stringBuffer.append(" DATE_FORMAT(c.register_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
-        stringBuffer.append(" AND  c.stock_status in ('1','2','3') ");
+        stringBuffer.append(" AND  c.stock_status in ('1','2','3')  AND  c.car_type = '1' ");
 
         if ("brandName".equals(parameter.getGroupByColumns().trim())) {
 
