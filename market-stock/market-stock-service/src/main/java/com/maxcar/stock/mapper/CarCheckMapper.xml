@@ -137,7 +137,7 @@
 		</if>
     limit 1
   </select>
-  <select id="getCarCheckByVin" parameterType="java.lang.String" resultType="java.lang.String">
+  <select id="getCarCheckByVin" parameterType="com.maxcar.stock.pojo.CarCheck" resultType="java.lang.String">
     SELECT
 
     cc.`data` datas
@@ -149,8 +149,10 @@
     cc.company_id = ch.company_id
 
       and vin = #{vin,jdbcType=VARCHAR}
-
-
+    <if test="carId != null">
+      and car_id = #{carId,jdbcType=VARCHAR}
+    </if>
+limit 1
   </select>
   
   
