@@ -194,7 +194,6 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                 Map map = DateUtils.getHMS(end, begin);
                 Integer hour = (Integer) map.get("hour");
                 Integer minute = (Integer) map.get("minute");
-                Integer second = (Integer) map.get("second");
                 //判断是否开启免费,分钟
                 if (parkingFeeTotal.getIsFree() == 1) {
                     Integer freeTime = parkingFeeTotal.getFreeTime();
@@ -373,7 +372,6 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
 
     public static Integer getSplitTime(Date dateStart, Date dateEnd, List<FeePeriodTime> ruleList) {
         int totalPrice = 0;
-        BigDecimal hour = new BigDecimal(0);
         if (null != ruleList && ruleList.size() > 0) {
             try {
                 long days = DateUtils.daysBetween(dateStart, dateEnd);
@@ -450,7 +448,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                         sum1 = times1;
                     }
                     BigDecimal totalTimes = new BigDecimal(sum1);
-                    hour = totalTimes.divide(new BigDecimal(60), BigDecimal.ROUND_UP, 0);
+                    BigDecimal hour = totalTimes.divide(new BigDecimal(60), BigDecimal.ROUND_UP, 0);
                     priceSum = hour.intValue() * price;
                     totalPrice += priceSum;
                 }
@@ -464,7 +462,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
 
 
     public static void main(String[] args) throws Exception {
-        List<FeePeriodTime> feePeriodTimes = new ArrayList<>();
+        List<FeePeriodTime> feePeriodTimes = new ArrayList<FeePeriodTime>();
         FeePeriodTime feePeriodTime = new FeePeriodTime();
         feePeriodTime.setStartTime("10:22:34");
         feePeriodTime.setEndTime("16:18:09");
