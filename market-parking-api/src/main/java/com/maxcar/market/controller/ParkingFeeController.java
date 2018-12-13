@@ -215,6 +215,13 @@ public class ParkingFeeController extends BaseController {
         return result;
     }
 
+    /**
+     * 定时获取上班时长
+     * @param request
+     * @param parkingId
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/working/parking/{parkingId}")
     public InterfaceResult getWorkingTimeAndPrice(HttpServletRequest request,
                                                   @PathVariable("parkingId") String parkingId) throws Exception{
