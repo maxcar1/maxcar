@@ -1176,12 +1176,23 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         InterfaceResult result = new InterfaceResult();
         Date begin = DateUtils.LONG_DATE_FORMAT.parse(params.getString("begin"));
         Date end = DateUtils.LONG_DATE_FORMAT.parse(params.getString("end"));
+        Map map = DateUtils.getHMS(end,begin);
+        StringBuilder sb = new StringBuilder();
+        sb.append(map.get("hour"));
+        sb.append("小时");
+        sb.append(map.get("minute"));
+        sb.append("分");
+        sb.append(map.get("second"));
+        sb.append("秒");
+        JSONObject json = new JSONObject();
         String marketId = params.getString("marketId");
         Integer carType = params.getInteger("carType");
         BigDecimal money = parkingFeeRuleService.figureOutParkingFee(begin,end,marketId,carType);
         result.setCode("0");
         result.setMsg("SUCCESS");
-        result.setData(money.intValue());
+        json.put("money",money.intValue());
+        json.put("parkingTime",sb.toString());
+        result.setData(json);
         return result;
     }
 

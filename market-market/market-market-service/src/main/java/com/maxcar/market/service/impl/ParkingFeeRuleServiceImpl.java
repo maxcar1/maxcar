@@ -88,11 +88,14 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, currentTime);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
-                                total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
-                                return total;
-                            } else {
+                                if (isMax){
+                                    total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                }else {
+                                    total = new BigDecimal(getSplitTime(begin, payTime, feePeriodTimes));
+                                }
                                 return total;
                             }
+                                return total;
                         }
                     }
                 }
@@ -175,11 +178,14 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(begin, end);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
-                                total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
-                                return total;
-                            } else {
+                                if (isMax){
+                                    total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                }else {
+                                    total = new BigDecimal(getSplitTime(begin, end, feePeriodTimes));
+                                }
                                 return total;
                             }
+                                return total;
                         }
                     }
                 }
