@@ -45,6 +45,12 @@
       #{reportTime,jdbcType=VARCHAR}, #{invoicePriceId,jdbcType=VARCHAR}, #{invoicePriceName,jdbcType=VARCHAR}, 
       #{salesCount,jdbcType=INTEGER}, #{stockAvgStocktime,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, 
       #{version,jdbcType=INTEGER}, #{registerTime,jdbcType=TIMESTAMP})
+   ON DUPLICATE KEY  UPDATE
+      sales_count =  VALUES (sales_count),
+      stock_avg_stocktime =  VALUES (stock_avg_stocktime),
+      isvalid =  VALUES (isvalid),
+      version =  VALUES (version),
+      register_time =  now();
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarpriceDayEntity" >
     insert into carprice_day

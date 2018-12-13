@@ -29,11 +29,18 @@
   </delete>
   <insert id="insert" parameterType="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     insert into carstock_month (id, market_id, tenant_id, 
-      report_time, invoice_stock_id, invoice_stock_name,  isvalid, version,
+      report_time, invoice_stock_id, invoice_stock_name, stock_count ,  isvalid, version,
       register_time)
     values (#{id,jdbcType=INTEGER}, #{marketId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, 
-      #{reportTime,jdbcType=VARCHAR}, #{invoiceStockId,jdbcType=VARCHAR}, #{invoiceStockName,jdbcType=VARCHAR}, 
+      #{reportTime,jdbcType=VARCHAR}, #{invoiceStockId,jdbcType=VARCHAR}, #{invoiceStockName,jdbcType=VARCHAR},
+       #{stockCount,jdbcType=INTEGER},
       #{isvalid,jdbcType=INTEGER}, #{version,jdbcType=INTEGER},  #{registerTime,jdbcType=TIMESTAMP})
+    ON DUPLICATE KEY  UPDATE
+      invoice_stock_name = VALUES (invoice_stock_name),
+      stock_count =  VALUES (stock_count),
+      isvalid =  VALUES (isvalid),
+      version =  VALUES (version),
+      register_time =  now();
   </insert>
   <insert id="insertSelective" parameterType="com.maxcar.statistics.model.entity.CarStockMonthEntity" >
     insert into carstock_month
