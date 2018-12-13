@@ -16,7 +16,7 @@
 
   </resultMap>
   <insert id="insertWishList" parameterType="com.maxcar.stock.pojo.WishList">
-    insert  into wish_list(car_id , ticket , market_id , insert_time) values (#{carId},#{ticket} ,#{marketId},#{insertTime})
+    insert  into wish_list(car_id , ticket , market_id , insert_time) values (#{carId},#{ticket} ,#{market},#{insertTime})
 
   </insert>
   <select id="getWishListCar" parameterType="com.maxcar.stock.pojo.WishList" resultType="com.maxcar.stock.pojo.WxWishListCar">
@@ -49,8 +49,8 @@
       </if>
         )
       and cp.type=0
-    <if test="marketId != null" >
-      AND ca.market_id = #{marketId}
+    <if test="market != null" >
+      AND ca.market_id = #{market}
     </if>
 
 

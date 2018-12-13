@@ -39,7 +39,7 @@ public interface CarBaseService extends BaseService<CarBase,String> {
     //获取分组
     List<Configuration> carLevelGroup(String marketId,String type);
 
-    CarDetails getCarBaseById(String id);
+    List<CarDetails> getCarBaseById(String id);
 
     PageInfo selectCarList(CarBase carBase);
 

@@ -12,8 +12,6 @@ public class CarReview implements Serializable {
 
     private String userId;
 
-    private String userName;
-
     private String outReason;
 
     private Date backTime;
@@ -28,30 +26,16 @@ public class CarReview implements Serializable {
 
     private Integer isValid;
 
-    private String desc;
+    private Integer stepLevel;
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+    private Integer isComplete;
 
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id == null ? null : id.trim();
     }
 
     public String getCarId() {
@@ -132,5 +116,21 @@ public class CarReview implements Serializable {
 
     public void setIsValid(Integer isValid) {
         this.isValid = isValid;
+    }
+
+    public Integer getStepLevel() {
+        return stepLevel;
+    }
+
+    public void setStepLevel(Integer stepLevel) {
+        this.stepLevel = stepLevel;
+    }
+
+    public Integer getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(Integer isComplete) {
+        this.isComplete = isComplete;
     }
 }
