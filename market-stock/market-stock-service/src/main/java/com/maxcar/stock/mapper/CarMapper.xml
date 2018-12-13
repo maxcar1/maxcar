@@ -229,8 +229,8 @@
     </select>
 
     <sql id="CarVo_Column_List">
-    cb.brand_name, cb.brand_code, cb.series_name, cb.series_code, cb.model_year,cb.model_name, cb.model_code,
-    cb.mileage, cb.evaluate_price, cb.new_price, cb.market_price, cb.color, cb.engine_volume_unitl, cb.environmental_standards,
+    cb.brand_name, cb.brand_code, cb.series_name, cb.series_code, cb.model_year,cb.model_name, cb.model_code, 
+    cb.mileage, cb.evaluate_price, cb.new_price, cb.market_price, cb.color, cb.engine_volume_unitl, cb.environmental_standards, 
     cb.gear_box, cb.seat_number, cb.fuel_form, cb.fuel_number, cb.check_company_id,cb.model_data,cb.level,cb.accident_type as 'accidentType'
   </sql>
 
@@ -721,7 +721,7 @@
         where vin = #{vin,jdbcType=VARCHAR}
     </update>
     <select id="listCarVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
-        SELECT
+       SELECT
         t.*,cr.is_complete,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>
@@ -1788,11 +1788,11 @@
         ut.tenant_name as tenantName,
         case when t.car_status =1 then '质押' else '非质押' end as carStatus,
         case when t.stock_status = 1 then '在场'
-        when t.stock_status = 2 then '在场'
-        when t.stock_status = 3 then '出场'
-        when t.stock_status = 4 then '售出出场'
-        when t.stock_status = 5 then '售出在场'
-        end as stockStatus,
+             when t.stock_status = 2 then '在场'
+             when t.stock_status = 3 then '出场'
+             when t.stock_status = 4 then '售出出场'
+             when t.stock_status = 5 then '售出在场'
+             end as stockStatus,
         case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
         date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
         cb.mileage as mileage,
