@@ -1153,7 +1153,7 @@ public class CarController extends BaseController {
             }else if (carSellVo.getStockStatus() == 1 || carSellVo.getStockStatus() == 2){
                 car.setStockStatus(4);
             }
-            String topic = super.getTopic(user.getMarketId());
+            String topic = topicService.getTopic(user.getMarketId());
             //同步删除本地车辆状态
             //组装云端参数
             PostParam postParam = new PostParam();
