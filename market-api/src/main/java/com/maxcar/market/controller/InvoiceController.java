@@ -394,8 +394,8 @@ public class InvoiceController extends BaseController {
             invoice.setIsNewEnergy(0);//是新能源车
         }
         //判断买方类型是否是个人
-        if (invoice.getPurchacerType()==0){
-            if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())){
+        if (invoice.getPurchacerType() == 0) {
+            if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())) {
                 Map<String, Integer> cardMap = CardUtils.identityCard18(invoice.getPurchacerIdCard());
                 invoice.setAge(cardMap.get("age"));
                 invoice.setSex(cardMap.get("sex"));
@@ -499,34 +499,32 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "查询交易列表")
     public InterfaceResult getAllTransactionExcel(@RequestBody GetAllTransactionRequest request, HttpServletRequest servletRequest) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
-
+        int monthGap = 0;
         String billTimeStart = request.getBillTimeStart();
         String billTimeEnd = request.getBillTimeEnd();
-        Date start = DateUtils.parseDate(billTimeStart, DateUtils.DATE_FORMAT_DATEONLY);
-        Date end = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        if (StringUtil.isNotEmpty(billTimeStart)) {
+            String[] start = billTimeStart.split("-");
+            String[] end = billTimeEnd.split("-");
+            int startMonth = Integer.parseInt(start[1]);
 
-        Calendar c1 = Calendar.getInstance();
-        Calendar c2 = Calendar.getInstance();
-        c1.setTime(start);
-        c2.setTime(end);
-        int year1 = c1.get(Calendar.YEAR);
-        int year2 = c2.get(Calendar.YEAR);
-        int month1 = c1.get(Calendar.MONTH);
-        int month2 = c2.get(Calendar.MONTH);
-        int day1 = c1.get(Calendar.DAY_OF_MONTH);
-        int day2 = c2.get(Calendar.DAY_OF_MONTH);
-        // 获取年的差值 假设 d1 = 2015-8-16  d2 = 2011-9-30
-        int yearInterval = year1 - year2;
-        // 如果 d1的 月-日 小于 d2的 月-日 那么 yearInterval-- 这样就得到了相差的年数
-        if(month1 < month2 || month1 == month2 && day1 < day2) yearInterval --;
-        // 获取月数差值
-        int monthInterval =  (month1 + 12) - month2  ;
-        if(day1 < day2) monthInterval --;
-        monthInterval %= 12;
-        int monthGap = yearInterval * 12 + monthInterval;
+            int endMonth = Integer.parseInt(end[1]);
 
-        if(monthGap > 3){
-            interfaceResult.InterfaceResult600("数据量过大，影响导出速率，建议选择3个月内数据");
+            if(startMonth != endMonth){
+                while (true){
+                    endMonth -= 1;
+                    if(endMonth < 1){
+                        endMonth = 12;
+                    }
+                    monthGap += 1;
+                    if(endMonth == startMonth){
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (monthGap > 3) {
+            interfaceResult.InterfaceResult600("数据量过大，影响导出速率，建议选择3个月以内数据");
         } else {
             String marketId = getCurrentUser(servletRequest).getMarketId();
 
