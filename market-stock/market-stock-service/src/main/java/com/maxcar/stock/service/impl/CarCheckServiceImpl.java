@@ -16,8 +16,8 @@ public class CarCheckServiceImpl implements CarCheckService {
 	}
 
 
-	public String getCarCheckByVin(String vin) {
-		return carCheckMapper.getCarCheckByVin(vin);
+	public String getCarCheckByVin(CarCheck carCheck) {
+		return carCheckMapper.getCarCheckByVin(carCheck);
 	}
 
 	@Override

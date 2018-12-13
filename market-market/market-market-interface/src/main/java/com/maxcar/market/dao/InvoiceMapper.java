@@ -114,4 +114,6 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     Double countByCarSources(DealRequest deal);
 
     List<InvoiceExcel> detailsManage(Invoice invoice);
+
+    Double selectPriceByCarId(@Param("carId") String carId);
 }

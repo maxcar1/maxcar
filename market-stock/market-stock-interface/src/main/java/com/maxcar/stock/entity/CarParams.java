@@ -1,4 +1,6 @@
 package com.maxcar.stock.entity;
+import com.maxcar.base.pojo.PageBean;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -6,7 +8,7 @@ import java.io.Serializable;
  * Created by chiyanlong on 2018/9/4.
  * 接受录车app详情页传入参数
  */
-public class CarParams implements Serializable {
+public class CarParams extends PageBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -110,6 +112,42 @@ public class CarParams implements Serializable {
     private Integer status;//车辆状态
     private String fuelForm;//燃油方式
     private Integer carStatus;//车辆状态 1质押 2 非质押
+    private Integer stockStatus;//库存状态 -1 删除 1:在场 2:在内场 3:出场 4:售出未出场 5 售出已出场
+    private Integer reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
+    private String reviewPersonId;//审核人id
+    private Integer isPass;
+
+    public Integer getIsPass() {
+        return isPass;
+    }
+
+    public void setIsPass(Integer isPass) {
+        this.isPass = isPass;
+    }
+
+    public String getReviewPersonId() {
+        return reviewPersonId;
+    }
+
+    public void setReviewPersonId(String reviewPersonId) {
+        this.reviewPersonId = reviewPersonId;
+    }
+
+    public Integer getReviewResult() {
+        return reviewResult;
+    }
+
+    public void setReviewResult(Integer reviewResult) {
+        this.reviewResult = reviewResult;
+    }
+
+    public Integer getStockStatus() {
+        return stockStatus;
+    }
+
+    public void setStockStatus(Integer stockStatus) {
+        this.stockStatus = stockStatus;
+    }
 
     public Integer getCarStatus() {
         return carStatus;

@@ -322,7 +322,7 @@
     is_agent_code, is_agent, car_invoice_type,
     initial_registration_date, invoice_purchase_id,
     user_id)
-    values (#{id,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, #{billTime,jdbcType=DATE},
+    values (#{id,jdbcType=VARCHAR}, #{marketId,jdbcType=VARCHAR}, #{billTime,jdbcType=TIMESTAMP},
     #{invoiceNo,jdbcType=VARCHAR}, #{currentNo,jdbcType=VARCHAR}, #{contract,jdbcType=VARCHAR},
     #{purchacerTaxNo,jdbcType=VARCHAR}, #{purchacerNationality,jdbcType=VARCHAR}, #{purchacerName,jdbcType=VARCHAR},
     #{purchacerType,jdbcType=INTEGER}, #{purchacerPassport,jdbcType=VARCHAR}, #{purchacerIdCard,jdbcType=VARCHAR},
@@ -636,7 +636,7 @@
         #{marketId,jdbcType=VARCHAR},
       </if>
       <if test="billTime != null">
-        #{billTime,jdbcType=DATE},
+        #{billTime,jdbcType=TIMESTAMP},
       </if>
       <if test="invoiceNo != null">
         #{invoiceNo,jdbcType=VARCHAR},
@@ -4546,6 +4546,15 @@ FROM
        AND bill_time BETWEEN #{billTimeStart} AND #{billTimeEnd}
     </if>
     ORDER BY insert_time DESC
+  </select>
+
+
+
+  <select id="selectPriceByCarId" resultType="java.lang.Double" parameterType="java.lang.String">
+    select
+    ifnull(price,0)
+    from invoice
+    where car_id = #{carId,jdbcType=VARCHAR} limit 1
   </select>
 
 </mapper>

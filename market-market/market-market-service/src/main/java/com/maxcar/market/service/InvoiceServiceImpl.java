@@ -153,6 +153,11 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     }
 
     @Override
+    public double selectPriceByCarId(String carId) {
+        return invoiceMapper.selectPriceByCarId(carId) == null ? 0 : invoiceMapper.selectPriceByCarId(carId);
+    }
+
+    @Override
     public List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException {
         String billTimeEnd = invoice.getBillTimeEnd();
         if(StringUtil.isNotEmpty(billTimeEnd)){

@@ -32,6 +32,11 @@ public interface InvoiceService extends BaseService<Invoice, String> {
 
     List<InvoicePerson> getInvoicePerson(String idCard, String marketId);
 
+    /**
+     * 根据车辆id查询该车辆的实际售价
+     * @return
+     */
+    double selectPriceByCarId(String carId);
 
     List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException;
 }
