@@ -88,7 +88,11 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, currentTime);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
-                                total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                if (isMax){
+                                    total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                }else{
+                                    total = new BigDecimal(getSplitTime(begin, payTime, feePeriodTimes));
+                                }
                                 return total;
                             }
                             return total;
@@ -128,14 +132,15 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
 
         List<FeePeriodTime> feePeriodTimes = feePeriodTimeMapper.selectByExample(feePeriodTimeExample);
         BigDecimal total = new BigDecimal(0);
+        Date newBegin = null;
         if (null != feePeriodTimes && feePeriodTimes.size() > 0) {
             boolean isMax = false;
             int maxPrice = 0;
             ParkingFeeTotal parkingFeeTotal = parkingFeeTotals.get(0);
             if (null != parkingFeeTotal) {
                 if (parkingFeeTotal.getIsFree() == 1) {
-                    begin = DateUtils.addDate(begin, parkingFeeTotal.getFreeTime() * 60 * 1000);
-                    if (end.getTime() - begin.getTime() <= 0) {
+                    newBegin = DateUtils.addDate(begin, parkingFeeTotal.getFreeTime() * 60 * 1000);
+                    if (end.getTime() - newBegin.getTime() <= 0) {
                         return total;
                     }
                 }
@@ -174,7 +179,11 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(begin, end);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
-                                total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                if (isMax){
+                                    total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                }else{
+                                    total = new BigDecimal(getSplitTime(begin, end, feePeriodTimes));
+                                }
                                 return total;
                             }
                             return total;
