@@ -1,13 +1,12 @@
 package com.maxcar.stock.dao;
 
 import com.maxcar.base.dao.BaseDao;
+import com.maxcar.stock.entity.CarParams;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.GetCarListByMarketIdAndTenantRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
-import com.maxcar.stock.entity.Response.BarrierCarListResponse;
-import com.maxcar.stock.entity.Response.GetCarListByMarketIdAndTenantResponse;
-import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
+import com.maxcar.stock.entity.Response.*;
 import com.maxcar.stock.pojo.*;
 import com.maxcar.stock.vo.CarVo;
 import org.apache.ibatis.annotations.Param;
@@ -142,7 +141,7 @@ public interface CarMapper extends BaseDao<Car, String> {
      * @param tenantId
      * @return
      */
-    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
+    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId, @Param("marketId") String marketId);
 
     CarDataStatistics carData(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
 
@@ -163,4 +162,8 @@ public interface CarMapper extends BaseDao<Car, String> {
     Car carInformation(Car car);
 
     InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response);
+
+    Car getStockCarByVinByMarketId(@Param("vin")String vin,@Param("marketId") String marketId);
+
+    Map<String , Object> nowRanking(@Param("marketId") String marketId, @Param("tenantId") String tenantId);
 }

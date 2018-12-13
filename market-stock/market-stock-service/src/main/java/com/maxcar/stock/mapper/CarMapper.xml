@@ -1837,4 +1837,23 @@
         select <include refid="Base_Column_List"/>
         from car where stock_status in (1, 2, 3) and vin = #{vin} and market_id= #{marketId} order by update_time desc limit 1;
     </select>
+
+    <select id="nowRanking" parameterType="String" resultType="java.util.Map">
+        SELECT
+        COUNT(*) AS `count`,
+        SUM(cb.market_price) AS stockPrice,
+        AVG(DATEDIFF(NOW(),c.`register_time`)) AS `avg`
+        FROM
+        `car` c LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid = 1
+        AND c.car_type = 1
+        AND c.stock_status IN (1, 2, 3)
+        <if test="marketId != null  and marketId != ''  ">
+            AND c.market_id = #{marketId}
+        </if>
+        <if test="tenantId != null  and tenantId != ''  ">
+            AND c.tenant = #{tenantId}
+        </if>
+    </select>
 </mapper>

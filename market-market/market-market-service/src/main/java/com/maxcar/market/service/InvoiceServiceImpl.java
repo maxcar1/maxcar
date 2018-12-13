@@ -20,6 +20,7 @@ import com.maxcar.tenant.pojo.UserTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,5 +243,137 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
 //        }
 //        return interfaceResult;
 //    }
+@Override
+public Map nowDeal(String marketId, String tenantId) throws Exception {
+    Date dayStart = DateUtils.getDayStart(new Date());
+    Date dayEnd = DateUtils.getDayEnd(new Date());
+    Map<String, Object> map = invoiceMapper.nowDeal(marketId, tenantId, dayStart, dayEnd);
+    Map<String, Object> stockMap = invoiceMapper.nowCommercialDeal(marketId, tenantId, dayStart, dayEnd);
+    Object sum = map.get("sum");
+    //  交易总价值
+    double nowSum = 0.0;
+    if (sum != null) {
+        nowSum = Double.parseDouble(sum.toString());
+    }
+    //  平均交易价格
+    Object avg = map.get("avg");
+    double nowAvg = 0.0;
+    if (avg != null) {
+        nowAvg = Double.parseDouble(avg.toString());
+    }
+    //  车辆交易总量
+    Object count = map.get("count");
+    double nowCount = 0.0;
+    if (count != null) {
+        nowCount = Double.parseDouble(count.toString());
+    }
+    //  商品车交易总量
+    Object stockSum = stockMap.get("stockSum");
+    double nowStockSum = 0.0;
+    if (stockSum != null) {
+        String s = stockSum.toString();
+        map.put("stockSum", s);
+        nowStockSum = Double.parseDouble(s);
+    }
+    //  商品车平均交易价格
+    Object stockAvg = stockMap.get("stockAvg");
+    double nowStockAvg = 0.0;
+    if (stockAvg != null) {
+        String s = stockAvg.toString();
+        map.put("stockAvg", s);
+        nowStockAvg = Double.parseDouble(s);
+    }
+    //  商品车交易总量
+    Object stockCount = stockMap.get("stockCount");
+    double nowStockCount = 0.0;
+    if (stockCount != null) {
+        String s = stockCount.toString();
+        map.put("stockCount", s);
+        nowStockCount = Double.parseDouble(s);
+    }
+    //  昨日的数据
+    String yesterday = DateUtils.getYesterday();
+    Date date = DateUtils.parseDate(yesterday, DateUtils.DATE_FORMAT_DATEONLY);
+    dayStart = DateUtils.getDayStart(date);
+    dayEnd = DateUtils.getDayEnd(date);
+    Map<String, Object> yesterMap = invoiceMapper.nowDeal(marketId, tenantId, dayStart, dayEnd);
+    Map<String, Object> yesterStockMap = invoiceMapper.nowCommercialDeal(marketId, tenantId, dayStart, dayEnd);
+    sum = yesterMap.get("sum");
+    double yesterSum = 0.0;
+    if (sum != null) {
+        yesterSum = Double.parseDouble(sum.toString());
+    }
+    avg = yesterMap.get("avg");
+    double yesterAvg = 0.0;
+    if (avg != null) {
+        yesterAvg = Double.parseDouble(avg.toString());
+    }
+    count = yesterMap.get("count");
+    double yesterCount = 0.0;
+    if (count != null) {
+        yesterCount = Double.parseDouble(count.toString());
+    }
 
+    stockSum = yesterStockMap.get("stockSum");
+    double yesterStockSum = 0.0;
+    if (stockSum != null) {
+        yesterStockSum = Double.parseDouble(stockSum.toString());
+    }
+
+    stockAvg = yesterStockMap.get("stockAvg");
+    double yesterStockAvg = 0.0;
+    if (stockAvg != null) {
+        yesterStockAvg = Double.parseDouble(stockAvg.toString());
+    }
+
+    stockCount = yesterStockMap.get("stockCount");
+    double yesterStockCount = 0.0;
+    if (stockCount != null) {
+        yesterStockCount = Double.parseDouble(stockCount.toString());
+    }
+    double contrastSum = nowSum - yesterSum;
+    if(yesterSum == 0){
+        map.put("increaseContrastSum","NA");
+    } else {
+        map.put("increaseContrastSum",contrastSum / yesterSum);
+    }
+    map.put("contrastSum", contrastSum);
+    double contrastCount = nowCount - yesterCount;
+    if(yesterCount == 0){
+        map.put("increaseContrastCount","NA");
+    } else {
+        map.put("increaseContrastCount",contrastCount / yesterCount);
+    }
+    map.put("contrastCount",contrastCount);
+    double contrastAvg = nowAvg - yesterAvg;
+    if(yesterAvg == 0){
+        map.put("increaseContrastAvg","NA");
+    } else {
+        map.put("increaseContrastAvg",contrastAvg / yesterAvg);
+    }
+    map.put("contrastAvg" , contrastAvg);
+    double contrastStockSum = nowStockSum - yesterStockSum;
+    if(yesterStockSum == 0){
+        map.put("increaseContrastStockSum","NA");
+    } else {
+        map.put("increaseContrastStockSum",contrastStockSum / yesterStockSum);
+    }
+    map.put("contrastStockSum",contrastStockSum);
+    double contrastStockCount = nowStockCount - yesterStockCount;
+    if(yesterStockCount == 0){
+        map.put("increaseContrastStockCount","NA");
+    } else {
+        map.put("increaseContrastStockCount",contrastStockCount / yesterStockCount);
+    }
+    map.put("contrastStockCount",contrastStockCount);
+    double contrastStockAvg = nowStockAvg - yesterStockAvg;
+    if(yesterStockAvg == 0){
+        map.put("increaseContrastStockAvg","NA");
+    } else {
+        map.put("increaseContrastStockAvg",contrastStockAvg / yesterStockAvg);
+    }
+    map.put("contrastStockAvg",contrastStockAvg);
+
+    return map;
+}
 }

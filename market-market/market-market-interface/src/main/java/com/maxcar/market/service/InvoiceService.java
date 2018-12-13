@@ -8,6 +8,7 @@ import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.pojo.TradeInformation;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chiyanlong on 2018/8/24.
@@ -37,4 +38,6 @@ public interface InvoiceService extends BaseService<Invoice, String> {
     double selectPriceByCarId(String carId);
 
     List<Invoice> detailsManage(Invoice invoice);
+
+    Map nowDeal(String marketId, String tenantId) throws Exception;
 }

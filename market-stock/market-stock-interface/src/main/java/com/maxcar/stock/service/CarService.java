@@ -250,4 +250,7 @@ public interface CarService extends BaseService<Car, String> {
     InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest inventoryStatisticalRequest);
 
     Car getStockCarByVin(String vin, String marketId);
+
+    Map<String,Object> nowRanking(String marketId, String tenantId);
+
 }
