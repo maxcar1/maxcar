@@ -849,11 +849,10 @@
         ut.tenant_name,
         rd.review_result
         FROM
-        review_detail rd
-        LEFT JOIN car_review b ON rd.review_id = b.id
-        LEFT JOIN car a ON b.car_id = a.id
-        LEFT JOIN car_base d ON d.id = a.id
-        LEFT JOIN maxcar_tenant_l.user_tenant ut ON a.tenant = ut.id
+        maxcar_stock_l.car a
+        LEFT JOIN maxcar_stock_l.car_review b ON a.id = b.car_id
+        LEFT JOIN maxcar_tenant_l.user_tenant c ON a.tenant = c.id
+        LEFT JOIN maxcar_stock_l.car_base d ON a.id = d.id
         where 1=1
         <if test="reviewResult != null and reviewResult != ''">
             and rd.review_result= #{reviewResult}
