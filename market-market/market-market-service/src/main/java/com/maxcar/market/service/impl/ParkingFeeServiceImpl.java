@@ -333,10 +333,10 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         Date endDate = Calendar.getInstance().getTime();
         //获取当前卡号最早的一条记录
         ParkingFeeDetail parkingFeeDe = parkingFeeDetailMapper.getRecordByCardNoOrUnionId(parkingFeeDetail);
-        parkingFeeDe.setAfterImage(parkingFeeDetail.getAfterImage());
-        parkingFeeDe.setAfterTime(Calendar.getInstance().getTime());
-        parkingFeeDe.setPrice(0);
         if (null != parkingFeeDe) {
+            parkingFeeDe.setAfterImage(parkingFeeDetail.getAfterImage());
+            parkingFeeDe.setAfterTime(Calendar.getInstance().getTime());
+            parkingFeeDe.setPrice(0);
             parkingFeeDe.setOverTime("0小时0分0秒");
             parkingFeeDe.setAfterTime(endDate);
             // 判断该记录是否是会员记录
