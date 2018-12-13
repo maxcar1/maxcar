@@ -1,6 +1,7 @@
 package com.maxcar.statistics.quartz;
 
 
+import com.maxcar.statistics.service.impl.InsertStockAndInvoiceImpl;
 import com.maxcar.statistics.service.impl.mapperService.CarbrandMapperService;
 import com.maxcar.statistics.service.impl.mapperService.CarstocktimeMapperService;
 import com.maxcar.statistics.service.impl.mapperService.CartypeMapperService;
@@ -39,6 +40,9 @@ public class SyncCenter extends QuartzJobBean {
     @Autowired
     private CarstocktimeMapperService carstocktimeMapperService;
 
+    @Autowired
+    private InsertStockAndInvoiceImpl insertStockAndInvoice;
+
     @Override
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {
 
@@ -50,6 +54,12 @@ public class SyncCenter extends QuartzJobBean {
             carbrandMapperService.InserteCarbrand();
             caryearMapperService.InsertCaryear();
             carstocktimeMapperService.InsertCarstocktime();
+
+            insertStockAndInvoice.InsertCarpriceDay();
+            insertStockAndInvoice.InsertCarstockDay();
+            insertStockAndInvoice.InsertCarstockMonth();
+            insertStockAndInvoice.InsertInventoryInvoiceDay();
+            insertStockAndInvoice.InsertInventoryInvoiceMonth();
 
         } catch (Exception ex) {
             ex.printStackTrace();
