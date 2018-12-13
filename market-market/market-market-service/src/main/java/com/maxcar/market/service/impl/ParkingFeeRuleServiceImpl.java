@@ -127,9 +127,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
         }
         List<ParkingFeeTotal> parkingFeeTotals = parkingFeeTotalMapper.selectByExample(example);
 
-
         List<FeePeriodTime> feePeriodTimes = feePeriodTimeMapper.selectByExample(feePeriodTimeExample);
-        Date intime1 = null;
         BigDecimal total = new BigDecimal(0);
         if (null != feePeriodTimes && feePeriodTimes.size() > 0) {
             boolean isMax = false;
@@ -137,12 +135,10 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
             ParkingFeeTotal parkingFeeTotal = parkingFeeTotals.get(0);
             if (null != parkingFeeTotal) {
                 if (parkingFeeTotal.getIsFree() == 1) {
-                    intime1 = DateUtils.addDate(begin, parkingFeeTotal.getFreeTime() * 60 * 1000);
-                    if (end.getTime() - intime1.getTime() <= 0) {
+                    begin = DateUtils.addDate(begin, parkingFeeTotal.getFreeTime() * 60 * 1000);
+                    if (end.getTime() - begin.getTime() <= 0) {
                         return total;
                     }
-                } else if(parkingFeeTotal.getIsFree() == 0){
-                    intime1 = begin;
                 }
                 //设置了上限
                 if (parkingFeeTotal.getIsLimit() == 1) {
