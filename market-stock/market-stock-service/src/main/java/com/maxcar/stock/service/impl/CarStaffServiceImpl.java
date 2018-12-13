@@ -259,7 +259,7 @@ public class CarStaffServiceImpl implements CarStaffService {
 
                 try {
                     configuration.setMarketId(marketId);
-                    configuration.setConfigurationKey("staff_car_market");
+                    configuration.setConfigurationKey("staff_car_tenant");
                     list=configurationService.searchConfiguration(configuration);
                 }catch ( Exception e ){
                     e.printStackTrace();
