@@ -132,22 +132,22 @@ public class BaseMapperService {
                 break;
             case 2:
                 //一 - 三年
-                AgeByCarString = " and c.initial_licence_time < DATE_SUB(now(), INTERVAL 1 YEAR)" +
+                AgeByCarString = " and c.initial_licence_time <= DATE_SUB(now(), INTERVAL 1 YEAR)" +
                         " and c.initial_licence_time > DATE_SUB(now(), INTERVAL 3 YEAR) ";
                 break;
             case 3:
                 //三 - 五年
-                AgeByCarString = " and c.initial_licence_time < DATE_SUB(now(), INTERVAL 3 YEAR)" +
+                AgeByCarString = " and c.initial_licence_time <= DATE_SUB(now(), INTERVAL 3 YEAR)" +
                         " and c.initial_licence_time > DATE_SUB(now(), INTERVAL 5 YEAR) ";
                 break;
             case 4:
                 //五 - 八年
-                AgeByCarString = " and c.initial_licence_time < DATE_SUB(now(), INTERVAL 5 YEAR)" +
+                AgeByCarString = " and c.initial_licence_time <= DATE_SUB(now(), INTERVAL 5 YEAR)" +
                         " and c.initial_licence_time > DATE_SUB(now(), INTERVAL 8 YEAR) ";
                 break;
             case 5:
                 //八年以上
-                AgeByCarString = " and c.initial_licence_time < DATE_SUB(now(), INTERVAL 8 YEAR)";
+                AgeByCarString = " and c.initial_licence_time <= DATE_SUB(now(), INTERVAL 8 YEAR)";
                 break;
             default:
                 break;

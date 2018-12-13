@@ -97,6 +97,8 @@ public class CarbrandMapperService {
             parameter.setOrderBy("inventoryCount");
         }
 
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
         return carbrandDayDao.groupCarbrandInventoryDay(parameter);
     }
 
