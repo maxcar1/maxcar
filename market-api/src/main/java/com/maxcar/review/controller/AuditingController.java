@@ -15,8 +15,10 @@ import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.entity.Organizations;
+import com.maxcar.user.entity.Staff;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.service.OrganizationsService;
+import com.maxcar.user.service.StaffService;
 import com.maxcar.user.service.UserService;
 import com.maxcar.web.aop.OperationAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,8 @@ public class AuditingController extends BaseController {
     private ReviewDetailService reviewDetailService;
     @Autowired
     private MessageProducerService messageProducerService;
+    @Autowired
+    private StaffService staffService;
 
     @RequestMapping("/checkPendinglist")
     @OperationAnnotation(title = "车辆出场审核待审核列表")
@@ -87,11 +91,11 @@ public class AuditingController extends BaseController {
         c.setReviewId(reviewId);
         CarReview carReview = carReviewService.getCarReview(c);
         if(carReview != null){
-            /*User user = new User();
-            User user = new User();
-            //user.setUserId(carReview.getUserId());
-             user = userService.selectByPrimaryKey(carReview.getUserId());*/
-            carReview.setUserName(user.getUserName());
+            User u= userService.selectByPrimaryKey(carReview.getUserId());
+            Staff staff = staffService.selectByPrimaryKey(u.getStaffId());
+            if(staff != null){
+                carReview.setUserName(staff.getStaffName());
+            }
             map.put("carReview",carReview);
             List<CarDetails> list = carBaseService.getCarBaseById(carReview.getCarId());
             CarDetails carDetails = list.get(0);
@@ -291,11 +295,14 @@ public class AuditingController extends BaseController {
     @OperationAnnotation(title = "车辆出场审核已审核列表")
     public InterfaceResult carReviewDetailList(@RequestBody CarParams carParams, HttpServletRequest request ) throws Exception{
         InterfaceResult interfaceResult = new InterfaceResult();
+        User user = super.getCurrentUser(request);
+        if (carParams.getMarket() == null){
+            carParams.setMarket(user.getMarketId());
+        }
         PageInfo pageInfo = carService.carReviewDetailList(carParams);
         interfaceResult.InterfaceResult200(pageInfo);
         return interfaceResult;
     }
-
 
     @RequestMapping("/export")
     @OperationAnnotation(title = "导出")
@@ -308,7 +315,7 @@ public class AuditingController extends BaseController {
             exportReviewResponse.setBrandName(carVo.getBrandName() + "-" +carVo.getSeriesName());
             exportReviewResponse.setModelName(carVo.getModelName());
             exportReviewResponse.setTenantName(carVo.getTenantName());
-            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getReviewInsertTime());
+            exportReviewResponse.setInsertTime(carVo.getApplicationTime()==null?"":carVo.getApplicationTime());
             exportReviewResponse.setCarStatus(carVo.getCarStatus()==1?"质押":"非质押");
             exportReviewResponse.setOutReason(carVo.getOutReason());
             if(carVo.getEvaluatePrice() == null){
@@ -316,8 +323,8 @@ public class AuditingController extends BaseController {
             }else{
                 exportReviewResponse.setEvaluatePrice(carVo.getEvaluatePrice().doubleValue());
             }
-            if(carVo.getReviewResult()!=null){
-                exportReviewResponse.setReviewResult(carVo.getReviewResult()==1?"审核通过":"审核不通过");
+            if(carVo.getIsPass()!=null){
+                exportReviewResponse.setReviewResult(carVo.getIsPass()==1?"审核通过":"审核不通过");
             }
             if(carVo.getStockStatus()!=null){
                 exportReviewResponse.setStockStatus(carVo.getStockStatus()==1?"在场":"出场");
@@ -344,7 +351,9 @@ public class AuditingController extends BaseController {
             User user = new User();
             user.setUserId(carReview.getUserId());
             List<User> userList = userService.getUserList(user);
-            carReview.setUserName(userList.get(0).getTrueName());
+            User user1= userService.selectByPrimaryKey(userList.get(0).getUserId());
+            Staff staff = staffService.selectByPrimaryKey(user1.getStaffId());
+            carReview.setUserName(staff.getStaffName());
             map.put("carReview",carReview);
         }
         ReviewDetail rd = reviewDetailService.reviewDetail(reviewId);
