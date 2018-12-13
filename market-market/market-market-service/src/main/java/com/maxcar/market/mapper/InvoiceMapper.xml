@@ -1791,30 +1791,30 @@
       <if test="storeHoldDays == 1 ">
         -- 库存天数
         <![CDATA[  AND 0 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 45 ]]>
       </if>
       <if test="storeHoldDays == 2 ">
         <![CDATA[  AND 45 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 60  ]]>
       </if>
       <if test="storeHoldDays == 3 ">
         <![CDATA[  AND 60 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 90 ]]>
       </if>
       <if test="storeHoldDays == 4 ">
-        <![CDATA[  AND  90 <= TO_DAYS(NOW()) - TO_DAYS(cc.register_time) ]]>
+        <![CDATA[  AND  90 <= TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time) ]]>
       </if>
     </if>
     <if test="seriesName != null and seriesName != ''">
@@ -2581,30 +2581,30 @@
       <if test="storeHoldDays == 1 ">
         -- 库存天数
         <![CDATA[  AND 0 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 45 ]]>
       </if>
       <if test="storeHoldDays == 2 ">
         <![CDATA[  AND 45 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 60  ]]>
       </if>
       <if test="storeHoldDays == 3 ">
         <![CDATA[  AND 60 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 90 ]]>
       </if>
       <if test="storeHoldDays == 4 ">
-        <![CDATA[  AND  90 <= TO_DAYS(NOW()) - TO_DAYS(cc.register_time) ]]>
+        <![CDATA[  AND  90 <= TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time) ]]>
       </if>
     </if>
     <if test="seriesName != null and seriesName != ''">
@@ -2860,30 +2860,30 @@
       <if test="storeHoldDays == 1 ">
         -- 库存天数
         <![CDATA[  AND 0 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 45 ]]>
       </if>
       <if test="storeHoldDays == 2 ">
         <![CDATA[  AND 45 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 60  ]]>
       </if>
       <if test="storeHoldDays == 3 ">
         <![CDATA[  AND 60 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 90 ]]>
       </if>
       <if test="storeHoldDays == 4 ">
-        <![CDATA[  AND  90 <= TO_DAYS(NOW()) - TO_DAYS(cc.register_time) ]]>
+        <![CDATA[  AND  90 <= TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time) ]]>
       </if>
     </if>
     <if test="seriesName != null and seriesName != ''">
@@ -3150,30 +3150,30 @@
       <if test="storeHoldDays == 1 ">
         -- 库存天数
         <![CDATA[  AND 0 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 45 ]]>
       </if>
       <if test="storeHoldDays == 2 ">
         <![CDATA[  AND 45 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 60  ]]>
       </if>
       <if test="storeHoldDays == 3 ">
         <![CDATA[  AND 60 <= (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
             )
             AND (
-              TO_DAYS(NOW()) - TO_DAYS(cc.register_time)
+              TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time)
         ) < 90 ]]>
       </if>
       <if test="storeHoldDays == 4 ">
-        <![CDATA[  AND  90 <= TO_DAYS(NOW()) - TO_DAYS(cc.register_time) ]]>
+        <![CDATA[  AND  90 <= TO_DAYS(i.bill_time) - TO_DAYS(cc.register_time) ]]>
       </if>
     </if>
     <if test="seriesName != null and seriesName != ''">

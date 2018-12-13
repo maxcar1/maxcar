@@ -500,14 +500,41 @@ public class InvoiceController extends BaseController {
     public InterfaceResult getAllTransactionExcel(@RequestBody GetAllTransactionRequest request, HttpServletRequest servletRequest) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
 
-        String marketId = getCurrentUser(servletRequest).getMarketId();
+        String billTimeStart = request.getBillTimeStart();
+        String billTimeEnd = request.getBillTimeEnd();
+        Date start = DateUtils.parseDate(billTimeStart, DateUtils.DATE_FORMAT_DATEONLY);
+        Date end = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
 
-//        String marketId = "010";   //   ------------------------------------------------------------------这里市场写死了\
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        c1.setTime(start);
+        c2.setTime(end);
+        int year1 = c1.get(Calendar.YEAR);
+        int year2 = c2.get(Calendar.YEAR);
+        int month1 = c1.get(Calendar.MONTH);
+        int month2 = c2.get(Calendar.MONTH);
+        int day1 = c1.get(Calendar.DAY_OF_MONTH);
+        int day2 = c2.get(Calendar.DAY_OF_MONTH);
+        // 获取年的差值 假设 d1 = 2015-8-16  d2 = 2011-9-30
+        int yearInterval = year1 - year2;
+        // 如果 d1的 月-日 小于 d2的 月-日 那么 yearInterval-- 这样就得到了相差的年数
+        if(month1 < month2 || month1 == month2 && day1 < day2) yearInterval --;
+        // 获取月数差值
+        int monthInterval =  (month1 + 12) - month2  ;
+        if(day1 < day2) monthInterval --;
+        monthInterval %= 12;
+        int monthGap = yearInterval * 12 + monthInterval;
 
-        request.setMarketId(marketId);
+        if(monthGap > 3){
+            interfaceResult.InterfaceResult600("数据量过大，影响导出速率，建议选择3个月内数据");
+        } else {
+            String marketId = getCurrentUser(servletRequest).getMarketId();
 
-        List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
-        interfaceResult.InterfaceResult200(allTransactionExcel);
+            request.setMarketId(marketId);
+
+            List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
+            interfaceResult.InterfaceResult200(allTransactionExcel);
+        }
 
         return interfaceResult;
     }
