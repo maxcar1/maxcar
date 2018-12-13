@@ -350,6 +350,8 @@ public class PushCallback implements MqttCallback {
                 }
             } else {
                 logger.info("====请选择服务环境====");
+                //摄像机未配置依然不影响上行数据
+                sendCloud(json,url,postParam,null);
             }
         } else {
             logger.info("====请检查摄像机配置表====");
