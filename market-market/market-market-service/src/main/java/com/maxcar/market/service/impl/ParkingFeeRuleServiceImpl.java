@@ -70,7 +70,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
                             if (isMax) {
-                                List<Map> firstSplitTime = DateUtils.getSplitTime(newBegin, secondStart);
+                                List<Map> firstSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, secondStart);
                                 if (firstSplitTime != null && firstSplitTime.size() > 0) {
                                     firstFee = getFrees(firstSplitTime, feePeriodTimes, true, maxPrice);
                                 }
@@ -85,7 +85,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             total = new BigDecimal(secondFee);
                             return total;
                         }else{
-                            List<Map> getSplitTime = DateUtils.getSplitTime(newBegin, currentTime);
+                            List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, currentTime);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
                                 total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
@@ -161,7 +161,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
                             if (isMax) {
-                                List<Map> firstSplitTime = DateUtils.getSplitTime(begin, secondStart);
+                                List<Map> firstSplitTime = DateUtils.getDiffDateTimeSlot(begin, secondStart);
                                 if (firstSplitTime != null && firstSplitTime.size() > 0) {
                                     firstFee = getFrees(firstSplitTime, feePeriodTimes, true, maxPrice);
                                 }
@@ -176,7 +176,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             total = new BigDecimal(firstFee + secondFee);
                             return total;
                         }else{
-                            List<Map> getSplitTime = DateUtils.getSplitTime(begin, end);
+                            List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(begin, end);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
                                 total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
@@ -273,9 +273,9 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
         String day = "2018-10-01 ";//用于时间装换，没有实际意义，可以写死
         //停车时间
         String startTime = (String) map.get("startTime");
-        long sPTime = format.parse(day + startTime).getTime() / 1000 / 60;
+        long sPTime = format.parse(day + startTime.split(" ")[1]).getTime() / 1000 / 60;
         String endTime = (String) map.get("endTime");
-        long ePTime = format.parse(day + endTime).getTime() / 1000 / 60;
+        long ePTime = format.parse(day + endTime.split(" ")[1]).getTime() / 1000 / 60;
         //规则时间
         String sTime = feePeriodTime.getStartTime();
         String eTime = feePeriodTime.getEndTime();
