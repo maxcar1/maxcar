@@ -73,6 +73,7 @@ public class RoleController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = super.getCurrentUser(request);
         Role role = (user.getRoles()!=null&&user.getRoles().size()>0)?user.getRoles().get(0):null;
+        logger.info("=============="+role.getRoleId());
         interfaceResult.InterfaceResult200(roleService.selectRoleById(id,role.getRoleId()));
         return interfaceResult;
     }

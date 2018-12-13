@@ -19,7 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 
-@MapperScan("com.maxcar.barrier.dao")
+@MapperScan("com.maxcar.*.dao")
 //@PropertySource(value = {"classpath:jdbc.properties"})
 @ImportResource(locations = { "classpath:config/spring-mybatis.xml"})
 @SpringBootApplication

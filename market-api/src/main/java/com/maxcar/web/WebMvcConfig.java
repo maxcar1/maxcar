@@ -31,7 +31,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(systemInterceptor).addPathPatterns("/**")
-                .excludePathPatterns("/api/login","/error","/api/province","/api/city/province/**","/api/city/**","/api/ossInfo"
+                .excludePathPatterns("/api/**","/error","/api/province","/api/city/province/**","/api/city/**","/api/ossInfo"
                         ,"/common/**"
                         //配置道闸不授权
                         )

@@ -31,6 +31,11 @@ public interface CarMapper extends BaseDao<Car, String> {
 
     List<CarVo> listCarVo(CarVo carVo);
 
+    List<CarVo> listReview(CarParams carParams);
+
+    List<CarVo> carReviewDetailList(CarParams carParams);
+
+
     /**
      * param:
      * describe: 根据搜索条件动态查询 总库存量  在场量 出厂量  库存总价值
@@ -132,9 +137,30 @@ public interface CarMapper extends BaseDao<Car, String> {
 
     Car getStockCarByVin(String vin);
 
+    /**
+     * 商户库存信息
+     * @param tenantId
+     * @return
+     */
+    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
+
+    CarDataStatistics carData(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
+
+    /**
+     * 出售管理列表
+     * @param carVo
+     * @return
+     */
+    List<CarVo> getAllSalesManageCarList(CarVo carVo);
+
+    /**
+     * 导出出售管理列表
+     * @param carVo
+     * @return
+     */
+    List<SellCarListExportVo> exportAllSellCarList(CarVo carVo);
+
     Car carInformation(Car car);
 
     InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response);
-
-    Map<String , Object> nowRanking(@Param("marketId") String marketId, @Param("tenantId") String tenantId);
 }

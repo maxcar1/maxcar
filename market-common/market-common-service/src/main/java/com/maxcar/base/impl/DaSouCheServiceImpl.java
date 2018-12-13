@@ -320,4 +320,9 @@ public class DaSouCheServiceImpl implements DaSouCheService {
         }
         return -1;
     }
+
+    @Override
+    public Map<String, String> getModelAndSeriesAndBrandByModelCode(String modelCode) {
+        return carModelMapper.getModelAndSeriesAndBrandByModelCode(modelCode);
+    }
 }

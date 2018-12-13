@@ -5,9 +5,11 @@ import com.maxcar.base.service.impl.BaseServiceImpl;
 import com.maxcar.user.dao.ResourceMapper;
 import com.maxcar.user.dao.RoleResourceMapper;
 import com.maxcar.user.entity.Resource;
+import com.maxcar.user.entity.ResourceOption;
 import com.maxcar.user.entity.RoleResource;
 import com.maxcar.user.entity.RoleResourceExample;
 import com.maxcar.user.service.ResourceService;
+import com.maxcar.user.service.RoleResourceOptionService;
 import com.maxcar.user.service.RoleResourceService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class RoleResourceServiceImpl extends BaseServiceImpl<RoleResource,String
     private RoleResourceMapper roleResourceMapper;
     @Autowired
     private ResourceMapper resourceMapper;
+    @Autowired
+    private RoleResourceOptionService roleResourceOptionService;
 
     @Autowired
     private ResourceService resourceService;
@@ -74,13 +78,17 @@ public class RoleResourceServiceImpl extends BaseServiceImpl<RoleResource,String
 //                    andResourceTypeEqualTo(0);
 //            List<Resource> childRes =  resourceMapper.selectByExample(resourceExample);
             List<Resource> childRes = roleResourceMapper.findMenuByUserId(map);
+            //插入角色资源操作信息
+            List<ResourceOption> roleResourceOptions = roleResourceOptionService.getResourceOptionByUserIdAndResourceId(map);
             resource.setChildList(childRes);
+            resource.setResourceOptions(roleResourceOptions);
             if(childRes!=null) {
                 getChildResources(childRes,userId);
             }
         }
         return resources;
     }
+
 
 
 }

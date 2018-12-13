@@ -37,4 +37,6 @@ public interface CarRecordMapper extends BaseDao<CarRecord,String>{
     List<CarRecord> getCarRecordList(CarRecord carRecord);
 
     CarOut getCarOutMarketDate(@Param("vin") String vin);
+
+    CarRecord selectPlayingTime(@Param("rfid") String rfid,@Param("vin") String vin);
 }

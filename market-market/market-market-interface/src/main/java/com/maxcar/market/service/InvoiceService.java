@@ -7,9 +7,7 @@ import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.pojo.TradeInformation;
 
-import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by chiyanlong on 2018/8/24.
@@ -32,5 +30,11 @@ public interface InvoiceService extends BaseService<Invoice, String> {
 
     List<InvoicePerson> getInvoicePerson(String idCard, String marketId);
 
-    Map nowDeal(String marketId, String tenantId) throws ParseException;
+    /**
+     * 根据车辆id查询该车辆的实际售价
+     * @return
+     */
+    double selectPriceByCarId(String carId);
+
+    List<Invoice> detailsManage(Invoice invoice);
 }

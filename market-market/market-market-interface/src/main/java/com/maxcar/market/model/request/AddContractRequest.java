@@ -18,4 +18,27 @@ public class AddContractRequest implements Serializable {
 
     private List<PropertyContractDetail> propertyContractDetailList;
 
+    public UserTenantPack getUserTenantPack() {
+        return userTenantPack;
+    }
+
+    public void setUserTenantPack(UserTenantPack userTenantPack) {
+        this.userTenantPack = userTenantPack;
+    }
+
+    public PropertyContract getPropertyContract() {
+        return propertyContract;
+    }
+
+    public void setPropertyContract(PropertyContract propertyContract) {
+        this.propertyContract = propertyContract;
+    }
+
+    public List<PropertyContractDetail> getPropertyContractDetailList() {
+        return propertyContractDetailList;
+    }
+
+    public void setPropertyContractDetailList(List<PropertyContractDetail> propertyContractDetailList) {
+        this.propertyContractDetailList = propertyContractDetailList;
+    }
 }

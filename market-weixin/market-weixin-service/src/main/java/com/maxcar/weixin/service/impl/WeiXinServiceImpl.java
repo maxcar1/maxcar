@@ -129,6 +129,9 @@ public class WeiXinServiceImpl implements WeiXinService {
     @Value("${pay_account_app_secret}")
     private String payAccountAppSecret;
 
+    @Value("${mediaid_about_us}")
+    private String mediaidAboutUs;
+
     @Value("${kafka.producer.topic}")
     public String producerTopic;
     @Value("${kafka.consumer.topic006}")
@@ -769,8 +772,7 @@ public class WeiXinServiceImpl implements WeiXinService {
                     }
                 } else if (WeiXinUtils.WeiXinPublicNum.ICAR.equals(type)) {
                     if (receiveXmlEntity.getEventKey().equals("gywm")) {
-                        String mediaId = "Y4Chx5ZetVR6_rgItZoAaBAM-t-j0wzi5hbdDEPGlcw";
-                        result.put("result", FormatXmlProcess.formatXmlImage(receiveXmlEntity.getFromUserName(), receiveXmlEntity.getToUserName(), mediaId));
+                        result.put("result", FormatXmlProcess.formatXmlImage(receiveXmlEntity.getFromUserName(), receiveXmlEntity.getToUserName(), mediaidAboutUs));
                         return result;
                     }
                 }
