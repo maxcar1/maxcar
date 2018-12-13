@@ -14,5 +14,27 @@ public class GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest implements Serializab
 
     private String areaId;
 
+    public String getMarketId() {
+        return marketId;
+    }
 
+    public void setMarketId(String marketId) {
+        this.marketId = marketId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
 }

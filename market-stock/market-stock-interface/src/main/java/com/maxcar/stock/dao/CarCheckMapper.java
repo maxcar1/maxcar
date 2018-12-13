@@ -35,7 +35,7 @@ public interface CarCheckMapper {
 
     int updateByPrimaryKey(CarCheck record);
 
-    String getCarCheckByVin(String vin);
+    String getCarCheckByVin(CarCheck carCheck);
 
     int insertCarCheck(CarCheck check);
 }

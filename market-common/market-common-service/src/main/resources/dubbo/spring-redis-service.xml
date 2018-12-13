@@ -12,7 +12,7 @@
 	<dubbo:annotation package="com.maxcar" />
 
 	<!--&lt;!&ndash;<dubbo:protocol name="dubbo" port="9006" serialization="kryo" optimizer="com.maxcar.statistics.utils.SerializationOptimizerImpl"/>&ndash;&gt;-->
-	<dubbo:protocol name="dubbo" port="9001"></dubbo:protocol>
+	<dubbo:protocol name="dubbo" port="8001"></dubbo:protocol>
 
 	<!--<dubbo:application name="maxcar-redis-interface"  />-->
 	<!--&lt;!&ndash; 注册中心暴露服务地址 &ndash;&gt;-->

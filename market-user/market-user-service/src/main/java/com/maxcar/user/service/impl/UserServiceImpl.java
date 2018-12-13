@@ -6,8 +6,20 @@ import com.maxcar.base.service.impl.BaseServiceImpl;
 import com.maxcar.base.util.MD5Util;
 import com.maxcar.base.util.UuidUtils;
 import com.maxcar.redis.service.SsoService;
-import com.maxcar.user.dao.*;
-import com.maxcar.user.entity.*;
+import com.maxcar.user.dao.LoginLogMapper;
+import com.maxcar.user.dao.OrganizationsMapper;
+import com.maxcar.user.dao.StaffMapper;
+import com.maxcar.user.dao.UserMapper;
+import com.maxcar.user.dao.UserRoleMapper;
+import com.maxcar.user.entity.LoginLog;
+import com.maxcar.user.entity.Organizations;
+import com.maxcar.user.entity.Role;
+import com.maxcar.user.entity.Staff;
+import com.maxcar.user.entity.StaffExample;
+import com.maxcar.user.entity.User;
+import com.maxcar.user.entity.UserExample;
+import com.maxcar.user.entity.UserRole;
+import com.maxcar.user.entity.UserRoleExample;
 import com.maxcar.user.service.UserService;
 import com.maxcar.user.vo.ChangeUser;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("userService")
 public class UserServiceImpl extends BaseServiceImpl<User,String> implements UserService {
@@ -303,8 +319,23 @@ public class UserServiceImpl extends BaseServiceImpl<User,String> implements Use
         if (StringUtils.isNotBlank(user.getMarketId())){
             criteria.andMarketIdEqualTo(user.getMarketId());
         }
+        if(StringUtils.isNotBlank(user.getUserId())){
+            criteria.andUserIdEqualTo(user.getUserId());
+        }
         List<User> list = userMapper.selectByExample(example);
         return list;
+    }
+
+
+
+    @Override
+    public List<Map> getUserAndOrgByMarketId(String marketId) {
+        return userMapper.getUserAndOrgByMarketId(marketId);
+    }
+
+    @Override
+    public Map getUserOrgByReview(String reviewPersonId, String orgId) {
+        return userMapper.getUserOrgByReview(reviewPersonId, orgId);
     }
 
     @Override

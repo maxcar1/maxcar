@@ -148,6 +148,11 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
     }
 
     @Override
+    public double selectPriceByCarId(String carId) {
+        return invoiceMapper.selectPriceByCarId(carId) == null ? 0 : invoiceMapper.selectPriceByCarId(carId);
+    }
+
+    @Override
     public List<Invoice> detailsManage(Invoice invoice) {
         InvoiceExample invoiceExample = new InvoiceExample();
         InvoiceExample.Criteria criteria = invoiceExample.createCriteria();
