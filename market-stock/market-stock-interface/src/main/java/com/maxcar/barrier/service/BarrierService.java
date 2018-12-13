@@ -28,4 +28,6 @@ public interface BarrierService {
     Barrier selectBarrierByIdAndMarketId(Barrier barrier);
 
     Barrier selectBarrierByBarrierMac(Barrier barrier);
+
+
 }

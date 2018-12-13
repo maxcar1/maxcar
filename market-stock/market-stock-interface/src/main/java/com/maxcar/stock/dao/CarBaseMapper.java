@@ -50,7 +50,7 @@ public interface CarBaseMapper extends BaseDao<CarBase, String> {
     //获取车型字典
     List<Configuration> selectCarGroup(@Param("marketId") String marketId, @Param("type") String type);
 
-    CarDetails getCarBaseById(String id);
+    List<CarDetails> getCarBaseById(String id);
 
     List<CarBase> selectCarList(CarBase carBase);
 

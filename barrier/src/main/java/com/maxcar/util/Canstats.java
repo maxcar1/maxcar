@@ -77,6 +77,7 @@ public class Canstats {
     public static final   Integer outType = 3;//出场
     public static final    Integer saleType = 4;//售出
     public static final  Integer saleOutType = 5;//售出已出场
+    public static final  Integer OutTimeType = 6;//已出场超时
     public static final List<Integer> STOCKTYPE = Arrays.asList(1,2,3,6);//库存状态
     public final static String KAFKA_SASS = "SASS";//卡夫卡数据服务类型
 

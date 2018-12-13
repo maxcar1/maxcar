@@ -490,7 +490,7 @@
 				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
 				<system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
 				<system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
-				<!-- 云端数据源配置datasource库存、交易-->
+				<!-- 云端数据源配置 datasource库存、交易-->
 				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
 				<system.jdbc.url.stock>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
 				<system.jdbc.user.stock>root</system.jdbc.user.stock>
@@ -542,10 +542,10 @@
 				<redisMaxWait>100000</redisMaxWait>
 				<redisTestOnBorrow>true</redisTestOnBorrow>
 				<redisTestOnReturn>true</redisTestOnReturn>
-				<redisHost>localhost</redisHost>
-				<redis.password>maxcar2017</redis.password>
-				<redisPort>6379</redisPort>
-				<redisName>maxcar-redis</redisName>
+				<redisHost>192.168.3.61</redisHost>
+				<redis.password>lmaxcar2017t</redis.password>
+				<redisPort>6881</redisPort>
+				<redisName>market-redis</redisName>
 				<!--卡夫卡-->
 				<kafka.consumer.zookeeper.connect>192.168.3.45:2181,192.168.3.50:2181,192.168.3.51:2181</kafka.consumer.zookeeper.connect>
 				<kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>

@@ -43,6 +43,8 @@
 	id="RoleResourceOptionService"
 	check="false" retries="0" timeout="20000" />
 
+
+
 	<!-- 商户开票统计和开票详情 -->
 	<dubbo:reference
 			interface="com.maxcar.tenant.service.TenantInvoiceService"
@@ -240,6 +242,25 @@
 
 	<dubbo:reference interface="com.maxcar.tenant.app.service.TransferCarService"
 					 id="transferCarService"
+					 check="false" retries="0" timeout="20000"/>
+	<dubbo:reference interface="com.maxcar.stock.service.ReviewStepService"
+					 id="reviewStepService"
+					 check="false" retries="0" timeout="20000"/>
+
+	<dubbo:reference interface="com.maxcar.stock.service.CarReviewService"
+					 id="carReviewService"
+					 check="false" retries="0" timeout="20000"/>
+
+	<dubbo:reference interface="com.maxcar.stock.service.ReviewDetailService"
+					 id="reviewDetailService"
+					 check="false" retries="0" timeout="20000"/>
+
+	<dubbo:reference interface="com.maxcar.stock.service.ReviewListService"
+					 id="reviewListService"
+					 check="false" retries="0" timeout="20000"/>
+
+	<dubbo:reference interface="com.maxcar.redis.service.RedisService"
+					 id="redisService"
 					 check="false" retries="0" timeout="20000"/>
 
 </beans>

@@ -10,6 +10,9 @@
 	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}"/>
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="9003" />
+	<dubbo:service interface="com.maxcar.stock.service.ReviewStepService" ref="reviewStepService"  timeout="1200000"/>
+	<dubbo:service interface="com.maxcar.stock.service.ReviewDetailService" ref="reviewDetailService"  timeout="1200000"/>
+	<dubbo:service interface="com.maxcar.stock.service.CarReviewService" ref="carReviewService"  timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.stock.service.CarService" ref="carService"  timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.stock.service.CarBaseService" ref="carBaseService"  timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.stock.service.CarRecordService" ref="carRecordService"  timeout="1200000"/>
@@ -23,6 +26,9 @@
 	<dubbo:service interface="com.maxcar.barrier.service.BarrierService" ref="barrierService"  timeout="1200000"/>
 
 	<dubbo:service interface="com.maxcar.stock.service.OutMarketCarService" ref="outMarketCarService"  timeout="1200000"/>
+
+	<!--  -->
+	<dubbo:service interface="com.maxcar.stock.service.ReviewListService" ref="reviewListService" timeout="1200000"  />
 
 	<!-- 道闸黑白名单 -->
 	<dubbo:service interface="com.maxcar.barrier.service.BarrierControlCarService" ref="barrierControlCarService"  timeout="1200000"/>
@@ -43,6 +49,9 @@
 	<dubbo:reference interface="com.maxcar.kafka.service.MessageProducerService" id="messageProducerService" check="false" retries="0" timeout="20000" />
 
 	<dubbo:reference interface="com.maxcar.market.service.AreaService" id="areaService" check="false" retries="0" timeout="20000" />
+
+
+	<dubbo:reference interface="com.maxcar.market.service.InvoiceService" id="invoiceService" check="false" retries="0" timeout="20000" />
 	<!--引入缓存-->
 
 	<!--引入字典 com.maxcar.user.service -->

@@ -3,8 +3,10 @@ package com.maxcar.user.dao;
 import com.maxcar.base.dao.BaseDao;
 import com.maxcar.user.entity.User;
 import com.maxcar.user.entity.UserExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 public interface UserMapper extends BaseDao<User,String>{
     int countByExample(UserExample example);
@@ -28,4 +30,8 @@ public interface UserMapper extends BaseDao<User,String>{
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    List<Map> getUserAndOrgByMarketId(String marketId);
+
+    Map getUserOrgByReview(@Param("reviewPersonId") String reviewPersonId, @Param("orgId") String orgId);
 }

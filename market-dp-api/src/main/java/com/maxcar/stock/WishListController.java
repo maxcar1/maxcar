@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@RequestMapping("/we/customer")
+@RequestMapping("/market-api/api")
 @RestController
 public class WishListController {
 
@@ -33,9 +33,9 @@ public class WishListController {
    /* *
      * 扫码跳转心愿单页面
      * @return*/
-    @RequestMapping(value="carWish",method= RequestMethod.GET)
+    @RequestMapping(value="/carWish",method= RequestMethod.GET)
     public ModelAndView wishList(WishList wishList){
-        ModelAndView view = new ModelAndView("redirect:http://test.maxcar.com.cn/carWish?userId="+wishList.getUserId()+"&marketId="+wishList.getMarketId()+"");
+        ModelAndView view = new ModelAndView("redirect:http://test.maxcar.com.cn/carWish?userId="+wishList.getUserId()+"&market="+wishList.getMarket()+"");
         try {
 
         }catch (Exception e ){
@@ -49,7 +49,7 @@ public class WishListController {
      * @param wishList
      * @return
      */
-    @RequestMapping(value="getWishList",method= RequestMethod.GET)
+    @RequestMapping(value="/getWishList",method= RequestMethod.GET)
     public InterfaceResult getWishList(WishList wishList){
         InterfaceResult result = new InterfaceResult();
         try {
@@ -77,9 +77,10 @@ public class WishListController {
      * 心愿单按钮点击跳转
      * @return
      */
-    @RequestMapping(value="wishListButton",method= RequestMethod.GET)
+    @RequestMapping(value="/wishListButton",method= RequestMethod.GET)
     public ModelAndView wishListButton(HttpServletRequest request){
         String userId = null;
+        String redireuri=null;
         try {
             String code = request.getParameter("code");
             logger.info("code==================="+code);
@@ -88,15 +89,19 @@ public class WishListController {
             String wxappid = prop.getProperty("wxappid");
             String wxsecret = prop.getProperty("wxsecret");
             String wxouthurl = prop.getProperty("wxouthurl");
+            redireuri = prop.getProperty("redireuri");
             wxouthurl = wxouthurl.replace("APPID" ,wxappid).replace("APPSECRET",wxsecret).replace("CODE",code);
             String result = HttpClientUtils.sendGet(wxouthurl);
+            logger.info("返回结果=============="+result);
             JSONObject json = JSONObject.parseObject(result);
 
            userId = json.getString("openid");
         }catch (Exception e ){
             e.printStackTrace();
         }
-        ModelAndView view = new ModelAndView("redirect:http://xfz-t.maxcar.com.cn/carWish?userId="+userId+"&marketId=007");
+
+        ModelAndView view = new ModelAndView("redirect:"+redireuri+"?userId="+userId+"&market=007");
+        logger.info("用户id==============="+userId);
 
         return  view;
     }
