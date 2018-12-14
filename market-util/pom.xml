@@ -694,7 +694,7 @@
 				<system.jdbc.password.stock>Maxcar#2018tj</system.jdbc.password.stock>
 				<!-- 云端数据源配置datasource物业、商户-->
 				<system.jdbc.driver.market>com.mysql.jdbc.Driver</system.jdbc.driver.market>
-				<system.jdbc.url.market>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_market_l?characterEncoding=utf-8</system.jdbc.url.market>
+				<system.jdbc.url.market>jdbc:mysql://192.168.3.23:3306/maxcar_market_l?characterEncoding=utf-8</system.jdbc.url.market>
 				<system.jdbc.user.market>root</system.jdbc.user.market>
 				<system.jdbc.password.market>Maxcar#2018tj</system.jdbc.password.market>
 				<!-- 云端数据源配置datasource用户，配置-->
