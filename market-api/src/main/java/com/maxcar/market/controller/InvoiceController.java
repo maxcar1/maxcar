@@ -502,23 +502,25 @@ public class InvoiceController extends BaseController {
         int monthGap = 0;
         String billTimeStart = request.getBillTimeStart();
         String billTimeEnd = request.getBillTimeEnd();
-        String[] start = billTimeStart.split("-");
-        String[] end = billTimeEnd.split("-");
-        int startMonth = Integer.parseInt(start[1]);
-        int startYear = Integer.parseInt(start[0]);
+        if (StringUtil.isNotEmpty(billTimeEnd)) {
+            String[] start = billTimeStart.split("-");
+            String[] end = billTimeEnd.split("-");
+            int startMonth = Integer.parseInt(start[1]);
+            int startYear = Integer.parseInt(start[0]);
 
-        int endMonth = Integer.parseInt(end[1]);
-        int endYaer = Integer.parseInt(end[0]);
-        if(startMonth != endMonth){
-            while (true){
-                endMonth -= 1;
-                if(endMonth < 1){
-                    endMonth = 12;
-                    endYaer -= 1;
-                }
-                monthGap += 1;
-                if(endMonth == startMonth && startYear == endYaer){
-                    break;
+            int endMonth = Integer.parseInt(end[1]);
+            int endYaer = Integer.parseInt(end[0]);
+            if (startMonth != endMonth) {
+                while (true) {
+                    endMonth -= 1;
+                    if (endMonth < 1) {
+                        endMonth = 12;
+                        endYaer -= 1;
+                    }
+                    monthGap += 1;
+                    if (endMonth == startMonth && startYear == endYaer) {
+                        break;
+                    }
                 }
             }
         }
