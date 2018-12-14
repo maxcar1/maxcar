@@ -159,15 +159,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
 
     @Override
     public List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException {
-        String billTimeEnd = invoice.getBillTimeEnd();
-        if(StringUtil.isNotEmpty(billTimeEnd)){
-            Date date = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
-            Date dayEnd = DateUtils.getDayEnd(date);
-            billTimeEnd = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATETIME);
-        }
-        invoice.setBillTimeEnd(billTimeEnd);
-        List<InvoiceExcel> lists = invoiceMapper.detailsManage(invoice);
-        return lists;
+        return invoiceMapper.detailsManage(invoice);
     }
 
 //    @Override
