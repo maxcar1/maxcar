@@ -4499,7 +4499,7 @@ FROM
      AND seller_name LIKE #{sellerName}
      </if>
     <if test="invoiceNo != null and invoiceNo != ''  ">
-      AND invoice_code LIKE #{invoiceNo}
+      AND invoice_no LIKE #{invoiceNo}
     </if>
     <if test="invoicePortof != null and invoicePortof != ''  ">
        AND invoice_portof = #{invoicePortof}
