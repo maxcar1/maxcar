@@ -52,7 +52,6 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     /**
      * 查询交易列表
      * shenzhongzong
-     *
      * @param deal
      * @return
      */
@@ -61,7 +60,6 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     /**
      * 市场总交易量
      * shenzhongzong
-     *
      * @return
      */
     int countDealNum(DealRequest deal);
@@ -69,31 +67,24 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     /**
      * 交易总价值
      * shenzhongzong
-     *
      * @return
      */
     Double sumDealMoney(DealRequest deal);
-
     /**
      * 库存车交易量
      * shenzhongzong
-     *
      * @return
      */
     int countStockCarNum(DealRequest deal);
-
     /**
      * 库存车交易总价值
      * shenzhongzong
-     *
      * @return
      */
     Double sumStockCarMoney(DealRequest deal);
-
     /**
      * 查询交易列表  总数
      * shenzhongzong
-     *
      * @param deal
      * @return
      */
@@ -122,6 +113,8 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     List<String> getContactName(String marketId);
 
     Double countByCarSources(DealRequest deal);
+
+    Double selectPriceByCarId(@Param("carId") String carId);
 
     Map<String, Object> nowDeal(@Param("marketId") String marketId, @Param("tenantId") String tenantId, @Param("dayStart") Date dayStart, @Param("dayEnd") Date dayEnd);
 

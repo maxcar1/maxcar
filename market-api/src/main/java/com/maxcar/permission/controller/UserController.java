@@ -36,7 +36,8 @@ public class UserController extends BaseController {
     private StaffService staffService;
     @Autowired
     private OrganizationsService organizationsService;
-
+    @Autowired
+    private RoleService roleService;
 
     /**
      * @Description: 用户列表，用户按条件查询
@@ -159,8 +160,12 @@ public class UserController extends BaseController {
     public InterfaceResult list(@PathVariable("ifAll") Boolean ifAll, HttpServletRequest request, HttpServletResponse response) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
         User user = super.getCurrentUser(request);
-        List<Resource> resources = roleResourceService.getResourcesByUserId(user.getUserId(), ifAll);
-        interfaceResult.InterfaceResult200(resources);
+        Role role = (user.getRoles()!=null&&user.getRoles().size()>0)?user.getRoles().get(0):null;
+        role = roleService.selectRoleById(role.getRoleId(),role.getRoleId());
+
+        interfaceResult.InterfaceResult200(role.getResources());
+        /*List<Resource> resources = roleResourceService.getResourcesByUserId(user.getUserId(), ifAll);
+        interfaceResult.InterfaceResult200(resources);*/
         return interfaceResult;
     }
 

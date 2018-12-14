@@ -38,13 +38,13 @@ public class ICarMenu {
         System.out.println(res);
         StringBuilder sb = new StringBuilder(menu_url.replace("ACCESS_TOKEN",aToken));
         ViewButton b1 = new ViewButton();
-        ViewButton b2 = new ViewButton();
-        b1.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx035d31d28ad83427&redirect_uri=http://xfz-t.maxcar.com.cn?market=010&v=0.1&response_type=code&scope=snsapi_userinfo&state=010#wechat_redirect");
+        ClickButton b2 = new ClickButton();
+        b1.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx035d31d28ad83427&redirect_uri=http://xfz.maxcar.com.cn?market=001&v=0.1&response_type=code&scope=snsapi_userinfo&state=001#wechat_redirect");
         b1.setType("view");
         b1.setName("商品车列表");
         b2.setName("关于我们");
-        b2.setType("view");
-        b2.setUrl("http://www.maxcar.com.cn");
+        b2.setType("click");
+        b2.setKey("gywm");
         Menu menu = new Menu();
         List<Button> buttonList = new ArrayList<>(2);
         buttonList.add(b1);
