@@ -8,6 +8,7 @@ import com.maxcar.statistics.model.response.GroupYesterdayRankingResponse;
 import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.model.response.TradingResponse;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public interface InventoryInvoiceDayMapper {
 
     InventoryInvoiceDayEntity sumMonth(TradingRequest tradingRequest);
 
-    Map tenantCarNum(TradingRequest tradingRequest);
+    LinkedHashMap tenantCarNum(TradingRequest tradingRequest);
 
     List<TradingResponse> getTenantDealDay(TradingRequest tradingRequest);
 
@@ -34,11 +35,11 @@ public interface InventoryInvoiceDayMapper {
 
     Double getStockAvgDayCar(StockRequest stockRequest);
 
-    Map<String , Double> getTenantStock(StockRequest stockRequest);
+    LinkedHashMap<String , Double> getTenantStock(StockRequest stockRequest);
 
     Integer getTenantAvgStockDay(StockRequest stockRequest);
 
-    Map<String,Object> getTenantStockBranch(StockRequest stockRequest);
+    LinkedHashMap<String,Object> getTenantStockBranch(StockRequest stockRequest);
 
     Map<String,Object> getTenantAvgStockTrend(StockRequest stockRequest);
 

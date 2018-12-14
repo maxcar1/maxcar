@@ -309,15 +309,15 @@
         </if>
         GROUP BY report_time
     </select>
-    <select id="countCarPriceDistribution" resultType="java.util.Map"
+    <select id="countCarPriceDistribution" resultType="java.util.LinkedHashMap"
             parameterType="com.maxcar.statistics.model.request.TradingRequest">
         SELECT
-        SUM(aa.price &lt; 100000) '10',
-        SUM(99999 &lt; aa.price AND aa.price &lt; 200000) '20',
-        SUM(199999 &lt; aa.price AND aa.price &lt; 300000) '30',
-        SUM(299999 &lt; aa.price AND aa.price &lt; 400000) '40',
-        SUM(399999 &lt; aa.price AND aa.price &lt; 500000) '50',
-        SUM(499999 &lt; aa.price) '60'
+        SUM(aa.price &lt; 100000) '10万以下',
+        SUM(99999 &lt; aa.price AND aa.price &lt; 200000) '10-20万',
+        SUM(199999 &lt; aa.price AND aa.price &lt; 300000) '20-30万',
+        SUM(299999 &lt; aa.price AND aa.price &lt; 400000) '30-40万',
+        SUM(399999 &lt; aa.price AND aa.price &lt; 500000) '40-50万',
+        SUM(499999 &lt; aa.price) '50万以上'
         FROM(
         SELECT
         *

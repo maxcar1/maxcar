@@ -299,15 +299,15 @@
         </if>
     </select>
 
-    <select id="tenantCarNum" resultType="java.util.Map"
+    <select id="tenantCarNum" resultType="java.util.LinkedHashMap"
             parameterType="com.maxcar.statistics.model.request.TradingRequest">
         SELECT
-        IFNULL((SUM(aa.sales_count &lt; 10)),0) AS '10',
-        IFNULL((SUM(9 &lt; aa.sales_count AND aa.sales_count &lt; 20)),0) AS '20',
-        IFNULL((SUM(19 &lt; aa.sales_count AND aa.sales_count &lt; 30)),0) AS '30',
-        IFNULL((SUM(29 &lt; aa.sales_count AND aa.sales_count &lt; 40)),0) AS '40',
-        IFNULL((SUM(39 &lt; aa.sales_count AND aa.sales_count &lt; 50)),0) AS '50',
-        IFNULL((SUM(49 &lt; aa.sales_count)),0) AS '60'
+        IFNULL((SUM(aa.sales_count &lt; 10)),0) AS '10万以下',
+        IFNULL((SUM(9 &lt; aa.sales_count AND aa.sales_count &lt; 20)),0) AS '10-20万',
+        IFNULL((SUM(19 &lt; aa.sales_count AND aa.sales_count &lt; 30)),0) AS '20-30万',
+        IFNULL((SUM(29 &lt; aa.sales_count AND aa.sales_count &lt; 40)),0) AS '30-40万',
+        IFNULL((SUM(39 &lt; aa.sales_count AND aa.sales_count &lt; 50)),0) AS '40-50万以上',
+        IFNULL((SUM(49 &lt; aa.sales_count)),0) AS '50万以上'
         FROM
         (SELECT
         tenant_id,
@@ -415,15 +415,15 @@
         </if>
     </select>
 
-    <select id="getTenantStock" resultType="java.util.Map"
+    <select id="getTenantStock" resultType="java.util.LinkedHashMap"
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
-        IFNULL(SUM(stock_count &lt; 10),0) AS "1",
-        IFNULL(SUM(9 &lt; stock_count AND stock_count &lt; 20),0) AS "2",
-        IFNULL(SUM(19 &lt; stock_count AND stock_count &lt; 30),0) AS "3",
-        IFNULL(SUM(29 &lt; stock_count AND stock_count &lt; 40),0) AS "4",
-        IFNULL(SUM(39 &lt; stock_count AND stock_count &lt; 50),0) AS "5",
-        IFNULL(SUM(49 &lt; stock_count ),0) AS "6"
+        IFNULL(SUM(stock_count &lt; 10),0) AS "10台以下",
+        IFNULL(SUM(9 &lt; stock_count AND stock_count &lt; 20),0) AS "10-20台",
+        IFNULL(SUM(19 &lt; stock_count AND stock_count &lt; 30),0) AS "20-30台",
+        IFNULL(SUM(29 &lt; stock_count AND stock_count &lt; 40),0) AS "30-40台",
+        IFNULL(SUM(39 &lt; stock_count AND stock_count &lt; 50),0) AS "40-50台",
+        IFNULL(SUM(49 &lt; stock_count ),0) AS "50台以上"
         FROM
         `carstocktime_day`
         WHERE isvalid = 1
@@ -490,7 +490,7 @@
         ORDER BY report_time
     </select>
 
-    <select id="getTenantStockBranch" resultType="java.util.Map"
+    <select id="getTenantStockBranch" resultType="java.util.LinkedHashMap"
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
         SUM(stock_count &lt; 10) AS '10台以下',
