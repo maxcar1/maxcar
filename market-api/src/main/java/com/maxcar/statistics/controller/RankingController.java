@@ -53,7 +53,7 @@ public class RankingController extends BaseController {
     public InterfaceResult getInvoiceRankingByCondition() {
 
         rankingService.test();
-        
+
         return getInterfaceResult("200", null);
     }
 
