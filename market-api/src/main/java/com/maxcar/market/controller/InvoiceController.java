@@ -584,6 +584,7 @@ public class InvoiceController extends BaseController {
     public InterfaceResult detailsExcel(@RequestBody Invoice invoice, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
 
+        //  判断数据是否超过三个月
         int monthGap = 0;
         String billTimeStart = invoice.getBillTimeStart();
         String billTimeEnd = invoice.getBillTimeEnd();
@@ -626,6 +627,7 @@ public class InvoiceController extends BaseController {
                 invoice.setUserId(currentUser.getUserId());
             }
 
+            //  如果有时间 按照查询时间  导出数据
             if (StringUtil.isNotEmpty(billTimeEnd)) {
                 Date date = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
                 Date dayEnd = DateUtils.getDayEnd(date);
@@ -633,6 +635,7 @@ public class InvoiceController extends BaseController {
                 invoice.setBillTimeStart(invoice.getBillTimeStart());
                 invoice.setBillTimeEnd(s);
             } else {
+                //  如果超过三个月  就按找三个月导出
                 Date date = new Date();
                 Date dayEnd = DateUtils.getDayEnd(date);
                 String s = DateUtils.formatDate(dayEnd);
