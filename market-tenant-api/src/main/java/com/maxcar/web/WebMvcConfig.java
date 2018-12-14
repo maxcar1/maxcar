@@ -28,6 +28,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(systemInterceptor).addPathPatterns("/**")
                 .excludePathPatterns("/api/login", "/error", "/api/send/sms-vcode",
                         "/api/market/tenant/role", "/api/switch/tenant", "/api/notify/alipay",
-                        "/api/notify/wx-pay", "/api/version");
+                        "/api/notify/wx-pay", "/api/version","/api/customer/**");
     }
 }
