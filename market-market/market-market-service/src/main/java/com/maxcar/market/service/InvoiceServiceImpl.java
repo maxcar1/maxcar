@@ -159,6 +159,21 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
 
     @Override
     public List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException {
+        String purchacerName = invoice.getPurchacerName();
+        if(StringUtil.isNotEmpty(purchacerName)){
+            String trim = purchacerName.trim();
+            invoice.setPurchacerName("%" + trim + "%");
+        }
+        String sellerName = invoice.getSellerName();
+        if(StringUtil.isNotEmpty(sellerName)){
+            String trim = sellerName.trim();
+            invoice.setSellerName("%" + trim + "%");
+        }
+        String invoiceNo = invoice.getInvoiceNo();
+        if(StringUtil.isNotEmpty(invoiceNo)){
+            String trim = invoiceNo.trim();
+            invoice.setInvoiceNo("%" + trim + "%");
+        }
         return invoiceMapper.detailsManage(invoice);
     }
 
