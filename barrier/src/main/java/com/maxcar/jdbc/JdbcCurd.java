@@ -4,6 +4,8 @@ import com.maxcar.barrier.pojo.Barrier;
 import com.maxcar.barrier.pojo.BarrierControlCar;
 import com.maxcar.barrier.pojo.BarrierControlCarExample;
 import com.maxcar.barrier.pojo.Car;
+import com.maxcar.stock.pojo.CarReview;
+import com.maxcar.stock.pojo.CarReviewExample;
 import com.maxcar.util.Canstats;
 import com.maxcar.util.JsonTools;
 
@@ -187,18 +189,52 @@ public class JdbcCurd {
         }
         return barrierControlCars;
     }
+
+    /**
+     * 查询出场超时状态
+     * @param carId
+     * @return
+     */
+    public static boolean selectCarReviewByCarId(String carId,String marketId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            // 获取连接
+            connection = JdbcUtils.getConnection();
+            // 获取PrepareStatement对象
+
+            String stringBuffer = "SELECT * from car_review where is_valid=1 " +
+                    " and car_id=? and is_pass=1 and is_complete=0 and market_id=?";
+
+            preparedStatement = connection.prepareStatement(stringBuffer.toString());
+            preparedStatement.setString(1,carId);
+            preparedStatement.setString(2,marketId);
+            resultSet = preparedStatement.executeQuery();
+            // 遍历结果集
+            return resultSet.next();
+            // 返回影响到的行数
+        } catch(SQLException e){
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.releaseDB(connection, preparedStatement, null);
+        }
+        return false;
+    }
     public static void main(String[] args){
         String rfId = "010000000000011589310458";
-        String marketId = "007";
+        String marketId = "016";
 //        String sql = "select * from car where rfid=? and market_id=? and isvalid=1 and stock_status in(1,2,3,6)";
 //        Car car = new Car();
 //        car.setMarketId(marketId);
 //        car.setRfid(rfId);
 //        Car car = selectCarByRfid(marketId,rfId);
         System.out.println("查询开始时间：" + Canstats.dateformat.format(new Date()));
-        Barrier barrier = selectByBarrierId("05DAFF363431464D43154229");
+//        Barrier barrier = selectByBarrierId("05DAFF363431464D43154229");
+        boolean flag = selectCarReviewByCarId("18112618215539834800",marketId);
         System.out.println("查询结束时间：" + Canstats.dateformat.format(new Date()));
 
-        System.out.println(JsonTools.toJson(barrier));
+        System.out.println(flag);
     }
 }

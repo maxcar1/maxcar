@@ -207,17 +207,24 @@ public class BarrierValid {
                     break;
             }
         }else{//出口，未来质押车做验证
-            if(car.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
-                car.setStockStatus(Canstats.saleOutType);
-            else if(car.getStockStatus() == Canstats.OutTimeType) {//出场超时需要验证车辆是否审批通过，如果整个流程未走完可以出闸
+            if(car.getMarketId().equals("016")){
                 CarReviewService carReviewService = ApplicationContextHolder.getBean("carReviewService");
                 Boolean canPass = carReviewService.selectCarReviewByCarId(car.getId());
                 if(!canPass){//禁止通行,不改变车辆状态
                     title = "禁止通行";
                     map.put("flag", "true");
+                }else{
+                    if(car.getStockStatus() == Canstats.saleType) {//售出未出场，把状态改为已出场
+                        car.setStockStatus(Canstats.saleOutType);
+                    }else{
+                        car.setStockStatus((car.getStockStatus() == Canstats.deleteType || car.getStockStatus() == Canstats.saleOutType || car.getStockStatus() == Canstats.OutTimeType) ? car.getStockStatus() : Canstats.outType);
+                    }
                 }
-            }else{
-                car.setStockStatus((car.getStockStatus() == Canstats.deleteType || car.getStockStatus() == Canstats.saleOutType) ? car.getStockStatus() : Canstats.outType);
+            }else {
+                if (car.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
+                    car.setStockStatus(Canstats.saleOutType);
+                else
+                    car.setStockStatus((car.getStockStatus() == Canstats.deleteType || car.getStockStatus() == Canstats.saleOutType) ? car.getStockStatus() : Canstats.outType);
             }
         }
         logger.info(title + car.getStockStatus() + "==" + barrier.getInOutType() + "车已删除");
