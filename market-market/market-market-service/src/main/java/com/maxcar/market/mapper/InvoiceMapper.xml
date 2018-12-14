@@ -4470,7 +4470,7 @@ FROM
     SELECT
     invoice_no,
     invoice_code,
-    bill_time,
+    DATE_FORMAT(bill_time, '%Y-%m-%d %H:%i:%S') as bill_time,
     purchacer_name,
     seller_name,
     price,
