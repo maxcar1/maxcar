@@ -70,6 +70,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author huangxu
@@ -1256,7 +1258,8 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
                 carBase.setSeriesName(model.get("seriesName"));
                 carBase.setModelCode(model.get("modelCode"));
                 carBase.setModelName(model.get("modelName"));
-                carBase.setModelYear(model.get("modelName").substring(0,4));
+
+                carBase.setModelYear(StringUtils.getStringByRegex(model.get("modelName"),"(\\d){4}款").substring(0,4));
             }
         }
 

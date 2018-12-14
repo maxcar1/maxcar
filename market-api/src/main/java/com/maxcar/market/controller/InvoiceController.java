@@ -394,8 +394,8 @@ public class InvoiceController extends BaseController {
             invoice.setIsNewEnergy(0);//是新能源车
         }
         //判断买方类型是否是个人
-        if (invoice.getPurchacerType()==0){
-            if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())){
+        if (invoice.getPurchacerType() == 0) {
+            if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())) {
                 Map<String, Integer> cardMap = CardUtils.identityCard18(invoice.getPurchacerIdCard());
                 invoice.setAge(cardMap.get("age"));
                 invoice.setSex(cardMap.get("sex"));
@@ -499,15 +499,40 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "查询交易列表")
     public InterfaceResult getAllTransactionExcel(@RequestBody GetAllTransactionRequest request, HttpServletRequest servletRequest) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
+        int monthGap = 0;
+        String billTimeStart = request.getBillTimeStart();
+        String billTimeEnd = request.getBillTimeEnd();
+        String[] start = billTimeStart.split("-");
+        String[] end = billTimeEnd.split("-");
+        int startMonth = Integer.parseInt(start[1]);
+        int startYear = Integer.parseInt(start[0]);
 
-        String marketId = getCurrentUser(servletRequest).getMarketId();
+        int endMonth = Integer.parseInt(end[1]);
+        int endYaer = Integer.parseInt(end[0]);
+        if(startMonth != endMonth){
+            while (true){
+                endMonth -= 1;
+                if(endMonth < 1){
+                    endMonth = 12;
+                    endYaer -= 1;
+                }
+                monthGap += 1;
+                if(endMonth == startMonth && startYear == endYaer){
+                    break;
+                }
+            }
+        }
 
-//        String marketId = "010";   //   ------------------------------------------------------------------这里市场写死了\
+        if (monthGap > 3) {
+            interfaceResult.InterfaceResult600("数据量过大，影响导出速率，建议选择3个月以内数据");
+        } else {
+            String marketId = getCurrentUser(servletRequest).getMarketId();
 
-        request.setMarketId(marketId);
+            request.setMarketId(marketId);
 
-        List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
-        interfaceResult.InterfaceResult200(allTransactionExcel);
+            List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
+            interfaceResult.InterfaceResult200(allTransactionExcel);
+        }
 
         return interfaceResult;
     }
