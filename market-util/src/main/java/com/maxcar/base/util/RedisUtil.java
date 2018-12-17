@@ -62,7 +62,7 @@ public class RedisUtil {
         int maxWait = Integer.parseInt(properties.getString("redisMaxWait"));
 
         String ip = properties.getString("redisHost");
-//        String pwd = properties.getString("redis.password");
+        String pwd = properties.getString("redis.password");
         int port = Integer.parseInt(properties.getString("redisPort"));
 
         JedisPoolConfig config = new JedisPoolConfig();
@@ -76,7 +76,7 @@ public class RedisUtil {
         //初始化连接池
 //        jedisPool = new JedisPool(config, ip, port);
         jedisPool = new JedisPool(config, ip, port,
-                60000);
+                60000,pwd);
     }
 
     /**
