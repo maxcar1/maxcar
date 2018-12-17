@@ -156,23 +156,23 @@ public class PushCallback implements MqttCallback {
                                 }
                                 break;
                             case "07":
-                                //截取卡号10位数
+                                //上行卡号，不拍照，截取卡号10位数
                                 String cardNo16 = clientData.substring(66, 76);
-                                doCard(barrier, cardNo16);
+                                doCard(barrier, cardNo16,0,false);
                                 break;
                             case "08":
-                                //微信unionid处理
-                                //根据硬件发过来的判断
+                                //微信unionid处理，根据硬件发过来的判断
                                 String key = clientData.substring(64, 66);
                                 Integer keyLen = Integer.valueOf(key, 16) * 2;
                                 String id = clientData.substring(66, 66 + keyLen);
-                                logger.info("道闸发送的unionid或者key:{}", HexUtils.convertHexToString(id));
+                                String lastId = HexUtils.convertHexToString(id);
+                                logger.info("道闸发送的unionid或者key:{}", lastId);
                                 switch (barrier.getInOutType()) {
                                     case 0:
-                                        uploadRequestCloudIn(barrier, id, 1);
+                                        uploadRequestCloudIn(barrier, lastId, 1,true);
                                         break;
                                     case 1:
-                                        uploadRequestCloudOut(barrier, id, 1);
+                                        uploadRequestCloudOut(barrier, lastId, 1);
                                         break;
                                     default:
                                         break;
@@ -183,7 +183,14 @@ public class PushCallback implements MqttCallback {
                                 String key1 = clientData.substring(64, 66);
                                 Integer keyLen1 = Integer.valueOf(key1, 16) * 2;
                                 String cardNo = clientData.substring(66, 66 + keyLen1);
-                                doCard(barrier, HexUtils.convertHexToString(cardNo));
+                                doCard(barrier, HexUtils.convertHexToString(cardNo),0,false);
+                                break;
+                            case "0c":
+                                //上行拍照指令
+                                String key2 = clientData.substring(64, 66);
+                                Integer keyLen2 = Integer.valueOf(key2, 16) * 2;
+                                String cardNo1 = clientData.substring(66, 66 + keyLen2);
+                                doCard(barrier, HexUtils.convertHexToString(cardNo1),2,true);
                                 break;
                             case "0b":
                                 if (barrier != null && barrier.getMqttTopic() != null) {
@@ -259,16 +266,16 @@ public class PushCallback implements MqttCallback {
     }
 
 
-    private void doCard(Barrier barrier, String cardNo16) throws Exception {
+    private void doCard(Barrier barrier, String cardNo16,int type,boolean isTake) throws Exception {
         logger.info("道闸发送的卡号:{}", cardNo16);
         switch (barrier.getInOutType()) {
             case 0:
                 //入口
-                uploadRequestCloudIn(barrier, cardNo16, 0);
+                uploadRequestCloudIn(barrier, cardNo16, type,isTake);
                 break;
             case 1:
                 //出口
-                uploadRequestCloudOut(barrier, cardNo16, 0);
+                uploadRequestCloudOut(barrier, cardNo16, type);
                 break;
             default:
                 break;
@@ -287,10 +294,11 @@ public class PushCallback implements MqttCallback {
         json.put("barrierId",barrier.getBarrierId());
         json.put("type",type);
         json.put("marketId",barrier.getMarketId());
+
         takePhotoAndUpLoad(barrier,json,url,postParam);
     }
 
-    private void uploadRequestCloudIn(Barrier barrier, String key, int type) throws Exception {
+    private void uploadRequestCloudIn(Barrier barrier, String key, int type,boolean isTake) throws Exception {
         //上传数据到云端
         //组装云端参数
         PostParam postParam = new PostParam();
@@ -300,10 +308,14 @@ public class PushCallback implements MqttCallback {
         json.put("marketId",barrier.getMarketId());
         json.put("key",key);
         json.put("barrierId",barrier.getBarrierId());
-        //0 刷卡  1 unionId
+        //0 刷卡  1 unionId   2 更新卡号进场照片
         json.put("type",type);
-
-        takePhotoAndUpLoad(barrier,json,url,postParam);
+        //是否拍照
+        if (isTake){
+            takePhotoAndUpLoad(barrier,json,url,postParam);
+        }else {
+            sendCloud(json,url,postParam,null);
+        }
     }
 
     private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {
@@ -355,6 +367,8 @@ public class PushCallback implements MqttCallback {
             }
         } else {
             logger.info("====请检查摄像机配置表====");
+            //摄像机未配置依然不影响上行数据
+            sendCloud(json,url,postParam,null);
         }
     }
 

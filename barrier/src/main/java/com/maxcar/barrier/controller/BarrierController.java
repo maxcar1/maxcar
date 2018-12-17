@@ -222,12 +222,12 @@ public class BarrierController {
             String value2 = "leng";//44字节
             //协议版本
             String value3 = Canstats.headerVersion;
-            String value4 = Canstats.dzML;//下发数据
+            String value4 = Canstats.FIRST_OPEN;//下发数据
             int time = (int)(System.currentTimeMillis()/1000);
             String timeStamp = PushCallback.toHexString(time);
             //id长度+id号+时间戳+设备类型+程序版本+设备电量
             String value5 = PushCallback.toHexString(dzId.length()/2)+dzId+timeStamp+Canstats.dzType+Canstats.dzVersion+Canstats.dzPower;
-            String value6 = "000B81";
+            String value6 = "000B8C";
             String value7 = "";
             String value8 = "";//欢迎词
             value7 = Canstats.yxcc;//允许开闸
@@ -241,11 +241,17 @@ public class BarrierController {
             }else if(type == -1){
                 value8 = "一路顺风";
             }else{
+                value6 = "000B81";
+                value4 = "81";
                 value8 = "金额"+type+"元";
                 byte[] b = value8.getBytes("gbk");
                 //最小7字节,最大9字节,直接补0
                 String hex = Integer.toHexString(b.length).toUpperCase();
-                value7 = "FF0"+hex;
+                if (hex.length() == 1){
+                    value7 = "FF0"+hex;
+                }else if(hex.length() > 1){
+                    value7 = "FF"+hex;
+                }
             }
             outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
             outParam = outParam.replaceAll("leng", PushCallback.toHexStringBy0(outParam.length()/2+2));
@@ -303,7 +309,12 @@ public class BarrierController {
             //-4标识下发检测是否压地感
             value8  = id;
             byte[] b = value8.getBytes("gbk");
-            value7 = value4 +"0"+Integer.toHexString(b.length).toUpperCase();
+            String weishu = Integer.toHexString(b.length).toUpperCase();
+            if (weishu.length() > 1){
+                value7 = value4 + weishu;
+            }if (weishu.length() == 1){
+                value7 = value4 + "0" + weishu;
+            }
             byte[] v6_length = (value7+value8).getBytes("gbk");
             String v6_len = Integer.toHexString(v6_length.length).toUpperCase();
             StringBuilder sb = new StringBuilder();

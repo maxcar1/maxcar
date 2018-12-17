@@ -621,10 +621,10 @@
 				<areas>https://api.souche.com/v1/dictionary/areas?</areas>
 				<!-- 微信配置 -->
 				<access.token.url>https://api.weixin.qq.com/cgi-bin/token</access.token.url>
-				<paibo.app.id>wx880aa7250a756969</paibo.app.id>
-				<paibo.app.secret.weixin>f0103f4f490096af95ecb766a27b3077</paibo.app.secret.weixin>
-				<icar.app.id>wx035d31d28ad83427</icar.app.id>
-				<icar.app.secret.weixin>7aa135a141333deffb1ea99a634d1ce5</icar.app.secret.weixin>
+				<paibo.app.id>wx79a93cf533c7e664</paibo.app.id>
+				<paibo.app.secret.weixin>d4216f3e896fb9d3b6bdec441b002b31</paibo.app.secret.weixin>
+				<icar.app.id>wx66cc7db87a6bb651</icar.app.id>
+				<icar.app.secret.weixin>2bc02251c593caa3526efbe2e1832599</icar.app.secret.weixin>
 				<grant.type>client_credential</grant.type>
 				<ticket.url>https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=</ticket.url>
 				<expire.seconds>604800</expire.seconds>
@@ -640,10 +640,10 @@
 				<welcome.paibo>\u60a8\u597d\uff0c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u6d3e\u52c3\u6c7d\u8f66\u516c\u4f17\u53f7\uff0c\u3010\u505c\u8f66\u7f34\u8d39\u3011\u007b\u0055\u0052\u004c\u007d\uff0c\u66f4\u591a\u670d\u52a1\u8bf7\u67e5\u770b\u4e0b\u65b9\u83dc\u5355\u3002</welcome.paibo>
 				<!-- 微信支付账号相关配置-->
 				<down.order.url>https://api.mch.weixin.qq.com/pay/unifiedorder</down.order.url>
-				<pay.account.app.id>wxcf5003ae31ab9bbf</pay.account.app.id>
-				<pay.tenant.num>1513688731</pay.tenant.num>
+				<pay.account.app.id>wx79a93cf533c7e664</pay.account.app.id>
+				<pay.tenant.num>1517709181</pay.tenant.num>
 				<pay.QR.url>weixin://wxpay/bizpayurl?</pay.QR.url>
-                <pay.account.app.secret>df64feec406058be81aca5ae3969e68d</pay.account.app.secret>
+                <pay.account.app.secret>d4216f3e896fb9d3b6bdec441b002b31</pay.account.app.secret>
 				<weixin.pay.app.key>YLpaibo8618176438893861817643889</weixin.pay.app.key>
 				<save.img.file.path>/opt/image</save.img.file.path>
 				<mediaid.about.us>56iStkzJ52DytyE1tfb-4FYyriKw-8vBaq9Gy33101Q</mediaid.about.us>
@@ -810,10 +810,10 @@
 				<areas>https://api.souche.com/v1/dictionary/areas?</areas>
 				<!-- 微信推送相关配置 -->
 				<access.token.url>https://api.weixin.qq.com/cgi-bin/token</access.token.url>
-				<paibo.app.id>wx880aa7250a756969</paibo.app.id>
-				<paibo.app.secret.weixin>f0103f4f490096af95ecb766a27b3077</paibo.app.secret.weixin>
-				<icar.app.id>wx79a93cf533c7e664</icar.app.id>
-				<icar.app.secret.weixin>d4216f3e896fb9d3b6bdec441b002b31</icar.app.secret.weixin>
+				<paibo.app.id>wx79a93cf533c7e664</paibo.app.id>
+				<paibo.app.secret.weixin>d4216f3e896fb9d3b6bdec441b002b31</paibo.app.secret.weixin>
+				<icar.app.id>wx66cc7db87a6bb651</icar.app.id>
+				<icar.app.secret.weixin>2bc02251c593caa3526efbe2e1832599</icar.app.secret.weixin>
 				<grant.type>client_credential</grant.type>
 				<ticket.url>https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=</ticket.url>
 				<expire.seconds>604800</expire.seconds>
@@ -829,8 +829,8 @@
 				<welcome.paibo>\u60a8\u597d\uff0c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u6d3e\u52c3\u6c7d\u8f66\u516c\u4f17\u53f7\uff0c\u3010\u505c\u8f66\u7f34\u8d39\u3011\u007b\u0055\u0052\u004c\u007d\uff0c\u66f4\u591a\u670d\u52a1\u8bf7\u67e5\u770b\u4e0b\u65b9\u83dc\u5355\u3002</welcome.paibo>
 				<!-- 微信支付账号相关配置-->
 				<down.order.url>https://api.mch.weixin.qq.com/pay/unifiedorder</down.order.url>
-				<pay.account.app.id>wx880aa7250a756969</pay.account.app.id>
-				<pay.account.app.secret>f0103f4f490096af95ecb766a27b3077</pay.account.app.secret>
+				<pay.account.app.id>wx79a93cf533c7e664</pay.account.app.id>
+				<pay.account.app.secret>d4216f3e896fb9d3b6bdec441b002b31</pay.account.app.secret>
 				<pay.tenant.num>1514674061</pay.tenant.num>
 				<pay.QR.url>weixin://wxpay/bizpayurl?</pay.QR.url>
 				<pay.account.app.secret>df64feec406058be81aca5ae3969e68d</pay.account.app.secret>
