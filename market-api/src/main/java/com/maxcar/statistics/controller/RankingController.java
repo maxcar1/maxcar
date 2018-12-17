@@ -53,7 +53,7 @@ public class RankingController extends BaseController {
     public InterfaceResult getInvoiceRankingByCondition() {
 
         rankingService.test();
-        
+
         return getInterfaceResult("200", null);
     }
 
@@ -154,7 +154,13 @@ public class RankingController extends BaseController {
 
     }
 
-
+    /**
+     * 获取当前库存状况
+     * @param rankingRequest
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/ranking/stock")
     public InterfaceResult getNowStock(@RequestBody RankingRequest rankingRequest, HttpServletRequest request) throws Exception {
         User currentUser = getCurrentUser(request);
@@ -191,8 +197,10 @@ public class RankingController extends BaseController {
 
             Integer count = Integer.parseInt(map.get("inMarketCarCount").toString());
 
-            double saturability = Math.round(count / parkCount * 100) / 100.0;
-            map.put("saturability", saturability);
+            double aa = (double) count / parkCount;
+
+            Double saturability = Math.round(aa * 100) / 100.0;
+            map.put("saturability", saturability + "%");
 
             interfaceResult.InterfaceResult200(map);
         } else {
@@ -212,14 +220,23 @@ public class RankingController extends BaseController {
 
             Integer count = Integer.parseInt(map.get("inMarketCarCount").toString());
 
-            double saturability = Math.round(count / parkCount * 100) / 100.0;
-            map.put("saturability", saturability);
+            double aa = (double) count / parkCount;
+
+            Double saturability = Math.round(aa * 100) / 100.0;
+            map.put("saturability", saturability + "%");
 
             interfaceResult.InterfaceResult200(map);
         }
         return interfaceResult;
     }
 
+    /**
+     * 获取当前交易状况
+     * @param rankingRequest
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/ranking/deal")
     public InterfaceResult getNowDeal(@RequestBody RankingRequest rankingRequest, HttpServletRequest request) throws Exception {
         User currentUser = getCurrentUser(request);

@@ -201,9 +201,9 @@ public class TradingController extends BaseController {
             HashMap<String, Integer> map = new HashMap<>();
             map.put("10万以下",0);
             map.put("10-20万",0);
-            map.put("20-30万以下",0);
-            map.put("30-40万以下",0);
-            map.put("40-50万以下",0);
+            map.put("20-30万",0);
+            map.put("30-40万",0);
+            map.put("40-50万",0);
             map.put("50万以上",0);
             InterfaceResult interfaceResult = new InterfaceResult();
             interfaceResult.InterfaceResult200(map);
@@ -251,7 +251,7 @@ public class TradingController extends BaseController {
         getUserMarketId(tradingRequest, request);
 
         List<TradingResponse> carpriceDayEntity = tradingService.stockAvgDay(tradingRequest);
-        if(carpriceDayEntity == null){
+        if(carpriceDayEntity.size() == 0){
             HashMap<String, Integer> map = new HashMap<>();
             map.put("5万以下",0);
             map.put("5-10万",0);

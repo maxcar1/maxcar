@@ -7,6 +7,7 @@ import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.model.response.TradingResponse;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public interface InventoryInvoiceMonthMapper {
 
     List<TradingResponse> getTenantDeal(TradingRequest tradingRequest);
 
-    Map<String,Object> countCarPriceDistribution(TradingRequest tradingRequest);
+    LinkedHashMap<String,Object> countCarPriceDistribution(TradingRequest tradingRequest);
 
     List<StockResponse> getCountAndValue(StockRequest stockRequest);
 

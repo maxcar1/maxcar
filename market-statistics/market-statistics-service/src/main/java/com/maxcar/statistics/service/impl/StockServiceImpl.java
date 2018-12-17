@@ -166,7 +166,18 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Map<String, Double> getTenantStock(StockRequest stockRequest) {
-        return inventoryInvoiceDayMapper.getTenantStock(stockRequest);
+        Map<String, Double> tenantStock = inventoryInvoiceDayMapper.getTenantStock(stockRequest);
+        if (tenantStock == null) {
+            LinkedHashMap<String, Double> map = new LinkedHashMap<>();
+            map.put("10台以下", 0.0);
+            map.put("10-20台", 0.0);
+            map.put("20-30台", 0.0);
+            map.put("30-40台", 0.0);
+            map.put("40-50台", 0.0);
+            map.put("50台以上", 0.0);
+            return tenantStock;
+        }
+        return tenantStock;
 
     }
 
@@ -211,7 +222,7 @@ public class StockServiceImpl implements StockService {
     public Map<String, Object> getTenantStockBranch(StockRequest stockRequest) {
         Map<String, Object> map = inventoryInvoiceDayMapper.getTenantStockBranch(stockRequest);
         if (map == null) {
-            HashMap<String, Object> map1 = new HashMap<>();
+            LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
             map1.put("10台以下", 0);
             map1.put("10-20台", 0);
             map1.put("20-30台", 0);

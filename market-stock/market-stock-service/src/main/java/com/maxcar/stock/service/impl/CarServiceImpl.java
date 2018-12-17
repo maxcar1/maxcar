@@ -1316,6 +1316,10 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
     public Map<String, Object> nowRanking(String marketId, String tenantId) {
         Map<String , Object> map = carMapper.nowRanking(marketId,tenantId);
 
+        double avg = Double.parseDouble(map.get("avg").toString());
+        avg = Math.round(avg * 10) / 10.0;
+        map.put("avg",avg);
+
         CarExample example = new CarExample();
         CarExample.Criteria criteria = example.createCriteria();
         if(StringUtil.isNotEmpty(marketId)){
@@ -1337,7 +1341,8 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         Object o = map.get("stockPrice");
         double stockPrice = 0.0;
         if(o != null){
-            stockPrice = Double.parseDouble(o.toString()) / 10000.0;
+            stockPrice = Double.parseDouble(o.toString());
+            stockPrice = Math.round(stockPrice) /  10000.0;
         }
         map.put("stockPrice" , stockPrice);
 

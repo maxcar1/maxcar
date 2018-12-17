@@ -223,6 +223,14 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public Map<String, Double> getTenantCount(TradingRequest tradingRequest) {
         Map map = inventoryInvoiceDayMapper.tenantCarNum(tradingRequest);
+        if(map == null){
+            map.put("10万以下",0.0);
+            map.put("10-20万",0.0);
+            map.put("20-30万",0.0);
+            map.put("30-40万",0.0);
+            map.put("40-50万",0.0);
+            map.put("50万以上",0.0);
+        }
         return map;
     }
 
