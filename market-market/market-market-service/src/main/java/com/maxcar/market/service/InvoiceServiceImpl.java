@@ -338,7 +338,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         }
         double contrastSum = nowSum - yesterSum;
         if (yesterSum == 0) {
-            map.put("increaseContrastSum", "NA");
+            map.put("increaseContrastSum", "--");
         } else {
             double compare = Math.round(contrastSum / yesterSum * 100) / 100.0;
             map.put("increaseContrastSum", compare);
@@ -346,7 +346,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         map.put("contrastSum", contrastSum);
         double contrastCount = nowCount - yesterCount;
         if (yesterCount == 0) {
-            map.put("increaseContrastCount", "NA");
+            map.put("increaseContrastCount", "--");
         } else {
             double compare = Math.round(contrastCount / yesterCount * 100) / 100.0;
             map.put("increaseContrastCount", compare);
@@ -354,7 +354,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         map.put("contrastCount", contrastCount);
         double contrastAvg = nowAvg - yesterAvg;
         if (yesterAvg == 0) {
-            map.put("increaseContrastAvg", "NA");
+            map.put("increaseContrastAvg", "--");
         } else {
             double compare = Math.round(contrastAvg / yesterAvg * 100) / 100.0;
             map.put("increaseContrastAvg", compare);
@@ -362,7 +362,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         map.put("contrastAvg", contrastAvg);
         double contrastStockSum = nowStockSum - yesterStockSum;
         if (yesterStockSum == 0) {
-            map.put("increaseContrastStockSum", "NA");
+            map.put("increaseContrastStockSum", "--");
         } else {
             double compare = Math.round(contrastStockSum / yesterStockSum * 100) / 100.0;
             map.put("increaseContrastStockSum", compare);
@@ -370,7 +370,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         map.put("contrastStockSum", contrastStockSum);
         double contrastStockCount = nowStockCount - yesterStockCount;
         if (yesterStockCount == 0) {
-            map.put("increaseContrastStockCount", "NA");
+            map.put("increaseContrastStockCount", "--");
         } else {
             double compare = Math.round(contrastStockCount / yesterStockCount * 100) / 100.0;
             map.put("increaseContrastStockCount", compare);
@@ -378,7 +378,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         map.put("contrastStockCount", contrastStockCount);
         double contrastStockAvg = nowStockAvg - yesterStockAvg;
         if (yesterStockAvg == 0) {
-            map.put("increaseContrastStockAvg", "NA");
+            map.put("increaseContrastStockAvg", "--");
         } else {
             double compare = Math.round(contrastStockAvg / yesterStockAvg * 100) / 100.0;
             map.put("increaseContrastStockAvg", compare);
