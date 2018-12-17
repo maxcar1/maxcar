@@ -14,32 +14,35 @@ public class ExportResponse implements Serializable {
     // vin
     private String vin;
 
-    // 区域
-    private String areaName;
-
-    // 商户
-    private String tenantName;
-
-    // 是否新车
-    private String isNewCar;
-
-    // 车辆状态
-    private String carStatus;
-
-    // 库存天数
-    private String stockDay;
-
-    // 入库时间
-    private String registerTime;
-
     // 品牌车系
     private String seriesName;
 
     // 车型
     private String modelName;
 
+    // 商户
+    private String tenantName;
+
+    // 区域
+    private String areaName;
+
+    // 入库时间
+    private String registerTime;
+
+    // 库存天数
+    private Integer stockDay;
+
+    // 库存状态
+    private String stockStatus;
+
     // 首次上牌时间
     private String initialLicenceTime;
+
+    // 是否新车
+    private String isNewCar;
+
+    // 车辆状态
+    private String carStatus;
 
     // 表显里程
     private Integer mileage;
@@ -50,8 +53,7 @@ public class ExportResponse implements Serializable {
     // 估价
     private BigDecimal evaluatePrice;
 
-    // 库存状态
-    private String stockStatus;
+
 
     // 备注
     private String  remark;
@@ -121,11 +123,11 @@ public class ExportResponse implements Serializable {
         this.vin = vin;
     }
 
-    public String getStockDay() {
+    public Integer getStockDay() {
         return stockDay;
     }
 
-    public void setStockDay(String stockDay) {
+    public void setStockDay(Integer stockDay) {
         this.stockDay = stockDay;
     }
 

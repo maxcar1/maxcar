@@ -139,4 +139,6 @@ public interface ParkingFeeService extends BaseService<ParkingFee, String> {
     InterfaceResult goOffWork(JSONObject params)  throws Exception;
 
     InterfaceResult workDetail(JSONObject params)  throws Exception;
+
+    InterfaceResult getWorkingTimeAndPrice(String marketId,String parkingFeeId) throws Exception;
 }

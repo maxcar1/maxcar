@@ -418,6 +418,7 @@
             and parking_fee_id = #{parkingFeeId,jdbcType=VARCHAR}
             and after_time is not null
         </where>
+        order by after_time desc
     </select>
     <select id="getRecordByCardNoOrUnionId" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from parking_fee_detail

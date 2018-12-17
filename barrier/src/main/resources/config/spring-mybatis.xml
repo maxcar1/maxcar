@@ -65,13 +65,13 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"></property><!-- 配置mybatis的日志记录 -->
         <!-- mapper扫描 -->
-        <property name="mapperLocations" value="classpath:com/maxcar/barrier/mapper/**/*.xml"></property>
+        <property name="mapperLocations" value="classpath:com/maxcar/*/mapper/**/*.xml"></property>
         
 	</bean>
     <!-- 扫包 扫描dao接口  -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!-- 扫描包路径,多个包中间用半角逗号分隔-->
-        <property name="basePackage"  value="com.maxcar.barrier.dao"/>
+        <property name="basePackage"  value="com.maxcar.*.dao"/>
     </bean>
     <!-- MyBatis sqlSessionTemplate -->
     <!-- 

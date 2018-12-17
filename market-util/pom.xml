@@ -490,7 +490,7 @@
 				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
 				<system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
 				<system.jdbc.houseKeepingTestSql>SELECT 'x'</system.jdbc.houseKeepingTestSql>
-				<!-- 云端数据源配置datasource库存、交易-->
+				<!-- 云端数据源配置 datasource库存、交易-->
 				<system.jdbc.driver.stock>com.mysql.jdbc.Driver</system.jdbc.driver.stock>
 				<system.jdbc.url.stock>jdbc:mysql://mysql-d.maxcar.com.cn:3306/maxcar_stock_l?characterEncoding=utf-8</system.jdbc.url.stock>
 				<system.jdbc.user.stock>root</system.jdbc.user.stock>
@@ -542,10 +542,10 @@
 				<redisMaxWait>100000</redisMaxWait>
 				<redisTestOnBorrow>true</redisTestOnBorrow>
 				<redisTestOnReturn>true</redisTestOnReturn>
-				<redisHost>localhost</redisHost>
-				<redis.password>maxcar2017</redis.password>
-				<redisPort>6379</redisPort>
-				<redisName>maxcar-redis</redisName>
+				<redisHost>192.168.3.61</redisHost>
+				<redis.password>lmaxcar2017t</redis.password>
+				<redisPort>6881</redisPort>
+				<redisName>market-redis</redisName>
 				<!--卡夫卡-->
 				<kafka.consumer.zookeeper.connect>192.168.3.45:2181,192.168.3.50:2181,192.168.3.51:2181</kafka.consumer.zookeeper.connect>
 				<kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>
@@ -646,6 +646,7 @@
                 <pay.account.app.secret>df64feec406058be81aca5ae3969e68d</pay.account.app.secret>
 				<weixin.pay.app.key>YLpaibo8618176438893861817643889</weixin.pay.app.key>
 				<save.img.file.path>/opt/image</save.img.file.path>
+				<mediaid.about.us>56iStkzJ52DytyE1tfb-4FYyriKw-8vBaq9Gy33101Q</mediaid.about.us>
 				<!-- 模式一支付回调-->
 				<pay.notify.url>http://wxsf-t.maxcar.com.cn/api/wx/callback/pay</pay.notify.url>
 				<!-- 扫码支付标识-->
@@ -665,8 +666,9 @@
 				<mqtt.server.password></mqtt.server.password>
 
 				<!--App支付-->
-				<alipay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/alipay</alipay.app.notify.url>
-				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/wx-pay</wx.pay.app.notify.url>
+				<alipay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/alipay</alipay.app.notify.url>
+				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/wx-pay</wx.pay.app.notify.url>
+				<system.environment>dev</system.environment>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>true</activeByDefault>
@@ -680,7 +682,7 @@
 				<!--开发环境端口配置-->
 				<spring.profiles.active>test</spring.profiles.active>
 				<!-- dubbo 123-->
-				<dubbo.registry.address>zookeeper://192.168.3.60:3001</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://localhost:3001</dubbo.registry.address>
 				<!-- datasource通用-->
 				<system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
 				<system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -735,7 +737,7 @@
 				<redisPort>6881</redisPort>
 				<redisName>market-redis</redisName>
 				<!--卡夫卡-->
-				<kafka.consumer.zookeeper.connect>192.168.3.60:3001,192.168.3.60:3002,192.168.3.60:3003</kafka.consumer.zookeeper.connect>
+				<kafka.consumer.zookeeper.connect>192.168.3.50:2181</kafka.consumer.zookeeper.connect>
 				<kafka.consumer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.consumer.servers>
 				<kafka.producer.servers>192.168.3.50:9092,192.168.3.51:9092</kafka.producer.servers>
 				<kafka.producer.topic>sync_upload_data_test</kafka.producer.topic>
@@ -791,7 +793,7 @@
 				<kafka.consumer.topic054>sync_download_054_data_test</kafka.consumer.topic054>
 				<kafka.consumer.topic055>sync_download_055_data_test</kafka.consumer.topic055>
 				<local.servers.address>http://ylc-t.maxcar.com.cn</local.servers.address>
-				<local.servers.parking.address>http://ylc-t.maxcar.com.cn</local.servers.parking.address>
+				<local.servers.parking.address>http://ylc-t.maxcar.com.cn:7950</local.servers.parking.address>
 				<!-- 大搜车接口配置 -->
 				<app.key>84304e368d4153cfd0dbafc967187729</app.key>
 				<app.secret>43f4d794f3b5c95239a092a66bcbede8</app.secret>
@@ -806,12 +808,12 @@
 				<price.url>https://api.souche.com/v1/car_model/price?</price.url>
 				<used.car.price>https://api.souche.com/v1/car_model/used_car_price?</used.car.price>
 				<areas>https://api.souche.com/v1/dictionary/areas?</areas>
-				<!-- 微信配置 -->
+				<!-- 微信推送相关配置 -->
 				<access.token.url>https://api.weixin.qq.com/cgi-bin/token</access.token.url>
 				<paibo.app.id>wx880aa7250a756969</paibo.app.id>
 				<paibo.app.secret.weixin>f0103f4f490096af95ecb766a27b3077</paibo.app.secret.weixin>
-				<icar.app.id>wx035d31d28ad83427</icar.app.id>
-				<icar.app.secret.weixin>7aa135a141333deffb1ea99a634d1ce5</icar.app.secret.weixin>
+				<icar.app.id>wx79a93cf533c7e664</icar.app.id>
+				<icar.app.secret.weixin>d4216f3e896fb9d3b6bdec441b002b31</icar.app.secret.weixin>
 				<grant.type>client_credential</grant.type>
 				<ticket.url>https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=</ticket.url>
 				<expire.seconds>604800</expire.seconds>
@@ -827,17 +829,20 @@
 				<welcome.paibo>\u60a8\u597d\uff0c\u6b22\u8fce\u007b\u0046\u004f\u004c\u004c\u004f\u0057\u007d\u6d3e\u52c3\u6c7d\u8f66\u516c\u4f17\u53f7\uff0c\u3010\u505c\u8f66\u7f34\u8d39\u3011\u007b\u0055\u0052\u004c\u007d\uff0c\u66f4\u591a\u670d\u52a1\u8bf7\u67e5\u770b\u4e0b\u65b9\u83dc\u5355\u3002</welcome.paibo>
 				<!-- 微信支付账号相关配置-->
 				<down.order.url>https://api.mch.weixin.qq.com/pay/unifiedorder</down.order.url>
-				<pay.account.app.id>wxcf5003ae31ab9bbf</pay.account.app.id>
-				<pay.tenant.num>1513688731</pay.tenant.num>
+				<pay.account.app.id>wx880aa7250a756969</pay.account.app.id>
+				<pay.account.app.secret>f0103f4f490096af95ecb766a27b3077</pay.account.app.secret>
+				<pay.tenant.num>1514674061</pay.tenant.num>
 				<pay.QR.url>weixin://wxpay/bizpayurl?</pay.QR.url>
+				<pay.account.app.secret>df64feec406058be81aca5ae3969e68d</pay.account.app.secret>
 				<weixin.pay.app.key>YLpaibo8618176438893861817643889</weixin.pay.app.key>
 				<save.img.file.path>/opt/image</save.img.file.path>
+				<mediaid.about.us>56iStkzJ52DytyE1tfb-4FYyriKw-8vBaq9Gy33101Q</mediaid.about.us>
 				<!-- 模式一支付回调-->
-				<pay.notify.url>http://wxsf-t.maxcar.com.cn/api/wx/callback/pay</pay.notify.url>
+				<pay.notify.url>http://wxsf-t.maxcar.com.cn/api-p/wx/callback/pay</pay.notify.url>
 				<!-- 扫码支付标识-->
 				<trade.type>JSAPI</trade.type>
 				<!-- 发起支付的终端IP-->
-				<spbill.create.ip>60.12.250.54</spbill.create.ip>
+				<spbill.create.ip>47.99.144.182</spbill.create.ip>
 				<!-- 订单支付描述-->
 				<weixin.pay.order.body>\u7389\u6797\u6d3e\u52c3\u002d\u505c\u8f66\u6536\u8d39</weixin.pay.order.body>
 				<!-- 微信jsapi权限接口认证-->
@@ -852,8 +857,9 @@
 				<mqtt.server.password></mqtt.server.password>
 
 				<!--App支付-->
-				<alipay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/alipay</alipay.app.notify.url>
-				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:6950/api/notify/wx-pay</wx.pay.app.notify.url>
+				<alipay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/alipay</alipay.app.notify.url>
+				<wx.pay.app.notify.url>http://app-t.maxcar.com.cn:8910/api/notify/wx-pay</wx.pay.app.notify.url>
+				<system.environment>test</system.environment>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>false</activeByDefault>
@@ -1020,6 +1026,7 @@
 				<pay.QR.url>weixin://wxpay/bizpayurl?</pay.QR.url>
 				<weixin.pay.app.key>YLpaibo8618176438893861817643889</weixin.pay.app.key>
 				<save.img.file.path>/opt/image</save.img.file.path>
+				<mediaid.about.us>Y4Chx5ZetVR6_rgItZoAaBAM-t-j0wzi5hbdDEPGlcw</mediaid.about.us>
 				<!-- 模式一支付回调-->
 				<pay.notify.url>http://market.maxcar.com.cn/api-p/wx/callback/pay</pay.notify.url>
 				<!-- 扫码支付标识-->
@@ -1042,6 +1049,7 @@
 				<!--App支付-->
 				<alipay.app.notify.url>http://app.maxcar.com.cn/api/notify/alipay</alipay.app.notify.url>
 				<wx.pay.app.notify.url>http://app.maxcar.com.cn/api/notify/wx-pay</wx.pay.app.notify.url>
+				<system.environment>pro</system.environment>
 			</properties>
 			<activation><!-- 默认激活 -->
 				<activeByDefault>false</activeByDefault>

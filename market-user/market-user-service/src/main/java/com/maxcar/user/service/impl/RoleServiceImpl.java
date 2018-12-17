@@ -110,7 +110,6 @@ public class RoleServiceImpl extends BaseServiceImpl<Role,String> implements Rol
     //新增资源权限和数据权限
     protected void saveRoleResource(String roleId,List<Resource> resources){
         for(Resource resource:resources) {
-
             RoleResource roleResource = new RoleResource();
             roleResource.setRoleId(roleId);
             roleResource.setRolePermissionsId(UuidUtils.generateIdentifier());

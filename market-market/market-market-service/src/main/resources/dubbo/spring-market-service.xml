@@ -55,6 +55,10 @@
     <dubbo:reference interface="com.maxcar.stock.service.OutMarketCarService" id="outMarketCarService" timeout="1200000"
                      check="false"/>
 
+    <!-- 引入出场超时车辆管理的服务 -->
+    <dubbo:reference interface="com.maxcar.stock.service.CarReviewService" id="carReviewService" timeout="1200000"
+                     check="false"/>
+
     <dubbo:reference interface="com.maxcar.stock.service.CarService" id="carService" timeout="1200000"
                      check="false"/>
 

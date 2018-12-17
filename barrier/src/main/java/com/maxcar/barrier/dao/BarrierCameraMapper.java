@@ -1,5 +1,8 @@
 package com.maxcar.barrier.dao;
 
+
+import java.util.List;
+
 import com.maxcar.barrier.pojo.BarrierCamera;
 import com.maxcar.barrier.pojo.BarrierCameraExample;
 import org.apache.ibatis.annotations.Param;

@@ -8,6 +8,10 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Date;
 
+/**
+ * 图片上传至阿里云oss精简版
+ * yangshujun
+ */
 public class AliyunOSSClientUtil {
 
     /**

@@ -2,6 +2,7 @@ package com.maxcar.market.quartz;
 
 import com.maxcar.market.service.PropertyContractPayService;
 import com.maxcar.market.service.PropertyContractService;
+import com.maxcar.stock.service.CarReviewService;
 import com.maxcar.stock.service.OutMarketCarService;
 import com.maxcar.user.service.OutMarketManageService;
 import org.slf4j.Logger;
@@ -28,12 +29,16 @@ public class SyncContrat extends SyncStrategyInterface{
     @Autowired
     private OutMarketCarService outMarketCarService = (OutMarketCarService) SpringApplication.getBean("OutMarketCarServiceImpl");
 
+    @Autowired
+    private CarReviewService carReviewService = (CarReviewService) SpringApplication.getBean("CarReviewServiceImpl");
+
     public void doJob() {
         try {
             propertyContractPayService.addPropertyContractPay();
             propertyContractService.endPropertyContract();
-            outMarketCarService.delCarByOutMarketTime();
-            outMarketCarService.downTaoBao();
+//            outMarketCarService.delCarByOutMarketTime();
+//            outMarketCarService.downTaoBao();
+//            carReviewService.updateTimeoutNotreturnCarStockStatus();
         } catch (Exception e) {
             logger.error("每月统计数据出错");
             e.printStackTrace();

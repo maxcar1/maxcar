@@ -2,22 +2,55 @@ package com.maxcar.stock.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
+import com.maxcar.base.model.VehicleBrand;
+import com.maxcar.base.pojo.CarBrand;
+import com.maxcar.base.pojo.CarModel;
+import com.maxcar.base.pojo.CarSeries;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Magic;
 import com.maxcar.base.service.DaSouCheService;
-import com.maxcar.base.util.*;
+import com.maxcar.base.util.CollectionSort;
+import com.maxcar.base.util.CollectionUtil;
+import com.maxcar.base.util.Constants;
+import com.maxcar.base.util.DatePoor;
+import com.maxcar.base.util.DateUtils;
+import com.maxcar.base.util.HanyuPinyinHelper;
+import com.maxcar.base.util.HttpClientUtils;
+import com.maxcar.base.util.JsonTools;
+import com.maxcar.base.util.JsonUtils;
+import com.maxcar.base.util.MD5Util;
+import com.maxcar.base.util.StringUtil;
+import com.maxcar.base.util.StringUtils;
+import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.pojo.Area;
 import com.maxcar.market.service.AreaService;
+import com.maxcar.market.service.InvoiceService;
+import com.maxcar.redis.service.RedisService;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.ExportResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
-import com.maxcar.stock.pojo.*;
-import com.maxcar.stock.service.*;
+import com.maxcar.stock.entity.Response.SellCarListExportVo;
+import com.maxcar.stock.pojo.Car;
+import com.maxcar.stock.pojo.CarBase;
+import com.maxcar.stock.pojo.CarChannelRel;
+import com.maxcar.stock.pojo.CarCheck;
+import com.maxcar.stock.pojo.CarInfo;
+import com.maxcar.stock.pojo.CarPic;
+import com.maxcar.stock.pojo.CarRecord;
+import com.maxcar.stock.pojo.CheckWZ;
+import com.maxcar.stock.pojo.TaoBaoCar;
+import com.maxcar.stock.service.CarBaseService;
+import com.maxcar.stock.service.CarChannelService;
+import com.maxcar.stock.service.CarCheckService;
+import com.maxcar.stock.service.CarPicService;
+import com.maxcar.stock.service.CarRecordService;
+import com.maxcar.stock.service.CarService;
+import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
@@ -32,12 +65,25 @@ import com.taobao.api.response.ItemUpdateDelistingResponse;
 import com.taobao.api.response.ItemUpdateListingResponse;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author huangxu
@@ -55,6 +101,8 @@ public class CarController extends BaseController {
     @Autowired
     CarPicService carPicService;
     @Autowired
+    InvoiceService invoiceService;
+    @Autowired
     CarRecordService carRecordService;
     @Autowired
     CarCheckService carCheckService;
@@ -67,10 +115,118 @@ public class CarController extends BaseController {
     @Autowired
     private CarChannelService carChannelService;
     @Autowired
-    private ConfigurationService configurationService;
-    @Autowired
     private AreaService areaService;
 
+    /**
+     * 选择品牌车系
+     * @return
+     */
+    @GetMapping("/brand/choose")
+    public InterfaceResult hierarchyIn(){
+        InterfaceResult result = new InterfaceResult();
+        List<VehicleBrand> request = new ArrayList<>();
+        List<CarBrand> carBrandList = daSouCheService.getAllBrand();
+
+        for(CarBrand carBrand:carBrandList){
+            VehicleBrand vehicleBrand = new VehicleBrand();
+//            vehicleBrand.setLogoUrl(carBrand.getLogoUrl());
+            vehicleBrand.setName(carBrand.getBrandName());
+            vehicleBrand.setCode(carBrand.getBrandCode());
+            List<CarSeries> carSeriesList = daSouCheService.getAllSeries(carBrand.getId());
+            List<VehicleBrand> chooseList = new ArrayList<>();
+            for(CarSeries carSeries:carSeriesList){
+                VehicleBrand choose = new VehicleBrand();
+                choose.setName(carSeries.getSeriesName());
+                choose.setCode(carSeries.getSeriesCode());
+                choose.setId(carSeries.getId());
+                chooseList.add(choose);
+            }
+            vehicleBrand.setChildren(chooseList);
+            request.add(vehicleBrand);
+        }
+        String[] letters = {"A", "B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        Map<String, ArrayList> map = new HashMap<>(32);
+        for (String letter : letters) {
+            map.put(letter, new ArrayList<>());
+        }
+        for (VehicleBrand res:request){
+            for (String key : map.keySet()) {
+                if (HanyuPinyinHelper.getFirstLetter(res.getName()).equals(key)){
+                    map.get(key).add(res);
+                }
+            }
+        }
+        result.InterfaceResult200(map);
+        return result;
+    }
+
+    /**
+     * 根据车系选车型
+     * @param seriesId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/series/models/{seriesId}")
+    public InterfaceResult listModelBySeries(@PathVariable("seriesId") String seriesId) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        List<CarModel> list = daSouCheService.getAllModel(seriesId);
+        Map<String,List<CarModel>> listMap =new LinkedHashMap<>();
+        list.forEach(carModel->{
+            List<CarModel> carModels;
+            String ss=carModel.getModelName().substring(0,4);
+            if (listMap.get(ss)!=null){
+                carModels=listMap.get(ss);
+            }else {
+                carModels=new ArrayList<>();
+            }
+            carModels.add(carModel);
+            listMap.put(ss,carModels);
+        });
+        Map<String, List<CarModel>> listMap1 = new CollectionSort<String, List<CarModel>>().sortMapByKey(listMap);
+        interfaceResult.InterfaceResult200(listMap1);
+        return interfaceResult;
+    }
+
+    /**
+     * 根据车系选车型
+     * @param seriesCode
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/models/{seriesCode}")
+    public InterfaceResult listModelBySeriescode(@PathVariable("seriesCode") String seriesCode) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        CarSeries carSeries = daSouCheService.getCarSeries(seriesCode);
+        List<CarModel> allModel = daSouCheService.getAllModel(carSeries.getId());
+
+        interfaceResult.InterfaceResult200(allModel);
+        return interfaceResult;
+    }
+
+    /**
+     * 根据vin判断是否存在库存车
+     * @param vin
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/judge/{vin}")
+    InterfaceResult judgeCarByVin(@PathVariable String vin, HttpServletRequest request) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        User user = getCurrentUser(request);
+        Car car = carService.getStockCarByVin(vin,user.getMarketId());
+        if (car!=null){
+            result.InterfaceResult200("该vin库存已存在");
+        }else {
+            result.InterfaceResult200("未查到此车");
+        }
+        return result;
+    }
+
+    @PostMapping("/update")
+    InterfaceResult updateCar(@RequestBody CarVo carVo, HttpServletRequest request) throws Exception {
+        return carService.updateStoreCar(carVo);
+    }
 
     /**
      * 获取库存列表
@@ -93,7 +249,6 @@ public class CarController extends BaseController {
         carVo.setCarType(1);
         carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
         carVo.setCarNo((carVo.getCarNo() == null || carVo.getCarNo().isEmpty()) ? null : carVo.getCarNo().trim());
-
 
         PageInfo pageInfo = carService.listCarVo(carVo);
         List<CarVo> listCarVo = pageInfo.getList();
@@ -139,7 +294,7 @@ public class CarController extends BaseController {
             inventoryStatisticalRequest.setMarketId(user.getMarketId());
             inventoryStatisticalRequest.setTenantId(carVo.getTenant());
             String registerTimeStart = carVo.getRegisterTimeStart();
-            if(StringUtil.isNotEmpty(registerTimeStart)){
+            if (StringUtil.isNotEmpty(registerTimeStart)) {
                 inventoryStatisticalRequest.setRegisterTimeStart(registerTimeStart);
                 String registerTimeEnd = carVo.getRegisterTimeEnd();
                 Date date = DateUtils.parseDate(registerTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
@@ -148,10 +303,13 @@ public class CarController extends BaseController {
                 inventoryStatisticalRequest.setRegisterTimeEnd(s);
             }
             Integer stockStatus = carVo.getStockStatus();
-            if(stockStatus != null && stockStatus != 0){
+            if (stockStatus != null && stockStatus != 0) {
                 inventoryStatisticalRequest.setStockStatus(stockStatus);
             }
             InventoryStatisticalResponse response = carService.inventoryStatistical(inventoryStatisticalRequest);
+            InventoryStatisticalResponse responseAccumulative = carService.accumulativeCar(inventoryStatisticalRequest);
+            response.setValuationTotal(responseAccumulative.getValuationTotal());
+            response.setInventoryTotal(responseAccumulative.getInventoryTotal());
             m.put("InventoryStatisticalResponse", response);
         }
         m.put("listCarVo", pageInfo);
@@ -196,7 +354,7 @@ public class CarController extends BaseController {
 
             ExportResponse response = new ExportResponse();
 
-           // response.setCarNo(x.getCarNo());
+            // response.setCarNo(x.getCarNo());
             response.setVin(x.getVin());
             UserTenant tenant = userTenantService.selectByPrimaryKey(x.getTenant());
             if (null != tenant) {
@@ -208,15 +366,40 @@ public class CarController extends BaseController {
             if (null == x.getIsNewCar()) {
                 response.setIsNewCar(Magic.NUll);
             } else {
-                String isNewCar = configurationService.getNameByKeyAndValue("is_new_car", x.getIsNewCar().toString());
-                response.setIsNewCar(null == isNewCar ? Magic.NUll : isNewCar);
+              /*  String isNewCar = configurationService.getNameByKeyAndValue("is_new_car", x.getIsNewCar().toString());
+                response.setIsNewCar(null == isNewCar ? Magic.NUll : isNewCar);*/
+
+                if (0 == x.getIsNewCar()) {
+                    response.setIsNewCar("新车");
+                } else if (1 == x.getIsNewCar()) {
+                    response.setIsNewCar("二手车");
+                } else {
+                    response.setIsNewCar(Magic.NUll);
+                }
+
             }
 
             if (null == x.getStockStatus()) {
                 response.setStockStatus(Magic.NUll);
             } else {
-                String stockStatus = configurationService.getNameByKeyAndValue("stock_status", x.getStockStatus().toString());
-                response.setStockStatus(null == stockStatus ? Magic.NUll : stockStatus);
+                /*String stockStatus = configurationService.getNameByKeyAndValue("stock_status", x.getStockStatus().toString());
+                response.setStockStatus(null == stockStatus ? Magic.NUll : stockStatus);*/
+                if (-1 == x.getStockStatus()) {
+                    response.setStockStatus("删除");
+                } else if (1 == x.getStockStatus()) {
+                    response.setStockStatus("在场");
+                } else if (2 == x.getStockStatus()) {
+                    response.setStockStatus("在内场");
+                } else if (3 == x.getStockStatus()) {
+                    response.setStockStatus("出场");
+                } else if (4 == x.getStockStatus()) {
+                    response.setStockStatus("售出未出场");
+                } else if (5 == x.getStockStatus()) {
+                    response.setStockStatus("售出已出场");
+                } else {
+                    response.setStockStatus(Magic.NUll);
+                }
+
             }
 
             if (null == x.getRegisterTime()) {
@@ -227,13 +410,20 @@ public class CarController extends BaseController {
                 response.setRegisterTime(DatePoor.getStringForDate(x.getRegisterTime()));
             }
 
-            response.setStockDay(x.getStockDays().toString());
+            response.setStockDay(x.getStockDays());
 
             if (null == x.getCarStatus()) {
                 response.setCarStatus(Magic.NUll);
             } else {
-                String carStatus = configurationService.getNameByKeyAndValue("car_status", x.getCarStatus().toString());
-                response.setCarStatus(null == carStatus ? Magic.NUll : carStatus);
+               /* String carStatus = configurationService.getNameByKeyAndValue("car_status", x.getCarStatus().toString());
+                response.setCarStatus(null == carStatus ? Magic.NUll : carStatus);*/
+                if (1 == x.getCarStatus()) {
+                    response.setCarStatus("质押");
+                } else if (2 == x.getCarStatus()) {
+                    response.setCarStatus("非质押");
+                } else {
+                    response.setCarStatus(Magic.NUll);
+                }
             }
 
             if (null == x.getAreaId()) {
@@ -247,7 +437,7 @@ public class CarController extends BaseController {
                 }
             }
 
-            response.setInitialLicenceTime(x.getInitialLicenceTime());
+            response.setInitialLicenceTime(x.getInitialLicenceTime() != null ? x.getInitialLicenceTime().substring(0, 10) : "");
             response.setMileage(x.getMileage());
             response.setMarketPrice(x.getMarketPrice());
             response.setEvaluatePrice(x.getEvaluatePrice());
@@ -447,9 +637,11 @@ public class CarController extends BaseController {
         Properties prop = new Properties();
         CarInfo carInfo = new CarInfo();
 
-        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
+//        String sell_cid = "1396000473,1396000474,1396000475,1396000476";
 
         prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
+
+        String sell_cid = prop.getProperty("sellCid");
         String url = prop.getProperty("taobaoApiUrl");
         String taobaoUrl = prop.getProperty("taobaoUrl");
         String carId = params.getString("id");
@@ -463,11 +655,12 @@ public class CarController extends BaseController {
             interfaceResult.InterfaceResult600("查无此车");
             return interfaceResult;
         }
+        carInfo.setAttribution(prop.getProperty("cityNumByMarketId" + carInfo.getMarket_id()));
         sell_cid += "," + carInfo.getBrand_code();
-        if ("010".equals(carInfo.getMarket_id())) {
-            //针对玉林市场
-            carInfo.setAttribution("450900");
-        }
+//        if ("010".equals(carInfo.getMarket_id())) {
+//            //针对玉林市场
+//            carInfo.setAttribution("450900");
+//        }
         if (carInfo.getModel_name() != null && !"".equals(carInfo.getModel_name()) && carInfo.getModel_name().contains("款")) {
             //获取modelYear 为空不能上传
             carInfo.setModel_year(carInfo.getModel_name().substring(carInfo.getModel_name().indexOf("款") - 4, carInfo.getModel_name().indexOf("款") + 1));
@@ -630,9 +823,13 @@ public class CarController extends BaseController {
 
         String wzjs = null;
         String vin = params.get("vin").toString();
+        String carId = params.get("carId").toString();
         //String marketId = params.get("marketId").toString();
         try {
-            String check = carCheckService.getCarCheckByVin(vin);
+            CarCheck carCheck = new CarCheck();
+            carCheck.setVin(vin);
+            carCheck.setCarId(carId);
+            String check = carCheckService.getCarCheckByVin(carCheck);
             if (check != null && !"".equals(check)) {
                 wzjs = check;
             } else {
@@ -665,8 +862,10 @@ public class CarController extends BaseController {
                     checkNew.setId(UuidUtils.getUUID());
                     checkNew.setCompanyId("2");
                     checkNew.setVin(vin);
+
                     //checkNew.setCarId();
                     checkNew.setData(wzjs);
+                    checkNew.setCarId(carId);
                     checkNew.setInsertTime(new Date());
                     carCheckService.insertCarCheck(checkNew);
                 }
@@ -727,10 +926,15 @@ public class CarController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/groundCar", method = RequestMethod.POST)
-    public InterfaceResult groundCar(@RequestBody com.alibaba.fastjson.JSONObject params) {
+    public InterfaceResult groundCar(@RequestBody com.alibaba.fastjson.JSONObject params, HttpServletRequest request) {
+
         InterfaceResult result = new InterfaceResult();
         Properties prop = new Properties();
         try {
+            User user = getCurrentUser(request);
+            if (null == user || user.getMarketId().isEmpty()) {
+                return getInterfaceResult("200", "无法确认用户市场");
+            }
             prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
             CarChannelRel carChannelRel = new CarChannelRel();
             com.alibaba.fastjson.JSONArray carids = params.getJSONArray("carIds");
@@ -742,7 +946,7 @@ public class CarController extends BaseController {
             String APP_KEY = prop.getProperty("taobaoAppKey");
             String SECRET = prop.getProperty("taobaosecret");
             String API_URL = prop.getProperty("taobaoUploadUrl");
-            String sessionKey = prop.getProperty("sessionKey");
+            String sessionKey = prop.getProperty("marketIdSessionKey" + user.getMarketId());
 
             TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
             ItemUpdateListingRequest req = new ItemUpdateListingRequest();
@@ -785,11 +989,15 @@ public class CarController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/downCar", method = RequestMethod.POST)
-    public InterfaceResult downCar(@RequestBody com.alibaba.fastjson.JSONObject params) {
+    public InterfaceResult downCar(@RequestBody com.alibaba.fastjson.JSONObject params, HttpServletRequest request) {
         InterfaceResult result = new InterfaceResult();
         Properties prop = new Properties();
         CarChannelRel carChannelRel = new CarChannelRel();
         try {
+            User user = getCurrentUser(request);
+            if (null == user || user.getMarketId().isEmpty()) {
+                return getInterfaceResult("200", "无法确认用户市场");
+            }
             prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
             com.alibaba.fastjson.JSONArray carids = params.getJSONArray("carIds");
             com.alibaba.fastjson.JSONArray numIds = params.getJSONArray("taobaoIds");
@@ -799,7 +1007,7 @@ public class CarController extends BaseController {
             String APP_KEY = prop.getProperty("taobaoAppKey");
             String SECRET = prop.getProperty("taobaosecret");
             String API_URL = prop.getProperty("taobaoUploadUrl");
-            String sessionKey = prop.getProperty("sessionKey");
+            String sessionKey = prop.getProperty("marketIdSessionKey" + user.getMarketId());
 
 
             TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
@@ -869,6 +1077,94 @@ public class CarController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         List<String> allBrandNameByTenant = carService.getAllBrandNameByTenant(tenantId);
         interfaceResult.InterfaceResult200(allBrandNameByTenant);
+        return interfaceResult;
+    }
+
+
+    /**
+     * 出售管理列表信息
+     * @param carVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/list")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult getAllSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        User user = getCurrentUser(request);
+        if (null == user || user.getMarketId().isEmpty()) {
+            return getInterfaceResult("200", "无法确认用户市场");
+        }
+        carVo.setMarketId(user.getMarketId());
+        carVo.setCarType(1);
+        carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
+        PageInfo<CarVo> allSalesManageCarList = carService.getAllSalesManageCarList(carVo);
+        List<CarVo> list = allSalesManageCarList.getList();
+        for (CarVo car : list) {
+            double priceByCarId = invoiceService.selectPriceByCarId(car.getId());
+            car.setInvoicePrice(priceByCarId);
+        }
+        allSalesManageCarList.setList(list);
+        interfaceResult.InterfaceResult200(allSalesManageCarList);
+        return interfaceResult;
+    }
+
+    /**
+     * 导出出售管理列表信息
+     * @param carVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/export")
+    @OperationAnnotation(title = "出售管理信息列表")
+    public InterfaceResult exportSalesManageCarList(@RequestBody CarVo carVo ,HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+            User user = getCurrentUser(request);
+            if (null == user || user.getMarketId().isEmpty()) {
+                return getInterfaceResult("200", "无法确认用户市场");
+            }
+            carVo.setMarketId(user.getMarketId());
+            carVo.setCarType(1);
+            carVo.setVin((carVo.getVin() == null || carVo.getVin().isEmpty()) ? null : carVo.getVin().trim());
+            List<SellCarListExportVo> list = carService.exportAllSellCarList(carVo);
+            interfaceResult.InterfaceResult200(list);
+            return interfaceResult;
+    }
+
+    /**
+     * 出售车辆
+     * @param carSellVo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/salesManage/sell")
+    @OperationAnnotation(title = "商品车出售")
+    public InterfaceResult sellCarAndDownTaoBao(@RequestBody CarSellVo carSellVo , HttpServletRequest request) throws Exception{
+        InterfaceResult interfaceResult = carService.sellCarAndDownTaoBao(carSellVo);
+        User user = getCurrentUser(request);
+        if (StringUtils.equals("200",interfaceResult.getCode())){
+            Car car = new Car();
+            car.setId(carSellVo.getCarId());
+            if (carSellVo.getStockStatus() == 3){
+                car.setStockStatus(5);
+            }else if (carSellVo.getStockStatus() == 1 || carSellVo.getStockStatus() == 2){
+                car.setStockStatus(4);
+            }
+            String topic = topicService.getTopic(user.getMarketId());
+            //同步删除本地车辆状态
+            //组装云端参数
+            PostParam postParam = new PostParam();
+            postParam.setData(JsonTools.toJson(car));
+            postParam.setMarket(user.getMarketId());
+            postParam.setUrl("/barrier/car/saveCar");
+            postParam.setOnlySend(false);
+            postParam.setMessageTime(Constants.dateformat.format(new Date()));
+            messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+
+        }
         return interfaceResult;
     }
 

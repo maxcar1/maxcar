@@ -1,6 +1,9 @@
 package com.maxcar.util;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -60,8 +63,6 @@ public class Canstats {
 
     public static String second_send = "8A";//数据二次发送，例：签名错误
 
-    public static String first_kz = "8B";//先开闸，再发数据
-
     public static String dzOpen = "8180";//开闸命令
 
     public static String dzClose = "81FF";//开闸命令
@@ -76,6 +77,8 @@ public class Canstats {
     public static final   Integer outType = 3;//出场
     public static final    Integer saleType = 4;//售出
     public static final  Integer saleOutType = 5;//售出已出场
+    public static final  Integer OutTimeType = 6;//已出场超时
+    public static final List<Integer> STOCKTYPE = Arrays.asList(1,2,3,6);//库存状态
     public final static String KAFKA_SASS = "SASS";//卡夫卡数据服务类型
 
     public final static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

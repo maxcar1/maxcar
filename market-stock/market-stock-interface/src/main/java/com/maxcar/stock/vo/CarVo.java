@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maxcar.base.pojo.PageBean;
 import com.maxcar.stock.pojo.CarPic;
 
@@ -14,9 +15,35 @@ public class CarVo extends PageBean implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    private String stepLevel;//审批步骤
+    private String outReason;//出厂原因
+
+    private String reviewId;//审核id
+
+    private Integer reviewResult;//审核结果 0未审核   1审核通过   2审核不通过
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private String reviewInsertTime;
+
     private String id;
 
     private String carNo; // 车辆编号
+
+    public String getReviewInsertTime() {
+        return reviewInsertTime;
+    }
+
+    public void setReviewInsertTime(String reviewInsertTime) {
+        this.reviewInsertTime = reviewInsertTime;
+    }
+
+    public Integer getReviewResult() {
+        return reviewResult;
+    }
+
+    public void setReviewResult(Integer reviewResult) {
+        this.reviewResult = reviewResult;
+    }
 
     public String getCarNo() {
         return carNo;
@@ -110,6 +137,10 @@ public class CarVo extends PageBean implements Serializable {
     private Integer carAge;
     private Integer stockDays;
 
+    private String applicationTime; // 申请时间
+    private Integer isPass;// 审核状态
+    private Integer isComplete;// 该次审核记录是否完成or结束
+
     private String registerTimeStart;
     private String registerTimeEnd;
     private String initialLicenceTime;//初次上牌时间
@@ -146,6 +177,64 @@ public class CarVo extends PageBean implements Serializable {
     private String airConditionerControlType;
     private String displacement1;
     private String displacement2;
+
+    private Double invoicePrice;// 实际售价
+
+    public Integer getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(Integer isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public Integer getIsPass() {
+        return isPass;
+    }
+
+    public void setIsPass(Integer isPass) {
+        this.isPass = isPass;
+    }
+
+    public String getApplicationTime() {
+        return applicationTime;
+    }
+
+    public void setApplicationTime(String applicationTime) {
+        this.applicationTime = applicationTime;
+    }
+
+    public Double getInvoicePrice() {
+        return invoicePrice;
+    }
+
+    public void setInvoicePrice(Double invoicePrice) {
+        this.invoicePrice = invoicePrice;
+    }
+
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public String getStepLevel() {
+        return stepLevel;
+    }
+
+    public void setStepLevel(String stepLevel) {
+        this.stepLevel = stepLevel;
+    }
+
+    public String getOutReason() {
+        return outReason;
+    }
+
+    public void setOutReason(String outReason) {
+        this.outReason = outReason;
+    }
 
     public String getDisplacement1() {
         return displacement1;

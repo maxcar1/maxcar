@@ -96,7 +96,7 @@ public class OutMarketCarServiceImpl implements OutMarketCarService {
      * 同步删除本地车辆状态
      * 组装云端参数
      */
-    public void delLocalCar(CarOut carOut,OutMarketManage outMarketManage){
+    public void delLocalCar(CarOut carOut,OutMarketManage outMarketManage)throws Exception{
         String id = carOut.getCarId();
         carService.deleteCarById(carOut.getCarId());
         String topic = topicService.getTopic(outMarketManage.getMarketId());

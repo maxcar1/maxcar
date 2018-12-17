@@ -57,8 +57,8 @@ public class BarrierController extends BaseController {
             Barrier barriers = barrierService.selectByBarrierId(barrier.getBarrierId());
             interfaceResult.InterfaceResult200(barriers);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            interfaceResult.InterfaceResult500("查询失败");
+//            ex.printStackTrace();
+//            interfaceResult.InterfaceResult500("查询失败");
         }
         return interfaceResult;
     }

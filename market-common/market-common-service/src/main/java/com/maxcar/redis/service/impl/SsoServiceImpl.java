@@ -105,7 +105,7 @@ public class SsoServiceImpl implements SsoService {
         InterfaceResult interfaceResult = new InterfaceResult();
         String json = jedisSingleDao.get(key);
         if (StringUtils.isEmpty(json)) {
-            interfaceResult.InterfaceResult600("session已经过期，请重新登录");
+            interfaceResult.InterfaceResult600("session已经过期");
             return interfaceResult;
         }
         interfaceResult.InterfaceResult200(json);

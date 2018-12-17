@@ -34,7 +34,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
          * 南通第二阶段收费
          *
          */
-        Date newBegin = DateUtils.addMinute(payTime,15);
+        Date newBegin = DateUtils.addMinute(payTime, 15);
         Date currentTime = Calendar.getInstance().getTime();
         ParkingFeeTotalExample example = new ParkingFeeTotalExample();
         example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
@@ -70,7 +70,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
                             if (isMax) {
-                                List<Map> firstSplitTime = DateUtils.getSplitTime(newBegin, secondStart);
+                                List<Map> firstSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, secondStart);
                                 if (firstSplitTime != null && firstSplitTime.size() > 0) {
                                     firstFee = getFrees(firstSplitTime, feePeriodTimes, true, maxPrice);
                                 }
@@ -84,15 +84,18 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer secondFee = result.intValue() * parkingFeeTotal.getBeyondFee();
                             total = new BigDecimal(secondFee);
                             return total;
-                        }else{
-                            List<Map> getSplitTime = DateUtils.getSplitTime(newBegin, currentTime);
+                        } else {
+                            List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, currentTime);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
-                                total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
-                                return total;
-                            } else {
+                                if (isMax){
+                                    total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                }else{
+                                    total = new BigDecimal(getSplitTime(begin, payTime, feePeriodTimes));
+                                }
                                 return total;
                             }
+                            return total;
                         }
                     }
                 }
@@ -101,7 +104,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                 total = new BigDecimal(getSplitTime(newBegin, currentTime, feePeriodTimes));
                 return total;
             }
-        }else{
+        } else {
             return total;
         }
         return total;
@@ -111,34 +114,35 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
     public BigDecimal figureOutParkingFee(Date begin, Date end, String marketId, Integer carType) throws Exception {
         //根据marketId取规则
         ParkingFeeTotalExample example = new ParkingFeeTotalExample();
+        FeePeriodTimeExample feePeriodTimeExample = new FeePeriodTimeExample();
         if (carType == 0) {
             example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
-                    .andCarTypeEqualTo(1);
+                    .andCarTypeEqualTo(2);
+            //读取计费时段配置
+            feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
+                    .andIsValidEqualTo(1).andCarTypeEqualTo(2);
         } else {
             example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
                     .andCarTypeEqualTo(carType);
+            //读取计费时段配置
+            feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
+                    .andIsValidEqualTo(1).andCarTypeEqualTo(carType);
         }
         List<ParkingFeeTotal> parkingFeeTotals = parkingFeeTotalMapper.selectByExample(example);
 
-        //读取计费时段配置
-        FeePeriodTimeExample feePeriodTimeExample = new FeePeriodTimeExample();
-        feePeriodTimeExample.createCriteria().andMarketIdEqualTo(marketId)
-                .andIsValidEqualTo(1).andCarTypeEqualTo(carType);
         List<FeePeriodTime> feePeriodTimes = feePeriodTimeMapper.selectByExample(feePeriodTimeExample);
-        Date intime1 = null;
         BigDecimal total = new BigDecimal(0);
+        Date newBegin = null;
         if (null != feePeriodTimes && feePeriodTimes.size() > 0) {
             boolean isMax = false;
             int maxPrice = 0;
             ParkingFeeTotal parkingFeeTotal = parkingFeeTotals.get(0);
             if (null != parkingFeeTotal) {
                 if (parkingFeeTotal.getIsFree() == 1) {
-                    intime1 = DateUtils.addDate(begin, parkingFeeTotal.getFreeTime() * 60 * 1000);
-                    if (end.getTime() - intime1.getTime() <= 0) {
+                    newBegin = DateUtils.addDate(begin, parkingFeeTotal.getFreeTime() * 60 * 1000);
+                    if (end.getTime() - newBegin.getTime() <= 0) {
                         return total;
                     }
-                } else if(parkingFeeTotal.getIsFree() == 0){
-                    intime1 = begin;
                 }
                 //设置了上限
                 if (parkingFeeTotal.getIsLimit() == 1) {
@@ -157,7 +161,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
                             if (isMax) {
-                                List<Map> firstSplitTime = DateUtils.getSplitTime(begin, secondStart);
+                                List<Map> firstSplitTime = DateUtils.getDiffDateTimeSlot(begin, secondStart);
                                 if (firstSplitTime != null && firstSplitTime.size() > 0) {
                                     firstFee = getFrees(firstSplitTime, feePeriodTimes, true, maxPrice);
                                 }
@@ -171,15 +175,18 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer secondFee = result.intValue() * parkingFeeTotal.getBeyondFee();
                             total = new BigDecimal(firstFee + secondFee);
                             return total;
-                        }else{
-                            List<Map> getSplitTime = DateUtils.getSplitTime(begin, end);
+                        } else {
+                            List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(begin, end);
                             //获取分段的时间，然后每个时间段跟规则对比，计算出金额
                             if (getSplitTime != null && getSplitTime.size() > 0) {
-                                total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
-                                return total;
-                            } else {
+                                if (isMax){
+                                    total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
+                                }else{
+                                    total = new BigDecimal(getSplitTime(begin, end, feePeriodTimes));
+                                }
                                 return total;
                             }
+                            return total;
                         }
                     }
                 }
@@ -194,7 +201,6 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                 Map map = DateUtils.getHMS(end, begin);
                 Integer hour = (Integer) map.get("hour");
                 Integer minute = (Integer) map.get("minute");
-                Integer second = (Integer) map.get("second");
                 //判断是否开启免费,分钟
                 if (parkingFeeTotal.getIsFree() == 1) {
                     Integer freeTime = parkingFeeTotal.getFreeTime();
@@ -202,14 +208,14 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                     //不足1分钟算1分钟,得到总分钟数
                     BigDecimal minu = bd.multiply(new BigDecimal(60))
                             .add(new BigDecimal(minute)).add(new BigDecimal(1));
-                 //   System.out.println(minu.intValue());
+                    //   System.out.println(minu.intValue());
                     if (freeTime >= minu.intValue()) {
                         //停车免费时长大于实际停车时长
                         return total;
                     } else {
                         return configureFee(parkingFeeTotal, minu, freeTime, end, begin, total);
                     }
-                } else if(parkingFeeTotal.getIsFree() == 0){
+                } else if (parkingFeeTotal.getIsFree() == 0) {
                     //没有开启免费
                     if (parkingFeeTotal.getIsBeyond() == 1) {
                         //开启了超时,超出时长即为免费时长,走相同计费逻辑
@@ -224,7 +230,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                         } else {
                             return configureFee(parkingFeeTotal, minu, freeTime, end, begin, total);
                         }
-                    } else if(parkingFeeTotal.getIsBeyond() == 0){
+                    } else if (parkingFeeTotal.getIsBeyond() == 0) {
                         //没有开启超时
                         return total;
                     }
@@ -269,9 +275,9 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
         String day = "2018-10-01 ";//用于时间装换，没有实际意义，可以写死
         //停车时间
         String startTime = (String) map.get("startTime");
-        long sPTime = format.parse(day + startTime).getTime() / 1000 / 60;
+        long sPTime = format.parse(day + startTime.split(" ")[1]).getTime() / 1000 / 60;
         String endTime = (String) map.get("endTime");
-        long ePTime = format.parse(day + endTime).getTime() / 1000 / 60;
+        long ePTime = format.parse(day + endTime.split(" ")[1]).getTime() / 1000 / 60;
         //规则时间
         String sTime = feePeriodTime.getStartTime();
         String eTime = feePeriodTime.getEndTime();
@@ -317,10 +323,10 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
             BigDecimal beTime = new BigDecimal(beyondTime);
             BigDecimal beTimeMinute = beTime.multiply(new BigDecimal(60));
             //超过了免费时长,计算出剩余分钟数,超出时间和免费比较，取值大者
-            if (beTimeMinute.intValue() > freeTime){
-                restMinute = minu.intValue() - beTimeMinute.intValue();
-            }else{
-                restMinute = minu.intValue() - freeTime;
+            if (beTimeMinute.intValue() > freeTime) {
+                restMinute = beTimeMinute.intValue() - minu.intValue() > 0 ? 0 : beTimeMinute.intValue() - minu.intValue();
+            } else {
+                restMinute = freeTime - minu.intValue() > 0 ? 0 : freeTime - minu.intValue();
             }
             //计算超时的钱
             BigDecimal big = new BigDecimal(restMinute);
@@ -331,7 +337,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                 //没有设置收费上限,直接算出金额
                 BigDecimal money = new BigDecimal(beyondMoney);
                 return restHour.multiply(money);
-            } else if(parkingFeeTotal.getIsLimit() == 1){
+            } else if (parkingFeeTotal.getIsLimit() == 1) {
                 Integer limitMoney = parkingFeeTotal.getFeeLimit();
                 Integer beyondM = parkingFeeTotal.getBeyondFee();
                 //设置收费上限,拆分每天，计算金额
@@ -373,7 +379,6 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
 
     public static Integer getSplitTime(Date dateStart, Date dateEnd, List<FeePeriodTime> ruleList) {
         int totalPrice = 0;
-        BigDecimal hour = new BigDecimal(0);
         if (null != ruleList && ruleList.size() > 0) {
             try {
                 long days = DateUtils.daysBetween(dateStart, dateEnd);
@@ -450,7 +455,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                         sum1 = times1;
                     }
                     BigDecimal totalTimes = new BigDecimal(sum1);
-                    hour = totalTimes.divide(new BigDecimal(60), BigDecimal.ROUND_UP, 0);
+                    BigDecimal hour = totalTimes.divide(new BigDecimal(60), BigDecimal.ROUND_UP, 0);
                     priceSum = hour.intValue() * price;
                     totalPrice += priceSum;
                 }
@@ -464,7 +469,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
 
 
     public static void main(String[] args) throws Exception {
-        List<FeePeriodTime> feePeriodTimes = new ArrayList<>();
+        List<FeePeriodTime> feePeriodTimes = new ArrayList<FeePeriodTime>();
         FeePeriodTime feePeriodTime = new FeePeriodTime();
         feePeriodTime.setStartTime("10:22:34");
         feePeriodTime.setEndTime("16:18:09");

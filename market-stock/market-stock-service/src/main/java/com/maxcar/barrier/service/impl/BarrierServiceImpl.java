@@ -5,7 +5,6 @@ import com.maxcar.barrier.pojo.Barrier;
 import com.maxcar.barrier.pojo.BarrierExample;
 import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.stock.dao.CarMapper;
 import com.maxcar.stock.pojo.Car;
 import com.maxcar.stock.service.CarService;
 import org.slf4j.Logger;
@@ -56,7 +55,8 @@ public class BarrierServiceImpl implements BarrierService {
         BarrierExample barrierExample = new BarrierExample();
         BarrierExample.Criteria criteria = barrierExample.createCriteria();
         criteria.andIsvalidEqualTo(1);
-        if (barrier.getManagerFlag() != null && barrier.getManagerFlag() == 1) {
+        Short managerFlag = barrier.getManagerFlag();
+        if (managerFlag != null && (managerFlag == 1 || managerFlag == 2)) {
             criteria.andMarketIdEqualTo(barrier.getMarketId());
         }
 
@@ -98,4 +98,8 @@ public class BarrierServiceImpl implements BarrierService {
         return barrierMapper.selectBarrierByIdAndMarketId(barrier);
     }
 
+    @Override
+    public Barrier selectBarrierByBarrierMac(Barrier barrier) {
+        return barrierMapper.selectBarrierByBarrierMac(barrier.getMarketId(),barrier.getBarrierMac());
+    }
 }

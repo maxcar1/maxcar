@@ -32,12 +32,32 @@ public class ParkingFeeController extends BaseController {
      *
      * @return
      */
+    @Deprecated
     @GetMapping("/barriers")
     public Object getBarriers(HttpServletRequest request) throws Exception {
         InterfaceResult result = new InterfaceResult();
         User user = getCurrentUser(request);
         List<Barrier> barriers = barrierService.selectBarrierByMarketId(user.getMarketId());
         result.InterfaceResult200(barriers);
+        return result;
+    }
+
+    /**
+     * 根据mac查询道闸信息
+     * @param request
+     * @param barrierMac
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/barrier/{barrierMac}")
+    public Object getBarrier(HttpServletRequest request,@PathVariable("barrierMac")String barrierMac) throws Exception {
+        InterfaceResult result = new InterfaceResult();
+        User user = getCurrentUser(request);
+        Barrier barrier = new Barrier();
+        barrier.setMarketId(user.getMarketId());
+        barrier.setBarrierMac(barrierMac);
+        Barrier bar = barrierService.selectBarrierByBarrierMac(barrier);
+        result.InterfaceResult200(bar);
         return result;
     }
 
@@ -192,6 +212,24 @@ public class ParkingFeeController extends BaseController {
             params.put("barrierId",barrierId);
         }
         InterfaceResult result = parkingFeeService.goOffWork(params);
+        return result;
+    }
+
+    /**
+     * 定时获取上班时长
+     * @param request
+     * @param parkingId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/working/parking/{parkingId}")
+    public InterfaceResult getWorkingTimeAndPrice(HttpServletRequest request,
+                                                  @PathVariable("parkingId") String parkingId) throws Exception{
+        User user = getCurrentUser(request);
+        InterfaceResult result =  null;
+        if (null != user){
+             result = parkingFeeService.getWorkingTimeAndPrice(user.getMarketId(),parkingId);
+        }
         return result;
     }
 }

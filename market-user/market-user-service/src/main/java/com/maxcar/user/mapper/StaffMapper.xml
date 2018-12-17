@@ -511,7 +511,7 @@
       and a.group_id like concat(concat('%',#{groupId}),'%')
     </if>
     <!--如果非管理员，只能查看自己名下账号-->
-    <if test="marketId != null and managerFlag==1">
+    <if test="marketId != null and (managerFlag == 1 or managerFlag == 2)">
       and a.market_id = #{marketId}
     </if>
     ORDER BY a.insert_time desc

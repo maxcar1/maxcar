@@ -34,7 +34,7 @@ import java.util.Map;
 public class HttpClientUtil { 
 	
     // 连接超时时间
-    private static final int CONNECTION_TIMEOUT = 3000;//3秒
+    private static final int CONNECTION_TIMEOUT = 6000;//3秒
     // 读数据超时时间
     //private static final int READ_DATA_TIMEOUT = 6000;//6秒
      
