@@ -182,6 +182,8 @@ public class ReportMapperService {
             stringBuffer.append(" AND c.tenant = #{tenantId} ");
         }
 
+        stringBuffer.append(" AND c.isvalid = '1' ");
+
         parameter.setSelectCondition(stringBuffer.toString());
 
         if (StringUtil.isEmpty(parameter.getOrderBy())) {
