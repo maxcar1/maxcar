@@ -396,9 +396,11 @@ public class InvoiceController extends BaseController {
         //判断买方类型是否是个人
         if (invoice.getPurchacerType() == 0) {
             if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())) {
-                Map<String, Integer> cardMap = CardUtils.identityCard18(invoice.getPurchacerIdCard());
-                invoice.setAge(cardMap.get("age"));
-                invoice.setSex(cardMap.get("sex"));
+                if(invoice.getPurchacerIdCard().length() == 18){
+                    Map<String, Integer> cardMap = CardUtils.identityCard18(invoice.getPurchacerIdCard());
+                    invoice.setAge(cardMap.get("age"));
+                    invoice.setSex(cardMap.get("sex"));
+                }
             }
         }
 
