@@ -22,7 +22,7 @@
 
 		<!-- jdbc连接 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://192.168.3.58:3306/maxcar_stock?characterEncoding=utf-8" userId="root" password="Maxcar#2018d" />
+			connectionURL="jdbc:mysql://192.168.3.58:3306/maxcar_base_l?characterEncoding=utf-8" userId="root" password="Maxcar#2018d" />
 
 		<!-- 类型转换 -->
 		<javaTypeResolver>
@@ -31,7 +31,7 @@
 		</javaTypeResolver>
 
 		<!-- 生成实体类地址 -->
-		<javaModelGenerator targetPackage="com.maxcar.entity"
+		<javaModelGenerator targetPackage="com.maxcar.base.pojo.taobao"
 			targetProject="D:\temp">
 			<!-- 是否在当前路径下新加一层schema,eg：false路径com.phhc.model， true:com.phhc.model.[schemaName] -->
 			<property name="enableSubPackages" value="false" />
@@ -40,7 +40,7 @@
 		</javaModelGenerator>
 
 		<!-- 生成mapxml文件 -->
-		<sqlMapGenerator targetPackage="com.maxcar.mapper"
+		<sqlMapGenerator targetPackage="com.maxcar.base.mapper"
 			targetProject="D:\temp">
 			<!-- 是否在当前路径下新加一层schema,eg：false路径com.phhc.model， true:com.phhc.model.[schemaName] -->
 			<property name="enableSubPackages" value="false" />
@@ -48,14 +48,14 @@
 
 		<!-- 生成mapxml对应client，也就是接口dao -->
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="com.maxcar.dao" targetProject="D:\temp">
+			targetPackage="com.maxcar.base.dao" targetProject="D:\temp">
 			<!-- 是否在当前路径下新加一层schema,eg：false路径com.phhc.model， true:com.phhc.model.[schemaName] -->
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 
 		<!-- 配置表信息 -->
 
-		<table schema="test" tableName="taobao_city" domainObjectName="taobaoCity"
+		<table schema="test" tableName="taobao_market_config" domainObjectName="TaobaoMarketConfig"
 			   enableCountByExample="true" enableDeleteByExample="true"
 			   enableSelectByExample="true"	selectByExampleQueryId="true"
 			   enableUpdateByExample="true" />
