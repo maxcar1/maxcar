@@ -1338,14 +1338,6 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         int outMarketCarNum = count - inMarketCarCount;
         map.put("outMarketCarNum",outMarketCarNum);
 
-        Object o = map.get("stockPrice");
-        double stockPrice = 0.0;
-        if(o != null){
-            stockPrice = Double.parseDouble(o.toString());
-            stockPrice = Math.round(stockPrice) /  10000.0;
-        }
-        map.put("stockPrice" , stockPrice);
-
         return map;
     }
 }

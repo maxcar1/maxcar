@@ -44,6 +44,10 @@ public class StockServiceImpl implements StockService {
         if (StringUtil.isNotEmpty(stockRequest.getTenantId())) {
             stockRequestNowMonth.setTenantId(stockRequest.getTenantId());
         }
+        //  月表查询日期从上个月开始
+        String timeEnd = stockRequest.getTimeEnd() + "-01";
+        String agoMonth = DateUtils.getAgoMonth(timeEnd);
+        stockRequest.setTimeEnd(agoMonth);
         //  获取前几个月的数据集合
         List<StockResponse> list = inventoryInvoiceMonthMapper.getCountAndValue(stockRequest);
         //  获取当月数据
