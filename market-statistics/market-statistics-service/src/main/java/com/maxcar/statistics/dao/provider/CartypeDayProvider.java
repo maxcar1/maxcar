@@ -70,11 +70,11 @@ public class CartypeDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getStartTime())) {
-                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
+                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getEndTime())) {
-                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getTypeId())) {

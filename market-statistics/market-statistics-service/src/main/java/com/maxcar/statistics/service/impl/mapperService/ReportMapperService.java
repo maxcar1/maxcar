@@ -30,8 +30,8 @@ public class ReportMapperService {
         stringBuffer.delete(0, stringBuffer.length());
 
 
-        stringBuffer.append(" DATE_FORMAT(i.bill_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D')  ");
-        stringBuffer.append(" AND DATE_FORMAT(i.bill_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+        stringBuffer.append(" DATE_FORMAT(i.bill_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d')  ");
+        stringBuffer.append(" AND DATE_FORMAT(i.bill_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
 
 
         if ("carInvoiceType".equals(parameter.getGroupByColumns().trim())) {
@@ -127,10 +127,12 @@ public class ReportMapperService {
      * describe: 实时查询__统计报表——车辆类型统计_  --> 按月按车辆类型 统计 交易量与交易价值
      * create_date:  lxy   2018/11/19  16:00
      **/
+/*
     public List<GetInvoiceByCarInvoiceTypeReportResponse> getInvoiceByCarInvoiceTypeReport(GetInvoiceByCarInvoiceTypeReportParameter parameter) {
 
         return reportDao.getInvoiceByCarInvoiceTypeReport(parameter);
     }
+*/
 
 
     /**
@@ -142,8 +144,8 @@ public class ReportMapperService {
         StringBuffer stringBuffer = new StringBuffer(128);
         stringBuffer.delete(0, stringBuffer.length());
 
-        // stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
-        stringBuffer.append(" DATE_FORMAT(c.register_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+        // stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d') ");
+        stringBuffer.append(" DATE_FORMAT(c.register_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
         stringBuffer.append(" AND  c.stock_status in ('1','2','3')  AND  c.car_type = '1' ");
 
         if ("brandName".equals(parameter.getGroupByColumns().trim())) {
