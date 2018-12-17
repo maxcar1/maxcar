@@ -77,6 +77,16 @@ public class SearchCarRequest extends PageBean {
 
     private Date initialLicenceEndTime;
 
+    private Integer engineNo;//是否维珍验车过 1验过  0 or null 未验过
+
+    public Integer getEngineNo() {
+        return engineNo;
+    }
+
+    public void setEngineNo(Integer engineNo) {
+        this.engineNo = engineNo;
+    }
+
     public String getModelName() {
         return modelName;
     }
