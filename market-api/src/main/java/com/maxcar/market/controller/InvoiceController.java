@@ -396,7 +396,9 @@ public class InvoiceController extends BaseController {
         //判断买方类型是否是个人
         if (invoice.getPurchacerType() == 0) {
             if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())) {
-                if(invoice.getPurchacerIdCard().length() == 18){
+                String regularExpression = "(^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|" +
+                        "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)";
+                if(invoice.getPurchacerIdCard().matches(regularExpression)){
                     Map<String, Integer> cardMap = CardUtils.identityCard18(invoice.getPurchacerIdCard());
                     invoice.setAge(cardMap.get("age"));
                     invoice.setSex(cardMap.get("sex"));
