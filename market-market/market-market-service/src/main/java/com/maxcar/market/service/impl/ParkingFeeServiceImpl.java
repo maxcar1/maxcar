@@ -1082,7 +1082,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 return interfaceResult;
             }
         }else {
-            interfaceResult.InterfaceResult600("该车辆还没有入场记录");
+            interfaceResult.InterfaceResult600("当前卡号输入有误,或者该停车卡没有入场记录");
         }
         return interfaceResult;
     }
