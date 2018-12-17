@@ -61,6 +61,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 
 //	@Value("${projectUrl}")
 	private String projectUrl="D://img";
+	private String ftlUrl="/data/ftl";
 	//维珍验车
 	@Value("${wzurl}")
 	private String wzurl;
@@ -489,8 +490,8 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		}
 
 		// 车辆详情
-		logger.info("车辆详情文件路径：path {}", new String[] { getWebClassesPath() });
-		request.setDesc(FreeMarkUtil.getHtmlString(map, ftlName, getWebClassesPath()));
+//		logger.info("车辆详情文件路径：path {}", new String[] { getWebClassesPath() });
+		request.setDesc(FreeMarkUtil.getHtmlString(map, ftlName, ftlUrl));
 		inputInputs(request, car);
 		inputProps(request, car);
 		System.out.println("Packageid====================="+request.getLocalityLifePackageid());
@@ -659,16 +660,16 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 	}
 
 	// 获取当前文件路径
-	public static String getWebClassesPath() {
-		try {
-			String path = TaoBaoServiceImpl.class.getResource("").getPath();
-			// getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
-			// //包含类名
-			return path;
-		} catch (Exception e) {
-		}
-		return "";
-	}
+//	public static String getWebClassesPath() {
+//		try {
+//			String path = TaoBaoServiceImpl.class.getResource("").getPath();
+//			// getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+//			// //包含类名
+//			return path;
+//		} catch (Exception e) {
+//		}
+//		return "";
+//	}
 
 	private static void inputInputs(ItemAddRequest request, CarEntity car) {
 		// 143410077:车架号;20207674:首次上牌时间;148224679:验车时间（验车时间年检到期日）;30259:公里数
