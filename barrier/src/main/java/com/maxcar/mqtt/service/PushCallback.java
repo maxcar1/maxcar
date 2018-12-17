@@ -127,6 +127,7 @@ public class PushCallback implements MqttCallback {
                         switch (codeType){
                             case "01":
                                 //请求开闸
+                                logger.info("道闸指令01,处理开始---");
                                 BarrierValid barrierValid = new BarrierValid();
                                 Map map = barrierValid.openDz(clientData, barrier);
                                 outParam = map.get("outParam") + "";
@@ -146,6 +147,7 @@ public class PushCallback implements MqttCallback {
                                 break;
                             case "02":
                                 //初始配置参数
+                                logger.info("道闸指令02,处理开始---");
                                 outParam = initDz(clientData, barrier);
                                 if (barrier != null && barrier.getMqttTopic() != null) {
                                     byte b[] = toBytes(outParam);
@@ -157,10 +159,12 @@ public class PushCallback implements MqttCallback {
                                 break;
                             case "07":
                                 //上行卡号，不拍照，截取卡号10位数
+                                logger.info("道闸指令07,处理开始---");
                                 String cardNo16 = clientData.substring(66, 76);
-                                doCard(barrier, cardNo16,0,false);
+                                doCard(barrier, cardNo16,0);
                                 break;
                             case "08":
+                                logger.info("道闸指令08,处理开始---");
                                 //微信unionid处理，根据硬件发过来的判断
                                 String key = clientData.substring(64, 66);
                                 Integer keyLen = Integer.valueOf(key, 16) * 2;
@@ -169,7 +173,7 @@ public class PushCallback implements MqttCallback {
                                 logger.info("道闸发送的unionid或者key:{}", lastId);
                                 switch (barrier.getInOutType()) {
                                     case 0:
-                                        uploadRequestCloudIn(barrier, lastId, 1,true);
+                                        uploadRequestCloudIn(barrier, lastId, 1);
                                         break;
                                     case 1:
                                         uploadRequestCloudOut(barrier, lastId, 1);
@@ -179,20 +183,15 @@ public class PushCallback implements MqttCallback {
                                 }
                                 break;
                             case "09":
+                                logger.info("道闸指令09,处理开始---");
                                 //刷卡出场回执asc ii码
                                 String key1 = clientData.substring(64, 66);
                                 Integer keyLen1 = Integer.valueOf(key1, 16) * 2;
                                 String cardNo = clientData.substring(66, 66 + keyLen1);
-                                doCard(barrier, HexUtils.convertHexToString(cardNo),0,false);
-                                break;
-                            case "0c":
-                                //上行拍照指令
-                                String key2 = clientData.substring(64, 66);
-                                Integer keyLen2 = Integer.valueOf(key2, 16) * 2;
-                                String cardNo1 = clientData.substring(66, 66 + keyLen2);
-                                doCard(barrier, HexUtils.convertHexToString(cardNo1),2,true);
+                                doCard(barrier, HexUtils.convertHexToString(cardNo),0);
                                 break;
                             case "0b":
+                                logger.info("道闸指令0b,处理开始---");
                                 if (barrier != null && barrier.getMqttTopic() != null) {
                                     if (barrier.getStatus().equals("4")) {
                                         String outParam1 = "";
@@ -266,12 +265,12 @@ public class PushCallback implements MqttCallback {
     }
 
 
-    private void doCard(Barrier barrier, String cardNo16,int type,boolean isTake) throws Exception {
+    private void doCard(Barrier barrier, String cardNo16,int type) throws Exception {
         logger.info("道闸发送的卡号:{}", cardNo16);
         switch (barrier.getInOutType()) {
             case 0:
                 //入口
-                uploadRequestCloudIn(barrier, cardNo16, type,isTake);
+                uploadRequestCloudIn(barrier, cardNo16, type);
                 break;
             case 1:
                 //出口
@@ -294,11 +293,10 @@ public class PushCallback implements MqttCallback {
         json.put("barrierId",barrier.getBarrierId());
         json.put("type",type);
         json.put("marketId",barrier.getMarketId());
-
         takePhotoAndUpLoad(barrier,json,url,postParam);
     }
 
-    private void uploadRequestCloudIn(Barrier barrier, String key, int type,boolean isTake) throws Exception {
+    private void uploadRequestCloudIn(Barrier barrier, String key, int type) throws Exception {
         //上传数据到云端
         //组装云端参数
         PostParam postParam = new PostParam();
@@ -308,14 +306,10 @@ public class PushCallback implements MqttCallback {
         json.put("marketId",barrier.getMarketId());
         json.put("key",key);
         json.put("barrierId",barrier.getBarrierId());
-        //0 刷卡  1 unionId   2 更新卡号进场照片
+        //0 刷卡  1 unionId
         json.put("type",type);
         //是否拍照
-        if (isTake){
-            takePhotoAndUpLoad(barrier,json,url,postParam);
-        }else {
-            sendCloud(json,url,postParam,null);
-        }
+        takePhotoAndUpLoad(barrier,json,url,postParam);
     }
 
     private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {

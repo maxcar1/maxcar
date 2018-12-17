@@ -222,12 +222,12 @@ public class BarrierController {
             String value2 = "leng";//44字节
             //协议版本
             String value3 = Canstats.headerVersion;
-            String value4 = Canstats.FIRST_OPEN;//下发数据
+            String value4 = Canstats.dzML;//下发数据
             int time = (int)(System.currentTimeMillis()/1000);
             String timeStamp = PushCallback.toHexString(time);
             //id长度+id号+时间戳+设备类型+程序版本+设备电量
             String value5 = PushCallback.toHexString(dzId.length()/2)+dzId+timeStamp+Canstats.dzType+Canstats.dzVersion+Canstats.dzPower;
-            String value6 = "000B8C";
+            String value6 = "000B81";
             String value7 = "";
             String value8 = "";//欢迎词
             value7 = Canstats.yxcc;//允许开闸
@@ -241,8 +241,6 @@ public class BarrierController {
             }else if(type == -1){
                 value8 = "一路顺风";
             }else{
-                value6 = "000B81";
-                value4 = "81";
                 value8 = "金额"+type+"元";
                 byte[] b = value8.getBytes("gbk");
                 //最小7字节,最大9字节,直接补0

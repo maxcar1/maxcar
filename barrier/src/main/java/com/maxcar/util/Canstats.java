@@ -71,9 +71,6 @@ public class Canstats {
 
     public static String dgMark_card = "89"; //卡号获取地感的标识
 
-    public static String FIRST_OPEN = "8C"; //先开闸再上行数据
-
-
 
     public static final  Integer deleteType = -1;//在场
     public static final  Integer inType = 1;//在场
