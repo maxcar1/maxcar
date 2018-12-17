@@ -346,7 +346,7 @@ public class PushCallback implements MqttCallback {
                     String objKey = file[file.length-1];
                     String objK = objKey.replace("\\","/");
                     String imageFileStr = imageFile.replace("\\","/");
-                    String imageUrl = AliyunOSSClientUtil.uploadOss(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);
+                    String imageUrl = AliyunOSSClientUtil.uploadSimpleFile(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);
                     logger.info("图片上传阿里云处理耗时==>{}s",(System.currentTimeMillis() - picEnd)/1000);
                     sendCloud(json,url,postParam,imageUrl);
                 } else {
