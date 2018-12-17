@@ -44,7 +44,7 @@ public class AliyunOSSClientUtil {
             request.setExpiration(expiration);
             // 生成URL
             URL url = ossClient.generatePresignedUrl(request);
-            imageUrl = url.toString();//.split("\\?")[0];
+            imageUrl = url.toString().split("\\?")[0];
         }catch (Exception e){
             e.printStackTrace();
         }finally{
