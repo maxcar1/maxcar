@@ -2,6 +2,8 @@ package com.maxcar.mqtt.service;
 
 import com.maxcar.barrier.pojo.*;
 import com.maxcar.barrier.service.*;
+import com.maxcar.jdbc.CloudJdbcCurd;
+import com.maxcar.jdbc.CloudJdbcUtils;
 import com.maxcar.jdbc.JdbcCurd;
 import com.maxcar.stock.service.CarReviewService;
 import com.maxcar.util.*;
@@ -43,9 +45,15 @@ public class BarrierValid {
         String marketId = barrier.getMarketId();
         logger.info("rfid" + marketId + Canstats.between + values);
         logger.info("道闸是否受限制：" + !barrier.getStatus().equals("0"));
-
+        String rfid = marketId + Canstats.between + values;
 //        Car stockCarInfo = barrierService.selectByRFID(marketId + Canstats.between + values,marketId);//查询是否允许开闸
-        Car stockCarInfo = JdbcCurd.selectCarByRfid(marketId,marketId + Canstats.between + values);
+        Car stockCarInfo = JdbcCurd.selectCarByRfid(marketId,rfid);
+        if(stockCarInfo==null) {//到云端查询一次，没有同步到本地
+            stockCarInfo = CloudJdbcCurd.selectCarByCarId(marketId, rfid);
+            if(stockCarInfo!=null){//同步到云端
+                JdbcCurd.saveCar(stockCarInfo);
+            }
+        }
         if(stockCarInfo==null){
             value7 = Canstats.jzcc;
             value8 = "查无此车";
