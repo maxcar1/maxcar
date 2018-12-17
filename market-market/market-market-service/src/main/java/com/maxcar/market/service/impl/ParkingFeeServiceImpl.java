@@ -558,21 +558,10 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                 feeDetail.setUnionId(num);
                 feeDetail.setCardNo(orderNo);
                 break;
-            case 2:
-                feeDetail.setCardNo(num);
-                break;
             default:
                 break;
         }
         List<ParkingFeeDetail> details = parkingFeeDetailMapper.selectParkingFee(feeDetail);
-        if (null != details && details.size() == 1 && type == 2){
-            //如果查询到一条并且上行的类型是2，则更新进场照片
-            ParkingFeeDetail parking = new ParkingFeeDetail();
-            parking.setId(details.get(0).getId());
-            parking.setBeforeImage(imageUrl);
-            parkingFeeDetailMapper.updateByPrimaryKeySelective(parking);
-            return result;
-        }
         Barrier ba = barrierService.selectByBarrierId(barrierId);
         if (null == details || details.size() == 0) {
             ParkingFeeDetail detail = new ParkingFeeDetail();
