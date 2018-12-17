@@ -207,7 +207,7 @@ public class BarrierValid {
                     break;
             }
         }else{//出口，未来质押车做验证
-            if(car.getMarketId().equals("016")){
+            if(car.getMarketId().equals("008")){
                 CarReviewService carReviewService = ApplicationContextHolder.getBean("carReviewService");
                 Boolean canPass = carReviewService.selectCarReviewByCarId(car.getId());
                 if(!canPass){//禁止通行,不改变车辆状态
