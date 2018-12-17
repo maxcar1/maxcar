@@ -54,7 +54,7 @@
         select
         <include refid="Base_Column_List"/>
         from parking_fee_detail
-        where is_valid = 1
+        where is_valid = 1 and after_time is null
         <if test="cardNo !=null">
             and card_no = #{cardNo,jdbcType=VARCHAR}
         </if>

@@ -60,7 +60,7 @@ public class ParkingFeeController {
             interfaceResult = parkingFeeService.getParkingFeeDetail(cardNo);
         }else {
             interfaceResult.setCode("406");
-            interfaceResult.InterfaceResult600("参数格式错误");
+            interfaceResult.setMsg("参数格式错误");
         }
         return interfaceResult;
     }
