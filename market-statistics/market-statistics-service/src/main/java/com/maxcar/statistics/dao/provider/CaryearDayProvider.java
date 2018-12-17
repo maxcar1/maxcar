@@ -34,11 +34,11 @@ public class CaryearDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getStartTime())) {
-                WHERE("DATE_FORMAT(report_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
+                WHERE("DATE_FORMAT(report_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getEndTime())) {
-                WHERE("DATE_FORMAT(report_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+                WHERE("DATE_FORMAT(report_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getYearId())) {
@@ -74,11 +74,11 @@ public class CaryearDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getStartTime())) {
-                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
+                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getEndTime())) {
-                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+                WHERE("DATE_FORMAT(scd.report_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getYearId())) {
@@ -114,7 +114,7 @@ public class CaryearDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getEndTime())) {
-                WHERE(" DATE_FORMAT(report_time, '%Y-%m-%D') = DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+                WHERE(" DATE_FORMAT(report_time, '%Y-%m-%d') = DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
             }
 
             GROUP_BY("year_id");
@@ -148,7 +148,7 @@ public class CaryearDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getEndTime())) {
-                WHERE(" DATE_FORMAT(scd.report_time, '%Y-%m-%D') = DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+                WHERE(" DATE_FORMAT(scd.report_time, '%Y-%m-%d') = DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
             }
 
             if (StringUtil.isNotEmpty(parameter.getYearId())) {
@@ -199,7 +199,7 @@ public class CaryearDayProvider {
 
             FROM("`maxcar_statistics_l`.`caryear_day`");
 
-            WHERE(" DATE_FORMAT(report_time, '%Y-%m-%D') = DATE_FORMAT(#{timeByMonth}, '%Y-%m-%D')");
+            WHERE(" DATE_FORMAT(report_time, '%Y-%m-%d') = DATE_FORMAT(#{timeByMonth}, '%Y-%m-%d')");
             GROUP_BY(" market_id,tenant_id,year_id;");
 
         }}.toString();

@@ -112,8 +112,8 @@ public class RankingServiceImpl implements RankingService {
 
         StringBuffer stringBuffer = new StringBuffer(128);
 
-        stringBuffer.append(" DATE_FORMAT(i.bill_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D')  ");
-        stringBuffer.append(" AND DATE_FORMAT(i.bill_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+        stringBuffer.append(" DATE_FORMAT(i.bill_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d')  ");
+        stringBuffer.append(" AND DATE_FORMAT(i.bill_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
 
         if (StringUtil.isNotEmpty(request.getMarketId())) {
             stringBuffer.append(" AND i.market_id = #{marketId} ");
@@ -191,8 +191,8 @@ public class RankingServiceImpl implements RankingService {
      /*   GetInventoryRankingParameter parameter = new GetInventoryRankingParameter();
 
         StringBuffer stringBuffer = new StringBuffer(128);
-        stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%D') >= DATE_FORMAT(#{startTime}, '%Y-%m-%D') ");
-        stringBuffer.append(" AND   DATE_FORMAT(c.insert_time, '%Y-%m-%D') <= DATE_FORMAT(#{endTime}, '%Y-%m-%D') ");
+        stringBuffer.append(" DATE_FORMAT(c.insert_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d') ");
+        stringBuffer.append(" AND   DATE_FORMAT(c.insert_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') ");
         stringBuffer.append(" AND  c.stock_status in ('1','2','3') ");
 
 
