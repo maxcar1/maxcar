@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -534,6 +535,8 @@ public class CarController extends BaseController {
             //String jsonPamars1 = jsonPamars + "";
             String jsonPamars1 = jsonPamars.toString();
             JSONObject json = JSONObject.fromObject(JsonUtils.convert(jsonPamars1));
+            DecimalFormat df = new DecimalFormat("0.00");//格式化小数
+            String mileage = df.format((json.getInt("mileage"))/10000);//返回的是String类型
             json.remove("requestUser");
             json.remove("requestMarket");
             json.remove("token");
@@ -543,6 +546,8 @@ public class CarController extends BaseController {
             json.remove("operationUserId");
             json.remove("operationUserName");
             json.remove("publishTime");
+            json.remove("mileage");
+            json.put("mileage",mileage);
             json.put("sellCid", sell_cid);
             json.put("market", carInfo.getMarket_id());
             json.remove("marketId");
