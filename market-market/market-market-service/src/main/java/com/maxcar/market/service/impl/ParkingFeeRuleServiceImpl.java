@@ -82,7 +82,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                                 firstFee = getSplitTime(newBegin, secondStart, feePeriodTimes);
                             }*/
                             //超出后的换算为小时
-                            BigDecimal secondTime = new BigDecimal(begin.getTime() - newBegin.getTime());
+                            BigDecimal secondTime = new BigDecimal(currentTime.getTime() - begin.getTime());
                             BigDecimal result = secondTime.divide(new BigDecimal(1000 * 60 * 60), BigDecimal.ROUND_UP, 0);
                             Integer secondFee = result.intValue() * parkingFeeTotal.getBeyondFee();
                             total = new BigDecimal(secondFee);
