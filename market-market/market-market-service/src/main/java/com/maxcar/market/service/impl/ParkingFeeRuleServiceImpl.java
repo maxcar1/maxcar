@@ -69,7 +69,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                     if (afterTime != 0) {
                         //停车时长超过设置的时长
                         if (newBegin.getTime() - begin.getTime() > afterTime) {
-                            /*//拆分两个阶段计算
+                            //拆分两个阶段计算
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
                             if (isMax) {
@@ -80,12 +80,12 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             }
                             if (!isMax) {
                                 firstFee = getSplitTime(newBegin, secondStart, feePeriodTimes);
-                            }*/
+                            }
                             //超出后的换算为小时
                             BigDecimal secondTime = new BigDecimal(currentTime.getTime() - begin.getTime());
                             BigDecimal result = secondTime.divide(new BigDecimal(1000 * 60 * 60), BigDecimal.ROUND_UP, 0);
                             Integer secondFee = result.intValue() * parkingFeeTotal.getBeyondFee();
-                            total = new BigDecimal(secondFee);
+                            total = new BigDecimal(secondFee+firstFee);
                             return total;
                         } else {
                             List<Map> getSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, currentTime);
