@@ -9,16 +9,15 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.DaSouCheService;
 import com.maxcar.base.util.HanyuPinyinHelper;
 import com.maxcar.stock.entity.Request.SearchCarRequest;
-import com.maxcar.stock.pojo.Car;
 import com.maxcar.stock.pojo.CarBase;
 import com.maxcar.stock.service.CarBaseService;
 import com.maxcar.stock.service.CarService;
+import com.maxcar.stock.vo.VehicleBrandVo;
 import com.maxcar.user.entity.Staff;
 import com.maxcar.web.aop.OperationAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.DocFlavor;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,7 +147,7 @@ public class TheCarDetailsController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             Staff staff = getCurrentStaff(request);
-            List<VehicleBrand> vehicleBrandList = carBaseService.getBrandTop10(staff.getMarketId());
+            List<VehicleBrandVo> vehicleBrandList = carBaseService.getBrandTop10(staff.getMarketId());
             interfaceResult.InterfaceResult200(vehicleBrandList);
         }catch (Exception e  ){
           e.printStackTrace();

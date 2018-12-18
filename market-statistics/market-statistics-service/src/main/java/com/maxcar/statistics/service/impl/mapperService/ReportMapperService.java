@@ -21,7 +21,7 @@ public class ReportMapperService {
 
     /**
      * param:
-     * describe: 实时查询__统计报表——车辆类型统计  --> 交易
+     * describe: 实时查询__统计报表——统计  --> 交易
      * create_date:  lxy   2018/11/19  10:18
      **/
     public List<GetCarInvoiceTypeInvoiceReportResponse> getCarInvoiceTypeInvoiceReport(GetCarInvoiceTypeInvoiceReportParameter parameter) {
@@ -46,13 +46,13 @@ public class ReportMapperService {
             parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId',cb.brand_name AS 'brandName', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice'," +
                     "IFNULL(COUNT(IF(i.sex =1 ,true,null)), 0) AS 'maleCount', " +
                     "IFNULL(COUNT(IF(i.sex =2 ,true,null)), 0) AS 'femaleCount'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age20Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age25Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age30Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age35Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age40Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age45Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age50Count'");
+                    "IFNULL(COUNT(IF(i.age < 20 ,true,null)), 0) AS 'age20Count'," +
+                    "IFNULL(COUNT(IF(i.age >=20 AND i.age < 25,true,null)), 0) AS 'age25Count'," +
+                    "IFNULL(COUNT(IF(i.age >=25 AND i.age < 30 ,true,null)), 0) AS 'age30Count'," +
+                    "IFNULL(COUNT(IF(i.age >=30 AND i.age < 35 ,true,null)), 0) AS 'age35Count'," +
+                    "IFNULL(COUNT(IF(i.age >=35 AND i.age < 40 ,true,null)), 0) AS 'age40Count'," +
+                    "IFNULL(COUNT(IF(i.age >=40 AND i.age < 45 ,true,null)), 0) AS 'age45Count'," +
+                    "IFNULL(COUNT(IF(i.age >=45 ,true,null)), 0) AS 'age50Count'");
             //stringBuffer.append(" AND cb.brand_name != '' ");
 
             parameter.setGroupByColumns("i.market_id,i.tenant_id," + parameter.getGroupByColumns().trim());
@@ -62,13 +62,13 @@ public class ReportMapperService {
             parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice'," +
                     "IFNULL(COUNT(IF(i.sex =1 ,true,null)), 0) AS 'maleCount', " +
                     "IFNULL(COUNT(IF(i.sex =2 ,true,null)), 0) AS 'femaleCount'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age20Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age25Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age30Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age35Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age40Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age45Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age50Count'");
+                    "IFNULL(COUNT(IF(i.age < 20 ,true,null)), 0) AS 'age20Count'," +
+                    "IFNULL(COUNT(IF(i.age >=20 AND i.age < 25,true,null)), 0) AS 'age25Count'," +
+                    "IFNULL(COUNT(IF(i.age >=25 AND i.age < 30 ,true,null)), 0) AS 'age30Count'," +
+                    "IFNULL(COUNT(IF(i.age >=30 AND i.age < 35 ,true,null)), 0) AS 'age35Count'," +
+                    "IFNULL(COUNT(IF(i.age >=35 AND i.age < 40 ,true,null)), 0) AS 'age40Count'," +
+                    "IFNULL(COUNT(IF(i.age >=40 AND i.age < 45 ,true,null)), 0) AS 'age45Count'," +
+                    "IFNULL(COUNT(IF(i.age >=45 ,true,null)), 0) AS 'age50Count'");
 
             parameter.setGroupByColumns("i.market_id,i.tenant_id");
 
@@ -79,13 +79,13 @@ public class ReportMapperService {
             parameter.setSelectColumns("i.market_id as 'marketId',i.tenant_id as 'tenantId', IFNULL(COUNT(*), 0) AS 'invoiceCount', IFNULL(SUM(i.price), 0) AS 'invoicePrice'," +
                     "IFNULL(COUNT(IF(i.sex =1 ,true,null)), 0) AS 'maleCount', " +
                     "IFNULL(COUNT(IF(i.sex =2 ,true,null)), 0) AS 'femaleCount'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age20Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age25Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age30Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age35Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age40Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age45Count'," +
-                    "IFNULL(COUNT(IF(i.age =1 ,true,null)), 0) AS 'age50Count'");
+                    "IFNULL(COUNT(IF(i.age < 20 ,true,null)), 0) AS 'age20Count'," +
+                    "IFNULL(COUNT(IF(i.age >=20 AND i.age < 25,true,null)), 0) AS 'age25Count'," +
+                    "IFNULL(COUNT(IF(i.age >=25 AND i.age < 30 ,true,null)), 0) AS 'age30Count'," +
+                    "IFNULL(COUNT(IF(i.age >=30 AND i.age < 35 ,true,null)), 0) AS 'age35Count'," +
+                    "IFNULL(COUNT(IF(i.age >=35 AND i.age < 40 ,true,null)), 0) AS 'age40Count'," +
+                    "IFNULL(COUNT(IF(i.age >=40 AND i.age < 45 ,true,null)), 0) AS 'age45Count'," +
+                    "IFNULL(COUNT(IF(i.age >=45 ,true,null)), 0) AS 'age50Count'");
 
             parameter.setGroupByColumns("i.market_id,i.tenant_id");
 
@@ -150,7 +150,7 @@ public class ReportMapperService {
 
         if ("brandName".equals(parameter.getGroupByColumns().trim())) {
 
-            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',cb.brand_name AS brandName,IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
+            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',cb.brand_name AS 'brandName',IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
 
             stringBuffer.append(" and cb.brand_name !=''  ");
 
@@ -181,6 +181,8 @@ public class ReportMapperService {
 
             stringBuffer.append(" AND c.tenant = #{tenantId} ");
         }
+
+        stringBuffer.append(" AND c.isvalid = '1' ");
 
         parameter.setSelectCondition(stringBuffer.toString());
 
