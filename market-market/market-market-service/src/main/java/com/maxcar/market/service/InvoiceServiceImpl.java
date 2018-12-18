@@ -199,44 +199,6 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         return lists;
     }
 
-    //    @Override
-//    public InterfaceResult insertInvoice(Invoice invoice) {
-//        InterfaceResult interfaceResult = new InterfaceResult();
-//        int count = 0;
-//        int counts = 0;
-//        List<InvoicePurchase> list = invoicePurchaseService.selectInvoicePurchase(invoice.getMarketId());
-//        if (null != list && list.size() > 0) {
-//            invoice.setInvoiceCode(list.get(0).getInvoiceCode());
-//            invoice.setInvoiceNo(list.get(0).getInvoiceNo());
-//            count = invoiceMapper.insertSelective(invoice);
-//            if (count == 0) {
-//                interfaceResult.InterfaceResult600("新增失败");
-//            } else {
-//                list.get(0).setPollResidue(list.get(0).getPollResidue() - 1);//剩余票号-1
-//                if (Integer.parseInt(list.get(0).getInvoiceEndNo()) == Integer.parseInt(invoice.getInvoiceNo())) {
-//                    list.get(0).setStatus(2);//购票最后一张
-//                    list.get(0).setInvoiceNo(list.get(0).getInvoiceEndNo());
-//                } else {
-//                    list.get(0).setInvoiceNo(StringUtils.leftPad(((Integer.parseInt(list.get(0).getInvoiceNo()) + 1) + ""), 8, "0"));//当前票号+1
-//                }
-//                counts = invoicePurchaseService.updateByIdAndVersion(list.get(0));
-//                if (counts == 0) {
-//                    interfaceResult.InterfaceResult600("购票异常，请重新购票!");
-//                    return interfaceResult;
-//                }
-//                if (invoice.getCarSources() == 1) {//库存车
-//                    Car car = new Car();
-//                    car.setId(invoice.getCarId());
-//                    car.setStockStatus(4);//售出未出场状态
-//                    carService.updateByPrimaryKeySelective(car);
-//                }
-//                interfaceResult.InterfaceResult200("新增成功");
-//            }
-//        } else {
-//            interfaceResult.InterfaceResult600("发票已用完，请购票");
-//        }
-//        return interfaceResult;
-//    }
     @Override
     public Map nowDeal(String marketId, String tenantId) throws Exception {
         Date dayStart = DateUtils.getDayStart(new Date());
@@ -359,7 +321,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
             double compare = Math.round(contrastAvg / yesterAvg * 100) / 100.0;
             map.put("increaseContrastAvg", compare);
         }
-        map.put("contrastAvg", contrastAvg);
+        map.put("contrastAvg", Math.round(contrastAvg * 100) / 100.0);
         double contrastStockSum = nowStockSum - yesterStockSum;
         if (yesterStockSum == 0) {
             map.put("increaseContrastStockSum", "--");

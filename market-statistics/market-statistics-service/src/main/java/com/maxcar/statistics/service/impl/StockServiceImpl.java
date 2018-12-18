@@ -154,7 +154,7 @@ public class StockServiceImpl implements StockService {
         for (StockResponse month : list) {
             String reportTime = month.getReportTime();
             reportTime = reportTime.substring(0, 7);
-            double stockDayAvg = month.getStockDayAvg();
+            double stockDayAvg = (month.getStockDayAvg() == null ? 0.0 : month.getStockDayAvg());
             reportTime += "-01";
             getOneAgoMonth(stockRequest, reportTime);
             Double monthStockDayAvg = inventoryInvoiceDayMapper.getStockAvgDayCar(stockRequest);

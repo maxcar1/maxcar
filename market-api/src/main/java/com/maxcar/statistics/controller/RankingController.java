@@ -199,7 +199,7 @@ public class RankingController extends BaseController {
 
             double aa = (double) count / parkCount;
 
-            Double saturability = Math.round(aa * 100) / 100.0;
+            Long saturability = Math.round(aa * 100.0);
             map.put("saturability", saturability + "%");
 
             interfaceResult.InterfaceResult200(map);
@@ -222,7 +222,7 @@ public class RankingController extends BaseController {
 
             double aa = (double) count / parkCount;
 
-            Double saturability = Math.round(aa * 100) / 100.0;
+            Long saturability = Math.round(aa * 100.0);
             map.put("saturability", saturability + "%");
 
             interfaceResult.InterfaceResult200(map);
