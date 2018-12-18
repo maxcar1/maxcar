@@ -49,6 +49,8 @@ public class CarbrandMapperService {
             parameter.setOrderBy("invoiceCount");
         }
 
+        parameter.setOrderBy(parameter.getOrderBy() + " desc ");
+
         return carbrandDayDao.groupCarbrandInvoiceDay(parameter);
     }
 
