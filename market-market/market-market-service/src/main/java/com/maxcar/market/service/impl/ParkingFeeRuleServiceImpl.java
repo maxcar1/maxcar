@@ -91,7 +91,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                                 if (isMax){
                                     total = new BigDecimal(getFrees(getSplitTime, feePeriodTimes, isMax, maxPrice));
                                 }else{
-                                    total = new BigDecimal(getSplitTime(begin, payTime, feePeriodTimes));
+                                    total = new BigDecimal(getSplitTime(newBegin, currentTime, feePeriodTimes));
                                 }
                                 return total;
                             }
