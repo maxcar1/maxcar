@@ -36,7 +36,9 @@ public class Base64Util {
         {
             e.printStackTrace();
         }
-        return new String("data:image/jpeg;base64,"+Base64.encodeBase64(data));
+        StringBuilder sb = new StringBuilder("data:image/jpeg;base64,");
+        sb.append(new String(Base64.encodeBase64(data)));
+        return sb.toString();
     }
 
     /**
