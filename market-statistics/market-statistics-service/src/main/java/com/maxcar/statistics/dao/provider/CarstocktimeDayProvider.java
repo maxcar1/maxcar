@@ -173,7 +173,7 @@ public class CarstocktimeDayProvider {
 
             ORDER_BY(parameter.getOrderBy());
 
-        }}.toString();
+        }}.toString() + " limit 10 ";
     }
 
 
