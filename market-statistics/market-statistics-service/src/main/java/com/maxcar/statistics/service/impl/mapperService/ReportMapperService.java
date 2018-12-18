@@ -150,7 +150,7 @@ public class ReportMapperService {
 
         if ("brandName".equals(parameter.getGroupByColumns().trim())) {
 
-            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',cb.brand_name AS brandName,IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
+            parameter.setSelectColumns("c.market_id as 'marketId',c.tenant as 'tenantId',cb.brand_name AS 'brandName',IFNULL(COUNT(*), 0) AS 'inventoryCount', IFNULL(SUM(cb.evaluate_price), 0) AS 'inventoryPrice' ");
 
             stringBuffer.append(" and cb.brand_name !=''  ");
 
