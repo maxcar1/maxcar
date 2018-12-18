@@ -282,7 +282,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         double yesterStockSum = 0.0;
         if (stockSum != null) {
             yesterStockSum = Double.parseDouble(stockSum.toString());
-            yesterStockSum = Math.round(yesterStockSum) / 10000.0;
+            yesterStockSum = Math.round(yesterStockSum);
         }
 
         stockAvg = yesterStockMap.get("stockAvg");
@@ -290,7 +290,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         if (stockAvg != null) {
             yesterStockAvg = Double.parseDouble(stockAvg.toString());
             yesterStockAvg = Math.round(yesterStockAvg * 100) / 100.0;
-            map.put("contrastStockAvg", yesterStockAvg);
+            map.put("contrastStockAvg", (nowStockAvg - yesterStockAvg));
         }
 
         stockCount = yesterStockMap.get("stockCount");
