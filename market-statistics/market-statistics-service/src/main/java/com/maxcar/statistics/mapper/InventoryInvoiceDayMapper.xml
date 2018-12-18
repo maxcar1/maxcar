@@ -73,7 +73,21 @@
             group by iid.market_id,iid.tenant_id
         </if>
 
-        ORDER BY #{orderBy} DESC LIMIT 10
+        <if test="orderBy == 'invoiceCount' ">
+            ORDER BY invoiceCount DESC
+        </if>
+        <if test="orderBy == 'invoicePrice' ">
+            ORDER BY invoicePrice DESC
+        </if>
+        <if test="orderBy == 'inventoryCount' ">
+            ORDER BY inventoryCount DESC
+        </if>
+        <if test="orderBy == 'inventoryPrice' ">
+            ORDER BY inventoryPrice  DESC
+        </if>
+
+
+        LIMIT 10
     </select>
 
 
