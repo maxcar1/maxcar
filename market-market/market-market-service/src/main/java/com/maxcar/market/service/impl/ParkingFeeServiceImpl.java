@@ -1033,6 +1033,7 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
                     jsonObject.put("type",2);
                     jsonObject.put("reBilling",getCurrDateParkingFee(parkingFeeDetail.getBeforeTime(),currDate,"007"));
                 }
+                logger.info("停车收费信息打印>>>>>>>>>>>>>>>"+jsonObject.toString());
                 interfaceResult.InterfaceResult200(jsonObject);
                 return interfaceResult;
             }else {
