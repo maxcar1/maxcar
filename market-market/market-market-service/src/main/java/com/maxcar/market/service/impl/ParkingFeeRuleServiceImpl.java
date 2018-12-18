@@ -12,6 +12,8 @@ import com.maxcar.market.pojo.FeePeriodTimeExample;
 import com.maxcar.market.pojo.ParkingFeeTotal;
 import com.maxcar.market.pojo.ParkingFeeTotalExample;
 import com.maxcar.market.service.ParkingFeeRuleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.*;
 
 @Service("parkingFeeRuleService")
 public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
+    static Logger logger = LoggerFactory.getLogger(ParkingFeeServiceImpl.class);
     @Autowired
     private ParkingFeeTotalMapper parkingFeeTotalMapper;
     @Autowired
@@ -184,6 +187,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                                 }else{
                                     total = new BigDecimal(getSplitTime(begin, end, feePeriodTimes));
                                 }
+                                logger.info("调用规则计算的总费用>>>>>>>>>>>>>>>>>>>>>>>>{"+total.toString()+"元}");
                                 return total;
                             }
                             return total;
@@ -237,6 +241,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                 }
             }
         }
+        logger.info("调用规则计算的总费用>>>>>>>>>>>>>>>>>>>>>>>>"+total.toString());
         return total;
     }
 
