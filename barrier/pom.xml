@@ -361,9 +361,12 @@
             <properties>
                 <!--开发环境端口配置-->
                 <spring.profiles.active>dev</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://192.168.3.58:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://192.168.3.58:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2018d</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://192.168.3.58:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2018d</cloud.jdbc.password>
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
                 <system.jdbc.minimumConnectionCount>10</system.jdbc.minimumConnectionCount>
@@ -382,7 +385,7 @@
                 <kafka.consumer.group.id>sync_upload_data</kafka.consumer.group.id>
                 <!--mqtt-->
                 <mqtt.server.host>tcp://192.168.3.220:1883</mqtt.server.host>
-                <mqtt.push.topic>MQTT_YL_UP</mqtt.push.topic>
+                <mqtt.push.topic>MQTT_TEST_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
                 <!-- datasource通用-->
@@ -397,9 +400,12 @@
             <properties>
                 <!--开发环境端口配置-->
                 <spring.profiles.active>test</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -430,9 +436,12 @@
             <properties>
                 <!--开发环境端口配置-->
                 <spring.profiles.active>pro</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://mysql-t.maxcar.com.cn:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -462,9 +471,12 @@
             <id>yl</id>
             <properties>
                 <spring.profiles.active>yl</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>qcxc1234</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -494,9 +506,12 @@
             <id>nt</id>
             <properties>
                 <spring.profiles.active>nt</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://192.168.7.130:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://192.168.7.130:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>maxcar2018</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -526,9 +541,12 @@
             <id>wf</id>
             <properties>
                 <spring.profiles.active>wf</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -559,9 +577,12 @@
             <id>cz</id>
             <properties>
                 <spring.profiles.active>cz</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -591,9 +612,12 @@
             <id>wx</id>
             <properties>
                 <spring.profiles.active>wx</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>WXJC123456!</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -624,9 +648,12 @@
             <id>hh</id>
             <properties>
                 <spring.profiles.active>hh</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -657,9 +684,12 @@
             <id>lf</id>
             <properties>
                 <spring.profiles.active>lf</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>
@@ -689,9 +719,12 @@
             <id>pzh</id>
             <properties>
                 <spring.profiles.active>pzh</spring.profiles.active>
-                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?characterEncoding=utf-8</market.jdbc.url>
+                <market.jdbc.url>jdbc:mysql://localhost:3306/maxcar?useSSL=false</market.jdbc.url>
                 <market.jdbc.username>root</market.jdbc.username>
                 <market.jdbc.password>Maxcar#2017c</market.jdbc.password>
+                <cloud.jdbc.url>jdbc:mysql://mysql-o.maxcar.com.cn:3306/maxcar_stock_l?useSSL=false</cloud.jdbc.url>
+                <cloud.jdbc.username>root</cloud.jdbc.username>
+                <cloud.jdbc.password>Maxcar#2017o</cloud.jdbc.password>
                 <!-- datasource通用-->
                 <system.jdbc.prototypeCount>10</system.jdbc.prototypeCount>
                 <system.jdbc.maximumConnectionCount>50</system.jdbc.maximumConnectionCount>

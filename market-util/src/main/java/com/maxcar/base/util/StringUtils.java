@@ -364,5 +364,24 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 		}
 		return start;
 	}
-   
+
+	public static String getStringByRegex(String source,String regex){
+		// 创建 Pattern 对象
+		Pattern r = Pattern.compile(regex);
+
+		// 现在创建 matcher 对象
+		Matcher m = r.matcher(source);
+
+		if (m.find()) {
+			return m.group(0);
+		} else {
+			return "";
+		}
+	}
+
+	public static void main(String[] args) {
+		String abc = "2008款丰田卡罗拉 卡罗拉1.6-AT-GL天窗特别版 ";
+		String pattern = "(\\d){4}款";
+		System.out.println(getStringByRegex(abc,pattern).substring(0,4));
+	}
 }
