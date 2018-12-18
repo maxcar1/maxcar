@@ -12,13 +12,7 @@ import com.maxcar.base.util.StringUtils;
 import com.maxcar.hikvision.service.HikvisionLinuxService;
 import com.maxcar.hikvision.service.HikvisionService;
 import com.maxcar.kafka.service.MessageProducerService;
-import com.maxcar.util.AliyunOSSClientUtil;
-import com.maxcar.util.CRC16M;
-import com.maxcar.util.Canstats;
-import com.maxcar.util.HexUtils;
-import com.maxcar.util.JsonTools;
-import com.maxcar.util.LoadProperties;
-import com.maxcar.util.PostParam;
+import com.maxcar.util.*;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -342,11 +336,12 @@ public class PushCallback implements MqttCallback {
                 boolean result = (Boolean) map.get("result");
                 if (result) {
                     String imageFile = String.valueOf(map.get("imageName"));
-                    String[] file = imageFile.split("/");
+                    /*String[] file = imageFile.split("/");
                     String objKey = file[file.length-1];
                     String objK = objKey.replace("\\","/");
                     String imageFileStr = imageFile.replace("\\","/");
-                    String imageUrl = AliyunOSSClientUtil.uploadSimpleFile(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);
+                    String imageUrl = AliyunOSSClientUtil.uploadSimpleFile(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);*/
+                    String imageUrl = Base64Util.getImgStr(imageFile);
                     logger.info("图片上传阿里云处理耗时==>{}s",(System.currentTimeMillis() - picEnd)/1000);
                     sendCloud(json,url,postParam,imageUrl);
                 } else {
