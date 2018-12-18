@@ -82,7 +82,7 @@ public class CaryearDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getYearId())) {
-                WHERE("scd.year_id = #{carYearId}");
+                WHERE("scd.year_id = #{yearId}");
             }
 
             if (StringUtil.isNotEmpty(parameter.getMarketId())) {
@@ -152,7 +152,7 @@ public class CaryearDayProvider {
             }
 
             if (StringUtil.isNotEmpty(parameter.getYearId())) {
-                WHERE("scd.year_id = #{carYearId}");
+                WHERE("scd.year_id = #{yearId}");
             }
 
             if (StringUtil.isNotEmpty(parameter.getMarketId())) {
