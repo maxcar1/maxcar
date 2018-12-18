@@ -535,8 +535,10 @@ public class CarController extends BaseController {
             //String jsonPamars1 = jsonPamars + "";
             String jsonPamars1 = jsonPamars.toString();
             JSONObject json = JSONObject.fromObject(JsonUtils.convert(jsonPamars1));
-            DecimalFormat df = new DecimalFormat("0.00");//格式化小数
-            String mileage = df.format((json.getInt("mileage"))/10000);//返回的是String类型
+            float size = (float)(json.getInt("mileage"))/10000;
+            DecimalFormat df = new DecimalFormat("0.00");//格式化小数，不足的补0
+            String filesize = df.format(size);//返回的是String类型的
+            System.out.print("汽车公里数=========="+filesize);
             json.remove("requestUser");
             json.remove("requestMarket");
             json.remove("token");
@@ -547,7 +549,7 @@ public class CarController extends BaseController {
             json.remove("operationUserName");
             json.remove("publishTime");
             json.remove("mileage");
-            json.put("mileage",mileage);
+            json.put("mileage",filesize);
             json.put("sellCid", sell_cid);
             json.put("market", carInfo.getMarket_id());
             json.remove("marketId");
