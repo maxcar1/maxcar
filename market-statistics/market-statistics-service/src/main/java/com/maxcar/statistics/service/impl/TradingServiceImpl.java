@@ -79,17 +79,17 @@ public class TradingServiceImpl implements TradingService {
         String s1 = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATETIME);
         tradingRequest.setTimeEnd(s1);
 
-        InventoryInvoiceDayEntity inventoryInvoiceDayEntity = inventoryInvoiceDayMapper.sumMonth(tradingRequest);
-        String month = s.substring(0, 7);
-        Integer salesCount = inventoryInvoiceDayEntity.getSalesCount();
-        Double salesPrice = inventoryInvoiceDayEntity.getSalesPrice();
-        InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity = new InventoryInvoiceMonthEntity();
-        inventoryInvoiceMonthEntity.setReportTime(month);
-        inventoryInvoiceMonthEntity.setSalesPrice(salesPrice);
-        int i = Integer.parseInt(new DecimalFormat("0").format(salesCount));
-        inventoryInvoiceMonthEntity.setSalesCount(i);
-
-        dealList.add(inventoryInvoiceMonthEntity);
+//        InventoryInvoiceDayEntity inventoryInvoiceDayEntity = inventoryInvoiceDayMapper.sumMonth(tradingRequest);
+//        String month = s.substring(0, 7);
+//        Integer salesCount = inventoryInvoiceDayEntity.getSalesCount();
+//        Double salesPrice = inventoryInvoiceDayEntity.getSalesPrice();
+//        InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity = new InventoryInvoiceMonthEntity();
+//        inventoryInvoiceMonthEntity.setReportTime(month);
+//        inventoryInvoiceMonthEntity.setSalesPrice(salesPrice);
+//        int i = Integer.parseInt(new DecimalFormat("0").format(salesCount));
+//        inventoryInvoiceMonthEntity.setSalesCount(i);
+//
+//        dealList.add(inventoryInvoiceMonthEntity);
         return dealList;
     }
 

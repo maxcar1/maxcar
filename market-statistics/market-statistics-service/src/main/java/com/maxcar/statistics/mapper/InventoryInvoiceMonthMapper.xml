@@ -401,7 +401,7 @@
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
         report_time,
-        stock_day_avg
+        AVG(stock_day_avg)
         FROM
         `inventory_invoice_month`
         WHERE isvalid = 1
@@ -414,6 +414,7 @@
         <if test="timeStart != null and timeStart != '' ">
             AND report_time BETWEEN #{timeStart} and #{timeEnd}
         </if>
+        GROUP BY report_time
         ORDER BY report_time
     </select>
 
