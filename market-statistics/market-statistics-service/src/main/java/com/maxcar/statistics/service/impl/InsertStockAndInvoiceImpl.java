@@ -86,7 +86,7 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
                     break;
             }
             List<CarpriceDayEntity> carpriceDayEntities = carpriceDayMapper.selectCarpriceDay(priceStart, priceEnd);
-            if (carpriceDayEntities.size() > 0) {
+            if (carpriceDayEntities != null && carpriceDayEntities.size() > 0) {
                 for (CarpriceDayEntity car : carpriceDayEntities) {
                     car.setInvoicePriceId(i + "");
                     String invoicePriceName = "";
