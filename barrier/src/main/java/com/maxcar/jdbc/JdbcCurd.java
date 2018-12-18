@@ -21,15 +21,30 @@ public class JdbcCurd {
     /*
      * 增加
      */
-    public Integer create(String sql) {
+    public static Integer saveCar(Car car) {
         Connection connection = null;
         int num  = 0;
         PreparedStatement preparedStatement = null;
         try {
             // 获取连接
             connection = JdbcUtils.getConnection();
-            // 获取PrepareStatement对象
+            String sql = "insert into car (id,car_no,vin,rfid,stock_status" +
+            ",car_status,car_type,register_time,isvalid,market_id,area_id,tenant) values(" +
+                    "?,?,?,?,?,?,?,?,?,?,?,?)";
             preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,car.getId());
+            preparedStatement.setString(2,car.getCarNo());
+            preparedStatement.setString(3,car.getVin());
+            preparedStatement.setString(4,car.getRfid());
+            preparedStatement.setInt(5,car.getStockStatus());
+            preparedStatement.setInt(6,car.getCarStatus());
+            preparedStatement.setInt(7,car.getCarType());
+            Long nowTime = (new Date().getTime());
+            preparedStatement.setDate(8,car.getRegisterTime()!=null?new java.sql.Date(car.getRegisterTime().getTime()):new java.sql.Date(nowTime));
+            preparedStatement.setInt(9,car.getIsvalid());
+            preparedStatement.setString(10,car.getMarketId());
+            preparedStatement.setString(11,car.getAreaId());
+            preparedStatement.setString(12,car.getTenant());
             // 填充占位符
 //            preparedStatement.set
             num = preparedStatement.executeUpdate();
