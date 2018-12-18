@@ -453,12 +453,18 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		// 获取车辆检测信息
 		if (config.getCheckSource()==1){
 			result=checkByWZ(car,map,request);
-			map.put("attribution", city.getName());
-			map.put("mainPic", mainPic);
-			map.put("initialLicenceTimeStr", car.getInitialLicenceTimeStr());
-			// 获取车辆亮点信息
-			if (StringUtils.isNotBlank(car.getModelCode())) {
-				map.put("listIcon", listIcon(car.getModelCode()));
+			if (result.getResultCode()==200){
+				map.put("attribution", city.getName());
+				map.put("mainPic", mainPic);
+				map.put("initialLicenceTimeStr", car.getInitialLicenceTimeStr());
+                 // 获取车辆亮点信息
+				if (StringUtils.isNotBlank(car.getModelCode())) {
+					map.put("listIcon", listIcon(car.getModelCode()));
+				}
+			}else {
+				result.setResultCode(600);
+				result.setMessage("无维真检测报告");
+				return result;
 			}
 		}else if (config.getCheckSource()==2){
 			result=checkByZCJ("14521452145214521");
@@ -1027,7 +1033,9 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 				title=title.substring(0, title.indexOf("玉"));
 			}
 			request.setTitle(title);
+			result.setResultCode(200);
 		}else {
+			result.setResultCode(600);
 			result.setDatas("该车辆没有维真检测信息！");
 		}
 		return result;
