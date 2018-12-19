@@ -220,6 +220,12 @@
 			interface="com.maxcar.market.service.ParkingFeeRuleService"
 			id="parkingFeeRuleService"
 			check="false" retries="0" timeout="20000" />
+	<!--上传淘宝服务-->
+	<dubbo:reference
+			interface="com.maxcar.base.service.TaoBaoService"
+			id="taoBaoService"
+			check="false" retries="0" timeout="20000" />
+
 	<dubbo:reference
 			interface="com.maxcar.market.service.OpenBarrierRecordService"
 			id="openBarrierRecordService"

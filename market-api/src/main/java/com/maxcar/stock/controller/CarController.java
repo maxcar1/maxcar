@@ -9,13 +9,13 @@ import com.maxcar.base.pojo.CarSeries;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.pojo.Magic;
 import com.maxcar.base.service.DaSouCheService;
+import com.maxcar.base.service.TaoBaoService;
 import com.maxcar.base.util.CollectionSort;
 import com.maxcar.base.util.CollectionUtil;
 import com.maxcar.base.util.Constants;
 import com.maxcar.base.util.DatePoor;
 import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.HanyuPinyinHelper;
-import com.maxcar.base.util.HttpClientUtils;
 import com.maxcar.base.util.JsonTools;
 import com.maxcar.base.util.JsonUtils;
 import com.maxcar.base.util.MD5Util;
@@ -23,12 +23,12 @@ import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.base.util.UuidUtils;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
+import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.pojo.Area;
 import com.maxcar.market.service.AreaService;
 import com.maxcar.market.service.InvoiceService;
-import com.maxcar.redis.service.RedisService;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
@@ -76,6 +76,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -116,6 +117,8 @@ public class CarController extends BaseController {
     private CarChannelService carChannelService;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private TaoBaoService taoBaoService;
 
     /**
      * 选择品牌车系
@@ -642,7 +645,7 @@ public class CarController extends BaseController {
         prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
 
         String sell_cid = prop.getProperty("sellCid");
-        String url = prop.getProperty("taobaoApiUrl");
+//        String url = prop.getProperty("taobaoApiUrl");
         String taobaoUrl = prop.getProperty("taobaoUrl");
         String carId = params.getString("id");
         Object carChannelId = params.get("carChannelId");
@@ -685,6 +688,10 @@ public class CarController extends BaseController {
             //String jsonPamars1 = jsonPamars + "";
             String jsonPamars1 = jsonPamars.toString();
             JSONObject json = JSONObject.fromObject(JsonUtils.convert(jsonPamars1));
+            float size = (float)(json.getInt("mileage"))/10000;
+            DecimalFormat df = new DecimalFormat("0.00");//格式化小数，不足的补0
+            String filesize = df.format(size);//返回的是String类型的
+            System.out.print("汽车公里数=========="+filesize);
             json.remove("requestUser");
             json.remove("requestMarket");
             json.remove("token");
@@ -694,6 +701,8 @@ public class CarController extends BaseController {
             json.remove("operationUserId");
             json.remove("operationUserName");
             json.remove("publishTime");
+            json.remove("mileage");
+            json.put("mileage",filesize);
             json.put("sellCid", sell_cid);
             json.put("market", carInfo.getMarket_id());
             json.remove("marketId");
@@ -702,11 +711,12 @@ public class CarController extends BaseController {
             //上传淘宝
 
             logger.info("淘宝上传入参：" + jsonStr);
-            String sendPostAjax = HttpClientUtils.sendPost(url + "cars", jsonStr);
+            Result sendTaoBao= taoBaoService.syncCarToTaoBao(jsonStr);
+//            String sendPostAjax = HttpClientUtils.sendPost(url + "cars", jsonStr);
             //System.out.println(json);
-            logger.info("淘宝上传返回参数：" + sendPostAjax);
+            logger.info("淘宝上传返回参数：" + sendTaoBao);
             //System.out.println(sendPostAjax);
-            JSONObject jsonObject = JSONObject.fromObject(sendPostAjax);
+            JSONObject jsonObject = JSONObject.fromObject(sendTaoBao);
             if (jsonObject.has("datas")) {
                 interfaceResult.InterfaceResult200("");
                 String taobaoId = (String) jsonObject.get("datas");
@@ -736,7 +746,7 @@ public class CarController extends BaseController {
 
                 return interfaceResult;
             } else {
-                com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(sendPostAjax);
+                com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(sendTaoBao.toString());
                 com.alibaba.fastjson.JSONObject js1 = com.alibaba.fastjson.JSONObject.parseObject(js.get("item").toString());
                 com.alibaba.fastjson.JSONObject js2 = com.alibaba.fastjson.JSONObject.parseObject(js1.get("error_response").toString());
                 //System.out.println(js2.get("sub_msg").toString());

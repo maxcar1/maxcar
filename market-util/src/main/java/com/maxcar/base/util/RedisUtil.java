@@ -76,7 +76,7 @@ public class RedisUtil {
         //初始化连接池
 //        jedisPool = new JedisPool(config, ip, port);
         jedisPool = new JedisPool(config, ip, port,
-                60000, pwd);
+                60000,pwd);
     }
 
     /**
