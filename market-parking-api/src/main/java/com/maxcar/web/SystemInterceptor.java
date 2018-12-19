@@ -57,7 +57,8 @@ public class SystemInterceptor implements HandlerInterceptor {
 //            interfaceResult.InterfaceResult404();
 //        } else {
             //第二步从头部获取token信息，验证用户
-            String userToken = request.getHeader("userToken");
+        //登录注释，走market-api
+           /* String userToken = request.getHeader("userToken");
             if (StringUtils.isNotEmpty(userToken)) {
                 InterfaceResult result = ssoService.getUserByToken(userToken);
                 if (result != null && result.getCode().equals("200")) {
@@ -87,7 +88,7 @@ public class SystemInterceptor implements HandlerInterceptor {
                 interfaceResult.InterfaceResult403();
             }
 //        }
-        response.getWriter().write(JsonTools.toJson(interfaceResult));
+        response.getWriter().write(JsonTools.toJson(interfaceResult));*/
         return false;
     }
 
