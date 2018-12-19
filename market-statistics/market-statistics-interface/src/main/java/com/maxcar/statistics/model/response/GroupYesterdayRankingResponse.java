@@ -18,11 +18,11 @@ public class GroupYesterdayRankingResponse implements Serializable {
 
     private String invoiceCount;
 
-    private String invoicePrice;
+    private Double invoicePrice;
 
     private String inventoryCount;
 
-    private String inventoryPrice;
+    private Double inventoryPrice;
 
 
 }

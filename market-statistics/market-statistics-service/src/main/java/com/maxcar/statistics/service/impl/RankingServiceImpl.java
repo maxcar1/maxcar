@@ -37,7 +37,7 @@ public class RankingServiceImpl implements RankingService {
     private InventoryInvoiceDayMapper inventoryInvoiceDayMapper;
 
     @Override
-    public void  test(){
+    public void test() {
 
         try {
             cartypeMapperService.InsertCartype();
@@ -56,6 +56,7 @@ public class RankingServiceImpl implements RankingService {
         }
 
     }
+
     /**
      * param:
      * describe: 总览——获取昨日市场排行  商户排行
@@ -64,13 +65,12 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public List<GroupYesterdayRankingResponse> getYesterdayRanking(GroupYesterdayRankingRequest request) {
 
-        if (StringUtil.isEmpty(request.getOrderBy())){
+        if (StringUtil.isEmpty(request.getOrderBy())) {
             request.setOrderBy("invoiceCount");
         }
 
         return inventoryInvoiceDayMapper.groupYesterdayRanking(request);
     }
-
 
 
     /**
@@ -181,7 +181,7 @@ public class RankingServiceImpl implements RankingService {
 
         } else if ("car_stocktime".equals(request.getType())) {
 
-            request.setTypeId(request.getParameter());
+            request.setStocktimeId(request.getParameter());
 
             return carstocktimeMapperService.groupCarstocktimeInventoryDayRanking(request);
         }
