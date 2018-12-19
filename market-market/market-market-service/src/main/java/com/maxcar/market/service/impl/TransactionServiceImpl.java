@@ -94,13 +94,18 @@ public class TransactionServiceImpl extends BaseServiceImpl<Invoice, String> imp
         invoice.setMarketId(request.getMarketId());
         String purchacerName = request.getPurchacerName();
         String sellerName = request.getSellerName();
+        int flag = 0;
         if (StringUtil.isNotEmpty(purchacerName)) {
             String trim = purchacerName.trim();
             invoice.setPurchacerName("%" + trim + "%");
+        } else {
+            flag += 1;
         }
         if (StringUtil.isNotEmpty(sellerName)) {
             String trim = sellerName.trim();
             invoice.setSellerName("%" + trim + "%");
+        }else {
+            flag += 1;
         }
         String billTimeEnd = request.getBillTimeEnd();
         if (StringUtil.isNotEmpty(billTimeEnd)) {
@@ -109,23 +114,31 @@ public class TransactionServiceImpl extends BaseServiceImpl<Invoice, String> imp
             String s = DateUtils.formatDate(dayEnd);
             invoice.setBillTimeStart(request.getBillTimeStart());
             invoice.setBillTimeEnd(s);
+        } else {
+            flag += 1;
+        }
+        if(flag == 3){
+            Date date = new Date();
+            Date dayEnd = DateUtils.getDayEnd(date);
+            String s = DateUtils.formatDate(dayEnd);
+            String[] split = s.split("-");
+            Integer year = Integer.parseInt(split[0]);
+            Integer month = Integer.parseInt(split[1]);
+            String day = split[2];
+            for (int i = 0; i < 3; i++) {
+                if (month > 1) {
+                    month = month - 1;
+                } else {
+                    year = year - 1;
+                    month = 12;
+                }
+            }
+            String startTime = year.toString() + "-" + month.toString() + "-" + day;
+            invoice.setBillTimeStart(startTime.substring(0, 10));
+            invoice.setBillTimeEnd(s);
         }
 //        List<Invoice> invoices = invoiceMapper.selectByExample(invoiceExample);
         List<TradeInformation> tradeInformations = invoiceMapper.detailsExcel(invoice);
-        for (TradeInformation t : tradeInformations) {
-            String billTime = t.getBillTime();
-            String replace = billTime.replace("-", "/");
-            replace = replace.substring(0, 10);
-            t.setBillTime(replace);
-            t.setDealTime(replace);
-            String replace1 = "";
-            if (t.getInitialRegistrationDate() != null) {
-                String initialRegistrationDate = t.getInitialRegistrationDate();
-                replace1 = initialRegistrationDate.replace("-", "/");
-                replace1 = replace1.substring(0, 10);
-            }
-            t.setInitialRegistrationDate(replace1);
-        }
 
         return tradeInformations;
     }
