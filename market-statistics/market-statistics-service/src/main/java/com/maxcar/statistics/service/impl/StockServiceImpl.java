@@ -78,18 +78,20 @@ public class StockServiceImpl implements StockService {
             //  设置查询时间  上一个月的月份
             getOneAgoMonth(stockRequest, reportTime);
             List<StockResponse> agoMonthList = inventoryInvoiceMonthMapper.getCountAndValue(stockRequest);
+            Double agoMonthCount = 0.0;
+            Double agoMonthPrice = 0.0;
             if (agoMonthList.size() > 0) {
                 StockResponse stockResponse = agoMonthList.get(0);
                 //  移动平均
-                Double agoMonthCount = stockResponse.getStockCount();
-                Double agoMonthPrice = stockResponse.getStockPrice();
+                agoMonthCount = stockResponse.getStockCount();
+                agoMonthPrice = stockResponse.getStockPrice();
+            }
                 avgStockPrice = Math.round((stockPrice + agoMonthPrice) / 2);
                 avgStockCount = Math.round((stockCount + agoMonthCount) / 2);
 
                 //  环比
                 rateMonthStockCount = Math.round((stockCount - agoMonthCount) / agoMonthCount * 100) / 100.0;
                 rateMonthStockPrice = Math.round((stockPrice - agoMonthPrice) / agoMonthPrice * 100) / 100.0;
-            }
             //  设置移动平均
             inventory.setAvgStockCount(avgStockCount);
             inventory.setAvgStockPrice(avgStockPrice);
