@@ -27,4 +27,6 @@ public interface ParkingFeeMapper extends BaseDao<ParkingFee, String> {
     ParkingFee getCurrentNewRecord(@Param("barrierId") String barrierId, @Param("marketId") String marketId);
 
     ParkingFee getCurrentBarrierRecord(@Param("barrierId") String barrierId, @Param("marketId") String marketId);
+
+    ParkingFee selectEmployeeNewRecord(ParkingFee parkingFee);
 }

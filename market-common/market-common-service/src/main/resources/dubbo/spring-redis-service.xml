@@ -31,12 +31,15 @@
 
 	<dubbo:service interface="com.maxcar.base.service.UploadService" ref="uploadService" timeout="1200000"/>
 
+	<dubbo:service interface="com.maxcar.base.service.TaoBaoService" ref="taoBaoService" timeout="1200000"/>
 	<dubbo:service interface="com.maxcar.base.service.DaSouCheService" ref="daSouCheService" timeout="1200000"/>
     <dubbo:service interface="com.maxcar.base.service.IdDictionaryService" ref="idDictionaryService" timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.redis.service.VCodeService" ref="vCodeService" timeout="1200000"/>
 
 	<dubbo:service interface="com.maxcar.base.service.OpenApiConfigService" ref="openApiConfigService" timeout="1200000"/>
+
+	<dubbo:service interface="com.maxcar.base.service.TopicService" ref="topicService" timeout="1200000"/>
 
 
 </beans>

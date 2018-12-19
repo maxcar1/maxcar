@@ -1,15 +1,15 @@
 package com.maxcar.weixin.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.base.util.wechat.WeiXinUtils;
 import com.maxcar.market.service.ParkingFeeService;
+import com.maxcar.websocket.server.WebSocketServer;
 import com.maxcar.weixin.service.WeiXinService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 微信二维码生成控制器，包含岗亭进场二维码和支付二维码
@@ -31,7 +31,7 @@ public class WeiXinTicketController {
      * @return
      */
     @GetMapping("/ticket/{codeType}/{sceneId}/{publicNum}")
-    public Object generorTicket(@PathVariable("codeType")Integer codeType,
+    public InterfaceResult generorTicket(@PathVariable("codeType")Integer codeType,
                                 @PathVariable("sceneId")String sceneId,
                                 @PathVariable("publicNum")String publicNum){
         InterfaceResult interfaceResult = new InterfaceResult();
@@ -58,7 +58,7 @@ public class WeiXinTicketController {
     }
 
     @GetMapping("/pay/{productId}")
-    public Object getPayQRCode(@PathVariable("productId") String productId){
+    public InterfaceResult getPayQRCode(@PathVariable("productId") String productId){
         InterfaceResult interfaceResult = new InterfaceResult();
         try {
             interfaceResult = weiXinService.getPayQRCode(productId);
@@ -70,17 +70,36 @@ public class WeiXinTicketController {
     }
 
     /**
-     * 刷卡进场
-     * @param marketId
-     * @param cardNo
+     * 刷卡进场，unionId上行通知
      * @return
      * @throws Exception
      */
-    @GetMapping("/{marketId}/{cardNo}/{barrierId}")
-    public Object saveInParking(@PathVariable("marketId") String marketId,
-                                @PathVariable("cardNo") String cardNo,
-                                @PathVariable("barrierId") String barrierId) throws Exception{
-        InterfaceResult result = parkingFeeService.saveInParking(marketId,cardNo,barrierId);
+    @PostMapping("/in")
+    public InterfaceResult saveInParking(@RequestBody JSONObject params){
+        try {
+            InterfaceResult result = parkingFeeService.saveInParking(params);
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 刷卡出场，扫码上行
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/out")
+    public InterfaceResult updateParkingDetail(@RequestBody JSONObject params) throws Exception{
+        String barrierId = params.getString("barrierId");
+        InterfaceResult result = parkingFeeService.updateParkingDetail(params);
+        if (StringUtils.equals(result.getCode(),"200")){
+            JSONObject json = (JSONObject)JSONObject.toJSON(result.getData());
+            System.out.println(json.toJSONString());
+            //推送刷卡出场信息
+            WebSocketServer.sendInfo(JSON.toJSONString(json),barrierId);
+        }
         return result;
     }
 }

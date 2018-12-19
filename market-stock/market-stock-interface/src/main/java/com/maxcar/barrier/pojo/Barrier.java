@@ -57,6 +57,16 @@ public class Barrier implements Serializable {
 
     private String mqttTopic;
 
+    private String barrierMac;
+
+    public String getBarrierMac() {
+        return barrierMac;
+    }
+
+    public void setBarrierMac(String barrierMac) {
+        this.barrierMac = barrierMac;
+    }
+
     public Short getManagerFlag() {
         return managerFlag;
     }

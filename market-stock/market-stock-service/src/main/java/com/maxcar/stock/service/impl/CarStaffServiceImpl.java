@@ -50,6 +50,13 @@ public class CarStaffServiceImpl implements CarStaffService {
     @Autowired
     private ConfigurationService configurationService;
 
+    /**
+     * 两个接口均使用服务调取数据，代码冗余，只需写一条sql就能实现。
+     * 反面代码，引以为戒。
+     * @param params
+     * @return
+     * @throws Exception
+     */
     @Override
     public InterfaceResult getCarList(JSONObject params) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();

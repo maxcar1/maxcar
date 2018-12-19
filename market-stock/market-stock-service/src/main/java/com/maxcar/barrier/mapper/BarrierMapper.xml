@@ -24,6 +24,7 @@
         <result column="market_id" jdbcType="VARCHAR" property="marketId"/>
         <result column="in_out_type" jdbcType="VARCHAR" property="inOutType"/>
         <result column="mqtt_topic" jdbcType="VARCHAR" property="mqttTopic"/>
+        <result column="barrier_mac" jdbcType="VARCHAR" property="barrierMac"/>
 
     </resultMap>
     <sql id="Example_Where_Clause">
@@ -89,7 +90,7 @@
     <sql id="Base_Column_List">
         id, barrier_id, gateway_ip, subnet_mask, mac_address, client_ip, server_ip, client_port,
         server_port, barrier_type, barrier_position, in_out_car,in_out_type,park_limit, isvalid, status,
-        remark, update_time, create_time,market_id,mqtt_topic,static_speech
+        remark, update_time, create_time,market_id,mqtt_topic,static_speech,barrier_mac
     </sql>
     <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.barrier.pojo.BarrierExample" >
         select
@@ -123,14 +124,15 @@
         server_ip, client_port, server_port,
         barrier_type, barrier_position, in_out_car,
         park_limit, isvalid, status,
-        remark, update_time, create_time,static_speech
+        remark, update_time, create_time,static_speech,barrier_mac
         )
         values (#{id,jdbcType=INTEGER}, #{barrierId,jdbcType=VARCHAR}, #{gatewayIp,jdbcType=VARCHAR},
         #{subnetMask,jdbcType=VARCHAR}, #{macAddress,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR},
         #{serverIp,jdbcType=VARCHAR}, #{clientPort,jdbcType=VARCHAR}, #{serverPort,jdbcType=VARCHAR},
         #{barrierType,jdbcType=CHAR}, #{barrierPosition,jdbcType=VARCHAR}, #{inOutCar,jdbcType=VARCHAR},
         #{parkLimit,jdbcType=CHAR}, #{isvalid,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR},
-        #{remark,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},#{staticSpeech,jdbcType=VARCHAR}
+        #{remark,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+        #{staticSpeech,jdbcType=VARCHAR},#{barrierMac,jdbcType=VARCHAR}
         )
     </insert>
     <insert id="insertSelective" parameterType="com.maxcar.barrier.pojo.Barrier">
@@ -191,7 +193,10 @@
                 create_time,
             </if>
             <if test="staticSpeech !=null">
-                static_speech
+                static_speech,
+            </if>
+            <if test="barrierMac != null">
+                barrier_mac
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -250,7 +255,10 @@
                 #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="staticSpeech !=null">
-                #{staticSpeech,jdbcType=VARCHAR}
+                #{staticSpeech,jdbcType=VARCHAR},
+            </if>
+            <if test="barrierMac != null">
+                #{barrierMac,jdbcType=VARCHAR}
             </if>
         </trim>
     </insert>
@@ -312,8 +320,11 @@
             <if test="record.createTime != null">
                 create_time = #{record.createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="recore.staticSpeech !=null">
-                static_speech=#{record.staticSpeech,jbdcType=VARCHAR}
+            <if test="record.staticSpeech !=null">
+                static_speech=#{record.staticSpeech,jbdcType=VARCHAR},
+            </if>
+            <if test="record.barrierMac != null">
+                barrier_mac = #{record.barrierMac,jdbcType=VARCHAR}
             </if>
         </set>
         <if test="_parameter != null">
@@ -340,7 +351,8 @@
         remark = #{record.remark,jdbcType=VARCHAR},
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
-        static_speech = #{record.staticSpeech,jdbcType=VARCHAR}
+        static_speech = #{record.staticSpeech,jdbcType=VARCHAR},
+        barrier_mac = #{record.barrierMac,jdbcType=VARCHAR}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -406,6 +418,9 @@
             <if test="mqttTopic != null">
                 mqtt_topic = #{mqttTopic,jdbcType=VARCHAR},
             </if>
+            <if test="barrierMac != null">
+                barrier_mac = #{barrierMac,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -428,7 +443,8 @@
         remark = #{remark,jdbcType=VARCHAR},
         update_time = #{updateTime,jdbcType=TIMESTAMP},
         create_time = #{createTime,jdbcType=TIMESTAMP},
-        static_speech=#{staticSpeech,jdbcType=VARCHAR}
+        static_speech=#{staticSpeech,jdbcType=VARCHAR},
+        barrier_mac = #{barrierMac,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 
@@ -505,7 +521,10 @@
                 mqtt_topic = #{mqttTopic,jdbcType=VARCHAR},
             </if>
             <if test="staticSpeech !=null">
-                static_speech = #{staticSpeech,jdbcType=VARCHAR}
+                static_speech = #{staticSpeech,jdbcType=VARCHAR},
+            </if>
+            <if test="barrierMac != null">
+                barrier_mac = #{barrierMac,jdbcType=VARCHAR}
             </if>
         </set>
         where barrier_id = #{barrierId,jdbcType=VARCHAR}
@@ -524,6 +543,14 @@
             and isvalid =1
             and market_id =#{marketId}
             and id = #{id}
+        </where>
+    </select>
+    <select id="selectBarrierByBarrierMac" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from barrier
+        <where>
+            and isvalid =1
+            and market_id =#{marketId}
+            and barrier_mac = #{barrierMac}
         </where>
     </select>
 </mapper>

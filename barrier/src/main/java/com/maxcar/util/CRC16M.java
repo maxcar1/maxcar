@@ -1,8 +1,6 @@
 package com.maxcar.util;
 
 
-import com.maxcar.base.util.StringUtils;
-
 public class CRC16M {
 
     private static int[] strToToHexInt(String hexString) {
@@ -65,8 +63,7 @@ public class CRC16M {
     }
 
     public static void main(String args[]) {
-        String abc ="4d43002018B0c05DAFF373438594D430352395bf4cdfd00010001FFFF000B8B8008";
-        String str = GetModBusCRC(abc);
-        System.out.println(str);
+        String str = "4d43002c01890c05D4FF373438594D430353595b72535b00010001FFFF000D89A30303037323830393936";
+        System.out.print(GetModBusCRC(str));
     }
 }

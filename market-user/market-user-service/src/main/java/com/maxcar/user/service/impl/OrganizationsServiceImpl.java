@@ -164,4 +164,11 @@ public class OrganizationsServiceImpl extends BaseServiceImpl<Organizations,Stri
     public List<Organizations> getOrgByCodeAndMarketId(String marketId) {
         return organizationsMapper.getOrgByCodeAndMarketId(marketId);
     }
+
+    @Override
+    public List<Organizations> getOrganizationsByMarketAndCode(String marketId, String code) {
+        OrganizationsExample example = new OrganizationsExample();
+        example.createCriteria().andMarketIdEqualTo(marketId).andOrgCodeEqualTo(code);
+        return organizationsMapper.selectByExample(example);
+    }
 }

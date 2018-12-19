@@ -338,6 +338,13 @@
             <artifactId>market-util</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+
         <!--kafka相关api-->
         <!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
         <dependency>
@@ -351,6 +358,22 @@
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
             <version>1.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jna.examples</groupId>
+            <artifactId>examples</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <!-- 申明不同环境调用不同数据库连接参数 -->
@@ -389,6 +412,7 @@
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
                 <!-- datasource通用-->
+                <server.environment>windows</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>true</activeByDefault>
@@ -425,6 +449,8 @@
                 <mqtt.push.topic>MQTT_LF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -461,6 +487,8 @@
                 <mqtt.push.topic>MQTT_QCT_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -496,6 +524,8 @@
                 <mqtt.push.topic>MQTT_YL_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -531,6 +561,8 @@
                 <mqtt.push.topic>MQTT_NT_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -566,6 +598,8 @@
                 <mqtt.push.topic>MQTT_WF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -602,6 +636,8 @@
                 <mqtt.push.topic>MQTT_CZ_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -637,6 +673,8 @@
                 <mqtt.push.topic>MQTT_WX_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -673,6 +711,8 @@
                 <mqtt.push.topic>MQTT_HH_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -709,6 +749,8 @@
                 <mqtt.push.topic>MQTT_LF_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>
@@ -744,6 +786,8 @@
                 <mqtt.push.topic>MQTT_PZH_UP</mqtt.push.topic>
                 <mqtt.server.username>admin</mqtt.server.username>
                 <mqtt.server.password>password</mqtt.server.password>
+
+                <server.environment>linux</server.environment>
             </properties>
             <activation><!-- 默认激活 -->
                 <activeByDefault>false</activeByDefault>

@@ -2,6 +2,9 @@ package com.maxcar.market.dao;
 
 import com.maxcar.base.dao.BaseDao;
 import com.maxcar.market.model.request.AllParkingFeeDetailRequest;
+import com.maxcar.market.model.request.ParkingFeeDetailListRequest;
+import com.maxcar.market.model.response.ParkingFeeDetailListResponse;
+import com.maxcar.market.model.response.ParkingFeePayDetailResponse;
 import com.maxcar.market.model.response.SumByParkingFeeDetailIdResponse;
 import com.maxcar.market.pojo.ParkingFeeDetail;
 import org.apache.ibatis.annotations.Param;
@@ -56,4 +59,9 @@ public interface ParkingFeeDetailMapper extends BaseDao<ParkingFeeDetail, String
      * @return
      */
     int updateByPrimaryKeySelective(ParkingFeeDetail detail);
+
+    ParkingFeePayDetailResponse getParkingFreePaySum(ParkingFeeDetailListRequest parkingFeeDetailListRequest);
+
+    List<ParkingFeeDetailListResponse> getParkingFreeList(ParkingFeeDetailListRequest parkingFeeDetailListRequest);
+
 }

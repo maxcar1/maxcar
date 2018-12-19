@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.base.dao.TaobaoMarketConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.base.pojo.taobao.TaobaoMarketConfig" >
+    <id column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="market_name" property="marketName" jdbcType="VARCHAR" />
+    <result column="session_key" property="sessionKey" jdbcType="VARCHAR" />
+    <result column="check_source" property="checkSource" jdbcType="INTEGER" />
+    <result column="ftl_name" property="ftlName" jdbcType="VARCHAR" />
+    <result column="market_phone" property="marketPhone" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="stuff_status" property="stuffStatus" jdbcType="VARCHAR" />
+    <result column="approve_status" property="approveStatus" jdbcType="VARCHAR" />
+    <result column="locality_life_expirydate" property="localityLifeExpirydate" jdbcType="VARCHAR" />
+    <result column="is_offline" property="isOffline" jdbcType="VARCHAR" />
+    <result column="sku_outer_ids" property="skuOuterIds" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="auction_point" property="auctionPoint" jdbcType="INTEGER" />
+    <result column="has_invoice" property="hasInvoice" jdbcType="BIT" />
+    <result column="has_warranty" property="hasWarranty" jdbcType="BIT" />
+    <result column="sub_stock" property="subStock" jdbcType="INTEGER" />
+    <result column="sku_properties" property="skuProperties" jdbcType="VARCHAR" />
+    <result column="sku_quantities" property="skuQuantities" jdbcType="VARCHAR" />
+    <result column="subscription" property="subscription" jdbcType="VARCHAR" />
+    <result column="location_state" property="locationState" jdbcType="VARCHAR" />
+    <result column="location_city" property="locationCity" jdbcType="VARCHAR" />
+    <result column="valid_thru" property="validThru" jdbcType="INTEGER" />
+    <result column="sell_promise" property="sellPromise" jdbcType="BIT" />
+    <result column="locality_life_merchant" property="localityLifeMerchant" jdbcType="VARCHAR" />
+    <result column="locality_life_onsale_auto_refund_ratio" property="localityLifeOnsaleAutoRefundRatio" jdbcType="INTEGER" />
+    <result column="locality_life_refund_ratio" property="localityLifeRefundRatio" jdbcType="INTEGER" />
+    <result column="locality_life_choose_logis" property="localityLifeChooseLogis" jdbcType="VARCHAR" />
+    <result column="freight_payer" property="freightPayer" jdbcType="VARCHAR" />
+    <result column="post_fee" property="postFee" jdbcType="VARCHAR" />
+    <result column="express_fee" property="expressFee" jdbcType="VARCHAR" />
+    <result column="locality_life_eticket" property="localityLifeEticket" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    market_id, cid, market_name, session_key, check_source, ftl_name, market_phone, type, 
+    stuff_status, approve_status, locality_life_expirydate, is_offline, sku_outer_ids, 
+    num, auction_point, has_invoice, has_warranty, sub_stock, sku_properties, sku_quantities, 
+    subscription, location_state, location_city, valid_thru, sell_promise, locality_life_merchant, 
+    locality_life_onsale_auto_refund_ratio, locality_life_refund_ratio, locality_life_choose_logis, 
+    freight_payer, post_fee, express_fee, locality_life_eticket
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfigExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from taobao_market_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from taobao_market_config
+    where market_id = #{marketId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from taobao_market_config
+    where market_id = #{marketId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfigExample" >
+    delete from taobao_market_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfig" >
+    insert into taobao_market_config (market_id, cid, market_name, 
+      session_key, check_source, ftl_name, 
+      market_phone, type, stuff_status, 
+      approve_status, locality_life_expirydate, 
+      is_offline, sku_outer_ids, num, 
+      auction_point, has_invoice, has_warranty, 
+      sub_stock, sku_properties, sku_quantities, 
+      subscription, location_state, location_city, 
+      valid_thru, sell_promise, locality_life_merchant, 
+      locality_life_onsale_auto_refund_ratio, locality_life_refund_ratio, 
+      locality_life_choose_logis, freight_payer, 
+      post_fee, express_fee, locality_life_eticket
+      )
+    values (#{marketId,jdbcType=VARCHAR}, #{cid,jdbcType=INTEGER}, #{marketName,jdbcType=VARCHAR}, 
+      #{sessionKey,jdbcType=VARCHAR}, #{checkSource,jdbcType=INTEGER}, #{ftlName,jdbcType=VARCHAR}, 
+      #{marketPhone,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{stuffStatus,jdbcType=VARCHAR}, 
+      #{approveStatus,jdbcType=VARCHAR}, #{localityLifeExpirydate,jdbcType=VARCHAR}, 
+      #{isOffline,jdbcType=VARCHAR}, #{skuOuterIds,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, 
+      #{auctionPoint,jdbcType=INTEGER}, #{hasInvoice,jdbcType=BIT}, #{hasWarranty,jdbcType=BIT}, 
+      #{subStock,jdbcType=INTEGER}, #{skuProperties,jdbcType=VARCHAR}, #{skuQuantities,jdbcType=VARCHAR}, 
+      #{subscription,jdbcType=VARCHAR}, #{locationState,jdbcType=VARCHAR}, #{locationCity,jdbcType=VARCHAR}, 
+      #{validThru,jdbcType=INTEGER}, #{sellPromise,jdbcType=BIT}, #{localityLifeMerchant,jdbcType=VARCHAR}, 
+      #{localityLifeOnsaleAutoRefundRatio,jdbcType=INTEGER}, #{localityLifeRefundRatio,jdbcType=INTEGER}, 
+      #{localityLifeChooseLogis,jdbcType=VARCHAR}, #{freightPayer,jdbcType=VARCHAR}, 
+      #{postFee,jdbcType=VARCHAR}, #{expressFee,jdbcType=VARCHAR}, #{localityLifeEticket,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfig" >
+    insert into taobao_market_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="marketId != null" >
+        market_id,
+      </if>
+      <if test="cid != null" >
+        cid,
+      </if>
+      <if test="marketName != null" >
+        market_name,
+      </if>
+      <if test="sessionKey != null" >
+        session_key,
+      </if>
+      <if test="checkSource != null" >
+        check_source,
+      </if>
+      <if test="ftlName != null" >
+        ftl_name,
+      </if>
+      <if test="marketPhone != null" >
+        market_phone,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="stuffStatus != null" >
+        stuff_status,
+      </if>
+      <if test="approveStatus != null" >
+        approve_status,
+      </if>
+      <if test="localityLifeExpirydate != null" >
+        locality_life_expirydate,
+      </if>
+      <if test="isOffline != null" >
+        is_offline,
+      </if>
+      <if test="skuOuterIds != null" >
+        sku_outer_ids,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="auctionPoint != null" >
+        auction_point,
+      </if>
+      <if test="hasInvoice != null" >
+        has_invoice,
+      </if>
+      <if test="hasWarranty != null" >
+        has_warranty,
+      </if>
+      <if test="subStock != null" >
+        sub_stock,
+      </if>
+      <if test="skuProperties != null" >
+        sku_properties,
+      </if>
+      <if test="skuQuantities != null" >
+        sku_quantities,
+      </if>
+      <if test="subscription != null" >
+        subscription,
+      </if>
+      <if test="locationState != null" >
+        location_state,
+      </if>
+      <if test="locationCity != null" >
+        location_city,
+      </if>
+      <if test="validThru != null" >
+        valid_thru,
+      </if>
+      <if test="sellPromise != null" >
+        sell_promise,
+      </if>
+      <if test="localityLifeMerchant != null" >
+        locality_life_merchant,
+      </if>
+      <if test="localityLifeOnsaleAutoRefundRatio != null" >
+        locality_life_onsale_auto_refund_ratio,
+      </if>
+      <if test="localityLifeRefundRatio != null" >
+        locality_life_refund_ratio,
+      </if>
+      <if test="localityLifeChooseLogis != null" >
+        locality_life_choose_logis,
+      </if>
+      <if test="freightPayer != null" >
+        freight_payer,
+      </if>
+      <if test="postFee != null" >
+        post_fee,
+      </if>
+      <if test="expressFee != null" >
+        express_fee,
+      </if>
+      <if test="localityLifeEticket != null" >
+        locality_life_eticket,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null" >
+        #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="marketName != null" >
+        #{marketName,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null" >
+        #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="checkSource != null" >
+        #{checkSource,jdbcType=INTEGER},
+      </if>
+      <if test="ftlName != null" >
+        #{ftlName,jdbcType=VARCHAR},
+      </if>
+      <if test="marketPhone != null" >
+        #{marketPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="stuffStatus != null" >
+        #{stuffStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="approveStatus != null" >
+        #{approveStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="localityLifeExpirydate != null" >
+        #{localityLifeExpirydate,jdbcType=VARCHAR},
+      </if>
+      <if test="isOffline != null" >
+        #{isOffline,jdbcType=VARCHAR},
+      </if>
+      <if test="skuOuterIds != null" >
+        #{skuOuterIds,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="auctionPoint != null" >
+        #{auctionPoint,jdbcType=INTEGER},
+      </if>
+      <if test="hasInvoice != null" >
+        #{hasInvoice,jdbcType=BIT},
+      </if>
+      <if test="hasWarranty != null" >
+        #{hasWarranty,jdbcType=BIT},
+      </if>
+      <if test="subStock != null" >
+        #{subStock,jdbcType=INTEGER},
+      </if>
+      <if test="skuProperties != null" >
+        #{skuProperties,jdbcType=VARCHAR},
+      </if>
+      <if test="skuQuantities != null" >
+        #{skuQuantities,jdbcType=VARCHAR},
+      </if>
+      <if test="subscription != null" >
+        #{subscription,jdbcType=VARCHAR},
+      </if>
+      <if test="locationState != null" >
+        #{locationState,jdbcType=VARCHAR},
+      </if>
+      <if test="locationCity != null" >
+        #{locationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="validThru != null" >
+        #{validThru,jdbcType=INTEGER},
+      </if>
+      <if test="sellPromise != null" >
+        #{sellPromise,jdbcType=BIT},
+      </if>
+      <if test="localityLifeMerchant != null" >
+        #{localityLifeMerchant,jdbcType=VARCHAR},
+      </if>
+      <if test="localityLifeOnsaleAutoRefundRatio != null" >
+        #{localityLifeOnsaleAutoRefundRatio,jdbcType=INTEGER},
+      </if>
+      <if test="localityLifeRefundRatio != null" >
+        #{localityLifeRefundRatio,jdbcType=INTEGER},
+      </if>
+      <if test="localityLifeChooseLogis != null" >
+        #{localityLifeChooseLogis,jdbcType=VARCHAR},
+      </if>
+      <if test="freightPayer != null" >
+        #{freightPayer,jdbcType=VARCHAR},
+      </if>
+      <if test="postFee != null" >
+        #{postFee,jdbcType=VARCHAR},
+      </if>
+      <if test="expressFee != null" >
+        #{expressFee,jdbcType=VARCHAR},
+      </if>
+      <if test="localityLifeEticket != null" >
+        #{localityLifeEticket,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfigExample" resultType="java.lang.Integer" >
+    select count(*) from taobao_market_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update taobao_market_config
+    <set >
+      <if test="record.marketId != null" >
+        market_id = #{record.marketId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cid != null" >
+        cid = #{record.cid,jdbcType=INTEGER},
+      </if>
+      <if test="record.marketName != null" >
+        market_name = #{record.marketName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sessionKey != null" >
+        session_key = #{record.sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkSource != null" >
+        check_source = #{record.checkSource,jdbcType=INTEGER},
+      </if>
+      <if test="record.ftlName != null" >
+        ftl_name = #{record.ftlName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.marketPhone != null" >
+        market_phone = #{record.marketPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stuffStatus != null" >
+        stuff_status = #{record.stuffStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approveStatus != null" >
+        approve_status = #{record.approveStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.localityLifeExpirydate != null" >
+        locality_life_expirydate = #{record.localityLifeExpirydate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isOffline != null" >
+        is_offline = #{record.isOffline,jdbcType=VARCHAR},
+      </if>
+      <if test="record.skuOuterIds != null" >
+        sku_outer_ids = #{record.skuOuterIds,jdbcType=VARCHAR},
+      </if>
+      <if test="record.num != null" >
+        num = #{record.num,jdbcType=INTEGER},
+      </if>
+      <if test="record.auctionPoint != null" >
+        auction_point = #{record.auctionPoint,jdbcType=INTEGER},
+      </if>
+      <if test="record.hasInvoice != null" >
+        has_invoice = #{record.hasInvoice,jdbcType=BIT},
+      </if>
+      <if test="record.hasWarranty != null" >
+        has_warranty = #{record.hasWarranty,jdbcType=BIT},
+      </if>
+      <if test="record.subStock != null" >
+        sub_stock = #{record.subStock,jdbcType=INTEGER},
+      </if>
+      <if test="record.skuProperties != null" >
+        sku_properties = #{record.skuProperties,jdbcType=VARCHAR},
+      </if>
+      <if test="record.skuQuantities != null" >
+        sku_quantities = #{record.skuQuantities,jdbcType=VARCHAR},
+      </if>
+      <if test="record.subscription != null" >
+        subscription = #{record.subscription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.locationState != null" >
+        location_state = #{record.locationState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.locationCity != null" >
+        location_city = #{record.locationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.validThru != null" >
+        valid_thru = #{record.validThru,jdbcType=INTEGER},
+      </if>
+      <if test="record.sellPromise != null" >
+        sell_promise = #{record.sellPromise,jdbcType=BIT},
+      </if>
+      <if test="record.localityLifeMerchant != null" >
+        locality_life_merchant = #{record.localityLifeMerchant,jdbcType=VARCHAR},
+      </if>
+      <if test="record.localityLifeOnsaleAutoRefundRatio != null" >
+        locality_life_onsale_auto_refund_ratio = #{record.localityLifeOnsaleAutoRefundRatio,jdbcType=INTEGER},
+      </if>
+      <if test="record.localityLifeRefundRatio != null" >
+        locality_life_refund_ratio = #{record.localityLifeRefundRatio,jdbcType=INTEGER},
+      </if>
+      <if test="record.localityLifeChooseLogis != null" >
+        locality_life_choose_logis = #{record.localityLifeChooseLogis,jdbcType=VARCHAR},
+      </if>
+      <if test="record.freightPayer != null" >
+        freight_payer = #{record.freightPayer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.postFee != null" >
+        post_fee = #{record.postFee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.expressFee != null" >
+        express_fee = #{record.expressFee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.localityLifeEticket != null" >
+        locality_life_eticket = #{record.localityLifeEticket,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update taobao_market_config
+    set market_id = #{record.marketId,jdbcType=VARCHAR},
+      cid = #{record.cid,jdbcType=INTEGER},
+      market_name = #{record.marketName,jdbcType=VARCHAR},
+      session_key = #{record.sessionKey,jdbcType=VARCHAR},
+      check_source = #{record.checkSource,jdbcType=INTEGER},
+      ftl_name = #{record.ftlName,jdbcType=VARCHAR},
+      market_phone = #{record.marketPhone,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      stuff_status = #{record.stuffStatus,jdbcType=VARCHAR},
+      approve_status = #{record.approveStatus,jdbcType=VARCHAR},
+      locality_life_expirydate = #{record.localityLifeExpirydate,jdbcType=VARCHAR},
+      is_offline = #{record.isOffline,jdbcType=VARCHAR},
+      sku_outer_ids = #{record.skuOuterIds,jdbcType=VARCHAR},
+      num = #{record.num,jdbcType=INTEGER},
+      auction_point = #{record.auctionPoint,jdbcType=INTEGER},
+      has_invoice = #{record.hasInvoice,jdbcType=BIT},
+      has_warranty = #{record.hasWarranty,jdbcType=BIT},
+      sub_stock = #{record.subStock,jdbcType=INTEGER},
+      sku_properties = #{record.skuProperties,jdbcType=VARCHAR},
+      sku_quantities = #{record.skuQuantities,jdbcType=VARCHAR},
+      subscription = #{record.subscription,jdbcType=VARCHAR},
+      location_state = #{record.locationState,jdbcType=VARCHAR},
+      location_city = #{record.locationCity,jdbcType=VARCHAR},
+      valid_thru = #{record.validThru,jdbcType=INTEGER},
+      sell_promise = #{record.sellPromise,jdbcType=BIT},
+      locality_life_merchant = #{record.localityLifeMerchant,jdbcType=VARCHAR},
+      locality_life_onsale_auto_refund_ratio = #{record.localityLifeOnsaleAutoRefundRatio,jdbcType=INTEGER},
+      locality_life_refund_ratio = #{record.localityLifeRefundRatio,jdbcType=INTEGER},
+      locality_life_choose_logis = #{record.localityLifeChooseLogis,jdbcType=VARCHAR},
+      freight_payer = #{record.freightPayer,jdbcType=VARCHAR},
+      post_fee = #{record.postFee,jdbcType=VARCHAR},
+      express_fee = #{record.expressFee,jdbcType=VARCHAR},
+      locality_life_eticket = #{record.localityLifeEticket,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfig" >
+    update taobao_market_config
+    <set >
+      <if test="cid != null" >
+        cid = #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="marketName != null" >
+        market_name = #{marketName,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null" >
+        session_key = #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="checkSource != null" >
+        check_source = #{checkSource,jdbcType=INTEGER},
+      </if>
+      <if test="ftlName != null" >
+        ftl_name = #{ftlName,jdbcType=VARCHAR},
+      </if>
+      <if test="marketPhone != null" >
+        market_phone = #{marketPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="stuffStatus != null" >
+        stuff_status = #{stuffStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="approveStatus != null" >
+        approve_status = #{approveStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="localityLifeExpirydate != null" >
+        locality_life_expirydate = #{localityLifeExpirydate,jdbcType=VARCHAR},
+      </if>
+      <if test="isOffline != null" >
+        is_offline = #{isOffline,jdbcType=VARCHAR},
+      </if>
+      <if test="skuOuterIds != null" >
+        sku_outer_ids = #{skuOuterIds,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="auctionPoint != null" >
+        auction_point = #{auctionPoint,jdbcType=INTEGER},
+      </if>
+      <if test="hasInvoice != null" >
+        has_invoice = #{hasInvoice,jdbcType=BIT},
+      </if>
+      <if test="hasWarranty != null" >
+        has_warranty = #{hasWarranty,jdbcType=BIT},
+      </if>
+      <if test="subStock != null" >
+        sub_stock = #{subStock,jdbcType=INTEGER},
+      </if>
+      <if test="skuProperties != null" >
+        sku_properties = #{skuProperties,jdbcType=VARCHAR},
+      </if>
+      <if test="skuQuantities != null" >
+        sku_quantities = #{skuQuantities,jdbcType=VARCHAR},
+      </if>
+      <if test="subscription != null" >
+        subscription = #{subscription,jdbcType=VARCHAR},
+      </if>
+      <if test="locationState != null" >
+        location_state = #{locationState,jdbcType=VARCHAR},
+      </if>
+      <if test="locationCity != null" >
+        location_city = #{locationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="validThru != null" >
+        valid_thru = #{validThru,jdbcType=INTEGER},
+      </if>
+      <if test="sellPromise != null" >
+        sell_promise = #{sellPromise,jdbcType=BIT},
+      </if>
+      <if test="localityLifeMerchant != null" >
+        locality_life_merchant = #{localityLifeMerchant,jdbcType=VARCHAR},
+      </if>
+      <if test="localityLifeOnsaleAutoRefundRatio != null" >
+        locality_life_onsale_auto_refund_ratio = #{localityLifeOnsaleAutoRefundRatio,jdbcType=INTEGER},
+      </if>
+      <if test="localityLifeRefundRatio != null" >
+        locality_life_refund_ratio = #{localityLifeRefundRatio,jdbcType=INTEGER},
+      </if>
+      <if test="localityLifeChooseLogis != null" >
+        locality_life_choose_logis = #{localityLifeChooseLogis,jdbcType=VARCHAR},
+      </if>
+      <if test="freightPayer != null" >
+        freight_payer = #{freightPayer,jdbcType=VARCHAR},
+      </if>
+      <if test="postFee != null" >
+        post_fee = #{postFee,jdbcType=VARCHAR},
+      </if>
+      <if test="expressFee != null" >
+        express_fee = #{expressFee,jdbcType=VARCHAR},
+      </if>
+      <if test="localityLifeEticket != null" >
+        locality_life_eticket = #{localityLifeEticket,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where market_id = #{marketId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.base.pojo.taobao.TaobaoMarketConfig" >
+    update taobao_market_config
+    set cid = #{cid,jdbcType=INTEGER},
+      market_name = #{marketName,jdbcType=VARCHAR},
+      session_key = #{sessionKey,jdbcType=VARCHAR},
+      check_source = #{checkSource,jdbcType=INTEGER},
+      ftl_name = #{ftlName,jdbcType=VARCHAR},
+      market_phone = #{marketPhone,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      stuff_status = #{stuffStatus,jdbcType=VARCHAR},
+      approve_status = #{approveStatus,jdbcType=VARCHAR},
+      locality_life_expirydate = #{localityLifeExpirydate,jdbcType=VARCHAR},
+      is_offline = #{isOffline,jdbcType=VARCHAR},
+      sku_outer_ids = #{skuOuterIds,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
+      auction_point = #{auctionPoint,jdbcType=INTEGER},
+      has_invoice = #{hasInvoice,jdbcType=BIT},
+      has_warranty = #{hasWarranty,jdbcType=BIT},
+      sub_stock = #{subStock,jdbcType=INTEGER},
+      sku_properties = #{skuProperties,jdbcType=VARCHAR},
+      sku_quantities = #{skuQuantities,jdbcType=VARCHAR},
+      subscription = #{subscription,jdbcType=VARCHAR},
+      location_state = #{locationState,jdbcType=VARCHAR},
+      location_city = #{locationCity,jdbcType=VARCHAR},
+      valid_thru = #{validThru,jdbcType=INTEGER},
+      sell_promise = #{sellPromise,jdbcType=BIT},
+      locality_life_merchant = #{localityLifeMerchant,jdbcType=VARCHAR},
+      locality_life_onsale_auto_refund_ratio = #{localityLifeOnsaleAutoRefundRatio,jdbcType=INTEGER},
+      locality_life_refund_ratio = #{localityLifeRefundRatio,jdbcType=INTEGER},
+      locality_life_choose_logis = #{localityLifeChooseLogis,jdbcType=VARCHAR},
+      freight_payer = #{freightPayer,jdbcType=VARCHAR},
+      post_fee = #{postFee,jdbcType=VARCHAR},
+      express_fee = #{expressFee,jdbcType=VARCHAR},
+      locality_life_eticket = #{localityLifeEticket,jdbcType=VARCHAR}
+    where market_id = #{marketId,jdbcType=VARCHAR}
+  </update>
+</mapper>

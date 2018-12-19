@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Description: 服务器向多个客户端推送主题，即不同客户端可向服务器订阅相同主题
  * @author luoshunfeng
  */
-
+@Deprecated
 public class ServerMQTT extends Thread{
 
     static Logger logger = LoggerFactory.getLogger(ServerMQTT.class);
@@ -36,7 +36,8 @@ public class ServerMQTT extends Thread{
      */
     public ServerMQTT()throws MqttException{
         /*clientId = LoadProperties.getProperties_3("../../../application.properties","serviceid");*/
-        clientId = UuidUtils.getUUID();
+        clientId = UuidUtils.getUUID() + UuidUtils.getRandByNum(4);
+        logger.info("{},clientId为===>{}",this.getClass().getName(),clientId);
         mqttClientHost = LoadProperties.getProperties_3("../../../application.properties","mqtt.client.host");
         username = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.username");
         password = LoadProperties.getProperties_3("../../../application.properties","mqtt.server.password");

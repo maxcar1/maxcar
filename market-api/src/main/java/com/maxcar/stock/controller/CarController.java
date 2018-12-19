@@ -3,59 +3,30 @@ package com.maxcar.stock.controller;
 import com.github.pagehelper.PageInfo;
 import com.maxcar.BaseController;
 import com.maxcar.base.model.VehicleBrand;
-import com.maxcar.base.pojo.CarBrand;
-import com.maxcar.base.pojo.CarModel;
-import com.maxcar.base.pojo.CarSeries;
-import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.base.pojo.Magic;
+import com.maxcar.base.pojo.*;
 import com.maxcar.base.service.DaSouCheService;
-import com.maxcar.base.util.CollectionSort;
-import com.maxcar.base.util.CollectionUtil;
-import com.maxcar.base.util.Constants;
-import com.maxcar.base.util.DatePoor;
-import com.maxcar.base.util.DateUtils;
-import com.maxcar.base.util.HanyuPinyinHelper;
-import com.maxcar.base.util.HttpClientUtils;
-import com.maxcar.base.util.JsonTools;
-import com.maxcar.base.util.JsonUtils;
-import com.maxcar.base.util.MD5Util;
-import com.maxcar.base.util.StringUtil;
-import com.maxcar.base.util.StringUtils;
-import com.maxcar.base.util.UuidUtils;
+import com.maxcar.base.service.TaoBaoService;
+import com.maxcar.base.util.*;
 import com.maxcar.base.util.dasouche.HttpClientUtil;
+import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.pojo.Area;
 import com.maxcar.market.service.AreaService;
 import com.maxcar.market.service.InvoiceService;
-import com.maxcar.redis.service.RedisService;
 import com.maxcar.stock.entity.Request.BarrierListCarRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalRequest;
 import com.maxcar.stock.entity.Request.InventoryStatisticalResponse;
 import com.maxcar.stock.entity.Response.ExportResponse;
 import com.maxcar.stock.entity.Response.ListCarVoNumberResponse;
 import com.maxcar.stock.entity.Response.SellCarListExportVo;
-import com.maxcar.stock.pojo.Car;
-import com.maxcar.stock.pojo.CarBase;
-import com.maxcar.stock.pojo.CarChannelRel;
-import com.maxcar.stock.pojo.CarCheck;
-import com.maxcar.stock.pojo.CarInfo;
-import com.maxcar.stock.pojo.CarPic;
-import com.maxcar.stock.pojo.CarRecord;
-import com.maxcar.stock.pojo.CheckWZ;
-import com.maxcar.stock.pojo.TaoBaoCar;
-import com.maxcar.stock.service.CarBaseService;
-import com.maxcar.stock.service.CarChannelService;
-import com.maxcar.stock.service.CarCheckService;
-import com.maxcar.stock.service.CarPicService;
-import com.maxcar.stock.service.CarRecordService;
-import com.maxcar.stock.service.CarService;
+import com.maxcar.stock.pojo.*;
+import com.maxcar.stock.service.*;
 import com.maxcar.stock.vo.CarSellVo;
 import com.maxcar.stock.vo.CarVo;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.service.UserTenantService;
 import com.maxcar.user.entity.User;
-import com.maxcar.user.service.ConfigurationService;
 import com.maxcar.web.aop.OperationAnnotation;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -65,25 +36,13 @@ import com.taobao.api.response.ItemUpdateDelistingResponse;
 import com.taobao.api.response.ItemUpdateListingResponse;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author huangxu
@@ -116,6 +75,8 @@ public class CarController extends BaseController {
     private CarChannelService carChannelService;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private TaoBaoService taoBaoService;
 
     /**
      * 选择品牌车系
@@ -609,7 +570,7 @@ public class CarController extends BaseController {
 
         User user = super.getCurrentUser(request);
         carService.deleteCarById(id);
-        String topic = super.getTopic(user.getMarketId());
+        String topic = topicService.getTopic(user.getMarketId());
         //同步删除本地车辆状态
         //组装云端参数
         PostParam postParam = new PostParam();
@@ -642,7 +603,7 @@ public class CarController extends BaseController {
         prop.load(this.getClass().getResourceAsStream("/taobaoConfig.properties"));
 
         String sell_cid = prop.getProperty("sellCid");
-        String url = prop.getProperty("taobaoApiUrl");
+//        String url = prop.getProperty("taobaoApiUrl");
         String taobaoUrl = prop.getProperty("taobaoUrl");
         String carId = params.getString("id");
         Object carChannelId = params.get("carChannelId");
@@ -685,6 +646,10 @@ public class CarController extends BaseController {
             //String jsonPamars1 = jsonPamars + "";
             String jsonPamars1 = jsonPamars.toString();
             JSONObject json = JSONObject.fromObject(JsonUtils.convert(jsonPamars1));
+            float size = (float)(json.getInt("mileage"))/10000;
+            DecimalFormat df = new DecimalFormat("0.00");//格式化小数，不足的补0
+            String filesize = df.format(size);//返回的是String类型的
+            System.out.print("汽车公里数=========="+filesize);
             json.remove("requestUser");
             json.remove("requestMarket");
             json.remove("token");
@@ -694,6 +659,8 @@ public class CarController extends BaseController {
             json.remove("operationUserId");
             json.remove("operationUserName");
             json.remove("publishTime");
+            json.remove("mileage");
+            json.put("mileage",filesize);
             json.put("sellCid", sell_cid);
             json.put("market", carInfo.getMarket_id());
             json.remove("marketId");
@@ -702,11 +669,12 @@ public class CarController extends BaseController {
             //上传淘宝
 
             logger.info("淘宝上传入参：" + jsonStr);
-            String sendPostAjax = HttpClientUtils.sendPost(url + "cars", jsonStr);
+            Result sendTaoBao= taoBaoService.syncCarToTaoBao(jsonStr);
+//            String sendPostAjax = HttpClientUtils.sendPost(url + "cars", jsonStr);
             //System.out.println(json);
-            logger.info("淘宝上传返回参数：" + sendPostAjax);
+            logger.info("淘宝上传返回参数：" + sendTaoBao);
             //System.out.println(sendPostAjax);
-            JSONObject jsonObject = JSONObject.fromObject(sendPostAjax);
+            JSONObject jsonObject = JSONObject.fromObject(sendTaoBao);
             if (jsonObject.has("datas")) {
                 interfaceResult.InterfaceResult200("");
                 String taobaoId = (String) jsonObject.get("datas");
@@ -727,7 +695,8 @@ public class CarController extends BaseController {
                 if ("".equals(channelId) || channelId == null) {
                     carChannel.setShelfStatus(1);
                     carChannel.setCarId(carId);
-                    carChannel.setChannelId("2");
+                    CarChannel carChannel1 = carChannelService.findChannelByMarket(carInfo.getMarket_id(), Constants.TAO_BAO_CHANNEL_NO);
+                    carChannel.setChannelId(carChannel1!=null?carChannel1.getId():null);
                     carChannel.setIsvalid(1);
                     carChannel.setInsertTime(new Date());
                     carChannelService.insertChannel(carChannel);
@@ -736,7 +705,7 @@ public class CarController extends BaseController {
 
                 return interfaceResult;
             } else {
-                com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(sendPostAjax);
+                com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(sendTaoBao.toString());
                 com.alibaba.fastjson.JSONObject js1 = com.alibaba.fastjson.JSONObject.parseObject(js.get("item").toString());
                 com.alibaba.fastjson.JSONObject js2 = com.alibaba.fastjson.JSONObject.parseObject(js1.get("error_response").toString());
                 //System.out.println(js2.get("sub_msg").toString());
@@ -1153,7 +1122,7 @@ public class CarController extends BaseController {
             }else if (carSellVo.getStockStatus() == 1 || carSellVo.getStockStatus() == 2){
                 car.setStockStatus(4);
             }
-            String topic = super.getTopic(user.getMarketId());
+            String topic = topicService.getTopic(user.getMarketId());
             //同步删除本地车辆状态
             //组装云端参数
             PostParam postParam = new PostParam();

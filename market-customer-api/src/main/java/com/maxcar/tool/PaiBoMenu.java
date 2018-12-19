@@ -82,23 +82,23 @@ public class PaiBoMenu {
         b5.setType("view");
 
         b6.setName("汽车新城");
-        b6.setUrl("http://www.maxcar.com.cn/vux-customer/?market=010&customer=1#/");
+        b6.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx880aa7250a756969&redirect_uri=http://xfz.maxcar.com.cn?market=010&v=0.1&response_type=code&scope=snsapi_userinfo&state=010#wechat_redirect");
         b6.setType("view");
 
 
         b1.setName("最新活动");
         b1.setType("view");
         List<Button> buttons1 = new ArrayList<>(4);
-        buttons1.add(b2);
+        /*buttons1.add(b2);
         buttons1.add(b4);
-        buttons1.add(b5);
+        buttons1.add(b5);*/
         buttons1.add(b6);
         b1.setSub_button(buttons1);
         Menu menu = new Menu();
         List<Button> buttonList = new ArrayList<>(3);
-        buttonList.add(b1);
-        buttonList.add(b3);
-        buttonList.add(b9);
+        buttonList.add(b6);//b1
+        /*buttonList.add(b3);
+        buttonList.add(b9);*/
         menu.setButton(buttonList);
         JSONObject json = (JSONObject) JSONObject.toJSON(menu);
         System.out.println(json.toJSONString());

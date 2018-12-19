@@ -45,4 +45,6 @@ public interface OrganizationsService extends BaseService<Organizations,String> 
         List<Organizations> getOrganizationsByMarket(String marketId);
 
         List<Organizations> getOrgByCodeAndMarketId(String marketId);
+
+        List<Organizations> getOrganizationsByMarketAndCode(String marketId, String code);
 }

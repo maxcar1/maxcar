@@ -7,6 +7,8 @@ import com.maxcar.barrier.pojo.BarrierCamera;
 import com.maxcar.barrier.pojo.BarrierCameraExample;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface BarrierCameraMapper {
     int countByExample(BarrierCameraExample example);
 
