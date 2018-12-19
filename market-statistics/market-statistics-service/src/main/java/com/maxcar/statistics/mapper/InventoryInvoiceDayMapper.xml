@@ -425,7 +425,7 @@
             AND tenant_id = #{tenantId}
         </if>
         <if test="timeStart != null and timeStart != '' ">
-            AND report_time BETWEEN #{timeStart} and #{timeEnd}
+            AND report_time = #{timeEnd}
         </if>
     </select>
 
