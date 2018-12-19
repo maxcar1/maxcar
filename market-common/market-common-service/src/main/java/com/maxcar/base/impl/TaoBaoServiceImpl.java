@@ -60,7 +60,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 
 	//	@Value("${projectUrl}")
 	private String projectUrl="D://img";
-	private String ftlUrl="/data/ftl/";
+	private String ftlUrl="/data/shangchuantaobao/";
 	//维珍验车
 	@Value("${wzurl}")
 	private String wzurl;
