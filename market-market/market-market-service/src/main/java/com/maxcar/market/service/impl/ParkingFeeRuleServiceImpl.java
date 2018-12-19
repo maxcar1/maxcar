@@ -72,14 +72,22 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             //拆分两个阶段计算
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
-                            if (isMax) {
-                                List<Map> firstSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, secondStart);
-                                if (firstSplitTime != null && firstSplitTime.size() > 0) {
-                                    firstFee = getFrees(firstSplitTime, feePeriodTimes, true, maxPrice);
+                            if (payTime.getTime() - begin.getTime() > afterTime){
+                                BigDecimal secondTime = new BigDecimal(currentTime.getTime() - payTime.getTime());
+                                BigDecimal result = secondTime.divide(new BigDecimal(1000 * 60 * 60), BigDecimal.ROUND_UP, 0);
+                                Integer secondFee = result.intValue() * parkingFeeTotal.getBeyondFee();
+                                total = new BigDecimal(secondFee);
+                                return total;
+                            }else{
+                                if (isMax) {
+                                    List<Map> firstSplitTime = DateUtils.getDiffDateTimeSlot(newBegin, secondStart);
+                                    if (firstSplitTime != null && firstSplitTime.size() > 0) {
+                                        firstFee = getFrees(firstSplitTime, feePeriodTimes, true, maxPrice);
+                                    }
                                 }
-                            }
-                            if (!isMax) {
-                                firstFee = getSplitTime(newBegin, secondStart, feePeriodTimes);
+                                if (!isMax) {
+                                    firstFee = getSplitTime(newBegin, secondStart, feePeriodTimes);
+                                }
                             }
                             //超出后的换算为小时
                             BigDecimal secondTime = new BigDecimal(currentTime.getTime() - secondStart.getTime());
