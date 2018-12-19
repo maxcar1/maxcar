@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.stock.dao.ReviewDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.ReviewDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="review_id" property="reviewId" jdbcType="VARCHAR" />
+    <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
+    <result column="review_result" property="reviewResult" jdbcType="INTEGER" />
+    <result column="review_desc" property="reviewDesc" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, review_id, review_person_id, review_result, review_desc, level, insert_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from review_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from review_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from review_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.maxcar.stock.pojo.ReviewDetailExample" >
+    delete from review_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
+    insert into review_detail (id, review_id, review_person_id, 
+      review_result, review_desc, level,
+      insert_time)
+    values (#{id,jdbcType=INTEGER}, #{reviewId,jdbcType=VARCHAR}, #{reviewPersonId,jdbcType=VARCHAR},
+      #{reviewResult,jdbcType=INTEGER}, #{reviewDesc,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER},
+      #{insertTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
+    insert into review_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="reviewId != null" >
+        review_id,
+      </if>
+      <if test="reviewPersonId != null" >
+        review_person_id,
+      </if>
+      <if test="reviewResult != null" >
+        review_result,
+      </if>
+      <if test="reviewDesc != null" >
+        review_desc,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="insertTime != null" >
+        insert_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="reviewId != null" >
+        #{reviewId,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewPersonId != null" >
+        #{reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewResult != null" >
+        #{reviewResult,jdbcType=INTEGER},
+      </if>
+      <if test="reviewDesc != null" >
+        #{reviewDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maxcar.stock.pojo.ReviewDetailExample" resultType="java.lang.Integer" >
+    select count(*) from review_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update review_detail
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.reviewId != null" >
+        review_id = #{record.reviewId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reviewPersonId != null" >
+        review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reviewResult != null" >
+        review_result = #{record.reviewResult,jdbcType=INTEGER},
+      </if>
+      <if test="record.reviewDesc != null" >
+        review_desc = #{record.reviewDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null" >
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.insertTime != null" >
+        insert_time = #{record.insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update review_detail
+    set id = #{record.id,jdbcType=INTEGER},
+      review_id = #{record.reviewId,jdbcType=VARCHAR},
+      review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
+      review_result = #{record.reviewResult,jdbcType=INTEGER},
+      review_desc = #{record.reviewDesc,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
+      insert_time = #{record.insertTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
+    update review_detail
+    <set >
+      <if test="reviewId != null" >
+        review_id = #{reviewId,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewPersonId != null" >
+        review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewResult != null" >
+        review_result = #{reviewResult,jdbcType=INTEGER},
+      </if>
+      <if test="reviewDesc != null" >
+        review_desc = #{reviewDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null" >
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.stock.pojo.ReviewDetail" >
+    update review_detail
+    set review_id = #{reviewId,jdbcType=VARCHAR},
+      review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
+      review_result = #{reviewResult,jdbcType=INTEGER},
+      review_desc = #{reviewDesc,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
+    SELECT * from review_detail
+    where 1=1
+    <if test="reviewId != null and reviewId != ''">
+      and review_id = #{reviewId}
+    </if>
+  </select>
+  <update id="updateReviewStatus" parameterType="com.maxcar.stock.pojo.ReviewDetail">
+    update car_review set step_level=#{level}
+    <if test="reviewResult != null and reviewResult != ''">
+      , is_pass = #{reviewResult}
+    </if>
+    <if test="isComplete != null and isComplete != ''">
+      , is_complete = #{isComplete}
+    </if>
+    where id = #{reviewId}
+  </update>
+  <select id="selectReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
+
+    select * from review_detail where review_id = #{reviewId} and level = #{level} and review_result = 1
+  </select>
+  <select id="selReviewDetail" parameterType="com.maxcar.stock.pojo.ReviewDetail" resultMap="BaseResultMap">
+    select * from review_detail where review_id = #{reviewId} and level = #{level} and review_result = 1
+  </select>
+  <select id="reviewDetail" parameterType="java.lang.String" resultType="com.maxcar.stock.pojo.ReviewDetail">
+    select review_desc as reviewDesc,date_format(insert_time, '%Y-%m-%d %H:%i:%s') AS insertTime
+     from review_detail
+    where review_id = #{reviewId}
+    ORDER BY insert_time desc
+    LIMIT 1
+  </select>
+</mapper>

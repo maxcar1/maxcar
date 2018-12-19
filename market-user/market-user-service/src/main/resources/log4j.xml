@@ -13,7 +13,7 @@
             <param name="levelMin" value="DEBUG" />  
             <param name="levelMax" value="Customer" />  
             <param name="AcceptOnMatch" value="true" />  
-        </filter>  
+        </filter>
     </appender>  
     
     <appender name="dailyRollingFile" class="org.apache.log4j.DailyRollingFileAppender">  

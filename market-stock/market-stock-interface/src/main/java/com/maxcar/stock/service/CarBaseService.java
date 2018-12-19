@@ -2,8 +2,6 @@ package com.maxcar.stock.service;
 
 import com.github.pagehelper.PageInfo;
 import com.maxcar.base.model.VehicleBrand;
-import com.maxcar.base.pojo.CarBrand;
-import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.stock.entity.Request.SearchCarRequest;
 import com.maxcar.stock.entity.Response.CarDetails;
@@ -39,7 +37,7 @@ public interface CarBaseService extends BaseService<CarBase,String> {
     //获取分组
     List<Configuration> carLevelGroup(String marketId,String type);
 
-    CarDetails getCarBaseById(String id);
+    List<CarDetails> getCarBaseById(String id);
 
     PageInfo selectCarList(CarBase carBase);
 

@@ -36,6 +36,7 @@
         <result column="car_no" property="carNo" jdbcType="VARCHAR"/>
         <result column="rfid" property="rfid" jdbcType="VARCHAR"/>
         <result column="tenant" property="tenant" jdbcType="VARCHAR"/>
+        <result column="tenant_name" property="tenantName" jdbcType="VARCHAR"/>
         <result column="is_new_car" property="isNewCar" jdbcType="INTEGER"/>
         <result column="area_id" property="areaId" jdbcType="VARCHAR"/>
         <result column="stock_status" property="stockStatus" jdbcType="INTEGER"/>
@@ -76,6 +77,13 @@
         <result column="owner_name" property="ownerName" jdbcType="VARCHAR"/>
         <result column="shelfStatus" property="shelfStatus" jdbcType="INTEGER"/>
         <result column="carChannelId" property="carChannelId" jdbcType="VARCHAR"/>
+        <result column="out_reason" property="outReason" jdbcType="VARCHAR"/>
+        <result column="review_id" property="reviewId" jdbcType="VARCHAR"/>
+        <result column="step_level" property="stepLevel" jdbcType="INTEGER"/>
+        <result column="is_pass" property="isPass" jdbcType="INTEGER"/>
+        <result column="review_result" property="reviewResult" jdbcType="INTEGER"/>
+        <result column="application_time" property="applicationTime" jdbcType="TIMESTAMP"/>
+        <result column="is_complete" property="isComplete" jdbcType="INTEGER"/>
     </resultMap>
     <!-- carVo END -->
     <resultMap id="taoBaoCarMap" type="com.maxcar.stock.pojo.TaoBaoCar">
@@ -713,16 +721,18 @@
         where vin = #{vin,jdbcType=VARCHAR}
     </update>
     <select id="listCarVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
-        SELECT
-        t.*,
+       SELECT
+        t.*,cr.is_complete,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>
         FROM
         car t left join
         car_base cb on t.id = cb.id
+        left  JOIN (select * from car_review where is_complete=0) cr on cr.car_id = t.id
         WHERE
         t.stock_status in ('1','2','3') and
         t.isvalid=1 and t.market_id = #{marketId}
+        AND t.car_type =1
         <include refid="car_vo_where"/>
         order by t.register_time desc
     </select>
@@ -756,6 +766,117 @@
         t.isvalid=1 and t.market_id = #{marketId}
         <include refid="car_vo_where"/>
         order by t.register_time desc
+    </select>
+
+    <sql id="List_Review">
+    a.id, a.car_no, a.vin, a.rfid, a.tenant, a.area_id, a.is_new_car, a.stock_status, a.car_status, a.car_type,
+    a.register_time, a.initial_licence_time, a.isvalid, a.staff_id, a.market_id, a.update_operator,a.check_result,
+    a.inster_operator, a.insert_time, a.update_time,d.brand_name,d.brand_code,d.series_name,d.series_code,d.model_year,d.model_name,
+    d.model_code,d.mileage,d.evaluate_price,d.new_price,d.market_price,d.color,d.engine_volume_unitl,d.environmental_standards,d.gear_box,d.seat_number,
+    d.fuel_form,d.fuel_number,d.check_company_id,
+  </sql>
+
+    <select id="listReview" parameterType="com.maxcar.stock.entity.CarParams" resultMap="CarVoResultMap">
+        SELECT
+        <include refid="List_Review"/>
+        b.id AS review_id,
+        b.out_reason,
+        c.tenant_name,
+        b.step_level,
+        b.is_complete,
+        date_format(b.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time
+        FROM
+        maxcar_stock_l.car a
+        LEFT JOIN maxcar_stock_l.car_review b ON a.id = b.car_id
+        LEFT JOIN maxcar_tenant_l.user_tenant c ON a.tenant = c.id
+        LEFT JOIN maxcar_stock_l.car_base d ON a.id = d.id
+        WHERE
+        a.isvalid = 1
+        AND b.is_pass = 0
+        AND a.id IN (
+        SELECT
+        cr.car_id
+        FROM
+        car_review cr
+        LEFT JOIN review_step rs ON cr.is_pledge = rs.apply_type
+        WHERE
+        cr.id NOT IN (
+        SELECT
+        review_id
+        FROM
+        review_detail
+        WHERE
+        review_person_id = #{reviewPersonId}
+        )
+        AND rs.review_person_id = #{reviewPersonId}
+        AND rs. LEVEL - cr.step_level = 1
+        AND cr.is_pass = 0
+        )
+        <if test="market != null and market != ''">
+            and a.market_id = #{market}
+        </if>
+        <if test="brandCode != null and brandCode != ''">
+            and d.brand_code = #{brandCode}
+        </if>
+        <if test="series != null and series != ''">
+            and d.series_code = #{series}
+        </if>
+        <if test="tenant != null and tenant != ''">
+            and a.tenant = #{tenant}
+        </if>
+        <if test="carStatus != null and carStatus != ''">
+            and a.car_status= #{carStatus}
+        </if>
+        <if test="vin != null and vin != ''">
+            and a.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+        </if>
+        order  by b.insert_time desc
+    </select>
+
+    <sql id="Car_Review_Detail_List">
+    b.id, b.car_no, b.vin, b.rfid, b.tenant, b.area_id, b.is_new_car, b.stock_status, b.car_status, b.car_type,
+    b.register_time, b.initial_licence_time, b.isvalid, b.staff_id, b.market_id, b.update_operator,b.check_result,
+    b.inster_operator, b.insert_time, b.update_time,c.brand_name,c.brand_code,c.series_name,c.series_code,c.model_year,c.model_name,
+    c.model_code,c.mileage,c.evaluate_price,c.new_price,c.market_price,c.color,c.engine_volume_unitl,c.environmental_standards,c.gear_box,c.seat_number,
+    c.fuel_form,c.fuel_number,c.check_company_id,
+  </sql>
+    <select id="carReviewDetailList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.entity.CarParams">
+        SELECT
+        <include refid="Car_Review_Detail_List"/>
+        a.id AS review_id,a.is_pass,
+        a.out_reason,
+        date_format(a.insert_time, '%Y-%m-%d %H:%i:%s') AS application_time,
+        ut.tenant_name
+        FROM car_review a
+        LEFT JOIN car b ON a.car_id = b.id
+        LEFT JOIN car_base c ON b.id = c.id
+        left join maxcar_tenant_l.user_tenant ut on b.tenant = ut.id
+        where a.is_valid = 1 and a.is_pass != 0
+        <if test="market != null and market != ''">
+            and a.market_id = #{market}
+        </if>
+        <if test="brandCode != null and brandCode != ''">
+            and c.brand_code = #{brandCode}
+        </if>
+        <if test="series != null and series != ''">
+            and c.series_code = #{series}
+        </if>
+        <if test="tenant != null and tenant != ''">
+            and b.tenant = #{tenant}
+        </if>
+        <if test="isPass != null and isPass != ''">
+            and a.is_pass = #{isPass}
+        </if>
+        <if test="carStatus != null and carStatus != ''">
+            and b.car_status= #{carStatus}
+        </if>
+        <if test="vin != null and vin != ''">
+            and b.vin LIKE CONCAT(CONCAT('%', #{vin}), '%')
+        </if>
+        <if test="stockStatus != null and stockStatus != ''">
+            and b.stock_status= #{stockStatus}
+        </if>
+        order  by a.insert_time desc
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
@@ -1069,19 +1190,20 @@
         <include refid="car_vo_where"/>
     </select>
     <select id="getCarList" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,stock_status,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
-            and isvalid = 1
+            and isvalid = 1 and stock_status in (1,2,3)
             <if test="carType != null">
                 and car_type = #{carType,jdbcType=INTEGER}
             </if>
         </where>
     </select>
     <select id="getCarListByStaffId" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
             and isvalid = 1
             and car_type = 2
+            and stock_status != -1
             and staff_id in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1090,9 +1212,9 @@
         order by insert_time desc
     </select>
     <select id="getCarListByTenant" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id,id from car
         <where>
-            and isvalid = 1 and car_type = 3
+            and isvalid = 1 and car_type = 3 and stock_status != -1
             and tenant in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1247,29 +1369,14 @@
         WHERE a.id=#{id}
     </select>
 
-    <select id="getCarPic" resultMap="CarPicMap" parameterType="String">
-		SELECT id,src,car_id,type from car_pic where car_id=#{car} and src is
-		not null <![CDATA[ and src <>''
-        ]]>
-        and type in (1,2,3,4,5,6,7,8,9,10,11,12)
-    </select>
-
-    <update id="modifyCarInfo" parameterType="com.maxcar.stock.pojo.CarInfo"
-            flushCache="true">
-        update car
-        <if test="taobao_id != null and taobao_id != ''">
-            set taobao_id = #{taobao_id},
-        </if>
-        <if test="taobao_url != null and taobao_url != ''">
-            taobao_url = #{taobao_url}
-        </if>
-        where id=#{id}
-    </update>
-
     <select id="selectCarList" parameterType="com.maxcar.stock.vo.CarVo" resultMap="CarVoResultMap">
         SELECT<include refid="carInfoNoId"/>,b.*
         from car a LEFT join car_base b on a.id=b.id
-        where a.isvalid =1 and a.market_id=#{marketId} and a.stock_status in ('1','2','3')
+        where a.isvalid =1
+        <if test="marketId != null and marketId != '' and marketId != '001'">
+            and a.market_id=#{marketId}
+        </if>
+        and a.stock_status in ('1','2','3')
         <if test="brandCode != null and brandCode != ''">
             and b.brand_code = #{brandCode}
         </if>
@@ -1385,6 +1492,25 @@
             order by a.insert_time desc
         </if>
     </select>
+
+    <select id="getCarPic" resultMap="CarPicMap" parameterType="String">
+		SELECT id,src,car_id,type from car_pic where car_id=#{car} and src is
+		not null <![CDATA[ and src <>''
+        ]]>
+        and type in (1,2,3,4,5,6,7,8,9,10,11,12)
+    </select>
+
+    <update id="modifyCarInfo" parameterType="com.maxcar.stock.pojo.CarInfo"
+            flushCache="true">
+        update car
+        <if test="taobao_id != null and taobao_id != ''">
+            set taobao_id = #{taobao_id},
+        </if>
+        <if test="taobao_url != null and taobao_url != ''">
+            taobao_url = #{taobao_url}
+        </if>
+        where id=#{id}
+    </update>
 
     <!-- 根据 marketId 查询可以过户的车辆列表 可分页  -->
     <select id="getCarListByMarketIdAndTenant"
@@ -1602,6 +1728,91 @@
         from car where stock_status in (1, 2, 3) and vin = #{vin};
     </select>
 
+    <select id="getCarDataStatistics" parameterType="String" resultType="com.maxcar.stock.entity.Response.CarDataStatistics">
+        SELECT
+        IFNULL(COUNT(*),0) AS 'inventoryTotal',
+        COALESCE(SUM(cb.evaluate_price),0) AS 'inventoryValuation',
+        count(if(c.car_status='1',true,null)) as 'pledgeCarTotal',
+        COALESCE(SUM(IF(c.car_status IN (1),cb.evaluate_price, 0)),0) AS 'pledgeCarValuation'
+        FROM car c
+        LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid =1 AND c.car_type =1
+        and c.stock_status in (1, 2, 3)
+        <if test="tenantId != null and tenantId != '' ">
+            and c.tenant = #{tenantId}
+        </if>
+        <if test="marketId != null and marketId != '' ">
+            and c.market_id  = #{marketId}
+        </if>
+
+    </select>
+    <select id="carData" parameterType="String" resultType="com.maxcar.stock.entity.Response.CarDataStatistics">
+        SELECT
+        count(if(c.car_status='1',true,null)) as 'presencePledgeCar',
+        COALESCE(SUM(IF(c.car_status IN (1),cb.evaluate_price, 0)),0) AS 'presencePledgeCarValuation'
+        FROM car c
+        LEFT JOIN car_base cb
+        ON c.id = cb.id
+        WHERE c.isvalid =1 AND c.car_type =1
+        and c.stock_status = 1
+        <if test="tenantId != null and tenantId != '' ">
+            and c.tenant = #{tenantId}
+        </if>
+        <if test="marketId != null and marketId != '' ">
+            and c.market_id  = #{marketId}
+        </if>
+    </select>
+
+    <select id="getAllSalesManageCarList" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
+        SELECT
+        t.*,
+        ut.tenant_name as tenantName,
+        DATEDIFF(now(),t.register_time) stockDays,
+        <include refid="CarVo_Column_List"/>
+        FROM
+        car t left join
+        car_base cb on t.id = cb.id
+        left join maxcar_tenant_l.user_tenant ut on t.tenant = ut.id
+        WHERE
+        t.stock_status in ('1','2','3','4','5') and
+        t.isvalid=1 and t.market_id = #{marketId}
+        <include refid="car_vo_where"/>
+        order by t.register_time desc,t.stock_status desc
+    </select>
+
+    <select id="exportAllSellCarList" resultType="com.maxcar.stock.entity.Response.SellCarListExportVo" parameterType="com.maxcar.stock.vo.CarVo">
+        SELECT
+        t.id as carId,
+        CONCAT(cb.brand_name,'-',cb.series_name) AS brandAndSeriesName,
+        cb.model_name as modelName,
+        ut.tenant_name as tenantName,
+        case when t.car_status =1 then '质押' else '非质押' end as carStatus,
+        case when t.stock_status = 1 then '在场'
+             when t.stock_status = 2 then '在场'
+             when t.stock_status = 3 then '出场'
+             when t.stock_status = 4 then '售出在场'
+             when t.stock_status = 5 then '售出出场'
+             end as stockStatus,
+        case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
+        date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,
+        cb.mileage as mileage,
+        IFNULL(cb.evaluate_price,0) as evaluatePrice,
+        IFNULL(cb.market_price,0) as marketPrice,
+        invoice.price AS invoicePrice,
+        t.vin as vin
+        FROM
+        car t left join
+        car_base cb on t.id = cb.id
+        left join maxcar_tenant_l.user_tenant ut on t.tenant = ut.id
+        LEFT JOIN maxcar_market_l.invoice invoice on invoice.car_id = t.id
+        WHERE
+        t.stock_status in ('1','2','3','4','5') and
+        t.isvalid=1 and t.market_id = #{marketId}
+        <include refid="car_vo_where"/>
+        order by t.register_time desc,t.stock_status desc
+    </select>
+
     <select id="carInformation" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.Car">
         select
         <include refid="Base_Column_List"/>
@@ -1623,4 +1834,8 @@
         limit 1
     </select>
 
+    <select id="getStockCarByVinByMarketId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from car where stock_status in (1, 2, 3) and vin = #{vin} and market_id= #{marketId} order by update_time desc limit 1;
+    </select>
 </mapper>

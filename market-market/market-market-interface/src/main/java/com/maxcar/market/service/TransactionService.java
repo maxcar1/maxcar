@@ -8,7 +8,6 @@ import com.maxcar.market.pojo.TradeInformation;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author sunyazhou

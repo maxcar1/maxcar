@@ -2,6 +2,10 @@ package com.maxcar.mqtt.service;
 
 import com.maxcar.barrier.pojo.*;
 import com.maxcar.barrier.service.*;
+import com.maxcar.jdbc.CloudJdbcCurd;
+import com.maxcar.jdbc.CloudJdbcUtils;
+import com.maxcar.jdbc.JdbcCurd;
+import com.maxcar.stock.service.CarReviewService;
 import com.maxcar.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +25,6 @@ public class BarrierValid {
     public Map openDz(String clientData, Barrier barrier) throws Exception {
         Map map = new HashMap();
         logger.info("道闸验证消息 : " + clientData);
-        BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
         String outParam = "";
         String value1 = clientData.substring(0, 4);
         String value2 = "002C";//44字节
@@ -42,10 +45,15 @@ public class BarrierValid {
         String marketId = barrier.getMarketId();
         logger.info("rfid" + marketId + Canstats.between + values);
         logger.info("道闸是否受限制：" + !barrier.getStatus().equals("0"));
-
-        logger.info("查询车辆开始时间：" + Canstats.dateformat.format(new Date()));
-        Car stockCarInfo = barrierService.selectByRFID(marketId + Canstats.between + values,marketId);//查询是否允许开闸
-        logger.info("查询车辆结束时间：" + Canstats.dateformat.format(new Date()));
+        String rfid = marketId + Canstats.between + values;
+//        Car stockCarInfo = barrierService.selectByRFID(marketId + Canstats.between + values,marketId);//查询是否允许开闸
+        Car stockCarInfo = JdbcCurd.selectCarByRfid(marketId,rfid);
+        if(stockCarInfo==null) {//到云端查询一次，没有同步到本地
+            stockCarInfo = CloudJdbcCurd.selectCarByCarId(marketId, rfid);
+            if(stockCarInfo!=null){//同步到云端
+                JdbcCurd.saveCar(stockCarInfo);
+            }
+        }
         if(stockCarInfo==null){
             value7 = Canstats.jzcc;
             value8 = "查无此车";
@@ -71,6 +79,8 @@ public class BarrierValid {
                         case 5://售出车
                             break;
                         case 4://售出未出厂
+                            break;
+                        case 6://出场超时、进场不改变状态
                             break;
                         default:
                             stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
@@ -100,6 +110,8 @@ public class BarrierValid {
                         case 5://售出车
                             break;
                         case 4://售出未出厂
+                            break;
+                        case 6://出场超时、进场不改变状态
                             break;
                         default:
                             stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
@@ -145,29 +157,29 @@ public class BarrierValid {
 
     //验证黑白名单
     public boolean blackOrWhite(Car car, Barrier barrier){
-        BarrierControlCarService barrierControlCarService = ApplicationContextHolder.getBean("barrierControlCarService");
-        BarrierControlCarExample example = new BarrierControlCarExample();
-        BarrierControlCarExample.Criteria criteria =  example.createCriteria();
-        criteria.andIsvalidEqualTo(1).andBarrierIdEqualTo(barrier.getBarrierId());
-        criteria.andCarIdEqualTo(car.getId()).andMarketIdEqualTo(barrier.getMarketId());
-
-
-        BarrierControlCarExample.Criteria criteria2 =  example.createCriteria();
-        criteria2.andIsvalidEqualTo(1).andBarrierIdEqualTo(barrier.getBarrierId());
-        if(car.getTenant()!=null) {
-            criteria2.andTenantIdEqualTo(car.getTenant());
-        }
-        criteria2.andMarketIdEqualTo(car.getMarketId());
-        example.or(criteria2);
+//        BarrierControlCarService barrierControlCarService = ApplicationContextHolder.getBean("barrierControlCarService");
+//        BarrierControlCarExample example = new BarrierControlCarExample();
+//        BarrierControlCarExample.Criteria criteria =  example.createCriteria();
+//        criteria.andIsvalidEqualTo(1).andBarrierIdEqualTo(barrier.getBarrierId());
+//        criteria.andCarIdEqualTo(car.getId()).andMarketIdEqualTo(barrier.getMarketId());
+//
+//
+//        BarrierControlCarExample.Criteria criteria2 =  example.createCriteria();
+//        criteria2.andIsvalidEqualTo(1).andBarrierIdEqualTo(barrier.getBarrierId());
+//        if(car.getTenant()!=null) {
+//            criteria2.andTenantIdEqualTo(car.getTenant());
+//        }
+//        criteria2.andMarketIdEqualTo(car.getMarketId());
+//        example.or(criteria2);
         List<BarrierControlCar> barrierControlCarList = null;
         if(barrier.getStatus().equals("2")){//白名单
-            barrierControlCarList = barrierControlCarService.selectByExample(example);
+            barrierControlCarList = JdbcCurd.selectBarrierControlCar(car,barrier);
             if(barrierControlCarList!=null && barrierControlCarList.size()>0)
                 return false;
             else
                 return true;
         }else  if(barrier.getStatus().equals("3")){//黑名单
-            barrierControlCarList = barrierControlCarService.selectByExample(example);
+            barrierControlCarList = JdbcCurd.selectBarrierControlCar(car,barrier);
             if(barrierControlCarList!=null && barrierControlCarList.size()>0)
                 return true;
             else
@@ -196,15 +208,31 @@ public class BarrierValid {
                     title = "车已售出";
                     map.put("flag", "true");
                     break;
+                case 6://出场超时、进场不改变状态
+                    break;
                 default:
                     car.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
                     break;
             }
         }else{//出口，未来质押车做验证
-            if(car.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
-                car.setStockStatus(Canstats.saleOutType);
-            else {
-                car.setStockStatus((car.getStockStatus() == Canstats.deleteType || car.getStockStatus() == Canstats.saleOutType) ? car.getStockStatus() : Canstats.outType);
+            if(car.getMarketId().equals("008")){
+                CarReviewService carReviewService = ApplicationContextHolder.getBean("carReviewService");
+                Boolean canPass = carReviewService.selectCarReviewByCarId(car.getId());
+                if(!canPass){//禁止通行,不改变车辆状态
+                    title = "禁止通行";
+                    map.put("flag", "true");
+                }else{
+                    if(car.getStockStatus() == Canstats.saleType) {//售出未出场，把状态改为已出场
+                        car.setStockStatus(Canstats.saleOutType);
+                    }else{
+                        car.setStockStatus((car.getStockStatus() == Canstats.deleteType || car.getStockStatus() == Canstats.saleOutType || car.getStockStatus() == Canstats.OutTimeType) ? car.getStockStatus() : Canstats.outType);
+                    }
+                }
+            }else {
+                if (car.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
+                    car.setStockStatus(Canstats.saleOutType);
+                else
+                    car.setStockStatus((car.getStockStatus() == Canstats.deleteType || car.getStockStatus() == Canstats.saleOutType) ? car.getStockStatus() : Canstats.outType);
             }
         }
         logger.info(title + car.getStockStatus() + "==" + barrier.getInOutType() + "车已删除");

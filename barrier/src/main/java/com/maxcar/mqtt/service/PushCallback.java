@@ -10,6 +10,7 @@ import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.barrier.service.CarRecordService;
 import com.maxcar.barrier.service.CarService;
 import com.maxcar.base.util.StringUtils;
+import com.maxcar.jdbc.JdbcCurd;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.util.CRC16M;
 import com.maxcar.util.Canstats;
@@ -103,9 +104,10 @@ public class PushCallback implements MqttCallback {
                     //请求初始化配置参数,获取请求类型01rfid，02请求参数配置
                     String codeType = clientData.substring(10, 12);
                     logger.info("查询配置开始时间：" + fmt1.format(new Date()));
-                    BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
+//                    BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
+//                    BarrierService barrierService = JdbcCurd.selectByBarrierId(barrierId.toUpperCase())
                     String barrierId = clientData.substring(14, 38);
-                    Barrier barrier = barrierService.selectByBarrierId(barrierId.toUpperCase());
+                    Barrier barrier = JdbcCurd.selectByBarrierId(barrierId.toUpperCase());
                     logger.info(barrierId.toUpperCase()+"是否查到配置"+barrier+"查询配置结束时间：" + fmt1.format(new Date()));
                     if (barrier == null) {//配置有误
                         outParam = failDz(clientData);
@@ -114,11 +116,13 @@ public class PushCallback implements MqttCallback {
                             outParam = initDz(clientData, barrier);
                             if (barrier != null && barrier.getMqttTopic() != null) {
                                 byte b[] = toBytes(outParam);
-                                ServerMQTT serverMQTT = new ServerMQTT();
+                                BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
+//                                serverMQTT = new ServerMQTT();
                                 logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                serverMQTT.send(b, barrier.getMqttTopic());
+//                                serverMQTT.send(b, barrier.getMqttTopic());
                             }
                         } else if (codeType.equals("01")) {//请求开闸
+                            logger.info("查询开始时间：" + Canstats.dateformat.format(new Date()));
                             BarrierValid barrierValid = new BarrierValid();
                             Map map = barrierValid.openDz(clientData, barrier);
                             outParam = map.get("outParam") + "";
@@ -126,10 +130,12 @@ public class PushCallback implements MqttCallback {
                                 byte b[] = toBytes(outParam);
                                 if(!barrier.getStatus().equals("4")){
                                     logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                                    ServerMQTT serverMQTT = new ServerMQTT();
-                                    serverMQTT.send(b, barrier.getMqttTopic());
+//                                    ServerMQTT serverMQTT = new ServerMQTT();
+//                                    serverMQTT.send(b, barrier.getMqttTopic());
+                                    BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
                                 }
                             }
+                            logger.info("查询结束时间：" + Canstats.dateformat.format(new Date()));
                             if (map.get("stockCarInfo") != null) {
                                 Car car = (Car) map.get("stockCarInfo");
                                 uploadData(car);//请求云端
@@ -174,7 +180,8 @@ public class PushCallback implements MqttCallback {
 
                                     outParam1 = outParam1 + outHex;
                                     logger.info("数据初始化，先开闸，服务器发送完整消息:{}", outParam1);
-                                    ServerMQTT.send(outParam1, barrier.getMqttTopic());
+                                    BasicRemoteClient.sendMsg(outParam1,barrier.getMqttTopic());
+//                                    ServerMQTT.send(outParam1, barrier.getMqttTopic());
                                 }
                             }
                         }
@@ -211,7 +218,8 @@ public class PushCallback implements MqttCallback {
 
                         outParam = outParam + outHex;
                         logger.info("签名错误，服务器发送完整消息:{}", outParam);
-                        ServerMQTT.send(outParam, barrier.getMqttTopic());
+//                        ServerMQTT.send(outParam, barrier.getMqttTopic());
+                        BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
                     }
                 }
             }else{

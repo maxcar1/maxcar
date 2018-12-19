@@ -856,7 +856,7 @@ WHERE
   </select>
 
   <select id="queryCarList" resultMap="BaseResultMap" parameterType="com.maxcar.stock.entity.Request.SearchCarRequest" >
-    select b.* from car_base b, car c
+    select b.* ,IF(c.check_result = 1 ,'true','false') 'checkResult' from car_base b, car c
     where b.id = c.id and c.market_id = #{marketId} and c.car_type = 1
       and c.stock_status > 0 and <![CDATA[ c.stock_status < 4 ]]>
     <include refid="conditionForQueryCarList" />
@@ -903,6 +903,7 @@ WHERE
     <if test="gearBox != null and gearBox == '自动'">
       and b.gear_box not like '%手动%'
     </if>
+
     <if test="level != null and level != '' and level != '其他'">
       and b.`level` like concat('%', #{level}, '%')
     </if>
@@ -910,9 +911,9 @@ WHERE
       and b.`level` not like '%SUV%' and b.`level` not like '%MPV%' and b.`level` not like '%敞篷车%'
       and b.`level` not like '%跑车%' and b.`level` not like '%两厢车%' and b.`level` not like '%三厢车%'
       and b.`level` not like '%旅行车%' and b.`level` not like '%皮卡%' and b.`level` not like '%单厢%'
-      and b.`level` not like '%两厢半%'
+      and b.`level` not like '%两厢半%' and b.`level` not like '%7坐SUV%'
     </if>
-    <if test="color != null and color == '其他'">
+    <if test="color != null and (color == '其他' || color == '不限')">
       and b.color not in ('黑色','白色','银灰色','深灰色','香槟色','黄色','橙色','红色','蓝色','粉红色','紫色','咖啡色','绿色','多彩色')
     </if>
     <if test="color != null and color != '' and color != '其他'">

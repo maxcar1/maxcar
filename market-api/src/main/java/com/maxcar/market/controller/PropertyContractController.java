@@ -88,7 +88,7 @@ public class PropertyContractController extends BaseController {
            /* Map<String, String> data = new HashMap<>(4);
             data.put("name", "全车通");
             data.put("car", "二手车");*/
-           /* System.out.println(replaceVar(html, data));*/
+            /* System.out.println(replaceVar(html, data));*/
         }
 
         return getInterfaceResult("200", response);
@@ -786,4 +786,3 @@ public class PropertyContractController extends BaseController {
         return getInterfaceResult("200", response);
     }
 }
-

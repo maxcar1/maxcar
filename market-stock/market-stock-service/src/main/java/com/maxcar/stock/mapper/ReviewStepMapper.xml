@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.stock.dao.ReviewStepMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.stock.pojo.ReviewStep" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="step_name" property="stepName" jdbcType="VARCHAR" />
+    <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="apply_type" property="applyType" jdbcType="INTEGER" />
+    <result column="is_need_review" property="isNeedReview" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="ReviewVoResultMap" type="com.maxcar.stock.entity.Response.ReviewVo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="step_name" property="stepName" jdbcType="VARCHAR" />
+    <result column="review_person_id" property="reviewPersonId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="apply_type" property="applyType" jdbcType="INTEGER" />
+    <result column="is_need_review" property="isNeedReview" jdbcType="INTEGER" />
+    <result column="market_id" property="marketId" jdbcType="VARCHAR" />
+    <result column="review_result" property="reviewResult" jdbcType="INTEGER" />
+    <result column="review_id" property="reviewId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="FlowStepResultMap" type="com.maxcar.stock.pojo.FlowStep">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+
+    <result column="flow_name" property="flowName" jdbcType="VARCHAR"/>
+    <result column="is_need_review" property="isNeedReview" jdbcType="INTEGER"/>
+    <result column="market_id" property="marketId" jdbcType="VARCHAR"/>
+    <result column="review_type" property="reviewType" jdbcType="INTEGER"/>
+    <result column="code" property="code" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, step_name, review_person_id, org_id, level, type, apply_type, is_need_review,
+    market_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewStepExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from review_step
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from review_step
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from review_step
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByReview" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+    delete from review_step
+    where market_id = #{marketId}
+    <if test="level != null" >
+      and level = #{level}
+    </if>
+
+    <if test="applyType != null" >
+     and  apply_type = #{applyType}
+    </if>
+  </delete>
+  <delete id="deleteByExample" parameterType="com.maxcar.stock.pojo.ReviewStepExample" >
+    delete from review_step
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+    insert into review_step ( step_name,review_person_id,
+      level, type, apply_type,org_id,market_id
+      )
+    values ( #{stepName,jdbcType=VARCHAR},#{reviewPersonId},
+      #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER},#{orgId,jdbcType=VARCHAR},
+      #{marketId}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+    insert into review_step
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="stepName != null" >
+        step_name,
+      </if>
+      <if test="reviewPersonId != null" >
+        review_person_id,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="applyType != null" >
+        apply_type,
+      </if>
+      <if test="isNeedReview != null" >
+        is_need_review,
+      </if>
+      <if test="marketId != null" >
+        market_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="stepName != null" >
+        #{stepName,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewPersonId != null" >
+        #{reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="applyType != null" >
+        #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="isNeedReview != null" >
+        #{isNeedReview,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        #{marketId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maxcar.stock.pojo.ReviewStepExample" resultType="java.lang.Integer" >
+    select count(*) from review_step
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update review_step
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.stepName != null" >
+        step_name = #{record.stepName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reviewPersonId != null" >
+        review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orgId != null" >
+        org_id = #{record.orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null" >
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.applyType != null" >
+        apply_type = #{record.applyType,jdbcType=INTEGER},
+      </if>
+      <if test="record.isNeedReview != null" >
+        is_need_review = #{record.isNeedReview,jdbcType=INTEGER},
+      </if>
+      <if test="record.marketId != null" >
+        market_id = #{record.marketId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update review_step
+    set id = #{record.id,jdbcType=INTEGER},
+      step_name = #{record.stepName,jdbcType=VARCHAR},
+      review_person_id = #{record.reviewPersonId,jdbcType=VARCHAR},
+      org_id = #{record.orgId,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=INTEGER},
+      apply_type = #{record.applyType,jdbcType=INTEGER},
+      is_need_review = #{record.isNeedReview,jdbcType=INTEGER},
+      market_id = #{record.marketId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+    update review_step
+    <set >
+      <if test="stepName != null" >
+        step_name = #{stepName,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewPersonId != null" >
+        review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="applyType != null" >
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="isNeedReview != null" >
+        is_need_review = #{isNeedReview,jdbcType=INTEGER},
+      </if>
+      <if test="marketId != null" >
+        market_id = #{marketId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+    update review_step
+    set step_name = #{stepName,jdbcType=VARCHAR},
+      review_person_id = #{reviewPersonId,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      apply_type = #{applyType,jdbcType=INTEGER},
+      is_need_review = #{isNeedReview,jdbcType=INTEGER},
+      market_id = #{marketId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="reviewVolist" parameterType="com.maxcar.stock.entity.Response.ReviewVo" resultMap="ReviewVoResultMap">
+    SELECT a.*,b.review_result,b.review_id
+    from review_step a
+    LEFT JOIN review_detail b
+    on a.review_person_id = b.review_person_id
+      <if test="applyType != null and applyType != ''" >
+          and a.apply_type = #{applyType}
+      </if>
+    <if test="marketId != null and marketId != ''" >
+      and a.market_id = #{marketId}
+    </if>
+    <if test="reviewId != null and reviewId != ''" >
+      and b.review_id = #{reviewId}
+    </if>
+  </select>
+
+  <select id="selectStepList" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="BaseResultMap">
+    select * from review_step where
+    <if test="marketId != null" >
+      market_id = #{marketId}
+    </if>
+    <if test="applyType != null" >
+      and apply_type = #{applyType}
+    </if>
+    <if test="level != null" >
+      and level = #{level}
+    </if>
+  </select>
+
+  <select id="selectStepListByLevel" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="com.maxcar.stock.pojo.ReviewStep">
+  select
+    `level`,
+    apply_type as applyType,
+    market_id as marketId,
+    step_name as stepName,
+    `type`
+    from review_step where
+    <if test="marketId != null" >
+      market_id = #{marketId}
+    </if>
+    <if test="applyType != null" >
+      and apply_type = #{applyType}
+    </if>
+    <if test="level != null" >
+      and level = #{level}
+    </if>
+    <if test="id != null" >
+      and id = #{id}
+    </if>
+    GROUP BY `level`, apply_type,market_id,step_name,`type`
+  </select>
+
+  <select id="selectReviewManage" resultMap="FlowStepResultMap" parameterType="String">
+    select *
+      from flow_step where market_id = #{marketId}
+and is_valid=1
+  </select>
+
+  <insert id="insertFlowStep" parameterType="com.maxcar.stock.pojo.FlowStep">
+    insert into flow_step ( flow_name,is_need_review, review_type,
+      market_id, code,insert_time,is_valid
+      )
+    values ( #{flowName}, #{isNeedReview} ,#{reviewType},#{marketId},
+      #{code},#{insertTime},#{isValid}
+      )
+
+  </insert>
+
+  <delete id="deleteReviewManage" parameterType="String" >
+    delete from flow_step  where id = #{id}
+  </delete>
+
+  <update id="updateFlowStep" parameterType="com.maxcar.stock.pojo.FlowStep" >
+    update flow_step set is_need_review = #{isNeedReview} , review_type =#{reviewType} where code = #{code} and market_id = #{marketId}
+
+  </update>
+  <select id="selectMarketCode" parameterType="com.maxcar.stock.pojo.FlowStep" resultType="java.lang.Integer">
+    select count(1) from flow_step where market_id = #{marketId} and code = #{code}
+  </select>
+  <select id="selectReviewManageByReviewStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultMap="FlowStepResultMap">
+    select * from flow_step where is_valid = 1 and market_id = #{marketId} and code = #{applyType}
+
+  </select>
+  <insert id="insertCarReview" parameterType="com.maxcar.stock.pojo.CarReview">
+    insert  into car_review (id,car_id,market_id,user_id,out_reason,back_time,reason_desc,is_pledge,insert_time,is_valid,is_pass)
+    values(#{id},#{carId},#{marketId},#{userId},#{outReason},#{backTime},#{reasonDesc},#{isPledge},#{insertTime},#{isValid},#{isPass})
+
+  </insert>
+  <select id="checkCarReview" parameterType="com.maxcar.stock.pojo.CarReview" resultType="java.lang.Integer">
+    select count(1) from car_review where car_id = #{carId} and is_valid = 1 and is_pass = 0 and is_complete = 0
+  </select>
+  <delete id="deleteReviewStep" parameterType="com.maxcar.stock.pojo.FlowStep">
+    delete from review_step where market_id = #{marketId} and apply_type = #{code}
+  </delete>
+  <select id="getReviewResult" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="Integer">
+    select review_result from review_detail where review_id = #{reviewId} and review_person_id =#{reviewPersonId} and level = #{level}
+  </select>
+  <select id="selectCarReview" parameterType="String" resultType="Integer">
+    select step_level from car_review where id = #{reviewId}
+  </select>
+  <select id="selectLastStep" parameterType="com.maxcar.stock.pojo.ReviewStep" resultType="java.lang.Integer">
+    select level from review_step where apply_type = #{applyType} and market_id = #{marketId} group by level desc limit 1
+  </select>
+
+    <select id="selectFlowStepByPrimarykey" parameterType="java.lang.String" resultType="com.maxcar.stock.pojo.FlowStep">
+    select
+    id,
+    flow_name as flowName,
+    is_need_review as isNeedReview,
+    market_id as marketId,
+    review_type as reviewType,
+    code,
+    insert_time as insertTime,
+    is_valid as isValid
+    from flow_step where id = #{id}
+  </select>
+
+  <select id="selectStepListBySomeParams" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.ReviewStep">
+    select
+    <include refid="Base_Column_List" />
+    from review_step where 1=1
+    <if test="level != null" >
+      and level = #{level}
+    </if>
+    <if test="applyType != null" >
+      and apply_type = #{applyType}
+    </if>
+    <if test="marketId != null" >
+      and market_id = #{marketId}
+    </if>
+  </select>
+<update id="updateReviewStep" parameterType="com.maxcar.stock.pojo.ReviewStep" >
+  update review_step set level = level-1 where apply_type = #{applyType} and market_id = #{marketId} and level>#{currentLevel}
+
+</update>
+  <select id="selectReviewStep" parameterType="com.maxcar.stock.pojo.CarReview" resultMap="BaseResultMap">
+
+    select * from flow_step where market_id = #{marketId} and code = #{isPledge}
+  </select>
+</mapper>

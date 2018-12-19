@@ -110,7 +110,7 @@ public class TradeInformation implements Serializable {
 
     private String dealTime = "";         //  车辆交易时间  50  字段暂缺
 
-    private String initialRegistrationDate;      // 初次上牌时间
+    private String initialRegistrationDate = "";      // 初次上牌时间 51
 
     private Double newPrice = 0.0;        //  新车价格  52
 

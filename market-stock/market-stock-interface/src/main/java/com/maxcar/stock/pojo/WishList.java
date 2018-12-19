@@ -9,7 +9,7 @@ public class WishList implements Serializable {
     private String carId;
     private String ticket;
     private Date insertTime;
-    private String marketId;
+    private String market;
     private String userId;
     public String getId() {
         return id;
@@ -35,11 +35,11 @@ public class WishList implements Serializable {
     public void setInsertTime(Date insertTime) {
         this.insertTime = insertTime;
     }
-    public String getMarketId() {
-        return marketId;
+    public String getMarket() {
+        return market;
     }
-    public void setMarketId(String marketId) {
-        this.marketId = marketId;
+    public void setMarket(String market) {
+        this.market = market;
     }
     public String getUserId() {
         return userId;
