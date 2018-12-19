@@ -20,7 +20,6 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -45,6 +44,7 @@ public class BaseController {
 
     // double 保留两位小数
     public DecimalFormat df = new DecimalFormat("######0.00");
+    public DecimalFormat df4 = new DecimalFormat("######0.0000");
 
     @Value("${kafka.producer.topic}")
     public String producerTopic;
@@ -287,6 +287,10 @@ public class BaseController {
             return false;
         }
 
+        if (t instanceof Double) {
+            return false;
+        }
+
         if (t instanceof String) {
             return ((String) t).trim().isEmpty();
         }
@@ -356,7 +360,7 @@ public class BaseController {
     }
 
     public static void main(String[] args) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         LocalDate beforeTime = LocalDate.now();
 
@@ -365,8 +369,12 @@ public class BaseController {
         cal.setTime(sdf.parse("2019-12-5"));
         LocalDate afterTime = LocalDate.of(cal.get(Calendar.YEAR), (cal.get(Calendar.MONTH) + 1), cal.get(Calendar.DATE));
         System.out.println(afterTime);
-        System.out.println(getIntervalYears(beforeTime, afterTime));
-
+        System.out.println(getIntervalYears(beforeTime, afterTime));*/
+      /*  DecimalFormat df4 = new DecimalFormat("######0.0000");
+        Double x = null;
+        double y = null;
+        System.out.println(x/y);
+        System.out.println(df4.format(5009/10000));*/
     }
 
 

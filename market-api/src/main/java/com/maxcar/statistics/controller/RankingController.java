@@ -11,6 +11,8 @@ import com.maxcar.statistics.model.request.GetInventoryRankingByConditionRequest
 import com.maxcar.statistics.model.request.GetInvoiceRankingByConditionRequest;
 import com.maxcar.statistics.model.request.GroupYesterdayRankingRequest;
 import com.maxcar.statistics.model.request.RankingRequest;
+import com.maxcar.statistics.model.response.GetInvoiceRankingResponse;
+import com.maxcar.statistics.model.response.GroupYesterdayRankingResponse;
 import com.maxcar.statistics.service.RankingService;
 import com.maxcar.stock.service.CarService;
 import com.maxcar.user.entity.Market;
@@ -86,7 +88,18 @@ public class RankingController extends BaseController {
             getInvoiceRankingByConditionRequest.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", rankingService.getInvoiceRankingByCondition(getInvoiceRankingByConditionRequest));
+        List<GetInvoiceRankingResponse> list = rankingService.getInvoiceRankingByCondition(getInvoiceRankingByConditionRequest);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
     }
 
 
@@ -150,12 +163,24 @@ public class RankingController extends BaseController {
             groupYesterdayRankingRequest.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", rankingService.getYesterdayRanking(groupYesterdayRankingRequest));
+        List<GroupYesterdayRankingResponse> list = rankingService.getYesterdayRanking(groupYesterdayRankingRequest);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
 
     }
 
     /**
      * 获取当前库存状况
+     *
      * @param rankingRequest
      * @param request
      * @return
@@ -232,6 +257,7 @@ public class RankingController extends BaseController {
 
     /**
      * 获取当前交易状况
+     *
      * @param rankingRequest
      * @param request
      * @return

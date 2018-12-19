@@ -18,7 +18,7 @@ public class GetInvoiceRankingResponse implements Serializable{
 
     private String invoiceCount;
 
-    private String invoicePrice;
+    private Double invoicePrice;
 
 
 }

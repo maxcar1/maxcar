@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +71,17 @@ public class ReportController extends BaseController {
             groupCartypeDayRequest.setMarketId(user.getMarketId());
         }
 
+        List<GroupCartypeDayResponse> list = reportByCartypeService.groupCartypeDay(groupCartypeDayRequest);
 
-        return getInterfaceResult("200", reportByCartypeService.groupCartypeDay(groupCartypeDayRequest));
+        if (tIsNotEmpty(list)) {
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
     }
 
 
@@ -101,7 +111,17 @@ public class ReportController extends BaseController {
             groupCartypeMonthRequest.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportByCartypeService.groupCartypeMonth(groupCartypeMonthRequest));
+        List<GroupCartypeMonthResponse> list = reportByCartypeService.groupCartypeMonth(groupCartypeMonthRequest);
+
+        if (tIsNotEmpty(list)) {
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
     }
 
     /**
@@ -256,8 +276,19 @@ public class ReportController extends BaseController {
         Double price = 0.0;
 
         if (tIsNotEmpty(list)) {
+
             count = list.stream().filter(x -> tIsNotEmpty(x.getInvoiceCount())).mapToInt(GroupCarbrandInvoiceDayResponse::getInvoiceCount).sum();
             price = list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).mapToDouble(GroupCarbrandInvoiceDayResponse::getInvoicePrice).sum();
+
+            if (tIsNotEmpty(list)) {
+
+                list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                    x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+                });
+            }
+
         }
 
         JSONObject json = new JSONObject();
@@ -266,7 +297,7 @@ public class ReportController extends BaseController {
         json.put("count", count);
         json.put("price", df.format(price));
 
-        return getInterfaceResult("200",json);
+        return getInterfaceResult("200", json);
     }
 
 
@@ -340,7 +371,19 @@ public class ReportController extends BaseController {
             groupCarbrandInvoiceMonthRequest.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportByCarbrandService.groupCarbrandInvoiceMonth(groupCarbrandInvoiceMonthRequest));
+
+        List<GroupCarbrandInvoiceMonthResponse> list = reportByCarbrandService.groupCarbrandInvoiceMonth(groupCarbrandInvoiceMonthRequest);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
 
     }
 
@@ -491,7 +534,18 @@ public class ReportController extends BaseController {
             parameter.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportByCaryearService.groupCaryearInvoiceDay(parameter));
+        List<GroupCaryearInvoiceDayResponse> list = reportByCaryearService.groupCaryearInvoiceDay(parameter);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
 
     }
 
@@ -548,7 +602,18 @@ public class ReportController extends BaseController {
             parameter.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportByCaryearService.groupCaryearInvoiceMonth(parameter));
+        List<GroupCaryearInvoiceMonthResponse> list = reportByCaryearService.groupCaryearInvoiceMonth(parameter);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
     }
 
     /**
@@ -695,7 +760,19 @@ public class ReportController extends BaseController {
 
             parameter.setMarketId(user.getMarketId());
         }
-        return getInterfaceResult("200", reportCarstocktimeService.groupCarstocktimeInvoiceDay(parameter));
+
+        List<GroupCarstocktimeInvoiceDayResponse> list = reportCarstocktimeService.groupCarstocktimeInvoiceDay(parameter);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
 
     }
 
@@ -752,7 +829,18 @@ public class ReportController extends BaseController {
             parameter.setMarketId(user.getMarketId());
         }
 
-        return getInterfaceResult("200", reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter));
+        List<GroupCarstocktimeInvoiceMonthResponse> list = reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter);
+
+        if (tIsNotEmpty(list)) {
+
+            list.stream().filter(x -> tIsNotEmpty(x.getInvoicePrice())).forEach(x -> {
+
+                x.setInvoicePrice(Double.parseDouble(df4.format(x.getInvoicePrice() / 10000)));
+
+            });
+        }
+
+        return getInterfaceResult("200", list);
 
     }
 
