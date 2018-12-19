@@ -764,12 +764,12 @@
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>,
         (
-        select ccr.id from car_channel_rel ccr
-        where ccr.car_id=t.id and ccr.channel_id='2' LIMIT 1
+        select ccr.id from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
+        where ccr.car_id=t.id and cch.channel_no='002' order by ccr.update_time desc LIMIT 1
         ) as carChannelId,
         (
-        select ccr.shelf_status from car_channel_rel ccr
-        where ccr.car_id=t.id and ccr.channel_id='2' LIMIT 1
+        select ccr.shelf_status from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
+        where ccr.car_id=t.id and cch.channel_no='002' order by ccr.update_time desc LIMIT 1
         ) as shelfStatus
         FROM
         car t left join
