@@ -24,7 +24,6 @@ import com.taobao.api.internal.util.WebUtils;
 import com.taobao.api.request.*;
 import com.taobao.api.response.*;
 import net.coobird.thumbnailator.Thumbnails;
-import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 	@Autowired
 	private TaobaoMarketConfigMapper taobaoMarketConfigMapper;
 
-//	@Value("${projectUrl}")
+	//	@Value("${projectUrl}")
 	private String projectUrl="D://img";
 	private String ftlUrl="/data/ftl/";
 	//维珍验车
@@ -71,21 +70,10 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 	private String wzappid;
 	@Value("${wzappkey}")
 	private String wzappkey;
-	public static String sessionKey = "" ;
-
-//	private String wzmcname="qct003";
-//	private String wzurl="http://wx.renrenyiche.com/api/Openapi/query";
-//	private String wzappid="qct003";
-//	private String	wzappkey="76ddbee6wzdcbd7bf3fe3fa08byc71c0e74b";
-//	private String	taobaoUrl="https://item.taobao.com/item.htm?spm=a1z38n.10677092.0.0.228b1debaCdiKB&id=�";
-//	private String projectUrl="D://img";
-
 	private static String APP_KEY = "24812065";
 	private static String SECRET = "7cf5fb32a4e8a3ffc3cd339d9baedd4a";
 	private static String API_URL = "http://gw.api.taobao.com/router/rest";
 	private final static Long TAOBAO_CID = 50050566L;
-	private static City city;
-	private static Province province;
 
 	@Override
 	public Result addImg(CarEntity car, List<CarPicture> getPicList, String path, String code) {
@@ -325,21 +313,18 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 
 		System.out.print("++++++++++++++++++++++开始上传淘宝serviceImpl+++++++++++++++++++++++");
 		System.out.println("==="+wzurl);
-		city = new City();
-		province = new Province();
+		City city = new City();
 		try {
 			city = cityService.getCityById(Integer.parseInt(car.getAttribution()));
 		} catch (Exception e) {
 			logger.error("error.", e);
 		}
-		province = provinceService.getProvinceById(city.getProvince());
 		System.out.print("++++++++++++++++++++++开始上传淘宝city==================="+city);
-		System.out.print("++++++++++++++++++++++开始上传淘宝province============="+province);
 		TaobaoMarketConfig config=taobaoMarketConfigMapper.selectByPrimaryKey(car.getMarket());
 		Result result = new Result();
 		TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
 		ItemAddRequest request = new ItemAddRequest();
-
+		String sessionKey=config.getSessionKey();
 		request.setCid(config.getCid().longValue());// 叶子类目id
 		request.setNum(config.getNum().longValue());// 商品数量
 		request.setAuctionPoint(config.getAuctionPoint().longValue());
@@ -365,15 +350,15 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		//订金
 		//玉林市场单独配置
 		if (config.getMarketId().equals("010")){
-		if(Double.valueOf(car.getMarketPrice())<=10.00) {
-			subscription="300";
-		}else if(Double.valueOf(car.getMarketPrice())<=20&&Double.valueOf(car.getMarketPrice())>10) {
-			subscription="500";
-		}else if(Double.valueOf(car.getMarketPrice())<=30&&Double.valueOf(car.getMarketPrice())>20) {
-			subscription="1000";
-		}else {
-			subscription="1500";
-		}
+			if(Double.valueOf(car.getMarketPrice())<=10.00) {
+				subscription="300";
+			}else if(Double.valueOf(car.getMarketPrice())<=20&&Double.valueOf(car.getMarketPrice())>10) {
+				subscription="500";
+			}else if(Double.valueOf(car.getMarketPrice())<=30&&Double.valueOf(car.getMarketPrice())>20) {
+				subscription="1000";
+			}else {
+				subscription="1500";
+			}
 		}
 
 		request.setSkuPrices(subscription+","+marketPrice);
@@ -457,7 +442,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 				map.put("attribution", city.getName());
 				map.put("mainPic", mainPic);
 				map.put("initialLicenceTimeStr", car.getInitialLicenceTimeStr());
-                 // 获取车辆亮点信息
+				// 获取车辆亮点信息
 				if (StringUtils.isNotBlank(car.getModelCode())) {
 					map.put("listIcon", listIcon(car.getModelCode()));
 				}
@@ -499,7 +484,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 //		logger.info("车辆详情文件路径：path {}", new String[] { getWebClassesPath() });
 		request.setDesc(FreeMarkUtil.getHtmlString(map, ftlName, ftlUrl));
 		inputInputs(request, car);
-		inputProps(request, car);
+		inputProps(request, car,city);
 		System.out.println("Packageid====================="+request.getLocalityLifePackageid());
 		ItemAddResponse rsp = new ItemAddResponse();
 		try {
@@ -547,7 +532,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 	@Override
 	public Result syncCarToTaoBao(String jsonStr) {
 		JSONObject params=JSONObject.parseObject(jsonStr);
-		sessionKey="";
+		String sessionKey="";
 		System.out.println(projectUrl);
 		Result result = new Result();
 		Map classMap = new HashMap();
@@ -761,7 +746,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		request.setInputStr(inputSb.toString());
 	}
 
-	private void inputProps(ItemAddRequest request, CarEntity car) {
+	private void inputProps(ItemAddRequest request, CarEntity car,City city) {
 		String brand = car.getBrandName();
 		String series = car.getSeriesName();
 		String model = car.getModelName();
@@ -977,7 +962,6 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		String wzjs = null;
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
 		String time = formatter.format(new Date());
-		Map checkMap = new HashMap();
 		StringBuffer md5 = new StringBuffer();
 		md5.append(wzmcname).append(vin).append(wzappid).append(wzappkey).append(time).toString();
 		String sign = MD5Util.MD5(String.valueOf(md5)).toLowerCase();
@@ -1040,7 +1024,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		}
 		return result;
 	}
-    public Result checkByZCJ(String vin){
+	public Result checkByZCJ(String vin){
 		Result result=new Result();
 		try {
 			Clients c=new Clients();
@@ -1101,8 +1085,8 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		return  result;
 	}
 
-	public static void main(String[] args) throws ClientProtocolException, IOException {
-		/*String cookie ="miid=936631312420705576; thw=cn; isg=BHFxLB_DjtpfiiJrFJGmO4vBg_7L9ua4KUTpZVOGbThXepHMm671oB-YmM65qX0I; cna=HNPuE0w+xxkCAd3As3pVsH+R; hng=CN%7Czh-CN%7CCNY%7C156; t=74985f65696795ae5bea1cb2337dfcc5; _cc_=UIHiLt3xSw%3D%3D; tg=0; UM_distinctid=1659e7e0d7f449-0c76a73f20b8af8-143f7040-15f900-1659e7e0d80ef; um=65F7F3A2F63DF02056E1FBC491C68D1DFBBDE9EBC70A0515AC7E6A3C219EB8199288FFA41F1FEEB0CD43AD3E795C914CA19E165440C03613E995DB6774CABA30; x=e%3D1%26p%3D*%26s%3D0%26c%3D0%26f%3D0%26g%3D0%26t%3D0%26__ll%3D-1%26_ato%3D0; ali_ab=60.12.250.54.1536224706622.3; mt=ci=0_1&np=; _m_h5_tk=4d6cf0fe442094bdd862a6a561620f7f_1541064344488; _m_h5_tk_enc=9819b715ae3455ba57f6f4117251d2c1; cookie2=7c7bccda3b3cba10fe07a333753378aa; _tb_token_=5855e3e813573; whl=-1%260%260%261541054217965; JSESSIONID=1CE155488904FA45988BFD2B8700B2AB; v=0; uc1=cookie16=V32FPkk%2FxXMk5UvIbNtImtMfJQ%3D%3D&cookie21=W5iHLLyFfXVRCJf5l6bv6g%3D%3D&cookie15=UIHiLt3xD8xYTw%3D%3D&existShop=true&pas=0&cookie14=UoTYN4HMXVDxTQ%3D%3D&tag=8&lng=zh_CN; skt=fc34a89d90e01fba; csg=9a71f2f6; uc3=vt3=F8dByRjNVHS09QZZiow%3D&id2=VyyUyYyZZc600A%3D%3D&nk2=F5RGNwppVl5rbTg%3D&lg2=UIHiLt3xD8xYTw%3D%3D; existShop=MTU0MTA1NDQ3OQ%3D%3D; tracknick=tb312844838; lgc=tb312844838; dnk=tb312844838; unb=4052462357; sg=874; _l_g_=Ug%3D%3D; cookie1=W5jGlh8gjHrU%2F%2BHlyxyoY%2BlUPluTLnUci6q8eZMosZ8%3D; _nk_=tb312844838; cookie17=VyyUyYyZZc600A%3D%3D";
+/*	public static void main(String[] args) throws ClientProtocolException, IOException {
+		*//*String cookie ="miid=936631312420705576; thw=cn; isg=BHFxLB_DjtpfiiJrFJGmO4vBg_7L9ua4KUTpZVOGbThXepHMm671oB-YmM65qX0I; cna=HNPuE0w+xxkCAd3As3pVsH+R; hng=CN%7Czh-CN%7CCNY%7C156; t=74985f65696795ae5bea1cb2337dfcc5; _cc_=UIHiLt3xSw%3D%3D; tg=0; UM_distinctid=1659e7e0d7f449-0c76a73f20b8af8-143f7040-15f900-1659e7e0d80ef; um=65F7F3A2F63DF02056E1FBC491C68D1DFBBDE9EBC70A0515AC7E6A3C219EB8199288FFA41F1FEEB0CD43AD3E795C914CA19E165440C03613E995DB6774CABA30; x=e%3D1%26p%3D*%26s%3D0%26c%3D0%26f%3D0%26g%3D0%26t%3D0%26__ll%3D-1%26_ato%3D0; ali_ab=60.12.250.54.1536224706622.3; mt=ci=0_1&np=; _m_h5_tk=4d6cf0fe442094bdd862a6a561620f7f_1541064344488; _m_h5_tk_enc=9819b715ae3455ba57f6f4117251d2c1; cookie2=7c7bccda3b3cba10fe07a333753378aa; _tb_token_=5855e3e813573; whl=-1%260%260%261541054217965; JSESSIONID=1CE155488904FA45988BFD2B8700B2AB; v=0; uc1=cookie16=V32FPkk%2FxXMk5UvIbNtImtMfJQ%3D%3D&cookie21=W5iHLLyFfXVRCJf5l6bv6g%3D%3D&cookie15=UIHiLt3xD8xYTw%3D%3D&existShop=true&pas=0&cookie14=UoTYN4HMXVDxTQ%3D%3D&tag=8&lng=zh_CN; skt=fc34a89d90e01fba; csg=9a71f2f6; uc3=vt3=F8dByRjNVHS09QZZiow%3D&id2=VyyUyYyZZc600A%3D%3D&nk2=F5RGNwppVl5rbTg%3D&lg2=UIHiLt3xD8xYTw%3D%3D; existShop=MTU0MTA1NDQ3OQ%3D%3D; tracknick=tb312844838; lgc=tb312844838; dnk=tb312844838; unb=4052462357; sg=874; _l_g_=Ug%3D%3D; cookie1=W5jGlh8gjHrU%2F%2BHlyxyoY%2BlUPluTLnUci6q8eZMosZ8%3D; _nk_=tb312844838; cookie17=VyyUyYyZZc600A%3D%3D";
 		String url = "https://ma.taobao.com/wangdian/EtcCommSell.do?_input_charset=utf-8&categoryId=50050566&from=taobao.sell&itemId=581139674990";
 		String result = HttpClientUtil.getWithCookie(url,"UTF-8",cookie);
 		com.alibaba.fastjson.JSONObject json = com.alibaba.fastjson.JSONObject.parseObject(result);
@@ -1114,7 +1098,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 				System.out.println(taobaoShop.getPackageName().substring(taobaoShop.getPackageName().indexOf("-")+1));
 
 			}
-		}*/
+		}*//*
 		String url = "http://gw.api.taobao.com/router/rest";
 		String appkey = "24812065";
 		String secret = "7cf5fb32a4e8a3ffc3cd339d9baedd4a";
@@ -1165,6 +1149,6 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 }
