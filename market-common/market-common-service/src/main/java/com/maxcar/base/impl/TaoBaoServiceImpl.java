@@ -74,6 +74,8 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 	private static String SECRET = "7cf5fb32a4e8a3ffc3cd339d9baedd4a";
 	private static String API_URL = "http://gw.api.taobao.com/router/rest";
 	private final static Long TAOBAO_CID = 50050566L;
+	private static String ZCJ_LOGIN="WUHAOMING@CZ";
+	private static String ZCJ_PASSWORD="WUHAOMING@CZ";
 
 	@Override
 	public Result addImg(CarEntity car, List<CarPicture> getPicList, String path, String code) {
@@ -453,7 +455,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 				return result;
 			}
 		}else if (config.getCheckSource()==2){
-			result=checkByZCJ("14521452145214521");
+			result=checkByZCJ(car.getVin());
 			String time1  = String.valueOf(System.currentTimeMillis());
 			int stop = time1.length();
 			String fileName = car.getVin()+"_"+time1.substring(stop-3, stop)+".jpg";
@@ -1029,7 +1031,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		Result result=new Result();
 		try {
 			Clients c=new Clients();
-			String  loginData =c.Login("TEST@TEST", "TEST@TEST");//登录
+			String  loginData =c.Login(ZCJ_LOGIN, ZCJ_PASSWORD);//登录
 			System.out.println(loginData);
 			com.alibaba.fastjson.JSONObject json = com.alibaba.fastjson.JSONObject.parseObject(loginData);
 			if (json.getInteger("code").equals(0)) {
