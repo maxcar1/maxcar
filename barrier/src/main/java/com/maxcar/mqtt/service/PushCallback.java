@@ -11,6 +11,7 @@ import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.base.util.StringUtils;
 import com.maxcar.hikvision.service.HikvisionLinuxService;
 import com.maxcar.hikvision.service.HikvisionService;
+import com.maxcar.jdbc.JdbcCurd;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.util.*;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -114,7 +115,7 @@ public class PushCallback implements MqttCallback {
 //                    BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
 //                    BarrierService barrierService = JdbcCurd.selectByBarrierId(barrierId.toUpperCase())
                     String barrierId = clientData.substring(14, 38);
-                    Barrier barrier = barrierService.selectByBarrierId(barrierId.toUpperCase());
+                    Barrier barrier = JdbcCurd.selectByBarrierId(barrierId.toUpperCase());
                     logger.info(barrierId.toUpperCase()+"是否查到配置"+barrier+"查询配置结束时间：" + fmt1.format(new Date()));
                     if (barrier == null) {//配置有误
                         outParam = failDz(clientData);
@@ -123,22 +124,26 @@ public class PushCallback implements MqttCallback {
                             case "01":
                                 //请求开闸
                                 logger.info("道闸指令01,处理开始---");
+                                logger.info("查询开始时间：" + Canstats.dateformat.format(new Date()));
                                 BarrierValid barrierValid = new BarrierValid();
                                 Map map = barrierValid.openDz(clientData, barrier);
-                                outParam = map.get("outParam") + "";
-                                if (barrier != null && barrier.getMqttTopic() != null) {
-                                    byte b[] = toBytes(outParam);
-                                    if(!barrier.getStatus().equals("4")){
-                                        logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+                                if(map!=null) {//重复请求取消发送主板
+                                    outParam = map.get("outParam") + "";
+                                    if (barrier != null && barrier.getMqttTopic() != null) {
+                                        byte b[] = toBytes(outParam);
+                                        if (!barrier.getStatus().equals("4")) {
+                                            logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
 //                                    ServerMQTT serverMQTT = new ServerMQTT();
 //                                    serverMQTT.send(b, barrier.getMqttTopic());
-                                        BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
+                                            BasicRemoteClient.sendMsg(outParam, barrier.getMqttTopic());
+                                        }
+                                    }
+                                    if (map.get("stockCarInfo") != null) {
+                                        Car car = (Car) map.get("stockCarInfo");
+                                        uploadData(car);//请求云端
                                     }
                                 }
-                                if (map.get("stockCarInfo") != null) {
-                                    Car car = (Car) map.get("stockCarInfo");
-                                    uploadData(car);//请求云端
-                                }
+                                logger.info("查询结束时间：" + Canstats.dateformat.format(new Date()));
                                 break;
                             case "02":
                                 //初始配置参数
