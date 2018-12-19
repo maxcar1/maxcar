@@ -68,7 +68,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                     long afterTime = parkingFeeTotal.getBeyondTime() * 60 * 60 * 1000;
                     if (afterTime != 0) {
                         //停车时长超过设置的时长
-                        if (newBegin.getTime() - begin.getTime() > afterTime) {
+                        if (currentTime.getTime() - begin.getTime() > afterTime) {
                             //拆分两个阶段计算
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
