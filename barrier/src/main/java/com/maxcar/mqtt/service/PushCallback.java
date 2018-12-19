@@ -89,11 +89,11 @@ public class PushCallback implements MqttCallback {
 //            logger.info("接收消息Qos : " + message.getQos());
  //           logger.info("接收消息message : " + String.valueOf(message.getPayload()));
             String str = new String(message.getPayload(),"gbk");
-            logger.info("接收消息转换前内容 : " + str);
+//            logger.info("接收消息转换前内容 : " + str);
             //第一步过滤链接请求
             if (str.replace(" ", "").indexOf("101800044D51545") == -1) {
                 String data = bytesToHexString(message.getPayload());
-                logger.info("转换后消息内容 : " + data);
+//                logger.info("转换后消息内容 : " + data);
                 String clientData = data.substring(6,data.length());
                 String hex = CRC16M.GetModBusCRC(clientData.substring(0, clientData.length() - 4));
                 String check = clientData.substring(clientData.length() - 4);
@@ -103,7 +103,7 @@ public class PushCallback implements MqttCallback {
                     String outParam = "";
                     //请求初始化配置参数,获取请求类型01rfid，02请求参数配置
                     String codeType = clientData.substring(10, 12);
-                    logger.info("查询配置开始时间：" + fmt1.format(new Date()));
+//                    logger.info("查询配置开始时间：" + fmt1.format(new Date()));
 //                    BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
 //                    BarrierService barrierService = JdbcCurd.selectByBarrierId(barrierId.toUpperCase())
                     String barrierId = clientData.substring(14, 38);
@@ -125,21 +125,23 @@ public class PushCallback implements MqttCallback {
                             logger.info("查询开始时间：" + Canstats.dateformat.format(new Date()));
                             BarrierValid barrierValid = new BarrierValid();
                             Map map = barrierValid.openDz(clientData, barrier);
-                            outParam = map.get("outParam") + "";
-                            if (barrier != null && barrier.getMqttTopic() != null) {
-                                byte b[] = toBytes(outParam);
-                                if(!barrier.getStatus().equals("4")){
-                                    logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+                            if(map!=null) {//重复请求取消发送主板
+                                outParam = map.get("outParam") + "";
+                                if (barrier != null && barrier.getMqttTopic() != null) {
+                                    byte b[] = toBytes(outParam);
+                                    if (!barrier.getStatus().equals("4")) {
+                                        logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
 //                                    ServerMQTT serverMQTT = new ServerMQTT();
 //                                    serverMQTT.send(b, barrier.getMqttTopic());
-                                    BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
+                                        BasicRemoteClient.sendMsg(outParam, barrier.getMqttTopic());
+                                    }
+                                }
+                                if (map.get("stockCarInfo") != null) {
+                                    Car car = (Car) map.get("stockCarInfo");
+                                    uploadData(car);//请求云端
                                 }
                             }
                             logger.info("查询结束时间：" + Canstats.dateformat.format(new Date()));
-                            if (map.get("stockCarInfo") != null) {
-                                Car car = (Car) map.get("stockCarInfo");
-                                uploadData(car);//请求云端
-                            }
                         } else if (codeType.equals("07")) {//ic卡处理
                             //截取卡号10位数
                             //4d43002701 070c05d4ff 373438594d 430353595b 851b5e0001 0001ffff00 060704 006f 1e23 7327
@@ -308,7 +310,7 @@ public class PushCallback implements MqttCallback {
         postParam.setOnlySend(false);
         postParam.setMessageTime(Canstats.dateformat.format(new Date()));
         //发送数据
-        logger.info("道闸开始发送消息到云端：");
+        logger.info("开始发送消息到云端：");
         messageProducerService.sendMessage("-1", JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
     }
     //找不到道闸配置，由于找不到主板id因此无法发送消息
