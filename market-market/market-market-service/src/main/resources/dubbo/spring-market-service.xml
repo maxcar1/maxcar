@@ -27,6 +27,8 @@
                    timeout="1200000"/>
     <dubbo:service interface="com.maxcar.market.service.ParkingFeeService" ref="parkingFeeService" timeout="1200000"/>
 
+    <dubbo:service interface="com.maxcar.market.service.ParkingFeeDetailService" ref="parkingFeeDetailService" timeout="1200000"/>
+
     <dubbo:service interface="com.maxcar.market.service.ParkingFeeIntegralService" ref="parkingFeeIntegralService" timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.market.service.DealService" ref="dealService" timeout="1200000"/>

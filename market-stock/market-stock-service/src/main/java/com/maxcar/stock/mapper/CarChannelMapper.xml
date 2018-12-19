@@ -119,7 +119,7 @@
      from car_channel_rel r where c.id=r.channel_id and r.shelf_status=2
     ) as shelfCount
     from car_channel c
-    where c.market_id = #{marketId,jdbcType=VARCHAR}
+    where c.isvalid=1 and c.market_id = #{marketId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.stock.pojo.CarChannelExample" >
