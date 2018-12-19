@@ -91,5 +91,7 @@ public interface UserService extends BaseService<User,String> {
 
     Map getUserOrgByReview(String reviewPersonId, String orgId);
 
+    List<User> getUserList(String marketId, String orgId);
+
     /*getUser(User user)throws Exception;*/
 }

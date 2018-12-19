@@ -16,6 +16,7 @@ import com.maxcar.base.util.wechat.ReceiveXmlEntity;
 import com.maxcar.base.util.wechat.ReceiveXmlProcess;
 import com.maxcar.base.util.wechat.WeiXinUtils;
 import com.maxcar.kafka.service.MessageProducerService;
+import com.maxcar.market.dao.OpenBarrierRecordMapper;
 import com.maxcar.market.dao.ParkingFeeDetailMapper;
 import com.maxcar.market.dao.ParkingFeeIntegralMapper;
 import com.maxcar.market.dao.ParkingFeeMapper;
@@ -106,6 +107,8 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
     private TopicService topicService;
 
     private String REDIS_ZSET_PARKING_FEE = "PARKING_FEE_LIST";
+    @Autowired
+    private OpenBarrierRecordMapper openBarrierRecordMapper;
 
     @Override
     public BaseDao<ParkingFee, String> getBaseMapper() {
@@ -1401,4 +1404,71 @@ public class ParkingFeeServiceImpl extends BaseServiceImpl<ParkingFee, String> i
         return result;
     }
 
+
+    @Override
+    public InterfaceResult getParkingFeeDetails(String id) throws Exception{
+        InterfaceResult interfaceResult = new InterfaceResult();
+        FeeDetails feeDetails = new FeeDetails();
+        ParkingFeeDetail parkingFeeDetail = parkingFeeDetailMapper.selectByPrimaryKey(id);
+        if(null != parkingFeeDetail && null != parkingFeeDetail.getParkingFeeId()){
+            ParkingFee parkingFee = parkingFeeMapper.selectByPrimaryKey(parkingFeeDetail.getParkingFeeId());
+            if(null !=parkingFee && null != parkingFee.getBrakeId()){
+                Barrier barrier = barrierService.selectByBarrierId(parkingFee.getBrakeId());
+                if(null !=barrier && null !=parkingFee.getEmployeesId()){
+                    User user = userService.selectByPrimaryKey(parkingFee.getEmployeesId());
+                    if(null !=user && null != user.getStaffId()){
+                        Staff staff = staffService.selectByPrimaryId(user.getStaffId());
+                    }
+                }
+                feeDetails.setBarrierPosition(barrier.getBarrierPosition());
+                feeDetails.setEmployeesId(parkingFee.getEmployeesId());
+                feeDetails.setCardNo(parkingFeeDetail.getCardNo());
+                feeDetails.setBeforeTime(parkingFeeDetail.getBeforeTime());
+                feeDetails.setAfterTime(parkingFeeDetail.getAfterTime());
+                feeDetails.setPayType(parkingFeeDetail.getPayType());
+                feeDetails.setInType(parkingFeeDetail.getInType());
+                feeDetails.setPrice(parkingFeeDetail.getPrice());
+                feeDetails.setChargePrice(parkingFeeDetail.getChargePrice());
+                feeDetails.setBeforeImage(parkingFeeDetail.getBeforeImage());
+                feeDetails.setAfterImage(parkingFeeDetail.getAfterImage());
+                feeDetails.setReason(parkingFeeDetail.getReason());
+                Map map1 = DateUtils.getHMS(parkingFeeDetail.getAfterTime(),parkingFeeDetail.getBeforeTime());
+                feeDetails.setStopTime(map1.get("hour")+"时"+map1.get("minute")+"分"+map1.get("second"));
+            }
+        }
+        interfaceResult.InterfaceResult200(feeDetails);
+        return interfaceResult;
+    }
+
+
+    @Override
+    public InterfaceResult getEmergencyRelease(String marketId) throws Exception {
+        InterfaceResult interfaceResult = new InterfaceResult();
+        List<DetailsEmergency> list = openBarrierRecordMapper.selectByPrimaryMarketId(marketId);
+        for(DetailsEmergency openBarrierRecord : list){
+            Barrier barrier = barrierService.selectByBarrierId(openBarrierRecord.getBarrierId());
+            if (null !=barrier){
+                ParkingFeeDetail parkingFeeDetail = parkingFeeDetailMapper.selectByPrimaryKey(openBarrierRecord.getParkingDetailId());
+                if (null !=parkingFeeDetail){
+                    ParkingFee parkingFee = parkingFeeMapper.selectByPrimaryKey(parkingFeeDetail.getParkingFeeId());
+                    if(parkingFee !=null && null !=parkingFee.getEmployeesId()){
+                        User user = userService.selectByPrimaryKey(parkingFee.getEmployeesId());
+                        if(user !=null && null !=user.getStaffName()){
+                            openBarrierRecord.setStaffName(user.getStaffName());
+                        }
+                    }
+                    openBarrierRecord.setAfterTime(parkingFeeDetail.getAfterTime());
+                    openBarrierRecord.setCardNo(parkingFeeDetail.getCardNo());
+                    openBarrierRecord.setBeforeTime(parkingFeeDetail.getBeforeTime());
+                    Map map1 = DateUtils.getHMS(parkingFeeDetail.getAfterTime(),parkingFeeDetail.getBeforeTime());
+                    openBarrierRecord.setStopTime(map1.get("hour")+"时"+map1.get("minute")+"分"+map1.get("second"));
+                }
+            }
+            if(barrier != null && null != barrier.getBarrierPosition()){
+                openBarrierRecord.setBarrierPosition(barrier.getBarrierPosition());
+            }
+        }
+        interfaceResult.InterfaceResult200(list);
+        return interfaceResult;
+    }
 }
