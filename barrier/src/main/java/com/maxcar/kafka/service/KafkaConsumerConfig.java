@@ -28,7 +28,8 @@ public class KafkaConsumerConfig {
 
     @Value("${kafka.consumer.servers}")
     private String servers;
-    @Value("${kafka.consumer.enable.auto.commit}")
+    //禁止kafka自动提交offset
+    @Value("false")
     private boolean enableAutoCommit;
     @Value("${kafka.consumer.session.timeout}")
     private String sessionTimeout;

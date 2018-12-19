@@ -15,6 +15,7 @@ import com.maxcar.market.model.request.GetCarSpaceAndOfficeByMarketIdOrAreaIdReq
 import com.maxcar.market.model.response.GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse;
 import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
+import com.maxcar.market.pojo.InvoiceExcel;
 import com.maxcar.market.pojo.InvoicePurchase;
 import com.maxcar.market.pojo.TradeInformation;
 import com.maxcar.market.service.InvoicePurchaseService;
@@ -378,67 +379,6 @@ public class InvoiceController extends BaseController {
      * @return 开票
      * @throws Exception
      */
-//    @RequestMapping(value = "/invoice/addInvoice")
-//    @OperationAnnotation(title = "新增开票")
-//    public InterfaceResult addInvoice(HttpServletRequest request, @RequestBody Invoice invoice) throws Exception {
-//        User user = super.getCurrentUser(request);
-//        InterfaceResult interfaceResult = new InterfaceResult();
-//        invoice.setId(UuidUtils.generateIdentifier());
-//        invoice.setBillTime(new Date());
-//        invoice.setUserId(user.getUserId());
-//        if (invoice.getCarNo().length() == 7) {
-//            invoice.setIsNewEnergy(1);//不是新能源车
-//        } else {
-//            invoice.setIsNewEnergy(0);//是新能源车
-//        }
-//        int count = 0;
-//        count = invoiceService.insertSelective(invoice);
-//        if (count == 0) {
-//            interfaceResult.InterfaceResult600("新增失败");
-//        } else {
-//            InvoicePurchase invoicePurchase = new InvoicePurchase();
-//            invoicePurchase.setId(invoice.getInvoicePurchaseId());
-//            invoicePurchase = invoicePurchaseService.selectByPrimaryKey(invoice.getInvoicePurchaseId());
-//            invoicePurchase.setPollResidue(invoicePurchase.getPollResidue() - 1);//剩余票号-1
-//            if (Integer.parseInt(invoicePurchase.getInvoiceEndNo()) == Integer.parseInt(invoice.getInvoiceNo())) {
-//                invoicePurchase.setStatus(2);//购票最后一张
-//                invoicePurchase.setInvoiceNo(invoicePurchase.getInvoiceEndNo());
-//            } else {
-//                invoicePurchase.setInvoiceNo(StringUtils.leftPad(((Integer.parseInt(invoicePurchase.getInvoiceNo()) + 1) + ""), 8, "0"));//当前票号+1
-//            }
-//            invoicePurchaseService.updateByPrimaryKeySelective(invoicePurchase);
-//            if (invoice.getCarSources() == 1 && null != invoice.getTransferType() && invoice.getTransferType() == 1) {//库存车
-//                Car car = new Car();
-//                car.setId(invoice.getCarId());
-//                if (invoice.getCarStockStatus() == 3) {
-//                    car.setStockStatus(5);//售出已出场状态
-//                } else {
-//                    car.setStockStatus(4);//售出未出场状态
-//                }
-//                carService.updateByPrimaryKeySelective(car);
-//                String topic = super.getTopic(user.getMarketId());
-//                //同步删除本地车辆状态
-//                //组装云端参数
-//                PostParam postParam = new PostParam();
-//                postParam.setData(JsonTools.toJson(car));
-//                postParam.setMarket(user.getMarketId());
-//                postParam.setUrl("/barrier/car/update");
-//                postParam.setMethod("post");
-//                postParam.setOnlySend(false);
-//                postParam.setMessageTime(Constants.dateformat.format(new Date()));
-//                messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
-//            }
-//            interfaceResult.InterfaceResult200("新增成功");
-//        }
-//        return interfaceResult;
-//    }
-
-
-    /**
-     * @param invoice
-     * @return 开票
-     * @throws Exception
-     */
     @RequestMapping(value = "/invoice/insertInvoice")
     @OperationAnnotation(title = "新增开票")
     public InterfaceResult insertInvoice(HttpServletRequest request, @RequestBody Invoice invoice) throws Exception {
@@ -453,62 +393,18 @@ public class InvoiceController extends BaseController {
         } else {
             invoice.setIsNewEnergy(0);//是新能源车
         }
-        // 买入判断商户车 修改vin 相关的 商户ID
-//        interfaceResult = confirm(invoice);
-//        if (!interfaceResult.getCode().equals("200")) {
-//            return interfaceResult;
-//        }
-//        if (1 == invoice.getCarSources() && 0 == invoice.getTransferType()) {
-//
-//            if (null == invoice.getCarId() || invoice.getCarId().isEmpty()) {
-//                return getInterfaceResult("600", "请输入carId");
-//            }
-//
-//            CarVo carVoById = carService.getCarVoById(invoice.getCarId());
-//
-//            if (null == carVoById) {
-//                return getInterfaceResult("600", "该车不属于库存车，无法买入");
-//            }
-//
-//            if (!carVoById.getTenant().equals(invoice.getTenantId())) {
-//                // 判断要存入的车商车位是否足够
-//                GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest getCarSpaceAndOfficeByMarketIdOrAreaIdRequest = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
-//                getCarSpaceAndOfficeByMarketIdOrAreaIdRequest.setMarketId(user.getMarketId());
-//                getCarSpaceAndOfficeByMarketIdOrAreaIdRequest.setTenantId(invoice.getTenantId());
-//
-//                GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responseCount = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(getCarSpaceAndOfficeByMarketIdOrAreaIdRequest);
-//
-//                if (null == responseCount) {
-//                    return getInterfaceResult("600", "请配置展厅转换比例");
-//                }
-//                Integer inventoryNumber = responseCount.getCarTotal();
-//
-//                Configuration c = new Configuration();
-//                c.setMarketId(user.getMarketId());
-//                c.setConfigurationKey("car_num");
-//                List<Configuration> list = configurationService.searchConfiguration(c);
-//                if (list != null && list.size() > 0) {
-//                    for (Configuration configuration : list) {
-//                        String value = configuration.getConfigurationValue();
-//                        if (value.substring(0, 1).equals("+")) {
-//                            inventoryNumber = inventoryNumber + Integer.parseInt(value.substring(1));
-//                        }
-//                    }
-//                }
-//
-//                Car tenantIdCar = new Car();
-//                tenantIdCar.setTenant(invoice.getTenantId());
-//                tenantIdCar.setMarketId(user.getMarketId());
-//                tenantIdCar.setCarType(1);
-//                Integer counts = 0;
-//                counts = carService.selectCountsByCar(tenantIdCar);
-//                Integer upCarnum = (counts == null ? 0 : counts);
-//                if (inventoryNumber <= upCarnum) {
-//                    return getInterfaceResult("600", "车位总数" + inventoryNumber + ", 已经全部使用，不允许买入");
-//                }
-//            }
-//
-//        }
+        //判断买方类型是否是个人
+        if (invoice.getPurchacerType() == 0) {
+            if (com.maxcar.base.util.StringUtils.isNotBlank(invoice.getPurchacerIdCard())) {
+                String regularExpression = "(^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|" +
+                        "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)";
+                if(invoice.getPurchacerIdCard().matches(regularExpression)){
+                    Map<String, Integer> cardMap = CardUtils.identityCard18(invoice.getPurchacerIdCard());
+                    invoice.setAge(cardMap.get("age"));
+                    invoice.setSex(cardMap.get("sex"));
+                }
+            }
+        }
 
         int count = 0;
         List<InvoicePurchase> list = invoicePurchaseService.selectInvoicePurchase(invoice.getMarketId(), user.getUserId());
@@ -521,70 +417,10 @@ public class InvoiceController extends BaseController {
             map.put("billTime", invoice.getBillTime());
             map.put("invoiceCode", invoicePurchase.getInvoiceCode());
             map.put("invoiceNo", invoicePurchase.getInvoiceNo());
+
             count = invoiceService.insertSelective(invoice);
             interfaceResult = confirm2(invoice, count, invoicePurchase);
             interfaceResult.InterfaceResult200(map);
-//            if (count == 0) {
-//                interfaceResult.InterfaceResult600("新增失败");
-//            } else {
-//                invoicePurchase.setPollResidue(invoicePurchase.getPollResidue() - 1);//剩余票号-1
-//                if (Integer.parseInt(invoicePurchase.getInvoiceEndNo()) == Integer.parseInt(invoice.getInvoiceNo())) {
-//                    invoicePurchase.setStatus(2);//购票最后一张
-//                    invoicePurchase.setInvoiceNo(invoicePurchase.getInvoiceEndNo());
-//                } else {
-//                    invoicePurchase.setInvoiceNo(StringUtils.leftPad(((Integer.parseInt(invoicePurchase.getInvoiceNo()) + 1) + ""), 8, "0"));//当前票号+1
-//                }
-//                counts = invoicePurchaseService.updateByIdAndVersion(invoicePurchase);
-//                if (counts == 0) {
-//                    interfaceResult.InterfaceResult600("购票异常，请重新购票!");
-//                    return interfaceResult;
-//                }
-//                if (invoice.getCarSources() == 1 && null != invoice.getTransferType() && invoice.getTransferType() == 1) {
-//                    //库存车且是卖出过户
-//                    Car car = new Car();
-//                    car.setId(invoice.getCarId());
-//                    if (invoice.getCarStockStatus() == 3) {
-//                        car.setStockStatus(5);//售出已出场状态
-//                    } else {
-//                        car.setStockStatus(4);//售出未出场状态
-//                    }
-//                    if (null != invoice.getTenantId() && invoice.getTenantId() != "") {
-//                        car.setTenant(invoice.getTenantId());
-//                    }
-//                    carService.updateByPrimaryKeySelective(car);
-//                    String topic = super.getTopic(user.getMarketId());
-//                    //同步删除本地车辆状态
-//                    //组装云端参数
-//                    PostParam postParam = new PostParam();
-//                    postParam.setData(JsonTools.toJson(car));
-//                    postParam.setMarket(user.getMarketId());
-//                    postParam.setUrl("/barrier/car/updateCar");
-//                    postParam.setMethod("post");
-//                    postParam.setOnlySend(false);
-//                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
-//                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
-//                } else if (1 == invoice.getCarSources() && 0 == invoice.getTransferType()) {
-//                    //库存车且是买入过户  修改库存车所属商户
-//                    Car car = new Car();
-//                    car.setId(invoice.getCarId());
-//                    car.setTenant(invoice.getTenantId());
-//                    carService.updateByPrimaryKeySelective(car);
-//
-//                    String topic = super.getTopic(user.getMarketId());
-//                    //同步删除本地车辆状态
-//                    //组装云端参数
-//                    PostParam postParam = new PostParam();
-//                    postParam.setData(JsonTools.toJson(car));
-//                    postParam.setMarket(user.getMarketId());
-//                    postParam.setUrl("/barrier/car/updateCar");
-//                    postParam.setMethod("post");
-//                    postParam.setOnlySend(false);
-//                    postParam.setMessageTime(Constants.dateformat.format(new Date()));
-//                    messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
-//                }
-//
-//                interfaceResult.InterfaceResult200(map);
-//            }
         } else {
             interfaceResult.InterfaceResult600("发票已用完，请购票");
         }
@@ -667,15 +503,42 @@ public class InvoiceController extends BaseController {
     @OperationAnnotation(title = "查询交易列表")
     public InterfaceResult getAllTransactionExcel(@RequestBody GetAllTransactionRequest request, HttpServletRequest servletRequest) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
+        int monthGap = 0;
+        String billTimeStart = request.getBillTimeStart();
+        String billTimeEnd = request.getBillTimeEnd();
+        if (StringUtil.isNotEmpty(billTimeEnd)) {
+            String[] start = billTimeStart.split("-");
+            String[] end = billTimeEnd.split("-");
+            int startMonth = Integer.parseInt(start[1]);
+            int startYear = Integer.parseInt(start[0]);
 
-        String marketId = getCurrentUser(servletRequest).getMarketId();
+            int endMonth = Integer.parseInt(end[1]);
+            int endYaer = Integer.parseInt(end[0]);
+            if (startMonth != endMonth) {
+                while (true) {
+                    endMonth -= 1;
+                    if (endMonth < 1) {
+                        endMonth = 12;
+                        endYaer -= 1;
+                    }
+                    monthGap += 1;
+                    if (endMonth == startMonth && startYear == endYaer) {
+                        break;
+                    }
+                }
+            }
+        }
 
-//        String marketId = "010";   //   ------------------------------------------------------------------这里市场写死了\
+        if (monthGap > 3) {
+            interfaceResult.InterfaceResult600("数据量过大，影响导出速率，建议选择3个月以内数据");
+        } else {
+            String marketId = getCurrentUser(servletRequest).getMarketId();
 
-        request.setMarketId(marketId);
+            request.setMarketId(marketId);
 
-        List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
-        interfaceResult.InterfaceResult200(allTransactionExcel);
+            List<TradeInformation> allTransactionExcel = transactionService.getAllTransactionExcel(request);
+            interfaceResult.InterfaceResult200(allTransactionExcel);
+        }
 
         return interfaceResult;
     }
@@ -725,112 +588,81 @@ public class InvoiceController extends BaseController {
     public InterfaceResult detailsExcel(@RequestBody Invoice invoice, HttpServletRequest request) throws Exception {
         InterfaceResult interfaceResult = new InterfaceResult();
 
-        User currentUser = getCurrentUser(request);
-        String userId = currentUser.getUserId();
-        if (null != currentUser.getMarketId() && !"".equals(currentUser.getMarketId())) {
-            invoice.setMarketId(currentUser.getMarketId());
+        //  判断数据是否超过三个月
+        int monthGap = 0;
+        String billTimeStart = invoice.getBillTimeStart();
+        String billTimeEnd = invoice.getBillTimeEnd();
+        if (StringUtil.isNotEmpty(billTimeEnd)) {
+            String[] start = billTimeStart.split("-");
+            String[] end = billTimeEnd.split("-");
+            int startMonth = Integer.parseInt(start[1]);
+            int startYear = Integer.parseInt(start[0]);
+
+            int endMonth = Integer.parseInt(end[1]);
+            int endYaer = Integer.parseInt(end[0]);
+            if (startMonth != endMonth) {
+                while (true) {
+                    endMonth -= 1;
+                    if (endMonth < 1) {
+                        endMonth = 12;
+                        endYaer -= 1;
+                    }
+                    monthGap += 1;
+                    if (endMonth == startMonth && startYear == endYaer) {
+                        break;
+                    }
+                }
+            }
         }
-        User user = userService.selectByPrimaryKey(userId);
-        if (user.getManagerFlag() == 0) {
-            invoice.setMarketId(null);
-        } else if (user.getManagerFlag() == 2) {
-            invoice.setMarketId(currentUser.getMarketId());
+        if (monthGap > 3) {
+            interfaceResult.InterfaceResult600("数据量过大，影响导出速率，建议选择3个月以内数据");
         } else {
-            invoice.setUserId(currentUser.getUserId());
-        }
+            User currentUser = getCurrentUser(request);
+            String userId = currentUser.getUserId();
+            if (null != currentUser.getMarketId() && !"".equals(currentUser.getMarketId())) {
+                invoice.setMarketId(currentUser.getMarketId());
+            }
+            User user = userService.selectByPrimaryKey(userId);
+            if (user.getManagerFlag() == 0) {
+                invoice.setMarketId(null);
+            } else if (user.getManagerFlag() == 2) {
+                invoice.setMarketId(currentUser.getMarketId());
+            } else {
+                invoice.setUserId(currentUser.getUserId());
+            }
 
-//        List<TradeInformation> tradeInformations = invoiceService.detailsExcel(invoice);
-        List<Invoice> lists = invoiceService.detailsManage(invoice);
-        List<Map> list = new ArrayList<>();
-        for (Invoice i : lists) {
-            Map<String, Object> map = new LinkedHashMap<>();
-            //  发票代码
-            String invoiceCode = i.getInvoiceCode();
-            if (StringUtil.isNotEmpty(invoiceCode)) {
-                map.put("invoiceCode", invoiceCode);
+            //  如果有时间 按照查询时间  导出数据
+            if (StringUtil.isNotEmpty(billTimeEnd)) {
+                Date date = DateUtils.parseDate(billTimeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+                Date dayEnd = DateUtils.getDayEnd(date);
+                String s = DateUtils.formatDate(dayEnd);
+                invoice.setBillTimeStart(invoice.getBillTimeStart());
+                invoice.setBillTimeEnd(s);
             } else {
-                map.put("invoiceCode", "");
-            }
-            //  发票号码
-            String invoiceNo = i.getInvoiceNo();
-            if (StringUtil.isNotEmpty(invoiceNo)) {
-                map.put("invoiceNo", invoiceNo);
-            } else {
-                map.put("invoiceNo", "");
-            }
-            //  开票时间
-            Date billTime = i.getBillTime();
-            if (billTime != null) {
-                map.put("billTime", billTime);
-            } else {
-                map.put("billTime", "");
-            }
-            //  买方
-            String purchacerName = i.getPurchacerName();
-            if (StringUtil.isNotEmpty(purchacerName)) {
-                map.put("purchacerName", purchacerName);
-            } else {
-                map.put("purchacerName", "");
-            }
-            //  卖方
-            String sellerName = i.getSellerName();
-            if (StringUtil.isNotEmpty(sellerName)) {
-                map.put("sellerName", sellerName);
-            } else {
-                map.put("sellerName", "");
-            }
-            //  车价合计
-            Double price = i.getPrice();
-            if (price != 0 && price != null) {
-                map.put("price", price);
-            } else {
-                map.put("price", "");
-            }
-            //  开票端口
-            Integer invoicePortof = i.getInvoicePortof();
-            if (invoicePortof != null) {
-                if (invoicePortof == 0) {
-                    map.put("invoicePortof", "自助交易终端");
-                } else if(invoicePortof == 1) {
-                    map.put("invoicePortof", "商户APP");
-                }else if(invoicePortof == 2) {
-                    map.put("invoicePortof", "窗口");
+                //  如果超过三个月  就按找三个月导出
+                Date date = new Date();
+                Date dayEnd = DateUtils.getDayEnd(date);
+                String s = DateUtils.formatDate(dayEnd);
+                String[] split = s.split("-");
+                Integer year = Integer.parseInt(split[0]);
+                Integer month = Integer.parseInt(split[1]);
+                String day = split[2];
+                for (int i = 0; i < 3; i++) {
+                    if (month > 1) {
+                        month = month - 1;
+                    } else {
+                        year = year - 1;
+                        month = 12;
+                    }
                 }
-            } else {
-                map.put("invoicePortof", "");
+                String startTime = year.toString() + "-" + month.toString() + "-" + day;
+                invoice.setBillTimeStart(startTime.substring(0, 10));
+                invoice.setBillTimeEnd(s);
             }
-            //  开票端口
-            Integer carSources = i.getCarSources();
-            if (carSources != 0 && carSources != null) {
-                if (carSources == 1) {
-                    map.put("carSources", "商品车");
-                } else if(carSources == 2) {
-                    map.put("carSources", "挂靠");
-                }else if(carSources == 3) {
-                    map.put("carSources", "代办");
-                }else if(carSources == 4) {
-                    map.put("carSources", "散户");
-                }
-            } else {
-                map.put("carSources", "");
-            }
-            //  开票端口
-            Integer invoiceStatus = i.getInvoiceStatus();
-            if (invoiceStatus != null) {
-                if (invoiceStatus == 1) {
-                    map.put("invoiceStatus", "未处理");
-                } else if(invoiceStatus == 0) {
-                    map.put("invoiceStatus", "作废");
-                }else if(invoiceStatus == 2) {
-                    map.put("invoiceStatus", "已处理");
-                }
-            } else {
-                map.put("invoiceStatus", "");
-            }
-            list.add(map);
-        }
 
-        interfaceResult.InterfaceResult200(list);
+            List<InvoiceExcel> lists = invoiceService.detailsManage(invoice);
+            interfaceResult.InterfaceResult200(lists);
+        }
 
         return interfaceResult;
     }
