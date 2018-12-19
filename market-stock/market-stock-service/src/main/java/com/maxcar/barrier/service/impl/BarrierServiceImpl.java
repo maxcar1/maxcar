@@ -102,4 +102,8 @@ public class BarrierServiceImpl implements BarrierService {
     public Barrier selectBarrierByBarrierMac(Barrier barrier) {
         return barrierMapper.selectBarrierByBarrierMac(barrier.getMarketId(),barrier.getBarrierMac());
     }
+    @Override
+    public Barrier selectByBarrierId2(String brakeId) {
+        return barrierMapper.selectByBarrierId(brakeId);
+    }
 }

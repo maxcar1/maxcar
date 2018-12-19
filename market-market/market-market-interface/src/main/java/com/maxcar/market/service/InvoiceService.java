@@ -5,8 +5,10 @@ import com.maxcar.base.pojo.InterfaceResult;
 import com.maxcar.base.service.BaseService;
 import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
+import com.maxcar.market.pojo.InvoiceExcel;
 import com.maxcar.market.pojo.TradeInformation;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public interface InvoiceService extends BaseService<Invoice, String> {
 
     Invoice selectInvoiceTotalCount();
 
-    PageInfo getInvoiceList(Invoice invoice);
+    PageInfo getInvoiceList(Invoice invoice) throws ParseException;
 
     Invoice selectInvoiceDetailById(String id);
 
@@ -36,5 +38,5 @@ public interface InvoiceService extends BaseService<Invoice, String> {
      */
     double selectPriceByCarId(String carId);
 
-    List<Invoice> detailsManage(Invoice invoice);
+    List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException;
 }

@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maxcar.base.dao.TaobaoCarMapper" >
+  <resultMap id="BaseResultMap" type="com.maxcar.base.pojo.taobao.TaobaoCar" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+    <result column="brand_pid" property="brandPid" jdbcType="VARCHAR" />
+    <result column="brand_vid" property="brandVid" jdbcType="VARCHAR" />
+    <result column="series_name" property="seriesName" jdbcType="VARCHAR" />
+    <result column="series_pid" property="seriesPid" jdbcType="VARCHAR" />
+    <result column="series_vid" property="seriesVid" jdbcType="VARCHAR" />
+    <result column="year_name" property="yearName" jdbcType="VARCHAR" />
+    <result column="year_pid" property="yearPid" jdbcType="VARCHAR" />
+    <result column="year_vid" property="yearVid" jdbcType="VARCHAR" />
+    <result column="model_name" property="modelName" jdbcType="VARCHAR" />
+    <result column="model_pid" property="modelPid" jdbcType="VARCHAR" />
+    <result column="model_vid" property="modelVid" jdbcType="VARCHAR" />
+    <result column="ali_value" property="aliValue" jdbcType="VARCHAR" />
+    <result column="ali_code" property="aliCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, brand_name, brand_pid, brand_vid, series_name, series_pid, series_vid, year_name, 
+    year_pid, year_vid, model_name, model_pid, model_vid, ali_value, ali_code
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maxcar.base.pojo.taobao.TaobaoCarExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from taobao_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from taobao_car
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from taobao_car
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.maxcar.base.pojo.taobao.TaobaoCarExample" >
+    delete from taobao_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.maxcar.base.pojo.taobao.TaobaoCar" >
+    insert into taobao_car (id, brand_name, brand_pid, 
+      brand_vid, series_name, series_pid, 
+      series_vid, year_name, year_pid, 
+      year_vid, model_name, model_pid, 
+      model_vid, ali_value, ali_code
+      )
+    values (#{id,jdbcType=INTEGER}, #{brandName,jdbcType=VARCHAR}, #{brandPid,jdbcType=VARCHAR}, 
+      #{brandVid,jdbcType=VARCHAR}, #{seriesName,jdbcType=VARCHAR}, #{seriesPid,jdbcType=VARCHAR}, 
+      #{seriesVid,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR}, #{yearPid,jdbcType=VARCHAR}, 
+      #{yearVid,jdbcType=VARCHAR}, #{modelName,jdbcType=VARCHAR}, #{modelPid,jdbcType=VARCHAR}, 
+      #{modelVid,jdbcType=VARCHAR}, #{aliValue,jdbcType=VARCHAR}, #{aliCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maxcar.base.pojo.taobao.TaobaoCar" >
+    insert into taobao_car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="brandName != null" >
+        brand_name,
+      </if>
+      <if test="brandPid != null" >
+        brand_pid,
+      </if>
+      <if test="brandVid != null" >
+        brand_vid,
+      </if>
+      <if test="seriesName != null" >
+        series_name,
+      </if>
+      <if test="seriesPid != null" >
+        series_pid,
+      </if>
+      <if test="seriesVid != null" >
+        series_vid,
+      </if>
+      <if test="yearName != null" >
+        year_name,
+      </if>
+      <if test="yearPid != null" >
+        year_pid,
+      </if>
+      <if test="yearVid != null" >
+        year_vid,
+      </if>
+      <if test="modelName != null" >
+        model_name,
+      </if>
+      <if test="modelPid != null" >
+        model_pid,
+      </if>
+      <if test="modelVid != null" >
+        model_vid,
+      </if>
+      <if test="aliValue != null" >
+        ali_value,
+      </if>
+      <if test="aliCode != null" >
+        ali_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="brandName != null" >
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandPid != null" >
+        #{brandPid,jdbcType=VARCHAR},
+      </if>
+      <if test="brandVid != null" >
+        #{brandVid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesName != null" >
+        #{seriesName,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesPid != null" >
+        #{seriesPid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesVid != null" >
+        #{seriesVid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearName != null" >
+        #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="yearPid != null" >
+        #{yearPid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearVid != null" >
+        #{yearVid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null" >
+        #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelPid != null" >
+        #{modelPid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelVid != null" >
+        #{modelVid,jdbcType=VARCHAR},
+      </if>
+      <if test="aliValue != null" >
+        #{aliValue,jdbcType=VARCHAR},
+      </if>
+      <if test="aliCode != null" >
+        #{aliCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maxcar.base.pojo.taobao.TaobaoCarExample" resultType="java.lang.Integer" >
+    select count(*) from taobao_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update taobao_car
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.brandName != null" >
+        brand_name = #{record.brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brandPid != null" >
+        brand_pid = #{record.brandPid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brandVid != null" >
+        brand_vid = #{record.brandVid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.seriesName != null" >
+        series_name = #{record.seriesName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.seriesPid != null" >
+        series_pid = #{record.seriesPid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.seriesVid != null" >
+        series_vid = #{record.seriesVid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yearName != null" >
+        year_name = #{record.yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yearPid != null" >
+        year_pid = #{record.yearPid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yearVid != null" >
+        year_vid = #{record.yearVid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modelName != null" >
+        model_name = #{record.modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modelPid != null" >
+        model_pid = #{record.modelPid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modelVid != null" >
+        model_vid = #{record.modelVid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.aliValue != null" >
+        ali_value = #{record.aliValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.aliCode != null" >
+        ali_code = #{record.aliCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update taobao_car
+    set id = #{record.id,jdbcType=INTEGER},
+      brand_name = #{record.brandName,jdbcType=VARCHAR},
+      brand_pid = #{record.brandPid,jdbcType=VARCHAR},
+      brand_vid = #{record.brandVid,jdbcType=VARCHAR},
+      series_name = #{record.seriesName,jdbcType=VARCHAR},
+      series_pid = #{record.seriesPid,jdbcType=VARCHAR},
+      series_vid = #{record.seriesVid,jdbcType=VARCHAR},
+      year_name = #{record.yearName,jdbcType=VARCHAR},
+      year_pid = #{record.yearPid,jdbcType=VARCHAR},
+      year_vid = #{record.yearVid,jdbcType=VARCHAR},
+      model_name = #{record.modelName,jdbcType=VARCHAR},
+      model_pid = #{record.modelPid,jdbcType=VARCHAR},
+      model_vid = #{record.modelVid,jdbcType=VARCHAR},
+      ali_value = #{record.aliValue,jdbcType=VARCHAR},
+      ali_code = #{record.aliCode,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maxcar.base.pojo.taobao.TaobaoCar" >
+    update taobao_car
+    <set >
+      <if test="brandName != null" >
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandPid != null" >
+        brand_pid = #{brandPid,jdbcType=VARCHAR},
+      </if>
+      <if test="brandVid != null" >
+        brand_vid = #{brandVid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesName != null" >
+        series_name = #{seriesName,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesPid != null" >
+        series_pid = #{seriesPid,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesVid != null" >
+        series_vid = #{seriesVid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearName != null" >
+        year_name = #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="yearPid != null" >
+        year_pid = #{yearPid,jdbcType=VARCHAR},
+      </if>
+      <if test="yearVid != null" >
+        year_vid = #{yearVid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null" >
+        model_name = #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelPid != null" >
+        model_pid = #{modelPid,jdbcType=VARCHAR},
+      </if>
+      <if test="modelVid != null" >
+        model_vid = #{modelVid,jdbcType=VARCHAR},
+      </if>
+      <if test="aliValue != null" >
+        ali_value = #{aliValue,jdbcType=VARCHAR},
+      </if>
+      <if test="aliCode != null" >
+        ali_code = #{aliCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maxcar.base.pojo.taobao.TaobaoCar" >
+    update taobao_car
+    set brand_name = #{brandName,jdbcType=VARCHAR},
+      brand_pid = #{brandPid,jdbcType=VARCHAR},
+      brand_vid = #{brandVid,jdbcType=VARCHAR},
+      series_name = #{seriesName,jdbcType=VARCHAR},
+      series_pid = #{seriesPid,jdbcType=VARCHAR},
+      series_vid = #{seriesVid,jdbcType=VARCHAR},
+      year_name = #{yearName,jdbcType=VARCHAR},
+      year_pid = #{yearPid,jdbcType=VARCHAR},
+      year_vid = #{yearVid,jdbcType=VARCHAR},
+      model_name = #{modelName,jdbcType=VARCHAR},
+      model_pid = #{modelPid,jdbcType=VARCHAR},
+      model_vid = #{modelVid,jdbcType=VARCHAR},
+      ali_value = #{aliValue,jdbcType=VARCHAR},
+      ali_code = #{aliCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

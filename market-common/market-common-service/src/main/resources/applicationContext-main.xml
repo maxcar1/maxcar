@@ -24,11 +24,13 @@
 				<value>classpath:redis-config.properties</value>
 				<value>classpath:dasouche.properties</value>
 				<value>classpath:kafka.properties</value>
+				<value>classpath:taobaoConfig.properties</value>
 			</list>
 		</property>
 	</bean>
      <import resource="classpath:dubbo/spring-redis-service.xml"/>
 	<import resource="classpath:applicationContext-jedis-single.xml"/>
 	<import resource="classpath:mybatis/spring-mybatis.xml"/>
+
 	<!--为集群配置-->
 </beans>

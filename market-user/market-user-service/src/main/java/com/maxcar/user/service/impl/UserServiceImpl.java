@@ -355,7 +355,14 @@ public class UserServiceImpl extends BaseServiceImpl<User,String> implements Use
         interfaceResult.InterfaceResult200(proResult.getData());
         return interfaceResult;
     }
-
+    @Override
+    public List<User> getUserList(String marketId, String orgId) {
+        UserExample example = new UserExample();
+        example.createCriteria().andMarketIdEqualTo(marketId)
+                .andOrgIdEqualTo(orgId)
+                .andIsvalidEqualTo(1);
+        return userMapper.selectByExample(example);
+    }
 
 //    public static void main(String[] args){
 //        System.out.println(MD5Util.MD5("maxcar12345678"));

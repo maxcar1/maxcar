@@ -728,7 +728,7 @@
         FROM
         car t left join
         car_base cb on t.id = cb.id
-        left join car_review cr on cr.car_id = t.id
+        left  JOIN (select * from car_review where is_complete=0) cr on cr.car_id = t.id
         WHERE
         t.stock_status in ('1','2','3') and
         t.isvalid=1 and t.market_id = #{marketId}
@@ -885,12 +885,12 @@
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>,
         (
-        select ccr.id from car_channel_rel ccr
-        where ccr.car_id=t.id and ccr.channel_id='2' LIMIT 1
+        select ccr.id from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
+        where ccr.car_id=t.id and cch.channel_no='002' order by ccr.update_time desc LIMIT 1
         ) as carChannelId,
         (
-        select ccr.shelf_status from car_channel_rel ccr
-        where ccr.car_id=t.id and ccr.channel_id='2' LIMIT 1
+        select ccr.shelf_status from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
+        where ccr.car_id=t.id and cch.channel_no='002' order by ccr.update_time desc LIMIT 1
         ) as shelfStatus
         FROM
         car t left join
@@ -1190,7 +1190,7 @@
         <include refid="car_vo_where"/>
     </select>
     <select id="getCarList" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select car_type,stock_status,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,stock_status,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
             and isvalid = 1 and stock_status in (1,2,3)
             <if test="carType != null">
@@ -1199,10 +1199,11 @@
         </where>
     </select>
     <select id="getCarListByStaffId" resultMap="BaseResultMap">
-        select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
+        select id,car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id from car
         <where>
             and isvalid = 1
             and car_type = 2
+            and stock_status != -1
             and staff_id in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1213,7 +1214,7 @@
     <select id="getCarListByTenant" resultMap="BaseResultMap">
         select car_type,insert_time,tenant,vin,rfid,inster_operator,staff_id,id from car
         <where>
-            and isvalid = 1 and car_type = 3
+            and isvalid = 1 and car_type = 3 and stock_status != -1
             and tenant in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1790,8 +1791,8 @@
         case when t.stock_status = 1 then '在场'
              when t.stock_status = 2 then '在场'
              when t.stock_status = 3 then '出场'
-             when t.stock_status = 4 then '售出出场'
-             when t.stock_status = 5 then '售出在场'
+             when t.stock_status = 4 then '售出在场'
+             when t.stock_status = 5 then '售出出场'
              end as stockStatus,
         case when t.is_new_car =0 then '新车' else '二手车' end as isNewCar,
         date_format(t.register_time, '%Y-%m-%d %H:%i:%s') as registerTime,

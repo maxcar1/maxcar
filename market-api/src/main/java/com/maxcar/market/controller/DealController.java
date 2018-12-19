@@ -85,9 +85,10 @@ public class DealController extends BaseController {
         List<Map> deals = new ArrayList<>();
         HashMap<String, Object> dealMap = null;
 
+        //顺序 1交易时间 2商户 3负责人 4车辆来源 5过户类型 6交易类型 7交易价格 8售价 9估价 10vin 11品牌车系 12入库时间 13库存天数
         for (DealResponse d : list) {
             dealMap = new LinkedHashMap();
-            //  开票时间        1
+            //  交易时间        1
             String billTime = d.getBillTime();
             if (StringUtil.isNotEmpty(billTime)) {
                 dealMap.put("billTime", billTime);
@@ -95,72 +96,23 @@ public class DealController extends BaseController {
                 dealMap.put("billTime", "");
             }
 
-            //  vin         2
-            String vin = d.getIvin();
-            if (StringUtil.isNotEmpty(vin)) {
-                dealMap.put("vin", vin);
-            } else {
-                dealMap.put("vin", "");
-            }
-            //  品牌车系     3
-            String seriesName = d.getSeriesName();
-            if (StringUtil.isNotEmpty(seriesName)) {
-                dealMap.put("seriesName", seriesName);
-            } else {
-                dealMap.put("seriesName", "");
-            }
-            //  商户      4
+            //  商户      2
             String tenantName = d.getTenantName();
             if (StringUtil.isNotEmpty(tenantName)) {
                 dealMap.put("tenantName", tenantName);
             } else {
                 dealMap.put("tenantName", "");
             }
-            //  负责人         5
+
+            //  负责人         3
             String contactName = d.getContactName();
             if (StringUtil.isNotEmpty(contactName)) {
                 dealMap.put("contactName", contactName);
             } else {
                 dealMap.put("contactName", "");
             }
-            //  入库时间            6
-            String registerTime = d.getRegisterTime();
-            if (StringUtil.isNotEmpty(registerTime)) {
-                dealMap.put("registerTime", registerTime);
-            } else {
-                dealMap.put("registerTime", "");
-            }
-            //  库存时间                7
-            String registerDay = d.getRegisterDay();
-            if (StringUtil.isNotEmpty(registerDay)) {
-                dealMap.put("registerDay", registerDay);
-            } else {
-                dealMap.put("registerDay", "");
-            }
-            //  售价（万元）               8
-            Double marketPrice = d.getMarketPrice();
-            if (marketPrice != null) {
-                dealMap.put("marketPrice", marketPrice);
-            } else {
-                dealMap.put("marketPrice", "");
-            }
-            //  估价（万元）              9
-            Double evaluatePrice = d.getEvaluatePrice();
-            if (evaluatePrice != null) {
-                dealMap.put("evaluatePrice", evaluatePrice);
-            } else {
-                dealMap.put("evaluatePrice", "");
-            }
-            //  交易价格（万元）              10
-            Double price = d.getPrice();
-            if (price != null) {
-                BigDecimal bd = new BigDecimal(price / 10000);
-                double v = bd.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                dealMap.put("price", v);
-            } else {
-                dealMap.put("price", "");
-            }
-            //  车辆来源  11
+
+            //  车辆来源  4
             String carStatus = d.getCarStatus();
             if ("1".equals(carStatus)) {
                 dealMap.put("status", "商品车");
@@ -173,7 +125,20 @@ public class DealController extends BaseController {
             } else {
                 dealMap.put("status", "");
             }
-            //  交易类型    12
+
+            //  过户类型 5
+            String transferType = d.getTransferType();
+            if (transferType != null) {
+                if ("0".equals(transferType)) {
+                    dealMap.put("transferType", "买入过户");
+                } else if ("1".equals(transferType)) {
+                    dealMap.put("transferType", "卖出过户");
+                }
+            }else{
+                dealMap.put("transferType", "");
+            }
+
+            //  交易类型    6
             Integer tradingType = d.getTradingType();
             if (tradingType != null) {
                 if (1 == tradingType) {
@@ -186,18 +151,66 @@ public class DealController extends BaseController {
             } else {
                 dealMap.put("tradingType", "");
             }
-            //  过户类型
-            String transferType = d.getTransferType();
-            if (transferType != null) {
-                if ("0".equals(transferType)) {
-                    dealMap.put("transferType", "买入过户");
-                } else if ("1".equals(transferType)) {
-                    dealMap.put("transferType", "卖出过户");
-                }
-            }else{
-                dealMap.put("transferType", "");
+
+            //  交易价格（万元）              7
+            Double price = d.getPrice();
+            if (price != null) {
+                BigDecimal bd = new BigDecimal(price / 10000);
+                double v = bd.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                dealMap.put("price", v);
+            } else {
+                dealMap.put("price", "");
             }
-                deals.add(dealMap);
+
+            //  售价（万元）               8
+            Double marketPrice = d.getMarketPrice();
+            if (marketPrice != null) {
+                dealMap.put("marketPrice", marketPrice);
+            } else {
+                dealMap.put("marketPrice", "");
+            }
+
+            //  估价（万元）              9
+            Double evaluatePrice = d.getEvaluatePrice();
+            if (evaluatePrice != null) {
+                dealMap.put("evaluatePrice", evaluatePrice);
+            } else {
+                dealMap.put("evaluatePrice", "");
+            }
+
+            //  vin         10
+            String vin = d.getIvin();
+            if (StringUtil.isNotEmpty(vin)) {
+                dealMap.put("vin", vin);
+            } else {
+                dealMap.put("vin", "");
+            }
+
+            //  品牌车系     11
+            String seriesName = d.getSeriesName();
+            if (StringUtil.isNotEmpty(seriesName)) {
+                dealMap.put("seriesName", seriesName);
+            } else {
+                dealMap.put("seriesName", "");
+            }
+
+            //  入库时间            12
+            String registerTime = d.getRegisterTime();
+            if (StringUtil.isNotEmpty(registerTime)) {
+                dealMap.put("registerTime", registerTime);
+            } else {
+                dealMap.put("registerTime", "");
+            }
+
+            //  库存时间                13
+            String registerDay = d.getRegisterDay();
+            if (StringUtil.isNotEmpty(registerDay)) {
+                dealMap.put("registerDay", registerDay);
+            } else {
+                dealMap.put("registerDay", "");
+            }
+
+            deals.add(dealMap);
         }
 
 //        for (DealResponse backDeal : list) {

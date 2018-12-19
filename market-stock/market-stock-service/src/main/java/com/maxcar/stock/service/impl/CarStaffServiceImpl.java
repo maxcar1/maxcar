@@ -13,8 +13,10 @@ import com.maxcar.stock.service.CarStaffService;
 import com.maxcar.tenant.pojo.UserTenant;
 import com.maxcar.tenant.pojo.UserTenantExample;
 import com.maxcar.tenant.service.UserTenantService;
+import com.maxcar.user.entity.Configuration;
 import com.maxcar.user.entity.Organizations;
 import com.maxcar.user.entity.Staff;
+import com.maxcar.user.service.ConfigurationService;
 import com.maxcar.user.service.OrganizationsService;
 import com.maxcar.user.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,9 @@ public class CarStaffServiceImpl implements CarStaffService {
 
     @Autowired
     private StaffService staffService;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     /**
      * 两个接口均使用服务调取数据，代码冗余，只需写一条sql就能实现。
@@ -200,14 +205,27 @@ public class CarStaffServiceImpl implements CarStaffService {
                                     usedTenantNum++;
                                     record.put("usedParkingNum", usedTenantNum);
                                 }
+
                             }
                         }
                     }
                 }
-                record.put("totalParkingNum", staffList.size() * 2);
+                Configuration configuration=new Configuration();
+                List<Configuration> list=null;
+
+                try {
+                    configuration.setMarketId(marketId);
+                    configuration.setConfigurationKey("staff_car_market");
+                     list=configurationService.searchConfiguration(configuration);
+                }catch ( Exception e ){
+                    e.printStackTrace();
+                }
+
+                Integer num= Integer.parseInt(list.get(0).getConfigurationValue());
+                record.put("totalParkingNum", staffList.size() * num);
                 Integer usedTenantNum = null == record.get("usedParkingNum")?0: (Integer) record.get("usedParkingNum");
                 record.put("usedParkingNum", usedTenantNum);
-                record.put("restParkingNum", staffList.size() * 2 - usedTenantNum);
+                record.put("restParkingNum", staffList.size() * num - usedTenantNum);
             }else{
                 record.put("totalParkingNum", 0);
                 record.put("usedParkingNum", 0);
@@ -243,10 +261,22 @@ public class CarStaffServiceImpl implements CarStaffService {
                         }
                     }
                 }
-                record.put("totalParkingNum", staffList.size() * 2);
+                Configuration configuration=new Configuration();
+                List<Configuration> list=null;
+
+                try {
+                    configuration.setMarketId(marketId);
+                    configuration.setConfigurationKey("staff_car_tenant");
+                    list=configurationService.searchConfiguration(configuration);
+                }catch ( Exception e ){
+                    e.printStackTrace();
+                }
+
+                Integer num= Integer.parseInt(list.get(0).getConfigurationValue());
+                record.put("totalParkingNum", staffList.size() * num);
                 Integer usedTenantNum = null == record.get("usedParkingNum")?0: (Integer) record.get("usedParkingNum");
                 record.put("usedParkingNum", usedTenantNum);
-                record.put("restParkingNum", staffList.size() * 2 - usedTenantNum);
+                record.put("restParkingNum", staffList.size() * num - usedTenantNum);
             }else{
                 record.put("totalParkingNum", 0);
                 record.put("usedParkingNum", 0);

@@ -33,6 +33,11 @@
     update_time, insert_operator, update_operator,is_vip,pay_time,reason,in_type
   </sql>
 
+    <sql id="getParkingFreeList_Column_List">
+    a.id as id,a.card_no as cardNo, a.charge_price as chargePrice, a.pay_type as payType, a.price,
+    a.before_time as beforeTime, a.after_time as afterTime, a.in_type as inType,
+    b.employees_id as employeesId ,b.brake_id as brakeId
+  </sql>
     <!-- 根据UnionId 或者卡号 获取最近入场记录信息  -->
     <select id="getParkingFeeDetailByUnionIdOrCardNo" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
@@ -66,7 +71,9 @@
     </select>
 
     <select id="selectDetail" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from parking_fee_detail
+        select
+        <include refid="Base_Column_List"/>
+        from parking_fee_detail
         <where>
             and is_valid = 1 and pay_type = 3
             <if test="cardNo !=null and cardNo != ''">
@@ -411,7 +418,9 @@
         </where>
     </select>
     <select id="getThisShiftRecord" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from parking_fee_detail
+        select
+        <include refid="Base_Column_List"/>
+        from parking_fee_detail
         <where>
             and is_valid = 1
             and market_id = #{marketId,jdbcType=VARCHAR}
@@ -421,7 +430,9 @@
         order by after_time desc
     </select>
     <select id="getRecordByCardNoOrUnionId" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from parking_fee_detail
+        select
+        <include refid="Base_Column_List"/>
+        from parking_fee_detail
         <where>
             and is_valid = 1
             and market_id = #{marketId,jdbcType=VARCHAR}
@@ -438,7 +449,9 @@
     </select>
 
     <select id="selectParkingFee" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from parking_fee_detail
+        select
+        <include refid="Base_Column_List"/>
+        from parking_fee_detail
         <where>
             is_valid = 1
             and market_id = #{marketId,jdbcType=VARCHAR}
@@ -453,15 +466,74 @@
     </select>
 
     <!--<update id="updateIsVipByPrimaryKey" parameterType="com.maxcar.market.pojo.ParkingFeeDetail">-->
-        <!--update parking_fee_detail-->
-          <!--set -->
-        <!--<if test="isVip != null">-->
-            <!--is_vip = #{isVip,jdbcType=INTEGER},-->
-        <!--</if>-->
-        <!--<if test="payTime != null">-->
-            <!--pay_time = #{payTime,jdbcType=TIMESTAMP},-->
-        <!--</if>-->
-          <!--where id = #{id,jdbcType=VARCHAR}-->
+    <!--update parking_fee_detail-->
+    <!--set -->
+    <!--<if test="isVip != null">-->
+    <!--is_vip = #{isVip,jdbcType=INTEGER},-->
+    <!--</if>-->
+    <!--<if test="payTime != null">-->
+    <!--pay_time = #{payTime,jdbcType=TIMESTAMP},-->
+    <!--</if>-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
     <!--</update>-->
 
+    <select id="getParkingFreePaySum" resultType="com.maxcar.market.model.response.ParkingFeePayDetailResponse"
+            parameterType="com.maxcar.market.model.request.ParkingFeeDetailListRequest">
+        select
+        COUNT(*) AS 'carCount',
+        IFNULL(SUM(price),0) AS 'paySum',
+        IFNULL(SUM(IF(pay_type = 0, price, 0)),0) AS 'aliPay',
+        IFNULL(SUM(IF(pay_type = 1, price, 0)),0) AS 'weChatPay',
+        IFNULL(SUM(IF(pay_type = 2, price, 0)),0) AS 'cashPay',
+        IFNULL(SUM(IF(pay_type = 3, price, 0)),0) AS 'publicPay'
+        from parking_fee_detail a
+        left join parking_fee b on a.parking_fee_id=b.id
+        <where>
+            a.is_valid = 1
+            and a.after_time is not null
+            <include refid="getParkingFreeList_where"/>
+            order by a.insert_time DESC
+        </where>
+    </select>
+
+    <sql id="getParkingFreeList_where">
+        <if test=" marketId != null and marketId != '' ">
+            and a.market_id = #{marketId,jdbcType=VARCHAR}
+        </if>
+        <if test="barrierId !=null and barrierId !='' ">
+            and b.brake_id = #{barrierId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId !=null and userId !='' ">
+            and b.employees_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="payType !=null ">
+            and a.pay_type = #{payType,jdbcType=INTEGER}
+        </if>
+        <if test=" beforeTimeStart !=null and beforeTimeStart !='' ">
+            <![CDATA[ and a.before_time  >= #{beforeTimeStart}  ]]>
+        </if>
+        <if test=" beforeTimeEnd !=null and beforeTimeEnd !='' ">
+            <![CDATA[ and a.before_time < #{beforeTimeEnd}  ]]>
+        </if>
+        <if test=" afterTimeStart !=null and afterTimeStart !='' ">
+            <![CDATA[ and a.after_time  >= #{afterTimeStart}  ]]>
+        </if>
+        <if test=" afterTimeEnd !=null and afterTimeEnd !='' ">
+            <![CDATA[ and a.after_time < #{afterTimeEnd}  ]]>
+        </if>
+    </sql>
+
+    <select id="getParkingFreeList" resultType="com.maxcar.market.model.response.ParkingFeeDetailListResponse"
+            parameterType="com.maxcar.market.model.request.ParkingFeeDetailListRequest">
+        select
+        <include refid="getParkingFreeList_Column_List"/>
+        from parking_fee_detail a
+        left join parking_fee b on a.parking_fee_id=b.id
+        <where>
+            a.is_valid = 1
+            and a.after_time is not null
+            <include refid="getParkingFreeList_where"/>
+            order by a.insert_time DESC
+        </where>
+    </select>
 </mapper>

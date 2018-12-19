@@ -28,7 +28,8 @@ public class KafkaConsumerConfig {
 
     @Value("${kafka.consumer.servers}")
     private String servers;
-    @Value("${kafka.consumer.enable.auto.commit}")
+    //禁止kafka自动提交offset
+    @Value("false")
     private boolean enableAutoCommit;
     @Value("${kafka.consumer.session.timeout}")
     private String sessionTimeout;
@@ -66,6 +67,7 @@ public class KafkaConsumerConfig {
         propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         propsMap.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         propsMap.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
+        propsMap.put(ConsumerConfig.RECEIVE_BUFFER_CONFIG,4096000);
         return propsMap;
     }
     //玉林

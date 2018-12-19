@@ -72,6 +72,12 @@
             <artifactId>market-util</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.maxcar.thirdparty</groupId>
+            <artifactId>zcjservice</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
