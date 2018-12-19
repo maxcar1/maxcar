@@ -37,7 +37,8 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
          * 南通第二阶段收费
          *
          */
-        Date newBegin = DateUtils.addMinute(payTime, 15);
+     //   Date newBegin = DateUtils.addMinute(payTime, 15);
+        Date newBegin = DateUtils.addMinute(payTime, 0);
         Date currentTime = Calendar.getInstance().getTime();
         ParkingFeeTotalExample example = new ParkingFeeTotalExample();
         example.createCriteria().andMarketIdEqualTo(marketId).andIsValidEqualTo(1)
