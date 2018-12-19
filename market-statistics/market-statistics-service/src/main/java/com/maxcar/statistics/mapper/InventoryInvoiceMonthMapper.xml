@@ -380,10 +380,10 @@
     <select id="getStockDayCar" resultMap="StockResponseResultMap"
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
-        stocktime_id,
-        stock_count
+        report_time,
+        (AVG(stock_day_avg) + AVG(stock_day_price_avg)) / 2 AS stock_count
         FROM
-        `carstocktime_day`
+        `inventory_invoice_day`
         WHERE isvalid = 1
         <if test="marketId != null and marketId != '' ">
             AND market_id = #{marketId}
@@ -394,7 +394,6 @@
         <if test="timeEnd != null and timeEnd != '' ">
             AND report_time = #{timeEnd}
         </if>
-        ORDER BY stocktime_id
     </select>
 
     <select id="getStockAvgMonthCar" resultMap="StockResponseResultMap"

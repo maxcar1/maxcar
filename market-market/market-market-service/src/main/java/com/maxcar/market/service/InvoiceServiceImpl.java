@@ -290,7 +290,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         if (stockAvg != null) {
             yesterStockAvg = Double.parseDouble(stockAvg.toString());
             yesterStockAvg = Math.round(yesterStockAvg * 100) / 100.0;
-            map.put("contrastStockAvg", (nowStockAvg - yesterStockAvg));
+            map.put("contrastStockAvg", (Math.round((nowStockAvg - yesterStockAvg) * 100) / 100.0));
         }
 
         stockCount = yesterStockMap.get("stockCount");
