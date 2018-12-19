@@ -86,12 +86,12 @@ public class StockServiceImpl implements StockService {
                 agoMonthCount = stockResponse.getStockCount();
                 agoMonthPrice = stockResponse.getStockPrice();
             }
-                avgStockPrice = Math.round((stockPrice + agoMonthPrice) / 2);
-                avgStockCount = Math.round((stockCount + agoMonthCount) / 2);
+            avgStockPrice = Math.round((stockPrice + agoMonthPrice) / 2);
+            avgStockCount = Math.round((stockCount + agoMonthCount) / 2);
 
-                //  环比
-                rateMonthStockCount = Math.round((stockCount - agoMonthCount) / agoMonthCount * 100) / 100.0;
-                rateMonthStockPrice = Math.round((stockPrice - agoMonthPrice) / agoMonthPrice * 100) / 100.0;
+            //  环比
+            rateMonthStockCount = Math.round((stockCount - agoMonthCount) / agoMonthCount * 100) / 100.0;
+            rateMonthStockPrice = Math.round((stockPrice - agoMonthPrice) / agoMonthPrice * 100) / 100.0;
             //  设置移动平均
             inventory.setAvgStockCount(avgStockCount);
             inventory.setAvgStockPrice(avgStockPrice);
@@ -137,20 +137,30 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<StockResponse> getStockAvgDayCar(StockRequest stockRequest) {
+        String timeEnd = stockRequest.getTimeEnd();
+        if (StringUtil.isNotEmpty(timeEnd)) {
+            timeEnd = timeEnd.substring(0, 7);
+            stockRequest.setTimeEnd(timeEnd);
+        }
+        String timeStart = stockRequest.getTimeStart();
+        if (StringUtil.isNotEmpty(timeStart)) {
+            timeStart = timeStart.substring(0, 7);
+            stockRequest.setTimeStart(timeStart);
+        }
         List<StockResponse> list = inventoryInvoiceMonthMapper.getStockAvgMonthCar(stockRequest);
-        Date date = new Date();
-        Date monthStart = DateUtils.getMonthStart(date);
-        Date monthEnd = DateUtils.getMonthEnd(date);
-        String start = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
-        String end = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
-        stockRequest.setTimeStart(start);
-        stockRequest.setTimeEnd(end);
-        Double nowDay = inventoryInvoiceDayMapper.getStockAvgDayCar(stockRequest);
-        String reportTime1 = start.substring(0, 7);
-        StockResponse response = new StockResponse();
-        response.setReportTime(reportTime1);
-        response.setStockDayAvg(nowDay);
-        list.add(response);
+//        Date date = new Date();
+//        Date monthStart = DateUtils.getMonthStart(date);
+//        Date monthEnd = DateUtils.getMonthEnd(date);
+//        String start = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
+//        String end = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
+//        stockRequest.setTimeStart(start);
+//        stockRequest.setTimeEnd(end);
+//        Double nowDay = inventoryInvoiceDayMapper.getStockAvgDayCar(stockRequest);
+//        String reportTime1 = start.substring(0, 7);
+//        StockResponse response = new StockResponse();
+//        response.setReportTime(reportTime1);
+//        response.setStockDayAvg(nowDay);
+//        list.add(response);
         Double monthStockDay = 0.0;
         Double YearStockDay = 0.0;
         for (StockResponse month : list) {
@@ -280,49 +290,49 @@ public class StockServiceImpl implements StockService {
         HashMap<String, Object> map = new HashMap<>();
         stockRequest.setCarNumType("0");
         Integer stockPrice0 = carStockMonthMapper.getStockPrice(stockRequest);
-        if(stockPrice0 != null){
+        if (stockPrice0 != null) {
             map.put("10万以下", stockPrice0);
-        }else {
+        } else {
             map.put("10万以下", 0);
         }
 
         stockRequest.setCarNumType("1");
         Integer stockPrice1 = carStockMonthMapper.getStockPrice(stockRequest);
-        if(stockPrice1 != null){
+        if (stockPrice1 != null) {
             map.put("10-20万", stockPrice1);
-        }else {
+        } else {
             map.put("10-20万", 0);
         }
 
         stockRequest.setCarNumType("2");
         Integer stockPrice2 = carStockMonthMapper.getStockPrice(stockRequest);
-        if(stockPrice2 != null){
+        if (stockPrice2 != null) {
             map.put("20-30万", stockPrice2);
-        }else {
+        } else {
             map.put("20-30万", 0);
         }
 
         stockRequest.setCarNumType("3");
         Integer stockPrice3 = carStockMonthMapper.getStockPrice(stockRequest);
-        if(stockPrice3 != null){
+        if (stockPrice3 != null) {
             map.put("30-40万", stockPrice3);
-        }else {
+        } else {
             map.put("30-40万", 0);
         }
 
         stockRequest.setCarNumType("4");
         Integer stockPrice4 = carStockMonthMapper.getStockPrice(stockRequest);
-        if(stockPrice4 != null){
+        if (stockPrice4 != null) {
             map.put("40-50万", stockPrice4);
-        }else {
+        } else {
             map.put("40-50万", 0);
         }
 
         stockRequest.setCarNumType("5");
         Integer stockPrice5 = carStockMonthMapper.getStockPrice(stockRequest);
-        if(stockPrice5 != null){
+        if (stockPrice5 != null) {
             map.put("50万以上", stockPrice5);
-        }else {
+        } else {
             map.put("50万以上", 0);
         }
 
@@ -330,44 +340,44 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<Map<String , Object>> getStockPriceTrend(StockRequest stockRequest) {
-        Map<String , Object> nowMap = inventoryInvoiceDayMapper.getStockPriceTrend(stockRequest);
+    public List<Map<String, Object>> getStockPriceTrend(StockRequest stockRequest) {
+        Map<String, Object> nowMap = inventoryInvoiceDayMapper.getStockPriceTrend(stockRequest);
         String timeStart = stockRequest.getTimeStart();
         String timeEnd = stockRequest.getTimeEnd();
-        stockRequest.setTimeStart(timeStart.substring(0,7));
-        stockRequest.setTimeEnd(timeEnd.substring(0,7));
-        List<Map<String , Object>> mapList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
+        stockRequest.setTimeStart(timeStart.substring(0, 7));
+        stockRequest.setTimeEnd(timeEnd.substring(0, 7));
+        List<Map<String, Object>> mapList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
         String s = DateUtils.formatDate(new Date(), DateUtils.DATE_FORMAT_DATETIME);
-        nowMap.put("reportTime" , s.substring(0,7));
+        nowMap.put("reportTime", s.substring(0, 7));
         mapList.add(nowMap);
         for (Map map : mapList) {
             String time = map.get("reportTime").toString();
             int count = Integer.parseInt(map.get("count").toString());
             time += "-01";
             //   环比
-            getOneAgoMonth(stockRequest,time);
-            List<Map<String , Object>> mapAgoMonthList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
+            getOneAgoMonth(stockRequest, time);
+            List<Map<String, Object>> mapAgoMonthList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
             double relativeMonth = 0.0;
-            if(mapAgoMonthList.size() > 0){
+            if (mapAgoMonthList.size() > 0) {
                 Map<String, Object> map1 = mapAgoMonthList.get(0);
                 int count1 = Integer.parseInt(map1.get("count").toString());
                 relativeMonth = Math.round((count - count1) / count1 * 100) / 100.0;
             }
-            map.put("relativeMonth",relativeMonth);
+            map.put("relativeMonth", relativeMonth);
 
             //  同比
-            getOneAgoYearMonth(stockRequest,time);
-            List<Map<String , Object>> mapAgoYearList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
+            getOneAgoYearMonth(stockRequest, time);
+            List<Map<String, Object>> mapAgoYearList = inventoryInvoiceMonthMapper.getStockPriceTrend(stockRequest);
             double relativeYear = 0.0;
-            if(mapAgoYearList.size() > 0){
+            if (mapAgoYearList.size() > 0) {
                 Map<String, Object> map1 = mapAgoYearList.get(0);
                 int count1 = Integer.parseInt(map1.get("count").toString());
                 relativeYear = Math.round((count - count1) / count1 * 100) / 100.0;
             }
-            map.put("relativeYear",relativeYear);
+            map.put("relativeYear", relativeYear);
         }
 
-        return  mapList;
+        return mapList;
     }
 
 
