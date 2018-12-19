@@ -73,7 +73,7 @@ public class ParkingFeeRuleServiceImpl implements ParkingFeeRuleService {
                             Integer firstFee = 0;
                             Date secondStart = new Date(begin.getTime() + afterTime);
                             if (payTime.getTime() - begin.getTime() > afterTime){
-                                BigDecimal secondTime = new BigDecimal(currentTime.getTime() - payTime.getTime());
+                                BigDecimal secondTime = new BigDecimal(currentTime.getTime() - newBegin.getTime());
                                 BigDecimal result = secondTime.divide(new BigDecimal(1000 * 60 * 60), BigDecimal.ROUND_UP, 0);
                                 Integer secondFee = result.intValue() * parkingFeeTotal.getBeyondFee();
                                 total = new BigDecimal(secondFee);
