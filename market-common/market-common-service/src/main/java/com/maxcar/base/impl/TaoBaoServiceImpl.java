@@ -460,14 +460,18 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 			int stop = time1.length();
 			String fileName = car.getVin()+"_"+time1.substring(stop-3, stop)+".jpg";
 			JSONObject json = new JSONObject();
-			json = updateTaobaoImg(projectUrl+"\\"+result.getMessage(), result.getMessage(), sessionKey);
-			logger.info("添加图片返回数据 json:{}", json.toString());
-			if (!json.isEmpty() && json.get("picture_upload_response") != null) {
-				json = (JSONObject) json.get("picture_upload_response");
-				if (!json.isEmpty() && json.get("picture") != null) {
-					json = (JSONObject) json.get("picture");
-					if (!json.isEmpty() && json.get("picture_path") != null) {
-						map.put("zcjUrl", json.get("picture_path").toString());
+			if(result.getResultCode()==200){
+				json = updateTaobaoImg(projectUrl+"\\"+result.getMessage(), result.getMessage(), sessionKey);
+				logger.info("添加图片返回数据 json:{}", json.toString());
+				if (!json.isEmpty() && json.get("picture_upload_response") != null) {
+					json = (JSONObject) json.get("picture_upload_response");
+					if (!json.isEmpty() && json.get("picture") != null) {
+						json = (JSONObject) json.get("picture");
+						if (!json.isEmpty() && json.get("picture_path") != null) {
+							map.put("zcjUrl", json.get("picture_path").toString());
+						}else {
+							ftlName="carInfo";
+						}
 					}else {
 						ftlName="carInfo";
 					}
@@ -477,6 +481,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 			}else {
 				ftlName="carInfo";
 			}
+
 		}else if (config.getCheckSource()==3){
 			if (result.getResultCode()==600){
 				ftlName="carInfo";//
@@ -1083,7 +1088,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		} catch (IOException e) {
 			e.printStackTrace();
 			result.setMessage(e.getMessage());
-			result.setResultCode(500);
+			result.setResultCode(600);
 		}
 		return  result;
 	}
