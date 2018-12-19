@@ -434,7 +434,7 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 		String ftlName=config.getFtlName();
 		Map<String, Object> map = BeanUtils.obj2Map(car);
 		map.put("listPic", listPic);
-		map.put("marketName",config.getMarketName());
+		map.put("客户名称",config.getMarketName());
 		map.put("marketPhone",config.getMarketPhone());
 		// 获取车辆检测信息
 		if (config.getCheckSource()==1){

@@ -18,7 +18,7 @@
             border-top: 1px solid #ccc;">
     <div style="text-align: center;color: #1B2EDB;font-size: 28px;padding: 20px 0;font-weight: bold;">
         <p style="margin: 10px 0;">
-        ${marketName}
+        ${客户名称}
         </p>
         <p style="margin: 10px 0;">
         ${marketPhone}
