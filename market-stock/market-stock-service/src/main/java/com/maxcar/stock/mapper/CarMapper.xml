@@ -880,17 +880,23 @@
     </select>
 
     <select id="listCarChannelVo" resultMap="CarVoResultMap" parameterType="com.maxcar.stock.vo.CarVo">
-        SELECT
+        SELECT DISTINCT
         t.*,
         DATEDIFF(now(),t.register_time) stockDays,
         <include refid="CarVo_Column_List"/>,
         (
-        select ccr.id from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
-        where ccr.car_id=t.id and cch.channel_no='002' order by ccr.update_time desc LIMIT 1
+            select ccr.id from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
+            where ccr.car_id=t.id
+            and cch.channel_no='002'
+            and cch.market_id= #{marketId}
+            order by ccr.update_time desc LIMIT 1
         ) as carChannelId,
         (
-        select ccr.shelf_status from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
-        where ccr.car_id=t.id and cch.channel_no='002' order by ccr.update_time desc LIMIT 1
+            select ccr.shelf_status from car_channel_rel ccr left join car_channel cch on cch.id=ccr.channel_id
+            where ccr.car_id=t.id
+            and cch.channel_no='002'
+            and cch.market_id= #{marketId}
+            order by ccr.update_time desc LIMIT 1
         ) as shelfStatus
         FROM
         car t left join
@@ -904,7 +910,15 @@
         and t.stock_status in (1,2,3)
         <if test="shelfStatus != null">
             <if test="shelfStatus == 0">
-                and (ccr2.shelf_status in (0,1) or ccr2.shelf_status is null)
+                and  (
+                    (ccr2.shelf_status IN (0, 1) and ccr2.channel_id in(
+                        SELECT id from car_channel ccc where ccc.channel_no='002' and ccc.market_id='015')
+                    )
+                    or t.id not in
+                    (
+                    SELECT ccr3.car_id FROM car_channel_rel ccr3 where ccr3.channel_id =(SELECT id from car_channel ccc where ccc.channel_no='002' and ccc.market_id=#{marketId})
+                    )
+                )
             </if>
             <if test="shelfStatus == 2">
                 and ccr2.shelf_status = 2
