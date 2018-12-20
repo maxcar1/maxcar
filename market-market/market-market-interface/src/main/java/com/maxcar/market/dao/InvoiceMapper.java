@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.maxcar.market.pojo.InvoiceExcel;
 import com.maxcar.market.pojo.TradeInformation;
 import org.apache.ibatis.annotations.Param;
 
@@ -113,6 +114,8 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     List<String> getContactName(String marketId);
 
     Double countByCarSources(DealRequest deal);
+
+    List<InvoiceExcel> detailsManage(Invoice invoice);
 
     Double selectPriceByCarId(@Param("carId") String carId);
 
