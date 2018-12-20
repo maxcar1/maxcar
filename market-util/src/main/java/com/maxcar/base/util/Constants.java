@@ -76,4 +76,13 @@ public interface Constants {
 	 * staff_token生命周期 一周
 	 */
 	int STAFF_TOKEN_TIMEOUT = 7 * 24 * 3600;
+
+	/**
+	 * 会员免费停车时间毫秒值
+	 */
+	long VIP_PARK_TIMEOUT = 4*60*60*1000;
+
+
+	//淘宝编号
+	final String TAO_BAO_CHANNEL_NO = "002";
 }

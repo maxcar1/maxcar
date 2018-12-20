@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -419,5 +420,15 @@ public class WeiXinUtils {
         return sb.toString();
     }
 
-
+    public static String gettimeFormart() {
+        DateFormat format = new SimpleDateFormat("yyyyMMddssSSS");
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        sb.append(format.format(Calendar.getInstance().getTime()));
+        for (int i=0;i<3;i++){
+            int index = random.nextInt(10);
+            sb.append(index);
+        }
+        return sb.toString();
+    }
 }

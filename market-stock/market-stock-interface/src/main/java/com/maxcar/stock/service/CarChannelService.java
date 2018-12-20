@@ -25,6 +25,8 @@ public interface CarChannelService {
 
     List<CarChannel> findAll(String marketId);
 
+    CarChannel findChannelByMarket(String marketId,String channelNo);
+
     CarChannelRel getCarchannelRel(String carId, String id);
 
     void insertChannel(CarChannelRel carChannelRel);

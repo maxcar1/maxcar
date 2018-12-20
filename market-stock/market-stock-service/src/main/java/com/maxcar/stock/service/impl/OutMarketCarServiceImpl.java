@@ -1,5 +1,6 @@
 package com.maxcar.stock.service.impl;
 
+import com.maxcar.base.service.TopicService;
 import com.maxcar.base.util.Constants;
 import com.maxcar.base.util.DatePoor;
 import com.maxcar.base.util.DateUtils;
@@ -56,6 +57,9 @@ public class OutMarketCarServiceImpl implements OutMarketCarService {
     @Autowired
     private OutMarketManageService outMarketManageService;
 
+    @Autowired
+    private TopicService topicService;
+
 
     /**
      * 定时扫描删除车辆   并同步到本地车辆状态
@@ -95,7 +99,7 @@ public class OutMarketCarServiceImpl implements OutMarketCarService {
     public void delLocalCar(CarOut carOut,OutMarketManage outMarketManage)throws Exception{
         String id = carOut.getCarId();
         carService.deleteCarById(carOut.getCarId());
-        String topic = messageProducerService.getTopic(outMarketManage.getMarketId());
+        String topic = topicService.getTopic(outMarketManage.getMarketId());
         //同步删除本地车辆状态
         //组装云端参数
         PostParam postParam = new PostParam();

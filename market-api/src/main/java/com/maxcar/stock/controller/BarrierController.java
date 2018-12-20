@@ -110,7 +110,7 @@ public class BarrierController extends BaseController {
         try {
             User user = super.getCurrentUser(request);
             interfaceResult = barrierService.updateOrDelBarrier(barrier);
-            String topic = super.getTopic(user.getMarketId());
+            String topic = topicService.getTopic(user.getMarketId());
             //同步删除本地车辆状态
             //组装云端参数
             PostParam postParam = new PostParam();

@@ -360,7 +360,7 @@ public class SyncCarController extends BaseController {
 				paramsJson.setId(UuidUtils.generateIdentifier());//设置id
 			}
 			interfaceResult = carService.addCar(paramsJson);
-			String topic = super.getTopic(user.getMarketId());
+			String topic = topicService.getTopic(user.getMarketId());
 			//同步删除本地车辆状态
 			//组装云端参数
 			PostParam postParam = new PostParam();
@@ -651,7 +651,7 @@ public class SyncCarController extends BaseController {
 								interfaceResult.InterfaceResult200("修改成功");
 							}
 							//同步删除本地车辆状态
-							String topic = super.getTopic(user.getMarketId());
+							String topic = topicService.getTopic(user.getMarketId());
 
 							//组装云端参数
 							PostParam postParam = new PostParam();
@@ -881,7 +881,7 @@ public class SyncCarController extends BaseController {
 		}else{
 			interfaceResult.InterfaceResult500("操作失败");
 		}
-		String topic = super.getTopic(user.getMarketId());
+		String topic = topicService.getTopic(user.getMarketId());
 		//同步删除本地车辆状态
 		//组装云端参数
 		PostParam postParam = new PostParam();

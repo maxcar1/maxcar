@@ -200,7 +200,7 @@ public class AuditingController extends BaseController {
             carReview.setId(reviewDetail.getReviewId());
             carReview.setIsPass(reviewDetail.getReviewResult());
             carReview.setStepLevel(level);
-            String topic = super.getTopic(user.getMarketId());
+            String topic = topicService.getTopic(user.getMarketId());
             //同步删除本地车辆状态
             //组装云端参数
             PostParam postParam = new PostParam();
@@ -239,7 +239,7 @@ public class AuditingController extends BaseController {
                         carReview.setId(reviewDetail.getReviewId());
                         carReview.setIsPass(reviewDetail.getReviewResult());
                         carReview.setStepLevel(level);
-                        String topic = super.getTopic(user.getMarketId());
+                        String topic = topicService.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
                         PostParam postParam = new PostParam();
@@ -268,7 +268,7 @@ public class AuditingController extends BaseController {
                         carReview.setId(review.getReviewId());
                         carReview.setIsPass(review.getReviewResult());
                         carReview.setStepLevel(review.getLevel());
-                        String topic = super.getTopic(user.getMarketId());
+                        String topic = topicService.getTopic(user.getMarketId());
                         //同步删除本地车辆状态
                         //组装云端参数
                         PostParam postParam = new PostParam();

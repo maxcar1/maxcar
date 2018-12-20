@@ -30,6 +30,16 @@ public class BarrierCamera implements Serializable {
 
     private String remark;
 
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public String getId() {
         return id;
     }

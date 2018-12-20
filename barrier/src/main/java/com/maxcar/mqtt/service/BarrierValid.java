@@ -5,10 +5,12 @@ import com.maxcar.barrier.service.*;
 import com.maxcar.jdbc.CloudJdbcCurd;
 import com.maxcar.jdbc.CloudJdbcUtils;
 import com.maxcar.jdbc.JdbcCurd;
+import com.maxcar.redis.RedisUtil;
 import com.maxcar.stock.service.CarReviewService;
 import com.maxcar.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public class BarrierValid {
     //道闸验证
     public Map openDz(String clientData, Barrier barrier) throws Exception {
         Map map = new HashMap();
-        logger.info("道闸验证消息 : " + clientData);
+//        logger.info("道闸验证消息 : " + clientData);
         String outParam = "";
         String value1 = clientData.substring(0, 4);
         String value2 = "002C";//44字节
@@ -46,15 +48,33 @@ public class BarrierValid {
         logger.info("rfid" + marketId + Canstats.between + values);
         logger.info("道闸是否受限制：" + !barrier.getStatus().equals("0"));
         String rfid = marketId + Canstats.between + values;
-//        Car stockCarInfo = barrierService.selectByRFID(marketId + Canstats.between + values,marketId);//查询是否允许开闸
-        Car stockCarInfo = JdbcCurd.selectCarByRfid(marketId,rfid);
-        if(stockCarInfo==null) {//到云端查询一次，没有同步到本地
-            stockCarInfo = CloudJdbcCurd.selectCarByCarId(marketId, rfid);
-            if(stockCarInfo!=null){//同步到云端
+//        try {
+//            Jedis jedis = RedisUtil.getInstance().getJedis();
+//            if (jedis.get("rfid" + rfid) != null) {//如果缓存中已经有请求
+//                logger.info("请不要重复刷标签rfid");
+//                return null;
+//            } else {
+//                RedisUtil.getInstance().strings().set("rfid" + rfid, rfid);
+//                //设置十秒时间
+//                RedisUtil.getInstance().keys().expire("rfid" + rfid, 10);
+//            }
+//            RedisUtil.getInstance().closeJedis(jedis);
+            return doS(barrier,rfid,value1,value2,value3,value4,value5,value6,value7,value8,outParam,map);
+//        }catch (Exception ex){
+//           ex.printStackTrace();
+//           return doS(barrier,rfid,value1,value2,value3,value4,value5,value6,value7,value8,outParam,map);
+//        }
+    }
+    //下一步执行
+    public Map doS(Barrier barrier,String rfid,String value1,String value2,String value3,String value4,String value5,String value6,String value7,String value8,String outParam,Map map){
+        Car stockCarInfo = JdbcCurd.selectCarByRfid(barrier.getMarketId(), rfid);
+        if (stockCarInfo == null) {//到云端查询一次，没有同步到本地
+            stockCarInfo = CloudJdbcCurd.selectCarByCarId(barrier.getMarketId(), rfid);
+            if (stockCarInfo != null) {//同步到云端
                 JdbcCurd.saveCar(stockCarInfo);
             }
         }
-        if(stockCarInfo==null){
+        if (stockCarInfo == null) {
             value7 = Canstats.jzcc;
             value8 = "查无此车";
             outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);//禁止出入
@@ -64,16 +84,15 @@ public class BarrierValid {
             return map;
         }
         String outHex = CRC16M.GetModBusCRC(outParam);
-        switch (barrier.getStatus()){
+        switch (barrier.getStatus()) {
             case "0"://不限制
                 value7 = Canstats.yxcc;//允许开闸
                 value8 = barrier.getStaticSpeech();
                 outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
                 outHex = CRC16M.GetModBusCRC(outParam);
                 outParam = outParam + outHex;
-                logger.info("车辆进场记录已生成");
-                if(barrier.getInOutType() == 0) {//入口
-                    switch (stockCarInfo.getStockStatus()){
+                if (barrier.getInOutType() == 0) {//入口
+                    switch (stockCarInfo.getStockStatus()) {
                         case -1://删除车
                             break;
                         case 5://售出车
@@ -86,11 +105,11 @@ public class BarrierValid {
                             stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
                             break;
                     }
-                }else{
+                } else {
                     if (stockCarInfo.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
                         stockCarInfo.setStockStatus(Canstats.saleOutType);
-                    else{
-                        stockCarInfo.setStockStatus((stockCarInfo.getStockStatus()==Canstats.deleteType || stockCarInfo.getStockStatus()==Canstats.saleOutType)?stockCarInfo.getStockStatus():Canstats.outType);
+                    else {
+                        stockCarInfo.setStockStatus((stockCarInfo.getStockStatus() == Canstats.deleteType || stockCarInfo.getStockStatus() == Canstats.saleOutType) ? stockCarInfo.getStockStatus() : Canstats.outType);
                     }
                 }
                 initCarStatus(stockCarInfo, barrier);
@@ -102,9 +121,8 @@ public class BarrierValid {
                 outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
                 outHex = CRC16M.GetModBusCRC(outParam);
                 outParam = outParam + outHex;
-                logger.info("车辆进场记录已生成");
-                if(barrier.getInOutType() == 0) {//入口
-                    switch (stockCarInfo.getStockStatus()){
+                if (barrier.getInOutType() == 0) {//入口
+                    switch (stockCarInfo.getStockStatus()) {
                         case -1://删除车
                             break;
                         case 5://售出车
@@ -117,12 +135,12 @@ public class BarrierValid {
                             stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
                             break;
                     }
-//                    stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
-                }else{
+                    //                    stockCarInfo.setStockStatus(Canstats.inType);//如果是入场改状态为已入场，反之为已出场
+                } else {
                     if (stockCarInfo.getStockStatus() == Canstats.saleType)//售出未出场，把状态改为已出场
                         stockCarInfo.setStockStatus(Canstats.saleOutType);
-                    else{
-                        stockCarInfo.setStockStatus((stockCarInfo.getStockStatus()==Canstats.deleteType || stockCarInfo.getStockStatus()==Canstats.saleOutType)?stockCarInfo.getStockStatus():Canstats.outType);
+                    else {
+                        stockCarInfo.setStockStatus((stockCarInfo.getStockStatus() == Canstats.deleteType || stockCarInfo.getStockStatus() == Canstats.saleOutType) ? stockCarInfo.getStockStatus() : Canstats.outType);
                     }
                 }
                 initCarStatus(stockCarInfo, barrier);
@@ -133,22 +151,21 @@ public class BarrierValid {
                 value8 = remap.get("title") + "";
                 if (remap.get("flag").equals("true")) {
                     value7 = Canstats.jzcc;//禁止开闸
-                }else{//允许开闸，再验证黑白名单情况
+                } else {//允许开闸，再验证黑白名单情况
                     value7 = Canstats.yxcc;//允许开闸
-//                    if(barrier.getInOutType() == 0) {//入口做验证
-                        if (blackOrWhite(stockCarInfo, barrier)) {
-                            value7 = Canstats.jzcc;//禁止开闸
-                            value8 = "禁止通行";
-                        }
+                    //                    if(barrier.getInOutType() == 0) {//入口做验证
+                    if (blackOrWhite(stockCarInfo, barrier)) {
+                        value7 = Canstats.jzcc;//禁止开闸
+                        value8 = "禁止通行";
+                    }
                 }
                 outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + HexUtils.getHexResult(value8);
                 outHex = CRC16M.GetModBusCRC(outParam);
                 outParam = outParam + outHex;
-                if(value7.equals(Canstats.yxcc)){
+                if (value7.equals(Canstats.yxcc)) {
                     initCarStatus(stockCarInfo, barrier);
                     map.put("stockCarInfo", stockCarInfo);
                 }
-                logger.info("车辆进场记录已生成:" + outParam);
                 break;
         }
         map.put("outParam", outParam);
@@ -258,7 +275,7 @@ public class BarrierValid {
         CarService carService = ApplicationContextHolder.getBean("carService");
         car.setCarRecord(carRecord);
         carService.updateCarStatus(car);//更新车状态
-        logger.info("车辆状态已更新:" + car.getStockStatus());
+        logger.info("车辆进场记录已生成:");
         return car;
     }
 }

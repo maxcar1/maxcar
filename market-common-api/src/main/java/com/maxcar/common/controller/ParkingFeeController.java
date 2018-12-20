@@ -59,8 +59,8 @@ public class ParkingFeeController {
         if (cardNo != null && !"".equals(cardNo)){
             interfaceResult = parkingFeeService.getParkingFeeDetail(cardNo);
         }else {
-            interfaceResult.setCode("406");
-            interfaceResult.InterfaceResult600("参数格式错误");
+            interfaceResult.setCode("600");
+            interfaceResult.setMsg("请输入停车卡号");
         }
         return interfaceResult;
     }
@@ -73,7 +73,7 @@ public class ParkingFeeController {
         //参数验证
         if(result.hasErrors()){
             for (ObjectError error : result.getAllErrors()) {
-                interfaceResult.setCode("406");
+                interfaceResult.setCode("600");
                 interfaceResult.setMsg(error.getDefaultMessage());
                 return interfaceResult;
             }

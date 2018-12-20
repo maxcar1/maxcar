@@ -2,6 +2,7 @@ package com.maxcar.barrier.dao;
 
 import com.maxcar.barrier.pojo.Barrier;
 import com.maxcar.barrier.pojo.BarrierExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface BarrierMapper {
     List<Barrier> selectBarrierByMarketId(String marketId);
 
     Barrier selectBarrierByIdAndMarketId(Barrier barrier);
+
+    Barrier selectBarrierByBarrierMac(@Param("marketId") String marketId, @Param("barrierMac")String barrierMac);
 }

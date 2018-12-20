@@ -1,6 +1,6 @@
 package com.maxcar.util;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -43,7 +43,7 @@ public class HttpClientUtils {
      *            不需要返回结果 
      * @return 
      */  
-    public static JSONObject httpPost(String url, String strParam) {  
+    public static JSONObject httpPost(String url, String strParam) {
         // post请求返回结果  
         CloseableHttpClient httpClient = HttpClients.createDefault();  
         JSONObject jsonResult = null;  
@@ -68,7 +68,7 @@ public class HttpClientUtils {
                     //读取服务器返回过来的json字符串数据  
                     str = EntityUtils.toString(result.getEntity(), "utf-8");  
                     //把json字符串转换成json对象  
-                    jsonResult = JSONObject.fromObject(str);  
+                    jsonResult = JSONObject.parseObject(str);
                 } catch (Exception e) {  
 //                	Logger.().error(e);
                 }  
@@ -111,7 +111,7 @@ public class HttpClientUtils {
                 HttpEntity entity = response.getEntity();  
                 String strResult = EntityUtils.toString(entity, "utf-8");  
                 //把json字符串转换成json对象  
-                jsonResult = JSONObject.fromObject(strResult);  
+                jsonResult = JSONObject.parseObject(strResult);
             } else {  
 //            	Logger.getRootLogger().error("请求失败!");
             }  

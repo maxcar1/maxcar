@@ -19,12 +19,15 @@
     <dubbo:service interface="com.maxcar.market.service.AreaService" ref="areaService"   timeout="1200000"/>
     <dubbo:service interface="com.maxcar.market.service.AreaShopService" ref="areaShopService"   timeout="1200000"/>
     <dubbo:service interface="com.maxcar.market.service.ParkingFeeRuleService" ref="parkingFeeRuleService"   timeout="1200000"/>
+    <dubbo:service interface="com.maxcar.market.service.OpenBarrierRecordService" ref="openBarrierRecordService"   timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.market.service.InvoiceService" ref="invoiceService" timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.market.service.PropertyContractPayService" ref="propertyContractPayService"
                    timeout="1200000"/>
     <dubbo:service interface="com.maxcar.market.service.ParkingFeeService" ref="parkingFeeService" timeout="1200000"/>
+
+    <dubbo:service interface="com.maxcar.market.service.ParkingFeeDetailService" ref="parkingFeeDetailService" timeout="1200000"/>
 
     <dubbo:service interface="com.maxcar.market.service.ParkingFeeIntegralService" ref="parkingFeeIntegralService" timeout="1200000"/>
 
@@ -41,6 +44,9 @@
                      check="false"/>
 
     <dubbo:reference interface="com.maxcar.base.service.CityService" id="cityService" timeout="1200000" check="false"/>
+
+    <dubbo:reference interface="com.maxcar.weixin.service.WeiXinService" id="weiXinService" timeout="1200000" check="false"/>
+    <dubbo:reference interface="com.maxcar.base.service.TopicService" id="topicService" timeout="1200000" check="false"/>
     <!-- 引入用户 -->
     <dubbo:reference interface="com.maxcar.user.service.UserService" id="userService" timeout="1200000" check="false"/>
     <!-- 引入员工 -->

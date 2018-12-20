@@ -27,5 +27,7 @@ public interface BarrierService {
 
     Barrier selectBarrierByIdAndMarketId(Barrier barrier);
 
+    Barrier selectBarrierByBarrierMac(Barrier barrier);
 
+    Barrier selectByBarrierId2(String brakeId);
 }

@@ -170,10 +170,10 @@
 			<artifactId>market-stock-interface</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <!--<dependency>-->
-		<!--<groupId>maxcar-base</groupId>-->
-		<!--<artifactId>maxcar-base-interface</artifactId>-->
-		<!--<version>${project.version}</version>-->
-		<!--</dependency>-->
+        <dependency>
+		    <groupId>${project.groupId}</groupId>
+		    <artifactId>market-weixin-interface</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>

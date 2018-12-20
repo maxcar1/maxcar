@@ -7,16 +7,20 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.maxcar.barrier.pojo.Barrier;
 import com.maxcar.barrier.service.BarrierService;
 import com.maxcar.base.pojo.InterfaceResult;
+import com.maxcar.base.service.TopicService;
 import com.maxcar.base.util.*;
 import com.maxcar.base.util.dasouche.Result;
 import com.maxcar.base.util.kafka.PostParam;
 import com.maxcar.base.util.wechat.*;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.market.model.request.AddParkingFeeDetailRequest;
+import com.maxcar.market.pojo.OpenBarrierRecord;
 import com.maxcar.market.pojo.ParkingFeeDetail;
+import com.maxcar.market.service.OpenBarrierRecordService;
 import com.maxcar.market.service.ParkingFeeRuleService;
 import com.maxcar.market.service.ParkingFeeService;
 import com.maxcar.redis.service.RedisService;
+import com.maxcar.redis.service.SsoService;
 import com.maxcar.weixin.model.AccessToken;
 import com.maxcar.weixin.model.UserInfo;
 import com.maxcar.weixin.service.WeiXinService;
@@ -27,8 +31,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -145,6 +147,7 @@ public class WeiXinServiceImpl implements WeiXinService {
 
     private static final String KEY_PAIBO = "paibo";
     private static final String KEY_ICAR = "icar";
+    private static final String KEY_TENANT = "tenant";
 
 
     @Autowired
@@ -161,6 +164,12 @@ public class WeiXinServiceImpl implements WeiXinService {
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private OpenBarrierRecordService openBarrierRecordService;
+
+    @Autowired
+    private TopicService topicService;
 
 
     private static final String SLASH = "/";
@@ -222,6 +231,7 @@ public class WeiXinServiceImpl implements WeiXinService {
         Integer price = params.getInteger("price");
         String barrierId = params.getString("barrierId");
         String marketId = params.getString("marketId");
+        String afterTime = params.getString("afterTime");
         String ip = params.getString("ip");
         //value设为Object，便于后续扩展
         //封装下单参数
@@ -239,7 +249,7 @@ public class WeiXinServiceImpl implements WeiXinService {
         /*packageParams.put("total_fee", "1");*/
         packageParams.put("spbill_create_ip", spbillCreateIp);
         packageParams.put("trade_type", tradeType);
-        packageParams.put("attach", marketId + "-" + barrierId);
+        packageParams.put("attach", marketId + "-" + barrierId + "-" + afterTime);
         //支付后返回结果
         packageParams.put("notify_url", payNotifyUrl);
         //生成sign校验，并封装xml
@@ -307,7 +317,13 @@ public class WeiXinServiceImpl implements WeiXinService {
                 ParkingFeeDetail detail = new ParkingFeeDetail();
                 detail.setCardNo(orderNo);
                 detail.setMarketId(info[0]);
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(Long.valueOf(info[2]));
                 ParkingFeeDetail parkingFeeDetail = parkingFeeService.selectDetail(detail);
+                parkingFeeDetail.setPrice(Integer.valueOf(totalFee)/100);
+                parkingFeeDetail.setChargePrice(Integer.valueOf(totalFee)/100);
+                parkingFeeDetail.setAfterTime(c.getTime());
+                parkingFeeService.updateAfterTime(parkingFeeDetail);
                 StringBuilder sb = new StringBuilder();
                 Map map1 = DateUtils.getHMS(parkingFeeDetail.getAfterTime(), parkingFeeDetail.getBeforeTime());
                 sb.append(map1.get("hour"));
@@ -422,7 +438,7 @@ public class WeiXinServiceImpl implements WeiXinService {
         return urlStr.toString();
     }
 
-    private String cacheTokenInRedis(String appId, String appSecret, String key) throws Exception {
+    public String cacheTokenInRedis(String appId, String appSecret, String key) throws Exception {
         String aToken = "";
         String accessToken = redisService.get(appId + "_" + key);
         logger.info("accessToken==>{}", accessToken);
@@ -579,8 +595,8 @@ public class WeiXinServiceImpl implements WeiXinService {
         }
     }
 
-
-    private UserInfo getUserInfo(String openId, String appId, String appSecret, String key) throws Exception {
+    @Override
+    public UserInfo getUserInfo(String openId, String appId, String appSecret, String key) throws Exception {
         String token = cacheTokenInRedis(appId, appSecret, key);
         StringBuilder userUrl = new StringBuilder(userInfoUrl);
         if (StringUtils.isNotBlank(token)) {
@@ -641,7 +657,7 @@ public class WeiXinServiceImpl implements WeiXinService {
                 break;
             case "event":
                 // 事件推送---事件消息
-                result = doEvent(receiveXmlEntity, type);
+                result = doEvent(receiveXmlEntity, type,returnXml);
                 break;
             default:
                 break;
@@ -676,13 +692,13 @@ public class WeiXinServiceImpl implements WeiXinService {
                     List<ParkingFeeDetail> feeDetails = parkingFeeService.selectParkingFee(feeDetail);
                     if (null != ba) {
                         if (null == feeDetails || feeDetails.size() == 0) {
-                            openDZ(market[0], ba.getBarrierId(), -2);
-                            request.setMaxketId(market[0]);
+                            checkGroundSense(market[0], ba, userInfo.getUnionid());
+                            /*request.setMaxketId(market[0]);
                             request.setUnionId(userInfo.getUnionid());
                             request.setBarrierId(ba.getBarrierId());
                             //微信扫码进入的,订单号存入cardNo里面
                             request.setCardNo(WeiXinUtils.createOrderNo());
-                            parkingFeeService.addParkingFeeDetail(request);
+                            parkingFeeService.addParkingFeeDetail(request);*/
                         } else {
                             openDZ(market[0], ba.getBarrierId(), -3);
                         }
@@ -697,7 +713,7 @@ public class WeiXinServiceImpl implements WeiXinService {
         }
     }
 
-    private JSONObject doEvent(ReceiveXmlEntity receiveXmlEntity, WeiXinUtils.WeiXinPublicNum type) throws Exception {
+    private JSONObject doEvent(ReceiveXmlEntity receiveXmlEntity, WeiXinUtils.WeiXinPublicNum type,String returnXml) throws Exception {
         logger.info("===>处理事件开始,参数：{},类型:{}", receiveXmlEntity.toString(), type);
         // 区分事件推送
         JSONObject result = new JSONObject();
@@ -728,7 +744,7 @@ public class WeiXinServiceImpl implements WeiXinService {
                     result.put("publicNum", WeiXinUtils.WeiXinPublicNum.PAIBO);
                     //关注派勃公众号,返回关注语,显示出入场时间
                     //查询入场记录,更新出场时间，计算停车金额
-                    doResponseByPaibo(mark, userInfo, receiveXmlEntity, result, 1);
+                    doResponseByPaibo(mark, receiveXmlEntity, result, 1,returnXml);
                 }
                 break;
             case "unsubscribe":
@@ -745,7 +761,7 @@ public class WeiXinServiceImpl implements WeiXinService {
                 } else if (WeiXinUtils.WeiXinPublicNum.PAIBO.equals(type)) {
                     //派勃已关注
                     result.put("publicNum", WeiXinUtils.WeiXinPublicNum.PAIBO);
-                    doResponseByPaibo(eventKey, userInfo, receiveXmlEntity, result, 2);
+                    doResponseByPaibo(eventKey, receiveXmlEntity, result, 2,returnXml);
                 }
                 break;
             case "LOCATION":
@@ -786,58 +802,22 @@ public class WeiXinServiceImpl implements WeiXinService {
         return result;
     }
 
-    private void doResponseByPaibo(String mark, UserInfo userInfo,
-                                   ReceiveXmlEntity receiveXmlEntity, JSONObject result, int type) throws Exception {
+    private void doResponseByPaibo(String mark,ReceiveXmlEntity receiveXmlEntity,
+                                   JSONObject result, int type,String returnXml) throws Exception {
         if (StringUtils.isBlank(receiveXmlEntity.getEventKey())) {
             result.put("result", doResponseByPaiBo(receiveXmlEntity, type, null));
         } else {
+
+            //存redis缓存，并下行检测地感，缓存微信信息2分钟
+            String key = UuidUtils.getUUID();
+            redisService.set(key,returnXml,120);
             String[] market = mark.split("-");
-            ParkingFeeDetail detail = new ParkingFeeDetail();
-            if (null == userInfo.getUnionid()) {
-                Thread.sleep(3000);
-                userInfo = getUserInfo(userInfo.getOpenid(), paiboAppId, paiboAppSecret, KEY_PAIBO);
-            }
-            detail.setUnionId(userInfo.getUnionid());
-            detail.setMarketId(market[0]);
-            ParkingFeeDetail parkingFeeDetail = parkingFeeService.selectInParkingRecord(detail);
-            if (null != parkingFeeDetail) {
-                //找到入场记录
-                Date afterTime = Calendar.getInstance().getTime();
-                parkingFeeDetail.setPayType(3);
-                //计算
-                BigDecimal totalFee = parkingFeeRuleService.figureOutParkingFee(
-                        parkingFeeDetail.getBeforeTime(), afterTime, parkingFeeDetail.getMarketId(), 0);
-                parkingFeeDetail.setPrice(null == totalFee ? 0 : totalFee.intValue());
-                parkingFeeDetail.setChargePrice(null == totalFee ? 0 : totalFee.intValue());
-                parkingFeeDetail.setAfterTime(afterTime);
-                int code = parkingFeeService.updateAfterTime(parkingFeeDetail);
-                logger.info("code={}", code);
-                if (code == 1) {
-                    //金额时间更新成功后,先微信对话框推送,再websocket推送
-                    //根据id和marketId查真正的道闸id
-                    Barrier barrier = new Barrier();
-                    barrier.setId(Integer.parseInt(market[1]));
-                    barrier.setMarketId(market[0]);
-                    Barrier ba = barrierService.selectBarrierByIdAndMarketId(barrier);
-                    Map map1 = DateUtils.getHMS(parkingFeeDetail.getAfterTime(), parkingFeeDetail.getBeforeTime());
-                /*StringBuilder sb = new StringBuilder();
-                sb.append(map1.get("hour"));
-                sb.append("时");
-                sb.append(map1.get("minute"));
-                sb.append("分");
-                sb.append(map1.get("second"));
-                sb.append("秒");
-                parkingFeeDetail.setParkingTime(sb.toString());*/
-                    JSONObject parking = (JSONObject) JSONObject.toJSON(parkingFeeDetail);
-                    parking.put("beforeTime", parkingFeeDetail.getBeforeTime().getTime());
-                    parking.put("afterTime", parkingFeeDetail.getAfterTime().getTime());
-                    parking.put("barrierId", ba.getBarrierId());
-                    parking.put("hour", map1.get("hour"));
-                    parking.put("minute", map1.get("minute"));
-                    parking.put("second", map1.get("second"));
-                    result.put("result", doResponseByPaiBo(receiveXmlEntity, type, parking));
-                }
-            }
+            Barrier barrier = new Barrier();
+            barrier.setId(Integer.parseInt(market[1]));
+            barrier.setMarketId(market[0]);
+            Barrier ba = barrierService.selectBarrierByIdAndMarketId(barrier);
+            checkGroundSense(market[0],ba,key);
+
         }
     }
 
@@ -855,7 +835,8 @@ public class WeiXinServiceImpl implements WeiXinService {
         return result;
     }
 
-    private String doResponseByPaiBo(ReceiveXmlEntity receiveXmlEntity, int type, JSONObject parking) throws Exception {
+    @Override
+    public String doResponseByPaiBo(ReceiveXmlEntity receiveXmlEntity, int type, JSONObject parking) throws Exception {
         StringBuilder word = new StringBuilder();
         //派勃公众号出场,文本消息
         if (null != parking) {
@@ -902,6 +883,8 @@ public class WeiXinServiceImpl implements WeiXinService {
                 } else if (type == 2) {
                     word.append(sendUrl.replace("{FOLLOW}", "进入"));
                 }
+                //客服消息接口触发,直接返回内容
+                return word.toString();
             }
         } else {
             if (type == 1) {
@@ -917,14 +900,33 @@ public class WeiXinServiceImpl implements WeiXinService {
     }
 
     @Override
-    public InterfaceResult escapeHatch(String marketId, String barrierId) throws Exception {
+    public InterfaceResult escapeHatch(JSONObject params) throws Exception {
         InterfaceResult result = new InterfaceResult();
+        String marketId = params.getString("marketId");
+        String barrierId = params.getString("barrierId");
         Barrier barrier = barrierService.selectByBarrierId(barrierId);
-        if (barrier.getInOutType() == 0) {
-            openDZ(marketId, barrierId, -2);
-
-        } else if (barrier.getInOutType() == 1) {
-            openDZ(marketId, barrierId, -1);
+        if (StringUtils.isBlank(params.getString("reason"))) {
+            result.InterfaceResult600("请输入开闸原因！");
+        } else {
+            String reason = params.getString("reason");
+            OpenBarrierRecord record = new OpenBarrierRecord();
+            record.setId(UuidUtils.generateIdentifier());
+            record.setBarrierId(barrier.getBarrierId());
+            record.setIsValid(1);
+            record.setMarketId(marketId);
+            record.setInsertOperator(params.getString("userId"));
+            record.setReason(reason);
+            if (params.containsKey("detailId")) {
+                record.setParkingDetailId(params.getString("detailId"));
+            }
+            int code = openBarrierRecordService.addRecord(record);
+            if (code == 1) {
+                if (barrier.getInOutType() == 0) {
+                    openDZ(marketId, barrier.getBarrierId(), -2);
+                } else if (barrier.getInOutType() == 1) {
+                    openDZ(marketId, barrier.getBarrierId(), -1);
+                }
+            }
         }
 
         return result;
@@ -932,24 +934,7 @@ public class WeiXinServiceImpl implements WeiXinService {
 
     private void openDZ(String marketId, String barrierId, int type) throws Exception {
         Barrier barrier = barrierService.selectByBarrierId(barrierId);
-        String topic = "";
-        switch (marketId) {
-            case "006":
-                topic = consumerTopic6;
-                break;
-            case "007":
-                topic = consumerTopic7;
-                break;
-            case "008":
-                topic = consumerTopic8;
-                break;
-            case "010":
-                topic = consumerTopic10;
-                break;
-            default:
-                topic = consumerTopic7;
-                break;
-        }
+        String topic = topicService.getTopic(marketId);
         PostParam postParam = new PostParam();
         StringBuilder url = new StringBuilder();
         url.append("/barrier/open/");
@@ -959,6 +944,28 @@ public class WeiXinServiceImpl implements WeiXinService {
         url.append("/");
         //-1 应急出场 其它为金额
         url.append(type);
+        postParam.setUrl(url.toString());
+        postParam.setMarket(marketId);
+        postParam.setOnlySend(false);
+        postParam.setMethod("get");
+        postParam.setMessageTime(Constants.dateformat.format(new Date()));
+        logger.info("下发开闸信息开始==>{}", JsonTools.toJson(postParam));
+        messageProducerService.sendMessage(topic, JsonTools.toJson(postParam), false, 0, Constants.KAFKA_SASS);
+    }
+
+    private void checkGroundSense(String marketId, Barrier barrier, String id) {
+        String topic = topicService.getTopic(marketId);
+        PostParam postParam = new PostParam();
+        StringBuilder url = new StringBuilder();
+        url.append("/barrier/check/");
+        url.append(barrier.getMqttTopic());
+        url.append("/");
+        url.append(barrier.getBarrierId());
+        url.append("/");
+        //-4标识下发检测是否压地感
+        url.append(-4);
+        url.append("/");
+        url.append(id);
         postParam.setUrl(url.toString());
         postParam.setMarket(marketId);
         postParam.setOnlySend(false);

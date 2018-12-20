@@ -46,7 +46,7 @@ public class BarrierControlCarController extends BaseController {
         int i = barrierControlCarService.insertSelective(controlCar);
         if (i>0){
             interfaceResult.setMsg("添加成功");
-            String topic = super.getTopic(user.getMarketId());
+            String topic = topicService.getTopic(user.getMarketId());
             //同步删除本地车辆状态
             //组装云端参数
             PostParam postParam = new PostParam();
@@ -86,7 +86,7 @@ public class BarrierControlCarController extends BaseController {
         int i = barrierControlCarService.deleteByPrimaryKey(id);
         if (i>0){
             interfaceResult.InterfaceResult200("删除成功");
-            String topic = super.getTopic(user.getMarketId());
+            String topic = topicService.getTopic(user.getMarketId());
             //同步删除本地车辆状态
             //组装云端参数
             PostParam postParam = new PostParam();

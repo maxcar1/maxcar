@@ -2,24 +2,20 @@ package com.maxcar.mqtt.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.maxcar.barrier.pojo.Barrier;
+import com.maxcar.barrier.pojo.BarrierCamera;
 import com.maxcar.barrier.pojo.Car;
-import com.maxcar.barrier.pojo.CarRecord;
 import com.maxcar.barrier.pojo.InterfaceResult;
 import com.maxcar.barrier.service.ApplicationContextHolder;
+import com.maxcar.barrier.service.BarrierCameraService;
 import com.maxcar.barrier.service.BarrierService;
-import com.maxcar.barrier.service.CarRecordService;
-import com.maxcar.barrier.service.CarService;
 import com.maxcar.base.util.StringUtils;
+import com.maxcar.hikvision.service.HikvisionLinuxService;
+import com.maxcar.hikvision.service.HikvisionService;
 import com.maxcar.jdbc.JdbcCurd;
 import com.maxcar.kafka.service.MessageProducerService;
-import com.maxcar.util.CRC16M;
-import com.maxcar.util.Canstats;
-import com.maxcar.util.HexUtils;
-import com.maxcar.util.PostParam;
 import com.maxcar.util.*;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,11 +45,20 @@ import java.util.Map;
  */
 public class PushCallback implements MqttCallback {
 
-    SimpleDateFormat fmt1= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+    private String keepPath = LoadProperties.getProperties_3("../../../application.properties","keep.image.path");
+    private String environment = LoadProperties.getProperties_3("../../../application.properties","server.environment");
+    private String accessKeyId = LoadProperties.getProperties_3("../../../application.properties","sts.access.key.id");
+    private String accessKeySecret = LoadProperties.getProperties_3("../../../application.properties","sts.access.key.secret");
+    private String bucket = LoadProperties.getProperties_3("../../../application.properties","sts.bucket");
+    private String endpoint = LoadProperties.getProperties_3("../../../application.properties","sts.endpoint");
+
 
     public PushCallback() {
 
     }
+
     //客户端监听类
     ClientMQTT service;
 
@@ -76,10 +82,12 @@ public class PushCallback implements MqttCallback {
             }
         }
     }
+
     //
     public void deliveryComplete(IMqttDeliveryToken token) {
         logger.info("deliveryComplete---------" + token.isComplete());
     }
+
     //处理方法主体
     @Override
     public void messageArrived(String topic, MqttMessage message) {
@@ -89,11 +97,11 @@ public class PushCallback implements MqttCallback {
 //            logger.info("接收消息Qos : " + message.getQos());
  //           logger.info("接收消息message : " + String.valueOf(message.getPayload()));
             String str = new String(message.getPayload(),"gbk");
-            logger.info("接收消息转换前内容 : " + str);
+//            logger.info("接收消息转换前内容 : " + str);
             //第一步过滤链接请求
             if (str.replace(" ", "").indexOf("101800044D51545") == -1) {
                 String data = bytesToHexString(message.getPayload());
-                logger.info("转换后消息内容 : " + data);
+//                logger.info("转换后消息内容 : " + data);
                 String clientData = data.substring(6,data.length());
                 String hex = CRC16M.GetModBusCRC(clientData.substring(0, clientData.length() - 4));
                 String check = clientData.substring(clientData.length() - 4);
@@ -103,7 +111,7 @@ public class PushCallback implements MqttCallback {
                     String outParam = "";
                     //请求初始化配置参数,获取请求类型01rfid，02请求参数配置
                     String codeType = clientData.substring(10, 12);
-                    logger.info("查询配置开始时间：" + fmt1.format(new Date()));
+//                    logger.info("查询配置开始时间：" + fmt1.format(new Date()));
 //                    BarrierService barrierService = ApplicationContextHolder.getBean("barrierService");
 //                    BarrierService barrierService = JdbcCurd.selectByBarrierId(barrierId.toUpperCase())
                     String barrierId = clientData.substring(14, 38);
@@ -112,76 +120,103 @@ public class PushCallback implements MqttCallback {
                     if (barrier == null) {//配置有误
                         outParam = failDz(clientData);
                     } else {
-                        if (codeType.equals("02")) {//初始配置参数
-                            outParam = initDz(clientData, barrier);
-                            if (barrier != null && barrier.getMqttTopic() != null) {
-                                byte b[] = toBytes(outParam);
-                                BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
-//                                serverMQTT = new ServerMQTT();
-                                logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-//                                serverMQTT.send(b, barrier.getMqttTopic());
-                            }
-                        } else if (codeType.equals("01")) {//请求开闸
-                            logger.info("查询开始时间：" + Canstats.dateformat.format(new Date()));
-                            BarrierValid barrierValid = new BarrierValid();
-                            Map map = barrierValid.openDz(clientData, barrier);
-                            outParam = map.get("outParam") + "";
-                            if (barrier != null && barrier.getMqttTopic() != null) {
-                                byte b[] = toBytes(outParam);
-                                if(!barrier.getStatus().equals("4")){
-                                    logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+                        switch (codeType){
+                            case "01":
+                                //请求开闸
+                                logger.info("道闸指令01,处理开始---");
+                                logger.info("查询开始时间：" + Canstats.dateformat.format(new Date()));
+                                BarrierValid barrierValid = new BarrierValid();
+                                Map map = barrierValid.openDz(clientData, barrier);
+                                if(map!=null) {//重复请求取消发送主板
+                                    outParam = map.get("outParam") + "";
+                                    if (barrier != null && barrier.getMqttTopic() != null) {
+                                        byte b[] = toBytes(outParam);
+                                        if (!barrier.getStatus().equals("4")) {
+                                            logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
 //                                    ServerMQTT serverMQTT = new ServerMQTT();
 //                                    serverMQTT.send(b, barrier.getMqttTopic());
-                                    BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
+                                            BasicRemoteClient.sendMsg(outParam, barrier.getMqttTopic());
+                                        }
+                                    }
+                                    if (map.get("stockCarInfo") != null) {
+                                        Car car = (Car) map.get("stockCarInfo");
+                                        uploadData(car);//请求云端
+                                    }
                                 }
-                            }
-                            logger.info("查询结束时间：" + Canstats.dateformat.format(new Date()));
-                            if (map.get("stockCarInfo") != null) {
-                                Car car = (Car) map.get("stockCarInfo");
-                                uploadData(car);//请求云端
-                            }
-                        } else if (codeType.equals("07")) {//ic卡处理
-                            //截取卡号10位数
-                            //4d43002701 070c05d4ff 373438594d 430353595b 851b5e0001 0001ffff00 060704 006f 1e23 7327
-                            //4d43002801070c05d4ff373438594d430353595ba1b84200010001ffff00060705 0007275536 3139
-                            //05d4ff3734
-                            String cardNo16 = clientData.substring(66, 76);
-                            //    Integer cardNo = Integer.valueOf(cardNo16, 16);
-                            //    String cardNoStr = String.format("%0" + 10 + "d", cardNo);
-                            logger.info("道闸发送的卡号:{}", cardNo16);
-                            uploadRequestCloud(barrier, cardNo16);
-                            /*outParam = openDzByCardNo(clientData,result);
-                            byte b[] = toBytes(outParam);
-                            ServerMQTT serverMQTT = new ServerMQTT();
-                            logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
-                            serverMQTT.send(b, barrier.getMqttTopic());*/
-                        }else if(codeType.equals("0b")){
-                            if (barrier != null && barrier.getMqttTopic() != null) {
-                                if (barrier.getStatus().equals("4")) {
-                                    String outParam1 = "";
-                                    String value1 = Canstats.headerBody;
-                                    //字符串长度/2
-                                    String value2 = "leng";//44字节
-                                    //协议版本
-                                    String value3 = Canstats.headerVersion;
-                                    String value4 = Canstats.first_kz;//下发数据
-                                    int time = (int) (System.currentTimeMillis() / 1000);
-                                    String timeStamp = PushCallback.toHexString(time);
-                                    //id长度+id号+时间戳+设备类型+程序版本+设备电量
-                                    //12位数
-                                    String value5 = PushCallback.toHexString(barrier.getBarrierId().length() / 2) + barrier.getBarrierId() + timeStamp + Canstats.dzType + Canstats.dzVersion + Canstats.dzPower;
-                                    String value6 = "000B8B";
-                                    String value7 = "";
-                                    value7 = Canstats.yxcc;//允许开闸
-                                    outParam1 = value1 + value2 + value3 + value4 + value5 + value6 + value7;
-                                    outParam1 = outParam1.replaceAll("leng", PushCallback.toHexStringBy0(outParam1.length() / 2 + 2));
-                                    logger.info("数据初始化，先开闸，服务器发送消息：{}", outParam1);
-                                    String outHex = CRC16M.GetModBusCRC(outParam1);
+                                logger.info("查询结束时间：" + Canstats.dateformat.format(new Date()));
+                                break;
+                            case "02":
+                                //初始配置参数
+                                logger.info("道闸指令02,处理开始---");
+                                outParam = initDz(clientData, barrier);
+                                if (barrier != null && barrier.getMqttTopic() != null) {
+                                    byte b[] = toBytes(outParam);
+                                    BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
+//                                serverMQTT = new ServerMQTT();
+                                    logger.info(barrier.getMqttTopic() + "huifu消息内容：" + outParam);
+//                                serverMQTT.send(b, barrier.getMqttTopic());
+                                }
+                                break;
+                            case "07":
+                                //上行卡号，不拍照，截取卡号10位数
+                                logger.info("道闸指令07,处理开始---");
+                                String cardNo16 = clientData.substring(66, 76);
+                                doCard(barrier, cardNo16,0);
+                                break;
+                            case "08":
+                                logger.info("道闸指令08,处理开始---");
+                                //微信unionid处理，根据硬件发过来的判断
+                                String key = clientData.substring(64, 66);
+                                Integer keyLen = Integer.valueOf(key, 16) * 2;
+                                String id = clientData.substring(66, 66 + keyLen);
+                                String lastId = HexUtils.convertHexToString(id);
+                                logger.info("道闸发送的unionid或者key:{}", lastId);
+                                switch (barrier.getInOutType()) {
+                                    case 0:
+                                        uploadRequestCloudIn(barrier, lastId, 1);
+                                        break;
+                                    case 1:
+                                        uploadRequestCloudOut(barrier, lastId, 1);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                            case "09":
+                                logger.info("道闸指令09,处理开始---");
+                                //刷卡出场回执asc ii码
+                                String key1 = clientData.substring(64, 66);
+                                Integer keyLen1 = Integer.valueOf(key1, 16) * 2;
+                                String cardNo = clientData.substring(66, 66 + keyLen1);
+                                doCard(barrier, HexUtils.convertHexToString(cardNo),0);
+                                break;
+                            case "0b":
+                                logger.info("道闸指令0b,处理开始---");
+                                if (barrier != null && barrier.getMqttTopic() != null) {
+                                    if (barrier.getStatus().equals("4")) {
+                                        String outParam1 = "";
+                                        String value1 = Canstats.headerBody;
+                                        //字符串长度/2
+                                        String value2 = "leng";//44字节
+                                        //协议版本
+                                        String value3 = Canstats.headerVersion;
+                                        String value4 = Canstats.first_kz;//下发数据
+                                        int time = (int) (System.currentTimeMillis() / 1000);
+                                        String timeStamp = PushCallback.toHexString(time);
+                                        //id长度+id号+时间戳+设备类型+程序版本+设备电量
+                                        //12位数
+                                        String value5 = PushCallback.toHexString(barrier.getBarrierId().length() / 2) + barrier.getBarrierId() + timeStamp + Canstats.dzType + Canstats.dzVersion + Canstats.dzPower;
+                                        String value6 = "000B8B";
+                                        String value7 = "";
+                                        value7 = Canstats.yxcc;//允许开闸
+                                        outParam1 = value1 + value2 + value3 + value4 + value5 + value6 + value7;
+                                        outParam1 = outParam1.replaceAll("leng", PushCallback.toHexStringBy0(outParam1.length() / 2 + 2));
+                                        logger.info("数据初始化，先开闸，服务器发送消息：{}", outParam1);
+                                        String outHex = CRC16M.GetModBusCRC(outParam1);
 
-                                    outParam1 = outParam1 + outHex;
-                                    logger.info("数据初始化，先开闸，服务器发送完整消息:{}", outParam1);
-                                    BasicRemoteClient.sendMsg(outParam1,barrier.getMqttTopic());
-//                                    ServerMQTT.send(outParam1, barrier.getMqttTopic());
+                                        outParam1 = outParam1 + outHex;
+                                        logger.info("数据初始化，先开闸，服务器发送完整消息:{}", outParam1);
+                                        BasicRemoteClient.sendMsg(outParam1,barrier.getMqttTopic());
                                 }
                             }
                         }
@@ -218,7 +253,6 @@ public class PushCallback implements MqttCallback {
 
                         outParam = outParam + outHex;
                         logger.info("签名错误，服务器发送完整消息:{}", outParam);
-//                        ServerMQTT.send(outParam, barrier.getMqttTopic());
                         BasicRemoteClient.sendMsg(outParam,barrier.getMqttTopic());
                     }
                 }
@@ -229,8 +263,125 @@ public class PushCallback implements MqttCallback {
             ex.printStackTrace();
         }
     }
+
+
+    private void doCard(Barrier barrier, String cardNo16,int type) throws Exception {
+        logger.info("道闸发送的卡号:{}", cardNo16);
+        switch (barrier.getInOutType()) {
+            case 0:
+                //入口
+                uploadRequestCloudIn(barrier, cardNo16, type);
+                break;
+            case 1:
+                //出口
+                uploadRequestCloudOut(barrier, cardNo16, type);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void uploadRequestCloudOut(Barrier barrier, String key, int type) throws Exception {
+        //刷卡开闸,扫码上行
+        //组装云端参数
+        PostParam postParam = new PostParam();
+        postParam.setMarket(barrier.getMarketId());
+        JSONObject json = new JSONObject();
+        String url = "/api-p/wx/out";
+        //0 刷卡  1 微信上行的key
+        json.put("key",key);
+        json.put("barrierId",barrier.getBarrierId());
+        json.put("type",type);
+        json.put("marketId",barrier.getMarketId());
+        takePhotoAndUpLoad(barrier,json,url,postParam);
+    }
+
+    private void uploadRequestCloudIn(Barrier barrier, String key, int type) throws Exception {
+        //上传数据到云端
+        //组装云端参数
+        PostParam postParam = new PostParam();
+        postParam.setMarket(barrier.getMarketId());
+        JSONObject json = new JSONObject();
+        String url = "/api-p/wx/in";
+        json.put("marketId",barrier.getMarketId());
+        json.put("key",key);
+        json.put("barrierId",barrier.getBarrierId());
+        //0 刷卡  1 unionId
+        json.put("type",type);
+        //是否拍照
+        takePhotoAndUpLoad(barrier,json,url,postParam);
+    }
+
+    private void takePhotoAndUpLoad(Barrier barrier,JSONObject json,String url,PostParam postParam) {
+        Map map = new HashMap();
+        logger.info("上行到云端的json==>{}",json);
+        long picBegin = System.currentTimeMillis();
+        BarrierCameraService barrierCameraService = ApplicationContextHolder.getBean("barrierCameraService");
+        BarrierCamera barrierCamera = new BarrierCamera();
+        barrierCamera.setBarrierId(barrier.getBarrierId());
+        barrierCamera.setMarketId(barrier.getMarketId());
+        List<BarrierCamera> barrierCameras = barrierCameraService.selectCameraByBarrierId(barrierCamera);
+        if (null != barrierCameras && barrierCameras.size() > 0) {
+            BarrierCamera camera = barrierCameras.get(0);
+            camera.setPath(keepPath);
+            switch (environment) {
+                case "windows":
+                    //windows环境
+                    map = HikvisionService.requestDll(camera);
+                    break;
+                case "linux":
+                    //linux环境
+                    map = HikvisionLinuxService.requestDll(camera);
+                    break;
+                default:
+                    break;
+            }
+            long picEnd = System.currentTimeMillis();
+            logger.info("海康拍照处理耗时==>{}s",(picEnd - picBegin)/1000);
+            if (!map.isEmpty()) {
+                boolean result = (Boolean) map.get("result");
+                if (result) {
+                    String imageFile = String.valueOf(map.get("imageName"));
+                    /*String[] file = imageFile.split("/");
+                    String objKey = file[file.length-1];
+                    String objK = objKey.replace("\\","/");
+                    String imageFileStr = imageFile.replace("\\","/");
+                    String imageUrl = AliyunOSSClientUtil.uploadSimpleFile(endpoint, accessKeyId, bucket, accessKeySecret, objK, imageFileStr);*/
+                    String imageUrl = Base64Util.getImgStr(imageFile);
+                    logger.info("图片上传阿里云处理耗时==>{}s",(System.currentTimeMillis() - picEnd)/1000);
+                    sendCloud(json,url,postParam,imageUrl);
+                } else {
+                    logger.info("====摄像机抓拍失败====");
+                    //拍照失败不影响上行开闸命令
+                    sendCloud(json,url,postParam,null);
+                }
+            } else {
+                logger.info("====请选择服务环境====");
+                //摄像机未配置依然不影响上行数据
+                sendCloud(json,url,postParam,null);
+            }
+        } else {
+            logger.info("====请检查摄像机配置表====");
+            //摄像机未配置依然不影响上行数据
+            sendCloud(json,url,postParam,null);
+        }
+    }
+
+    private void sendCloud(JSONObject json,String url,PostParam postParam,String imageUrl){
+        MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
+        json.put("imageUrl", imageUrl);
+        postParam.setData(json.toJSONString());
+        postParam.setUrl(url);
+        postParam.setOnlySend(false);
+        postParam.setMethod("post");
+        postParam.setMessageTime(Canstats.dateformat.format(new Date()));
+        logger.info("道闸开始发送上行消息至停车收费系统：{}", JsonTools.toJson(postParam));
+        messageProducerService.sendMessage("-2",
+                JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
+    }
+
     //刷卡开闸
-    private String openDzByCardNo(String clientData,InterfaceResult result) throws Exception {
+    private String openDzByCardNo(String clientData, InterfaceResult result) throws Exception {
         //拼接欢迎词
         logger.info("道闸验证消息 : " + clientData);
         String outParam = "";
@@ -270,11 +421,12 @@ public class PushCallback implements MqttCallback {
         value8 = "FF0C";*/
 
         outParam = value1 + value2 + value3 + value4 + value5 + value6 + value7 + value8 + HexUtils.getHexResult(value9);
-        outParam = outParam.replaceAll("leng", PushCallback.toHexStringBy0(outParam.length()/2+2));
+        outParam = outParam.replaceAll("leng", PushCallback.toHexStringBy0(outParam.length() / 2 + 2));
         String outHex = CRC16M.GetModBusCRC(outParam);
         outParam = outParam + outHex;
         return outParam;
     }
+
     //上传数据到云端
     private void uploadRequestCloud(Barrier barrier, String cardNo) {
         MessageProducerService messageProducerService = ApplicationContextHolder.getBean("messageProducerService");
@@ -308,9 +460,10 @@ public class PushCallback implements MqttCallback {
         postParam.setOnlySend(false);
         postParam.setMessageTime(Canstats.dateformat.format(new Date()));
         //发送数据
-        logger.info("道闸开始发送消息到云端：");
+        logger.info("开始发送消息到云端：");
         messageProducerService.sendMessage("-1", JsonTools.toJson(postParam), false, 0, Canstats.KAFKA_SASS);
     }
+
     //找不到道闸配置，由于找不到主板id因此无法发送消息
     public String failDz(String clientData) {
         String outParam = "";
@@ -327,6 +480,7 @@ public class PushCallback implements MqttCallback {
         outParam = outParam + outHex;
         return outParam;
     }
+
     //配置失败，中途道闸id被删除等原因,只给时间
     public String initDz(String clientData, Barrier barrier) {
         String outParam = "";
@@ -387,6 +541,7 @@ public class PushCallback implements MqttCallback {
         outParam = outParam + outHex;
         return outParam;
     }
+
     /**
      * 获取当前日期是星期几<br>
      *

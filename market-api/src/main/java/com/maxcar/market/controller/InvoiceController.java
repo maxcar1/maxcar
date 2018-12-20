@@ -297,7 +297,7 @@ public class InvoiceController extends BaseController {
                 car.setId(invoice.getCarId());
                 car.setStockStatus(invoice.getCarStockStatus());//修改为开票之前的状态
                 count = carService.updateByPrimaryKeySelective(car);
-                String topic = super.getTopic(user.getMarketId());
+                String topic = topicService.getTopic(user.getMarketId());
                 //同步删除本地车辆状态
                 //组装云端参数
                 PostParam postParam = new PostParam();
@@ -806,7 +806,7 @@ public class InvoiceController extends BaseController {
                     car.setTenant(invoice.getTenantId());
                 }
                 carService.updateByPrimaryKeySelective(car);
-                String topic = super.getTopic(invoice.getMarketId());
+                String topic = topicService.getTopic(invoice.getMarketId());
                 //同步删除本地车辆状态
                 //组装云端参数
                 PostParam postParam = new PostParam();
@@ -824,7 +824,7 @@ public class InvoiceController extends BaseController {
                 car.setTenant(invoice.getTenantId());
                 carService.updateByPrimaryKeySelective(car);
 
-                String topic = super.getTopic(invoice.getMarketId());
+                String topic = topicService.getTopic(invoice.getMarketId());
                 //同步删除本地车辆状态
                 //组装云端参数
                 PostParam postParam = new PostParam();

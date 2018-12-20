@@ -97,6 +97,17 @@ public class CarChannelServiceImpl implements CarChannelService {
     }
 
     @Override
+    public CarChannel findChannelByMarket(String marketId, String channelNo) {
+        CarChannelExample carChannelExample=new CarChannelExample();
+        CarChannelExample.Criteria criteria=carChannelExample.createCriteria();
+        criteria.andIsvalidEqualTo(1).andMarketIdEqualTo(marketId).andChannelNoEqualTo(channelNo);
+        List<CarChannel> carChannels = carChannelMapper.selectByExample(carChannelExample);
+        if(carChannels!=null && carChannels.size()>0)
+            return carChannels.get(0);
+        return null;
+    }
+
+    @Override
     public CarChannelRel getCarchannelRel(String carId, String id) {
         CarChannelRelExample carChannelRelExample=new CarChannelRelExample();
         CarChannelRelExample.Criteria criteria=carChannelRelExample.createCriteria();

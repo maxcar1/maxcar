@@ -239,17 +239,19 @@ public class JdbcCurd {
     }
     public static void main(String[] args){
         String rfId = "010000000000011589310458";
-        String marketId = "016";
+        String marketId = "010";
 //        String sql = "select * from car where rfid=? and market_id=? and isvalid=1 and stock_status in(1,2,3,6)";
-//        Car car = new Car();
-//        car.setMarketId(marketId);
-//        car.setRfid(rfId);
+        Car car = new Car();
+        car.setMarketId(marketId);
+        car.setRfid(rfId);
+        car.setId("f31c4de831d04684ad65ff5d27658e8f");
+        car.setTenant("18101010134993652858");
 //        Car car = selectCarByRfid(marketId,rfId);
         System.out.println("查询开始时间：" + Canstats.dateformat.format(new Date()));
-//        Barrier barrier = selectByBarrierId("05DAFF363431464D43154229");
-        boolean flag = selectCarReviewByCarId("18112618215539834800",marketId);
+        Barrier barrier = selectByBarrierId("05D8FF363431464D43174836");
+        List flag = selectBarrierControlCar(car,barrier);
         System.out.println("查询结束时间：" + Canstats.dateformat.format(new Date()));
 
-        System.out.println(flag);
+        System.out.println(JsonTools.toJson(flag));
     }
 }
