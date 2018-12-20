@@ -68,6 +68,7 @@ public class MarketServiceImpl extends BaseServiceImpl<Market, String> implement
             if (city != null) {
                 marketList.get(i).setCityName(city.getName());
             }
+
         }
         return marketList;
     }

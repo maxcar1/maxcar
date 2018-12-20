@@ -17,6 +17,11 @@
           <version>8.5.29</version>
           <scope>compile</scope>
       </dependency>
+      <dependency>
+          <groupId>com.maxcar</groupId>
+          <artifactId>market-common-interface</artifactId>
+          <version>0.0.1-SNAPSHOT</version>
+      </dependency>
 
   </dependencies>
 </project>
