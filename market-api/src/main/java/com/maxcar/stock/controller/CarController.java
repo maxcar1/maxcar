@@ -675,7 +675,7 @@ public class CarController extends BaseController {
             logger.info("淘宝上传返回参数：" + sendTaoBao);
             //System.out.println(sendPostAjax);
             JSONObject jsonObject = JSONObject.fromObject(sendTaoBao);
-            if (jsonObject.has("datas")) {
+            if (null !=jsonObject.get("datas") || "null".equals(jsonObject.get("datas"))) {
                 interfaceResult.InterfaceResult200("");
                 String taobaoId = (String) jsonObject.get("datas");
                 String taobaoShopUrl = taobaoUrl + taobaoId;
@@ -705,9 +705,10 @@ public class CarController extends BaseController {
 
                 return interfaceResult;
             } else {
-                com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(sendTaoBao.toString());
-                com.alibaba.fastjson.JSONObject js1 = com.alibaba.fastjson.JSONObject.parseObject(js.get("item").toString());
-                com.alibaba.fastjson.JSONObject js2 = com.alibaba.fastjson.JSONObject.parseObject(js1.get("error_response").toString());
+                System.out.print("sendTaoBao.toString()======="+sendTaoBao.toString());
+                com.alibaba.fastjson.JSONObject js = com.alibaba.fastjson.JSONObject.parseObject(sendTaoBao.getItem().toString());
+//                com.alibaba.fastjson.JSONObject js1 = com.alibaba.fastjson.JSONObject.parseObject(js.get("item").toString());
+                com.alibaba.fastjson.JSONObject js2 = com.alibaba.fastjson.JSONObject.parseObject(js.get("error_response").toString());
                 //System.out.println(js2.get("sub_msg").toString());
                 interfaceResult.InterfaceResult600(js2.get("sub_msg").toString());
                 return interfaceResult;
