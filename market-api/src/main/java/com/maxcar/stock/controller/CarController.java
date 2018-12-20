@@ -675,7 +675,7 @@ public class CarController extends BaseController {
             logger.info("淘宝上传返回参数：" + sendTaoBao);
             //System.out.println(sendPostAjax);
             JSONObject jsonObject = JSONObject.fromObject(sendTaoBao);
-            if (null !=jsonObject.get("'datas") && !"null".equals(jsonObject.get("datas")+"")) {
+            if (null !=jsonObject.get("datas") && !"null".equals(jsonObject.get("datas")+"")) {
                 interfaceResult.InterfaceResult200("");
                 String taobaoId = (String) jsonObject.get("datas");
                 String taobaoShopUrl = taobaoUrl + taobaoId;
