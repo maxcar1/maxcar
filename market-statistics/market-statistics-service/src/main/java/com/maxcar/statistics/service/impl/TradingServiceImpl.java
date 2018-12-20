@@ -237,15 +237,15 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public List<TradingResponse> getTenantDeal(TradingRequest tradingRequest) {
         List<TradingResponse> list = inventoryInvoiceMonthMapper.getTenantDeal(tradingRequest);
-        List<TradingResponse> listDay = inventoryInvoiceDayMapper.getTenantDealDay(tradingRequest);
-        if (listDay.size() > 0) {
-            TradingResponse trading = listDay.get(0);
-            Date date = new Date();
-            String s = DateUtils.formatDate(date, DateUtils.DATE_FORMAT_DATETIME);
-            String substring = s.substring(0, 7);
-            trading.setMonth(substring);
-            list.add(trading);
-        }
+//        List<TradingResponse> listDay = inventoryInvoiceDayMapper.getTenantDealDay(tradingRequest);
+//        if (listDay.size() > 0) {
+//            TradingResponse trading = listDay.get(0);
+//            Date date = new Date();
+//            String s = DateUtils.formatDate(date, DateUtils.DATE_FORMAT_DATETIME);
+//            String substring = s.substring(0, 7);
+//            trading.setMonth(substring);
+//            list.add(trading);
+//        }
         for (TradingResponse response : list) {
             String month = response.getMonth();
             Double nowTenantCount = response.getTenantCount();
