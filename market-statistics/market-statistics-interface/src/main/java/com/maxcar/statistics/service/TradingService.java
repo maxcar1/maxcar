@@ -34,5 +34,5 @@ public interface TradingService {
 
     List<TradingResponse> transactionLevel(TradingRequest tradingRequest) throws ParseException;
 
-    List<TradingResponse> stockAvgDay(TradingRequest tradingRequest);
+    Map<String, Object> stockAvgDay(TradingRequest tradingRequest);
 }

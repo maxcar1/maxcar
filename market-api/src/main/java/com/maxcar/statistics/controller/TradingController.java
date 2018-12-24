@@ -250,27 +250,10 @@ public class TradingController extends BaseController {
     public InterfaceResult stockAvgDay(@RequestBody TradingRequest tradingRequest, HttpServletRequest request) throws Exception {
         getUserMarketId(tradingRequest, request);
 
-        List<TradingResponse> carpriceDayEntity = tradingService.stockAvgDay(tradingRequest);
-        if(carpriceDayEntity.size() == 0){
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("5万以下",0);
-            map.put("5-10万",0);
-            map.put("10-15万",0);
-            map.put("15-20万",0);
-            map.put("20-25万",0);
-            map.put("25-30万",0);
-            map.put("30-35万",0);
-            map.put("35-40万",0);
-            map.put("40-45万",0);
-            map.put("45-50万",0);
-            map.put("50万以上",0);
-            InterfaceResult interfaceResult = new InterfaceResult();
-            interfaceResult.InterfaceResult200(map);
-            return interfaceResult;
-        }
+        Map<String, Object> map = tradingService.stockAvgDay(tradingRequest);
 
         InterfaceResult interfaceResult = new InterfaceResult();
-        interfaceResult.InterfaceResult200(carpriceDayEntity);
+        interfaceResult.InterfaceResult200(map);
         return interfaceResult;
     }
 

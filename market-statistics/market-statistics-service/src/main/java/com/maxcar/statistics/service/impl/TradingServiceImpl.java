@@ -223,13 +223,13 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public Map<String, Double> getTenantCount(TradingRequest tradingRequest) {
         Map map = inventoryInvoiceDayMapper.tenantCarNum(tradingRequest);
-        if(map == null){
-            map.put("10万以下",0.0);
-            map.put("10-20万",0.0);
-            map.put("20-30万",0.0);
-            map.put("30-40万",0.0);
-            map.put("40-50万",0.0);
-            map.put("50万以上",0.0);
+        if (map == null) {
+            map.put("10万以下", 0.0);
+            map.put("10-20万", 0.0);
+            map.put("20-30万", 0.0);
+            map.put("30-40万", 0.0);
+            map.put("40-50万", 0.0);
+            map.put("50万以上", 0.0);
         }
         return map;
     }
@@ -341,17 +341,29 @@ public class TradingServiceImpl implements TradingService {
     }
 
     @Override
-    public List<TradingResponse> stockAvgDay(TradingRequest tradingRequest) {
+    public Map<String, Object> stockAvgDay(TradingRequest tradingRequest) {
         List<TradingResponse> carpriceDayEntityList = carpriceDayMapper.stockAvgDay(tradingRequest);
-        double count = 0;
-        for(TradingResponse response : carpriceDayEntityList){
-            count += response.getStockAvgStocktime();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("5万以下", 0);
+        map.put("5-10万", 0);
+        map.put("10-15万", 0);
+        map.put("15-20万", 0);
+        map.put("20-25万", 0);
+        map.put("25-30万", 0);
+        map.put("30-35万", 0);
+        map.put("35-40万", 0);
+        map.put("40-45万", 0);
+        map.put("45-50万", 0);
+        map.put("50万以上", 0);
+
+        for (TradingResponse response : carpriceDayEntityList) {
+            String invoicePriceName = response.getInvoicePriceId();
+            if (invoicePriceName != null) {
+                map.put(invoicePriceName,response.getStockAvgStocktime());
+            }
         }
-        for(TradingResponse response : carpriceDayEntityList){
-            Double stockAvgStocktime = response.getStockAvgStocktime();
-            response.setDayPercentage(stockAvgStocktime / count);
-        }
-        return carpriceDayEntityList;
+
+        return map;
     }
 
 }
