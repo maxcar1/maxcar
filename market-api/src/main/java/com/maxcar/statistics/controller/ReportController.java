@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.maxcar.BaseController;
 
 import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.base.util.StringUtil;
 import com.maxcar.base.util.ToolDataUtils;
 import com.maxcar.statistics.model.request.*;
 import com.maxcar.statistics.model.response.*;
@@ -154,6 +153,8 @@ public class ReportController extends BaseController {
 
         List<GroupCartypeMonthResponse> thisYear = reportByCartypeService.groupCartypeMonth(groupCartypeMonthRequest);
 
+        String lastMonth = ToolDataUtils.getlastMonth(groupCartypeMonthRequest.getStartTime());
+
         groupCartypeMonthRequest.setStartTime(ToolDataUtils.getLastYear(groupCartypeMonthRequest.getStartTime()));
         groupCartypeMonthRequest.setEndTime(ToolDataUtils.getLastYear(groupCartypeMonthRequest.getEndTime()));
 
@@ -182,26 +183,36 @@ public class ReportController extends BaseController {
                 Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
 
                 growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
 
                 yearOnYearPacks.add(growthByMonthYearOnYearPack);
             }
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
 
+            Double lastMonthResponseAvgPrice = null;
             if (i > 0) {
 
-                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(thisYear.get(i - 1).getInvoicePrice(), thisYear.get(i - 1).getInvoiceCount());
 
-                if (0 != lastMonthResponseAvgPrice) {
+            } else {
 
-                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+                groupCartypeMonthRequest.setStartTime(lastMonth);
+                groupCartypeMonthRequest.setEndTime(lastMonth);
 
-                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+                List<GroupCartypeMonthResponse> lastMonthResponse = reportByCartypeService.groupCartypeMonth(groupCartypeMonthRequest);
 
-                    sequentialPacks.add(growthByMonthSequentialPack);
-                }
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
+            }
+
+            if (0 != lastMonthResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
+
+                sequentialPacks.add(growthByMonthSequentialPack);
             }
 
         }
@@ -417,6 +428,9 @@ public class ReportController extends BaseController {
 
         List<GroupCarbrandInvoiceMonthResponse> thisYear = reportByCarbrandService.groupCarbrandInvoiceMonth(groupCarbrandInvoiceMonthRequest);
 
+        String lastMonth = ToolDataUtils.getlastMonth(groupCarbrandInvoiceMonthRequest.getStartTime());
+
+
         groupCarbrandInvoiceMonthRequest.setStartTime(ToolDataUtils.getLastYear(groupCarbrandInvoiceMonthRequest.getStartTime()));
         groupCarbrandInvoiceMonthRequest.setEndTime(ToolDataUtils.getLastYear(groupCarbrandInvoiceMonthRequest.getEndTime()));
 
@@ -445,7 +459,7 @@ public class ReportController extends BaseController {
                 Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
 
                 growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
 
                 yearOnYearPacks.add(growthByMonthYearOnYearPack);
             }
@@ -453,19 +467,28 @@ public class ReportController extends BaseController {
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
 
+            Double lastMonthResponseAvgPrice = null;
             if (i > 0) {
 
-                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(thisYear.get(i - 1).getInvoicePrice(), thisYear.get(i - 1).getInvoiceCount());
+            } else {
 
-                if (0 != lastMonthResponseAvgPrice) {
+                groupCarbrandInvoiceMonthRequest.setStartTime(lastMonth);
+                groupCarbrandInvoiceMonthRequest.setEndTime(lastMonth);
 
-                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+                List<GroupCarbrandInvoiceMonthResponse> lastMonthResponse = reportByCarbrandService.groupCarbrandInvoiceMonth(groupCarbrandInvoiceMonthRequest);
 
-                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
+            }
 
-                    sequentialPacks.add(growthByMonthSequentialPack);
-                }
+            if (0 != lastMonthResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
+
+                sequentialPacks.add(growthByMonthSequentialPack);
             }
         }
 
@@ -646,6 +669,8 @@ public class ReportController extends BaseController {
 
         List<GroupCaryearInvoiceMonthResponse> thisYear = reportByCaryearService.groupCaryearInvoiceMonth(parameter);
 
+        String lastMonth = ToolDataUtils.getlastMonth(parameter.getStartTime());
+
         parameter.setStartTime(ToolDataUtils.getLastYear(parameter.getStartTime()));
         parameter.setEndTime(ToolDataUtils.getLastYear(parameter.getEndTime()));
 
@@ -674,7 +699,7 @@ public class ReportController extends BaseController {
                 Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
 
                 growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
 
                 yearOnYearPacks.add(growthByMonthYearOnYearPack);
             }
@@ -682,19 +707,28 @@ public class ReportController extends BaseController {
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
 
+            Double lastMonthResponseAvgPrice = null;
             if (i > 0) {
 
-                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(thisYear.get(i - 1).getInvoicePrice(), thisYear.get(i - 1).getInvoiceCount());
+            } else {
 
-                if (0 != lastMonthResponseAvgPrice) {
+                parameter.setStartTime(lastMonth);
+                parameter.setEndTime(lastMonth);
 
-                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+                List<GroupCaryearInvoiceMonthResponse> lastMonthResponse = reportByCaryearService.groupCaryearInvoiceMonth(parameter);
 
-                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
+            }
 
-                    sequentialPacks.add(growthByMonthSequentialPack);
-                }
+            if (0 != lastMonthResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
+
+                sequentialPacks.add(growthByMonthSequentialPack);
             }
         }
 
@@ -874,6 +908,8 @@ public class ReportController extends BaseController {
 
         List<GroupCarstocktimeInvoiceMonthResponse> thisYear = reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter);
 
+        String lastMonth = ToolDataUtils.getlastMonth(parameter.getStartTime());
+
         parameter.setStartTime(ToolDataUtils.getLastYear(parameter.getStartTime()));
         parameter.setEndTime(ToolDataUtils.getLastYear(parameter.getEndTime()));
 
@@ -902,7 +938,7 @@ public class ReportController extends BaseController {
                 Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
 
                 growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(grow + "%");
+                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
 
                 yearOnYearPacks.add(growthByMonthYearOnYearPack);
             }
@@ -910,19 +946,28 @@ public class ReportController extends BaseController {
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
 
+            Double lastMonthResponseAvgPrice = null;
             if (i > 0) {
 
-                Double lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastYear.get(i - 1).getInvoicePrice(), lastYear.get(i - 1).getInvoiceCount());
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(thisYear.get(i - 1).getInvoicePrice(), thisYear.get(i - 1).getInvoiceCount());
+            } else {
 
-                if (0 != lastMonthResponseAvgPrice) {
+                parameter.setStartTime(lastMonth);
+                parameter.setEndTime(lastMonth);
 
-                    Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+                List<GroupCarstocktimeInvoiceMonthResponse> lastMonthResponse = reportCarstocktimeService.groupCarstocktimeInvoiceMonth(parameter);
 
-                    growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                    growthByMonthSequentialPack.setGrowthBySequential(grow + "%");
+                lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
+            }
 
-                    sequentialPacks.add(growthByMonthSequentialPack);
-                }
+            if (0 != lastMonthResponseAvgPrice) {
+
+                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
+
+                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
+
+                sequentialPacks.add(growthByMonthSequentialPack);
             }
         }
 

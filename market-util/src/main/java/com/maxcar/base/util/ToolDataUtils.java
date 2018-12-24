@@ -78,6 +78,26 @@ public class ToolDataUtils {
         return sdfDay.format(calendar.getTime());
     }
 
+    /**
+     * param:
+     * describe: 获取上一个月的日期
+     * create_date:  lxy   2018/12/3  15:22
+     **/
+    public static String getlastMonth(String time) throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(sdfDay.parse(time));
+        calendar.add(Calendar.MONTH, -1);
+        return sdfDay.format(calendar.getTime());
+    }
+
+    public static void main(String[] args) {
+        try {
+            System.out.println(getlastMonth("2018-1-11"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * param:
