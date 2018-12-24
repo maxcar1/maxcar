@@ -199,7 +199,20 @@
 
   <select id="stockAvgDay" resultMap="ResponseResultMap" parameterType="com.maxcar.statistics.model.request.TradingRequest" >
 SELECT
-    invoice_price_id as invoicePriceId,
+    (CASE
+    WHEN invoice_price_id='0' THEN '5万以下'
+    WHEN invoice_price_id='1' THEN '5-10万'
+    WHEN invoice_price_id='2' THEN '10-15万'
+    WHEN invoice_price_id='3' THEN '15-20万'
+    WHEN invoice_price_id='4' THEN '20-25万'
+    WHEN invoice_price_id='5' THEN '25-30万'
+    WHEN invoice_price_id='6' THEN '30-35万'
+    WHEN invoice_price_id='7' THEN '35-40万'
+    WHEN invoice_price_id='8' THEN '40-45万'
+    WHEN invoice_price_id='9' THEN '45-50万'
+    WHEN invoice_price_id='10' THEN '50万以上'
+    END
+    ) AS invoicePriceId,
     AVG(stock_avg_stocktime) AS stock_avg_stocktime
 FROM
   `carprice_day`

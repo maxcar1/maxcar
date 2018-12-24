@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +103,10 @@ public class StockController extends BaseController {
         InterfaceResult interfaceResult = new InterfaceResult();
 
         List<StockResponse> stockDayCar = stockService.getStockDayCar(stockRequest);
+
+        if(stockDayCar == null && stockDayCar.size() == 0){
+            stockDayCar = new ArrayList<>();
+        }
 
         interfaceResult.InterfaceResult200(stockDayCar);
         return interfaceResult;
