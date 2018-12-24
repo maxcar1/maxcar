@@ -84,7 +84,9 @@ public class RankingServiceImpl implements RankingService {
 
         if ("brandName".equals(request.getType())) {
 
-            request.setBrandName(request.getParameter());
+            if (!"全部".equals(request.getParameter().trim())) {
+                request.setBrandName(request.getParameter());
+            }
 
             return carbrandMapperService.groupCarbrandInvoiceDayRanking(request);
 
@@ -170,7 +172,9 @@ public class RankingServiceImpl implements RankingService {
     public List<GetInventoryRankingResponse> getInventoryRankingByCondition(GetInventoryRankingByConditionRequest request) {
         if ("brandName".equals(request.getType())) {
 
-            request.setBrandName(request.getParameter());
+            if (!"全部".equals(request.getParameter().trim())) {
+                request.setBrandName(request.getParameter());
+            }
 
             return carbrandMapperService.groupCarbrandInventoryDayRanking(request);
 
