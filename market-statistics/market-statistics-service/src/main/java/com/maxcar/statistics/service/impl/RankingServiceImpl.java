@@ -11,6 +11,7 @@ import com.maxcar.statistics.service.impl.mapperService.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -184,6 +185,9 @@ public class RankingServiceImpl implements RankingService {
             request.setStocktimeId(request.getParameter());
 
             return carstocktimeMapperService.groupCarstocktimeInventoryDayRanking(request);
+        } else if ("car_invoice_type".equals(request.getType())) {
+
+            return new ArrayList<>();
         }
 
         return null;
