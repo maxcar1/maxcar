@@ -173,6 +173,8 @@ public class TradingController extends BaseController {
 //        getUserMarketAndSetTime(tradingRequest, request);
         getUserMarketId(tradingRequest, request);
 
+        tradingRequest.setCountType(tradingRequest.getCarNumType());
+
         String timeStart = tradingRequest.getTimeStart();
         tradingRequest.setTimeStart(timeStart.substring(0,7));
         String timeEnd = tradingRequest.getTimeEnd();
