@@ -92,7 +92,7 @@ public class StockServiceImpl implements StockService {
                 agoMonthCount = stockResponse.getStockCount();
                 agoMonthPrice = stockResponse.getStockPrice();
             }
-            avgStockPrice = Math.round((stockPrice + agoMonthPrice) * 10000 / 10000.0 / 2);
+            avgStockPrice = Math.round((stockPrice + agoMonthPrice) * 10000 / 2) / 10000.0;
             avgStockCount = Math.round((stockCount + agoMonthCount) / 2);
 
             //  环比
