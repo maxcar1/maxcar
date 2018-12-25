@@ -48,22 +48,27 @@ public class BarrierValid {
         logger.info("rfid" + marketId + Canstats.between + values);
         logger.info("道闸是否受限制：" + !barrier.getStatus().equals("0"));
         String rfid = marketId + Canstats.between + values;
-//        try {
-//            Jedis jedis = RedisUtil.getInstance().getJedis();
-//            if (jedis.get("rfid" + rfid) != null) {//如果缓存中已经有请求
-//                logger.info("请不要重复刷标签rfid");
-//                return null;
-//            } else {
-//                RedisUtil.getInstance().strings().set("rfid" + rfid, rfid);
-//                //设置十秒时间
-//                RedisUtil.getInstance().keys().expire("rfid" + rfid, 10);
-//            }
-//            RedisUtil.getInstance().closeJedis(jedis);
-            return doS(barrier,rfid,value1,value2,value3,value4,value5,value6,value7,value8,outParam,map);
-//        }catch (Exception ex){
-//           ex.printStackTrace();
-//           return doS(barrier,rfid,value1,value2,value3,value4,value5,value6,value7,value8,outParam,map);
-//        }
+        if (barrier.getStatus().equals("5")) {//无地感需要控制读标次数10秒内不允许再次读标
+            try {
+                Jedis jedis = RedisUtil.getInstance().getJedis();
+                if (jedis.get("rfid" + rfid) != null) {//如果缓存中已经有请求
+                    logger.info("请不要重复刷标签rfid");
+                    return null;
+                } else {
+                    RedisUtil.getInstance().strings().set("rfid" + rfid, rfid);
+                    //设置十秒时间
+                    RedisUtil.getInstance().keys().expire("rfid" + rfid, 10);
+                }
+                RedisUtil.getInstance().closeJedis(jedis);
+                return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
+            }
+        }else{
+            return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
+        }
+
     }
     //下一步执行
     public Map doS(Barrier barrier,String rfid,String value1,String value2,String value3,String value4,String value5,String value6,String value7,String value8,String outParam,Map map){
