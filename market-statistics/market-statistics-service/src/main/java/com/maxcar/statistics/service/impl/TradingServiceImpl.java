@@ -55,6 +55,13 @@ public class TradingServiceImpl implements TradingService {
                 Double avgSalesPrice = (nowSalesPrice + (agoSalesPrice == null ? 0 : agoSalesPrice)) / 2 / 10000.0;
                 inventory.setAvgSalesCount(avgSalesCount);
                 inventory.setAvgSalesPrice(avgSalesPrice);
+            } else {
+                Integer nowSalesCount = inventory.getSalesCount();
+                Double nowSalesPrice = inventory.getSalesPrice();
+                Integer avgSalesCount = (nowSalesCount + 0) / 2;
+                Double avgSalesPrice = (nowSalesPrice + 0) / 2 / 10000.0;
+                inventory.setAvgSalesCount(avgSalesCount);
+                inventory.setAvgSalesPrice(avgSalesPrice);
             }
         }
         return dealList;

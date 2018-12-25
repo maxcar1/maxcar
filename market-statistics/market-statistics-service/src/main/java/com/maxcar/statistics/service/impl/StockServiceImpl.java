@@ -43,8 +43,8 @@ public class StockServiceImpl implements StockService {
         Date monthStart = DateUtils.getMonthStart(date);
         String monthS = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
         String monthE = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
-        stockRequestNowMonth.setTimeStart(monthS);
-        stockRequestNowMonth.setTimeEnd(monthE);
+        stockRequestNowMonth.setTimeStart(monthS.substring(0,7));
+        stockRequestNowMonth.setTimeEnd(monthE.substring(0,7));
 
         if (StringUtil.isNotEmpty(stockRequest.getTenantId())) {
             stockRequestNowMonth.setTenantId(stockRequest.getTenantId());
@@ -58,7 +58,7 @@ public class StockServiceImpl implements StockService {
         //  获取当月数据
         List<StockResponse> nowMonth = inventoryInvoiceMonthMapper.getCountAndValue(stockRequestNowMonth);
         //  如果当月数据不为空，则加入集合
-        if (nowMonth != null) {
+        if (nowMonth != null && nowMonth.size() > 0) {
             StockResponse response = nowMonth.get(0);
             response.setReportTime(monthS.substring(0, 7));
             list.add(response);
