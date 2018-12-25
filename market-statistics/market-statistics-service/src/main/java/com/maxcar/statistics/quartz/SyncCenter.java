@@ -60,6 +60,7 @@ public class SyncCenter extends QuartzJobBean {
             insertStockAndInvoice.InsertCarstockMonth();
             insertStockAndInvoice.InsertInventoryInvoiceDay();
             insertStockAndInvoice.InsertInventoryInvoiceMonth();
+            insertStockAndInvoice.InsertStockAvgDay();
 
         } catch (Exception ex) {
             ex.printStackTrace();

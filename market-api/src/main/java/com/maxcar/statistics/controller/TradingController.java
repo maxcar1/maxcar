@@ -173,7 +173,7 @@ public class TradingController extends BaseController {
 //        getUserMarketAndSetTime(tradingRequest, request);
         getUserMarketId(tradingRequest, request);
 
-        tradingRequest.setCountType(tradingRequest.getCarNumType());
+        tradingRequest.setCarNumType(tradingRequest.getCountType());
 
         String timeStart = tradingRequest.getTimeStart();
         tradingRequest.setTimeStart(timeStart.substring(0,7));
@@ -279,5 +279,6 @@ public class TradingController extends BaseController {
         insertStockAndInvoice.InsertCarstockMonth();
         insertStockAndInvoice.InsertInventoryInvoiceDay();
         insertStockAndInvoice.InsertInventoryInvoiceMonth();
+        insertStockAndInvoice.InsertStockAvgDay();
     }
 }

@@ -1,6 +1,6 @@
 package com.maxcar.statistics.service;
 
-import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
+import com.maxcar.statistics.model.entity.StockAvgDayEntity;
 import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.response.StockResponse;
 
@@ -24,7 +24,7 @@ public interface StockService {
      * 按库存天数分布的车辆
      * @param stockRequest
      */
-    List<StockResponse> getStockDayCar(StockRequest stockRequest);
+    List<StockAvgDayEntity> getStockDayCar(StockRequest stockRequest);
     /**
      * 车辆平均库存天数发展趋势
      * @param stockRequest

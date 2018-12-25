@@ -30,5 +30,11 @@ public interface InsertStockAndInvoice {
      * @throws Exception
      */
     void InsertInventoryInvoiceMonth() throws Exception;
+
+    /**
+     * 平均交易天数  定时进行数据统计
+     * @throws Exception
+     */
+    void InsertStockAvgDay() throws  Exception;
 }
 
