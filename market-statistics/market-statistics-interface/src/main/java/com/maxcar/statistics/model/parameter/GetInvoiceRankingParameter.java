@@ -1,11 +1,11 @@
-package com.maxcar.statistics.model.request;
+package com.maxcar.statistics.model.parameter;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class GetInvoiceRankingRequest implements Serializable{
+public class GetInvoiceRankingParameter implements Serializable{
 
     private static final long serialVersionUID = 8110312147381121675L;
     private String marketId;
@@ -22,6 +22,16 @@ public class GetInvoiceRankingRequest implements Serializable{
 
     private String endTime;
 
+    // 车辆类型
     private String carInvoiceType;
+
+    //车辆品牌
+    private String brandName;
+
+    // 库存周期
+    private Integer inventoryCycle;
+
+    // 车辆年限
+    private Integer AgeByCar;
 
 }

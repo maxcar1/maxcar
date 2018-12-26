@@ -14,5 +14,36 @@
 
     <dubbo:service interface="com.maxcar.statistics.service.RankingService" ref="rankingService" timeout="1200000"/>
 
+    <dubbo:service interface="com.maxcar.statistics.service.ReportByCartypeService" ref="reportByCarInvoiceTypeService" timeout="1200000"/>
+
+    <dubbo:service interface="com.maxcar.statistics.service.ReportByCarbrandService" ref="reportByCarbrandService" timeout="1200000"/>
+
+    <dubbo:service interface="com.maxcar.statistics.service.ReportByCaryearService" ref="reportByCaryearService" timeout="1200000"/>
+
+    <dubbo:service interface="com.maxcar.statistics.service.ReportCarstocktimeService" ref="reportCarstocktimeService" timeout="1200000"/>
+
+
+    <dubbo:service interface="com.maxcar.statistics.service.TradingService" ref="tradingService" timeout="1200000"/>
+
+    <dubbo:service interface="com.maxcar.statistics.service.StockService" ref="stockService" timeout="1200000"/>
+
+    <dubbo:service interface="com.maxcar.statistics.service.InsertStockAndInvoice" ref="insertStockAndInvoice" timeout="1200000"/>
+
+
+    <!-- -->
+    <dubbo:reference
+            interface="com.maxcar.user.service.ConfigurationService"
+            id="configurationService"
+            check="false" retries="0" timeout="20000"/>
+
+    <dubbo:reference
+            interface="com.maxcar.market.service.PropertyContractService"
+            id="propertyContractService"
+            check="false" retries="0" timeout="20000"/>
+
+    <dubbo:reference
+            interface="com.maxcar.user.service.MarketService"
+            id="marketService"
+            check="false" retries="0" timeout="20000"/>
 
 </beans>

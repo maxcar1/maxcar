@@ -98,45 +98,45 @@ public class OperationAspectAdvice {
 
     @After("@annotation(OperationAnnotation)")   //后置通知，执行方法后执行操作记录
     public void operationAfter(JoinPoint point)throws Exception{
-        //获得当前访问的class
-        Class<?> className = point.getTarget().getClass();
-//        OperationAnnotation operationAnnotation = className.getAnnotation(OperationAnnotation.class);
-//        if (operationAnnotation != null ) {//方法级别不用此判断
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        InterfaceResult result = ssoService.getUserByToken(request.getHeader("userToken"));
-        if (result != null && result.getCode().equals("200")) {
-            String res = result.getData().toString();
-            User user = null;
-            if (res.indexOf("userId")==-1) {
-                String userId = res;
-                user = userService.selectByPrimaryKey(userId);
-            }else{
-                user = JsonTools.toObj(res, User.class);
-            }
-            //获得访问的方法名
-            String methodName = point.getSignature().getName();
-            //得到方法的参数的类型
-            Class[] argClass = ((MethodSignature)point.getSignature()).getParameterTypes();
-            Method method = className.getMethod(methodName, argClass);
-            if (method.isAnnotationPresent(OperationAnnotation.class)) {
-                OperationAnnotation annotation = method.getAnnotation(OperationAnnotation.class);
-                String title = annotation.title();
-                String info = annotation.info();
-                logger.info("拦截用户操作行为，"+className.getName()+"标题："+title+",内容："+info);
-                OperationRecord record = new OperationRecord();
-                record.setOperationId(UuidUtils.generateIdentifier());
-                record.setOperationType(annotation.type());
-                if(user!=null) {
-                    record.setMarketId(user.getMarketId());
-                    record.setUserName(user.getUserName());
-                    record.setUserId(user.getUserId());
-                    record.setTrueName(user.getTrueName());
-                }
-                record.setOperationInfo(info.equals("")?title:info);
-                record.setOperationTitle(title);
-                record.setOperationUrl(request.getServletPath());
-                operationRecordService.insertSelective(record);
-            }
-        }
+//        //获得当前访问的class
+//        Class<?> className = point.getTarget().getClass();
+////        OperationAnnotation operationAnnotation = className.getAnnotation(OperationAnnotation.class);
+////        if (operationAnnotation != null ) {//方法级别不用此判断
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        InterfaceResult result = ssoService.getUserByToken(request.getHeader("userToken"));
+//        if (result != null && result.getCode().equals("200")) {
+//            String res = result.getData().toString();
+//            User user = null;
+//            if (res.indexOf("userId")==-1) {
+//                String userId = res;
+//                user = userService.selectByPrimaryKey(userId);
+//            }else{
+//                user = JsonTools.toObj(res, User.class);
+//            }
+//            //获得访问的方法名
+//            String methodName = point.getSignature().getName();
+//            //得到方法的参数的类型
+//            Class[] argClass = ((MethodSignature)point.getSignature()).getParameterTypes();
+//            Method method = className.getMethod(methodName, argClass);
+//            if (method.isAnnotationPresent(OperationAnnotation.class)) {
+//                OperationAnnotation annotation = method.getAnnotation(OperationAnnotation.class);
+//                String title = annotation.title();
+//                String info = annotation.info();
+//                logger.info("拦截用户操作行为，"+className.getName()+"标题："+title+",内容："+info);
+//                OperationRecord record = new OperationRecord();
+//                record.setOperationId(UuidUtils.generateIdentifier());
+//                record.setOperationType(annotation.type());
+//                if(user!=null) {
+//                    record.setMarketId(user.getMarketId());
+//                    record.setUserName(user.getUserName());
+//                    record.setUserId(user.getUserId());
+//                    record.setTrueName(user.getTrueName());
+//                }
+//                record.setOperationInfo(info.equals("")?title:info);
+//                record.setOperationTitle(title);
+//                record.setOperationUrl(request.getServletPath());
+//                operationRecordService.insertSelective(record);
+//            }
+//        }
     }
 }

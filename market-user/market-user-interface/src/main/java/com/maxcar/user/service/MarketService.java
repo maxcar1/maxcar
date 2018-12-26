@@ -39,4 +39,10 @@ public interface MarketService extends BaseService<Market,String> {
       * @Date: 2018/4/25
       */
      public boolean updateMarketStatus(String id, Integer status)throws Exception;
+
+     /**
+      * 获取到所有市场
+      * @return
+      */
+    List<Market> selectAll() throws Exception;
 }

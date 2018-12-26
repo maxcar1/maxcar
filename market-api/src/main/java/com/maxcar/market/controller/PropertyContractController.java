@@ -12,7 +12,9 @@ import com.maxcar.base.util.file.FilePojo;
 import com.maxcar.base.util.oss.OSSManageUtil;
 import com.maxcar.market.model.request.*;
 import com.maxcar.market.model.response.*;
+import com.maxcar.market.pojo.Area;
 import com.maxcar.market.pojo.PropertyContractDetail;
+import com.maxcar.market.service.AreaService;
 import com.maxcar.market.service.PropertyContractPayService;
 import com.maxcar.market.service.PropertyContractService;
 import com.maxcar.tenant.service.UserTenantService;
@@ -55,6 +57,9 @@ public class PropertyContractController extends BaseController {
 
     @Autowired
     private StaffService staffService;
+
+    @Autowired
+    private AreaService areaService;
 
     @Autowired
     private UserTenantService userTenantService;
@@ -209,7 +214,7 @@ public class PropertyContractController extends BaseController {
 
             stringBuffer.append(" <table border=\"1\" cellspacing=\"0\" width=\"100%\" height=\"150\" style=\"margin: 0 auto;text-align: center\">");
 
-            stringBuffer.append(" <thead> <tr><th >车位</th><th >数量</th> <th >位置</th> <th >单价（元/个）</th><th >优惠后（单价）</th><th >年费用（元）</th>  <th >期限</th></tr></thead>");
+            stringBuffer.append(" <thead> <tr><th >物业类型</th><th >区域</th><th >编号</th> <th >数量</th> <th >单价</th><th >优惠后单价</th><th >年费用</th>  <th >期限</th></tr></thead>");
 
             Configuration configurationTenantType = new Configuration();
             configurationTenantType.setMarketId(request.getPropertyContract().getMarketId());
@@ -219,7 +224,9 @@ public class PropertyContractController extends BaseController {
             for (PropertyContractDetail propertyContractDetail : list) {
                 stringBuffer.append("<tr><td>");
                 if (null != propertyType && !propertyType.isEmpty()) {
+
                     for (Configuration configuration : propertyType) {
+
                         if ((propertyContractDetail.getContractCategory().toString()).equals(configuration.getConfigurationValue())) {
 
                             stringBuffer.append(configuration.getConfigurationName());
@@ -227,11 +234,16 @@ public class PropertyContractController extends BaseController {
                         }
                     }
                 }
+
                 stringBuffer.append("</td><td>");
-                stringBuffer.append(df.format(propertyContractDetail.getAreaTotal()));
+                Area area = areaService.getAreaById(propertyContractDetail.getArea());
+                stringBuffer.append(null == area ? "" : area.getName());
 
                 stringBuffer.append("</td><td>");
                 stringBuffer.append(propertyContractDetail.getAreaName());
+
+                stringBuffer.append("</td><td>");
+                stringBuffer.append(df.format(propertyContractDetail.getAreaTotal()));
 
                 stringBuffer.append("</td><td>");
                 stringBuffer.append(df.format(propertyContractDetail.getPrice()));
@@ -284,7 +296,7 @@ public class PropertyContractController extends BaseController {
 
             stringBuffer.append("</td> <td>");
             stringBuffer.append(df.format(subtotal));
-            stringBuffer.append("</td><td></td></tr> <tr> <td style=\"height:120px\" >备注</td><td colspan=\"6\">");
+            stringBuffer.append("</td><td></td></tr> <tr> <td style=\"height:120px\" >备注</td><td colspan=\"7\">");
             stringBuffer.append(params.get("contractRemark").toString());
             stringBuffer.append(" </td></tr>  </tbody>  </table> ");
 

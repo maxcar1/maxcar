@@ -1,8 +1,8 @@
 package com.maxcar.statistics.dao.provider;
 
 
-import com.maxcar.statistics.model.request.GetInvoiceRankingRequest;
-import com.maxcar.statistics.model.request.GetInventoryRankingRequest;
+import com.maxcar.statistics.model.parameter.GetInventoryRankingParameter;
+import com.maxcar.statistics.model.parameter.GetInvoiceRankingParameter;
 import org.apache.ibatis.jdbc.SQL;
 
 /**
@@ -12,26 +12,30 @@ import org.apache.ibatis.jdbc.SQL;
  **/
 public class RankingProvider {
 
-    public String getInvoiceRanking(GetInvoiceRankingRequest request) {
+    public String getInvoiceRanking(GetInvoiceRankingParameter parameter) {
         return new SQL() {{
-            SELECT(request.getSelectColumns());
+            SELECT(parameter.getSelectColumns());
             FROM(" maxcar_market_l.invoice AS i \n" +
+                    "  LEFT JOIN `maxcar_stock_l`.`car` AS c \n" +
+                    "    ON i.car_id = c.id " +
+                    "  LEFT JOIN `maxcar_stock_l`.`car_base` AS cb \n" +
+                    "    ON i.car_id = cb.id " +
                     "  LEFT JOIN maxcar_user_l.`market` AS m \n" +
                     "    ON i.market_id = m.id \n" +
                     "  LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut \n" +
                     "    ON i.tenant_id = ut.id ");
-            WHERE(request.getSelectCondition());
+            WHERE(parameter.getSelectCondition());
 
-            GROUP_BY(request.getGroupByColumns());
+            GROUP_BY(parameter.getGroupByColumns());
 
-            ORDER_BY(request.getOrderBy() + " DESC ");
+            ORDER_BY(parameter.getOrderBy() + " DESC ");
 
         }}.toString() + "  limit 10 ";
     }
 
-    public String getInventoryRanking(GetInventoryRankingRequest request) {
+    public String getInventoryRanking(GetInventoryRankingParameter parameter) {
         return new SQL() {{
-            SELECT(request.getSelectColumns());
+            SELECT(parameter.getSelectColumns());
             FROM("  maxcar_stock_l.car AS c\n" +
                     "  LEFT JOIN maxcar_stock_l.car_base AS cb\n" +
                     "    ON cb.id = c.id \n" +
@@ -39,12 +43,13 @@ public class RankingProvider {
                     "    ON c.market_id = m.id \n" +
                     "  LEFT JOIN `maxcar_tenant_l`.`user_tenant` AS ut \n" +
                     "    ON c.tenant = ut.id  ");
-            WHERE(request.getSelectCondition());
+            WHERE(parameter.getSelectCondition());
 
-            GROUP_BY(request.getGroupByColumns());
+            GROUP_BY(parameter.getGroupByColumns());
 
-            ORDER_BY(request.getOrderBy() + " DESC ");
+            ORDER_BY(parameter.getOrderBy() + " DESC ");
 
         }}.toString() + "  limit 10 ";
     }
+
 }

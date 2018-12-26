@@ -72,6 +72,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * @author huangxu
@@ -1319,5 +1320,32 @@ public class CarServiceImpl extends BaseServiceImpl<Car, String> implements CarS
         return inventoryStatisticalResponse;
     }
 
+    @Override
+    public Map<String, Object> nowRanking(String marketId, String tenantId) {
+        Map<String , Object> map = carMapper.nowRanking(marketId,tenantId);
 
+        double avg = Double.parseDouble(map.get("avg").toString());
+        avg = Math.round(avg * 10) / 10.0;
+        map.put("avg",avg);
+
+        CarExample example = new CarExample();
+        CarExample.Criteria criteria = example.createCriteria();
+        if(StringUtil.isNotEmpty(marketId)){
+            criteria.andMarketIdEqualTo(marketId);
+        }
+        if(StringUtil.isNotEmpty(tenantId)){
+            criteria.andTenantEqualTo(tenantId);
+        }
+        criteria.andStockStatusIn(new ArrayList<Integer>(){{add(1);add(2);}});
+        criteria.andCarTypeEqualTo(1).andIsvalidEqualTo(1);
+
+        int inMarketCarCount = carMapper.countByExample(example);
+        map.put("inMarketCarCount",inMarketCarCount);
+
+        Integer count = Integer.parseInt(map.get("count").toString());
+        int outMarketCarNum = count - inMarketCarCount;
+        map.put("outMarketCarNum",outMarketCarNum);
+
+        return map;
+    }
 }

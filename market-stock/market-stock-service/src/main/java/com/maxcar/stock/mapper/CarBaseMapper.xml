@@ -959,7 +959,7 @@ WHERE
   <select id="getCarBase" resultMap="BaseResultMap" parameterType="String">
     select * from car_base where id = #{id}
   </select>
-  <select id="getBrandTop10" resultType="com.maxcar.base.model.VehicleBrand">
+  <select id="getBrandTop10" resultType="com.maxcar.stock.vo.VehicleBrandVo">
     SELECT
 	a.brand_code as code,
 	COUNT(*)

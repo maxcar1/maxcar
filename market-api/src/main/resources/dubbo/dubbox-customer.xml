@@ -278,4 +278,33 @@
 					 id="redisService"
 					 check="false" retries="0" timeout="20000"/>
 
+    <!-- 统计相关 -->
+    <dubbo:reference interface="com.maxcar.statistics.service.RankingService" id="rankingService"
+                     check="false" retries="0" timeout="20000"/>
+
+    <dubbo:reference interface="com.maxcar.statistics.service.ReportByCartypeService"
+                     id="reportByCarInvoiceTypeService"
+                     check="false" retries="0" timeout="1200000"/>
+
+    <dubbo:reference interface="com.maxcar.statistics.service.ReportByCaryearService" id="reportByCaryearService"
+                     check="false" retries="0" timeout="20000"/>
+
+    <dubbo:reference interface="com.maxcar.statistics.service.ReportCarstocktimeService" id="reportCarstocktimeService"
+                     check="false" retries="0" timeout="20000"/>
+
+    <dubbo:reference interface="com.maxcar.statistics.service.InsertStockAndInvoice" id="insertStockAndInvoice"
+                     check="false" retries="0" timeout="20000"/>
+
+
+    <!-- 统计交易 -->
+    <dubbo:reference interface="com.maxcar.statistics.service.TradingService" id="tradingService"
+                     check="false" retries="0" timeout="20000"/>
+
+
+    <dubbo:reference interface="com.maxcar.statistics.service.ReportByCarbrandService" id="reportByCarbrandService"
+                     check="false" retries="0" timeout="20000"/>
+
+    <!-- 统计库存 -->
+    <dubbo:reference interface="com.maxcar.statistics.service.StockService" id="stockService"
+                     check="false" retries="0" timeout="20000"/>
 </beans>

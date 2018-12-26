@@ -8,6 +8,17 @@
             <artifactId>market-statistics-interface</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.maxcar</groupId>
+            <artifactId>market-user-interface</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.maxcar</groupId>
+            <artifactId>market-market-interface</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <parent>
 		<groupId>com.maxcar</groupId>

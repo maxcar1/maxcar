@@ -141,7 +141,7 @@ public interface CarMapper extends BaseDao<Car, String> {
      * @param tenantId
      * @return
      */
-    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
+    CarDataStatistics getCarDataStatistics(@Param("tenantId") String tenantId, @Param("marketId") String marketId);
 
     CarDataStatistics carData(@Param("tenantId") String tenantId,@Param("marketId") String marketId);
 
@@ -164,4 +164,6 @@ public interface CarMapper extends BaseDao<Car, String> {
     InventoryStatisticalResponse accumulativeCar(InventoryStatisticalRequest response);
 
     Car getStockCarByVinByMarketId(@Param("vin")String vin,@Param("marketId") String marketId);
+
+    Map<String , Object> nowRanking(@Param("marketId") String marketId, @Param("tenantId") String tenantId);
 }

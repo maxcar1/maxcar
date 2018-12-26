@@ -10,6 +10,7 @@ import com.maxcar.market.pojo.TradeInformation;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chiyanlong on 2018/8/24.
@@ -39,4 +40,6 @@ public interface InvoiceService extends BaseService<Invoice, String> {
     double selectPriceByCarId(String carId);
 
     List<InvoiceExcel> detailsManage(Invoice invoice) throws ParseException;
+
+    Map nowDeal(String marketId, String tenantId) throws Exception;
 }

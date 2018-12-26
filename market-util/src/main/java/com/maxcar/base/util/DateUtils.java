@@ -13,11 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DateUtils extends org.apache.commons.lang.time.DateUtils{
+public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     public static final String TIME_WITH_MINUTE_PATTERN = "HH:mm";
 
     public static final long DAY_MILLI = 24 * 60 * 60 * 1000; // 一天的MilliSecond
-
 
 
 // 取值范围：就是临界点包不包含等于
@@ -54,29 +53,25 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     public static final SimpleDateFormat LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static final SimpleDateFormat LONG_DATE_FORMAT_SSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     public static final SimpleDateFormat HMS_FORMAT = new SimpleDateFormat("HH:mm:ss");
+
     /**
      * 根据日期格式字符串解析日期字符串
      *
-     * @param str
-     * 日期字符串
-     * @param parsePatterns
-     * 日期格式字符串
+     * @param str           日期字符串
+     * @param parsePatterns 日期格式字符串
      * @return 解析后日期
      * @throws ParseException
      */
     public static Date parseDate(String str, String parsePatterns) throws ParseException {
-        return parseDate(str, new String[] { parsePatterns });
+        return parseDate(str, new String[]{parsePatterns});
     }
 
     /**
      * 根据单位字段比较两个日期
      *
-     * @param date
-     * 日期1
-     * @param otherDate
-     * 日期2
-     * @param withUnit
-     * 单位字段，从Calendar field取值
+     * @param date      日期1
+     * @param otherDate 日期2
+     * @param withUnit  单位字段，从Calendar field取值
      * @return 等于返回0值, 大于返回大于0的值 小于返回小于0的值
      */
     public static int compareDate(Date date, Date otherDate, int withUnit) {
@@ -115,12 +110,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 根据单位字段比较两个时间
      *
-     * @param date
-     * 时间1
-     * @param otherDate
-     * 时间2
-     * @param withUnit
-     * 单位字段，从Calendar field取值
+     * @param date      时间1
+     * @param otherDate 时间2
+     * @param withUnit  单位字段，从Calendar field取值
      * @return 等于返回0值, 大于返回大于0的值 小于返回小于0的值
      */
     public static int compareTime(Date date, Date otherDate, int withUnit) {
@@ -173,7 +165,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
 
     /**
      * yyyy-MM-dd 当前日期
-     *
      */
     public static String getReqDate() {
         return SHORTDATEFORMAT.format(new Date());
@@ -385,8 +376,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
      * 返回java.sql.Timestamp型的SYSDATE
      *
      * @return java.sql.Timestamp型的SYSDATE
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static java.sql.Timestamp getSysDateTimestamp() {
         return new java.sql.Timestamp(System.currentTimeMillis());
@@ -395,37 +386,34 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 利用缺省的Date格式(YYYY/MM/DD)转换String到java.sql.Timestamp
      *
-     * @param sDate
-     * Date string
+     * @param sDate Date string
      * @return
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static java.sql.Timestamp toSqlTimestamp(String sDate) {
         if (sDate == null) {
             return null;
         }
         if (sDate.length() != DateUtils.DATE_FORMAT_DATEONLY.length()
-                &&sDate.length() != DateUtils.DATE_FORMAT_DATETIME.length()) {
+                && sDate.length() != DateUtils.DATE_FORMAT_DATETIME.length()) {
             return null;
         }
         return toSqlTimestamp(sDate,
                 sDate.length() == DateUtils.DATE_FORMAT_DATEONLY.length()
-                        ?DateUtils.DATE_FORMAT_DATEONLY
-                        :DateUtils.DATE_FORMAT_DATETIME);
+                        ? DateUtils.DATE_FORMAT_DATEONLY
+                        : DateUtils.DATE_FORMAT_DATETIME);
 
     }
 
     /**
      * 利用缺省的Date格式(YYYY/MM/DD hh:mm:ss)转化String到java.sql.Timestamp
      *
-     * @param sDate
-     * Date string
-     * @param sFmt
-     * Date format DATE_FORMAT_DATEONLY/DATE_FORMAT_DATETIME
+     * @param sDate Date string
+     * @param sFmt  Date format DATE_FORMAT_DATEONLY/DATE_FORMAT_DATETIME
      * @return
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static java.sql.Timestamp toSqlTimestamp(String sDate, String sFmt) {
         String temp = null;
@@ -451,8 +439,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
      * 以YYYY/MM/DD HH24:MI:SS格式返回系统日期时间
      *
      * @return 系统日期时间
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static String getSysDateTimeString() {
         return toString(new java.util.Date(System.currentTimeMillis()), DateUtils.sdfDateTime);
@@ -461,13 +449,11 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 根据指定的Format转化java.util.Date到String
      *
-     * @param dt
-     * java.util.Date instance
-     * @param sFmt
-     * Date format , DATE_FORMAT_DATEONLY or DATE_FORMAT_DATETIME
+     * @param dt   java.util.Date instance
+     * @param sFmt Date format , DATE_FORMAT_DATEONLY or DATE_FORMAT_DATETIME
      * @return
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static String toString(java.util.Date dt, String sFmt) {
         if (dt == null || sFmt == null || "".equals(sFmt)) {
@@ -479,13 +465,11 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 利用指定SimpleDateFormat instance转换java.util.Date到String
      *
-     * @param dt
-     * java.util.Date instance
-     * @param formatter
-     * SimpleDateFormat Instance
+     * @param dt        java.util.Date instance
+     * @param formatter SimpleDateFormat Instance
      * @return
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     private static String toString(java.util.Date dt, SimpleDateFormat formatter) {
         String sRet = null;
@@ -503,11 +487,10 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 转换java.sql.Timestamp到String，格式为YYYY/MM/DD HH24:MI
      *
-     * @param dt
-     * java.sql.Timestamp instance
+     * @param dt java.sql.Timestamp instance
      * @return
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static String toSqlTimestampString2(java.sql.Timestamp dt) {
         if (dt == null) {
@@ -524,14 +507,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 根据指定的格式转换java.sql.Timestamp到String
      *
-     * @param dt
-     * java.sql.Timestamp instance
-     * @param sFmt
-     * Date 格式，DATE_FORMAT_DATEONLY/DATE_FORMAT_DATETIME/
-     * DATE_FORMAT_SESSION
+     * @param dt   java.sql.Timestamp instance
+     * @param sFmt Date 格式，DATE_FORMAT_DATEONLY/DATE_FORMAT_DATETIME/
+     *             DATE_FORMAT_SESSION
      * @return
-     * @since 1.0
      * @history
+     * @since 1.0
      */
     public static String toSqlTimestampString(java.sql.Timestamp dt, String sFmt) {
         String temp = null;
@@ -565,8 +546,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * Timestamp 格式转换成yyyy-MM-dd timestampToSql(Timestamp 格式转换成yyyy-MM-dd)
      *
-     * @param timestamp
-     * 时间
+     * @param timestamp 时间
      * @return createTimeStr yyyy-MM-dd 时间
      * @Exception 异常对象
      * @since V1.0
@@ -580,14 +560,10 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 判断一个时间是否在某个时间区间内
      *
-     * @param now
-     * 目标时间
-     * @param start
-     * 时间区间开始
-     * @param end
-     * 时间区间结束
-     * @param model
-     * 区间模式
+     * @param now   目标时间
+     * @param start 时间区间开始
+     * @param end   时间区间结束
+     * @param model 区间模式
      * @return 是否在区间内
      */
     public static boolean isBetween(Date now, Date start, Date end, int model) {
@@ -597,31 +573,26 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 判断时间是否在制定的时间段之类
      *
-     * @param date
-     * 需要判断的时间
-     * @param start
-     * 时间段的起始时间
-     * @param end
-     * 时间段的截止时间
-     * @param interModel
-     * 区间的模式
+     * @param date       需要判断的时间
+     * @param start      时间段的起始时间
+     * @param end        时间段的截止时间
+     * @param interModel 区间的模式
      *
-     * <pre>
-     * 取值：
-     * LEFT_OPEN_RIGHT_OPEN
-     * LEFT_CLOSE_RIGHT_OPEN
-     * LEFT_OPEN_RIGHT_CLOSE
-     * LEFT_CLOSE_RIGHT_CLOSE
-     * </pre>
-     * @param compModel
-     * 比较的模式
+     *                   <pre>
+     *                   取值：
+     *                   LEFT_OPEN_RIGHT_OPEN
+     *                   LEFT_CLOSE_RIGHT_OPEN
+     *                   LEFT_OPEN_RIGHT_CLOSE
+     *                   LEFT_CLOSE_RIGHT_CLOSE
+     *                   </pre>
+     * @param compModel  比较的模式
      *
-     * <pre>
-     * 取值：
-     * COMP_MODEL_DATE	只比较日期，不比较时间
-     * COMP_MODEL_TIME	只比较时间，不比较日期
-     * COMP_MODEL_DATETIME 比较日期，也比较时间
-     * </pre>
+     *                   <pre>
+     *                   取值：
+     *                   COMP_MODEL_DATE	只比较日期，不比较时间
+     *                   COMP_MODEL_TIME	只比较时间，不比较日期
+     *                   COMP_MODEL_DATETIME 比较日期，也比较时间
+     *                   </pre>
      * @return
      */
     public static boolean isBetween(Date date, Date start, Date end, int interModel, int compModel) {
@@ -881,7 +852,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     }
 
     /**
-     *
      * 1 第一季度 2 第二季度 3 第三季度 4 第四季度
      *
      * @param date
@@ -921,16 +891,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
         return season;
     }
 
-    public static int getWeekOfYear(Date date)
-    {
+    public static int getWeekOfYear(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTime(date);
         return calendar.get(Calendar.WEEK_OF_YEAR);
     }
 
-    public static int getMonthOfYear(Date date)
-    {
+    public static int getMonthOfYear(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTime(date);
@@ -953,14 +921,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
         }
         return date;
     }
+
     /**
      * 字符串转date
      *
      * @param dateString
      * @return
      */
-    public static Date StringToHMSDate(String dateString) throws ParseException{
-        Date date= HMS_FORMAT.parse(dateString);
+    public static Date StringToHMSDate(String dateString) throws ParseException {
+        Date date = HMS_FORMAT.parse(dateString);
         return date;
     }
 
@@ -995,14 +964,10 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 判断开始时间和结束时间，是否超出了当前时间的一定的间隔数限制 如：开始时间和结束时间，不能超出距离当前时间90天
      *
-     * @param startDate
-     * 开始时间
-     * @param endDate
-     * 结束时间按
-     * @param interval
-     * 间隔数
-     * @param dateUnit
-     * 单位(如：月，日),参照Calendar的时间单位
+     * @param startDate 开始时间
+     * @param endDate   结束时间按
+     * @param interval  间隔数
+     * @param dateUnit  单位(如：月，日),参照Calendar的时间单位
      * @return
      */
     public static boolean isOverIntervalLimit(Date startDate, Date endDate, int interval, int dateUnit) {
@@ -1019,12 +984,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 判断开始时间和结束时间，是否超出了当前时间的一定的间隔数限制, 时间单位默认为天数 如：开始时间和结束时间，不能超出距离当前时间90天
      *
-     * @param startDate
-     * 开始时间
-     * @param endDate
-     * 结束时间按
-     * @param interval
-     * 间隔数
+     * @param startDate 开始时间
+     * @param endDate   结束时间按
+     * @param interval  间隔数
      * @return
      */
     public static boolean isOverIntervalLimit(Date startDate, Date endDate, int interval) {
@@ -1041,12 +1003,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 判断开始时间和结束时间，是否超出了当前时间的一定的间隔数限制, 时间单位默认为天数 如：开始时间和结束时间，不能超出距离当前时间90天
      *
-     * @param startDateStr
-     * 开始时间
-     * @param endDateStr
-     * 结束时间按
-     * @param interval
-     * 间隔数
+     * @param startDateStr 开始时间
+     * @param endDateStr   结束时间按
+     * @param interval     间隔数
      * @return
      */
     public static boolean isOverIntervalLimit(String startDateStr, String endDateStr, int interval) {
@@ -1065,10 +1024,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * 传入时间字符串及时间格式，返回对应的Date对象
      *
-     * @param src
-     * 时间字符串
-     * @param pattern
-     * 时间格式
+     * @param src     时间字符串
+     * @param pattern 时间格式
      * @return Date
      */
     public static java.util.Date getDateFromString(String src, String pattern) {
@@ -1365,10 +1322,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     /**
      * getStrFormTime:
      *
-     * @param form
-     * 格式时间
-     * @param date
-     * 时间
+     * @param form 格式时间
+     * @param date 时间
      * @return
      */
     public static String getStrFormTime(String form, Date date) {
@@ -1414,34 +1369,36 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
      * @param start
      * @return
      */
-    public static Map getHMS(Date end,Date start){
+    public static Map getHMS(Date end, Date start) {
         Map map = new HashMap();
-        long time = end.getTime()-start.getTime();
+        long time = end.getTime() - start.getTime();
         BigDecimal bd = new BigDecimal(time);
-        BigDecimal hour = bd.divide(new BigDecimal(1000*60*60),BigDecimal.ROUND_DOWN);
-        map.put("hour",hour.intValue());
-        BigDecimal minute = bd.divide(new BigDecimal(1000*60),BigDecimal.ROUND_DOWN);
-        BigDecimal bmi = minute.subtract(new BigDecimal(hour.intValue()*60));
-        map.put("minute",bmi.intValue());
-        BigDecimal sec = bd.divide(new BigDecimal(1000),BigDecimal.ROUND_DOWN);
-        BigDecimal second = sec.subtract(new BigDecimal(bmi.intValue()*60).add(new BigDecimal(hour.intValue()*60*60)));
-        map.put("second",second.intValue());
-       return map;
+        BigDecimal hour = bd.divide(new BigDecimal(1000 * 60 * 60), BigDecimal.ROUND_DOWN);
+        map.put("hour", hour.intValue());
+        BigDecimal minute = bd.divide(new BigDecimal(1000 * 60), BigDecimal.ROUND_DOWN);
+        BigDecimal bmi = minute.subtract(new BigDecimal(hour.intValue() * 60));
+        map.put("minute", bmi.intValue());
+        BigDecimal sec = bd.divide(new BigDecimal(1000), BigDecimal.ROUND_DOWN);
+        BigDecimal second = sec.subtract(new BigDecimal(bmi.intValue() * 60).add(new BigDecimal(hour.intValue() * 60 * 60)));
+        map.put("second", second.intValue());
+        return map;
     }
 
     /**
      * 指定时间之前或者之后多少毫秒的时间
+     *
      * @param date
      * @param milliSecond
      * @return
      */
-    public static Date addDate(Date date ,int milliSecond) {
+    public static Date addDate(Date date, int milliSecond) {
         Date afterDate = new Date(date.getTime() + milliSecond);
         return afterDate;
     }
 
     /**
      * 根据前后时间，根据天数 获取分段小时
+     *
      * @param dateStart
      * @param dateEnd
      * @return
@@ -1452,15 +1409,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
         for (int i = 0; i <= days; i++) {
             Map map = new HashMap();
             if (i == 0) {
-                map.put("startTime", DatePoor.getStringForDateByFormat(dateStart, "HH:mm")+":00");
+                map.put("startTime", DatePoor.getStringForDateByFormat(dateStart, "HH:mm") + ":00");
                 if (i == days) {
-                    map.put("endTime", DatePoor.getStringForDateByFormat(dateEnd, "HH:mm")+":00");
+                    map.put("endTime", DatePoor.getStringForDateByFormat(dateEnd, "HH:mm") + ":00");
                 } else {
                     map.put("endTime", "23:59:00");
                 }
-            }else if (i == days) {
+            } else if (i == days) {
                 map.put("startTime", "00:00:00");
-                map.put("endTime", DatePoor.getStringForDateByFormat(dateEnd, "HH:mm")+":00");
+                map.put("endTime", DatePoor.getStringForDateByFormat(dateEnd, "HH:mm") + ":00");
             } else {
                 map.put("startTime", "00:00:00");
                 map.put("endTime", "23:59:00");
@@ -1511,44 +1468,44 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
         return Integer.parseInt(String.valueOf(between_days));
     }
 
-    public static List getDiffDateTimeSlot(Date start,Date end) throws Exception{
+    public static List getDiffDateTimeSlot(Date start, Date end) throws Exception {
         List list = new ArrayList();
         long days = DateUtils.daysBetween(start, end);
         Calendar s = Calendar.getInstance();
         s.setTime(start);
         String startTime = DateUtils.LONG_DATE_FORMAT.format(s.getTime());
         String endDate = DateUtils.LONG_DATE_FORMAT.format(end);
-        if (days > 0){
-            for (int i=0;i<days+1;i++){
+        if (days > 0) {
+            for (int i = 0; i < days + 1; i++) {
                 Map map = new HashMap();
                 Calendar e = Calendar.getInstance();
                 e.setTime(start);
-                e.add(Calendar.DATE,i);
-                e.set(Calendar.HOUR_OF_DAY,0);
-                e.set(Calendar.MINUTE,0);
-                e.set(Calendar.SECOND,0);
-                if (i != 0){
+                e.add(Calendar.DATE, i);
+                e.set(Calendar.HOUR_OF_DAY, 0);
+                e.set(Calendar.MINUTE, 0);
+                e.set(Calendar.SECOND, 0);
+                if (i != 0) {
                     startTime = DateUtils.LONG_DATE_FORMAT.format(e.getTime());
                 }
-                s.add(Calendar.DATE,i);
-                s.set(Calendar.HOUR_OF_DAY,23);
-                s.set(Calendar.MINUTE,59);
-                s.set(Calendar.SECOND,59);
+                s.add(Calendar.DATE, i);
+                s.set(Calendar.HOUR_OF_DAY, 23);
+                s.set(Calendar.MINUTE, 59);
+                s.set(Calendar.SECOND, 59);
                 String endTime = DateUtils.LONG_DATE_FORMAT.format(s.getTime());
                 //判断结束时间是否在范围内
-                if (!DateUtils.isBetween(end,start,s.getTime(),DateUtils.LEFT_CLOSE_RIGHT_CLOSE)){
-                    map.put("startTime",startTime);
-                    map.put("endTime",endTime);
-                }else {
-                    map.put("startTime",startTime);
-                    map.put("endTime",endDate);
+                if (!DateUtils.isBetween(end, start, s.getTime(), DateUtils.LEFT_CLOSE_RIGHT_CLOSE)) {
+                    map.put("startTime", startTime);
+                    map.put("endTime", endTime);
+                } else {
+                    map.put("startTime", startTime);
+                    map.put("endTime", endDate);
                 }
                 list.add(map);
             }
-        }else {
+        } else {
             Map map = new HashMap();
-            map.put("startTime",startTime);
-            map.put("endTime",endDate);
+            map.put("startTime", startTime);
+            map.put("endTime", endDate);
             list.add(map);
         }
         return list;
@@ -1574,6 +1531,94 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
     }
 
     public static void main(String[] args) throws Exception{
+    /**
+     * 传入日期获取12月前的月份
+     *
+     * @param Date
+     * @return
+     */
+    public static String getYearAgoMonth(String Date) {
+        String[] split = Date.split("-");
+        String year = split[0];
+        String month = split[1];
+        Integer yearNum = Integer.parseInt(year);
+        Integer monthNum = Integer.parseInt(month);
+        for (int i = 0; i < 12; i++) {
+            monthNum = monthNum - 1;
+            if (monthNum == 0) {
+                yearNum = yearNum - 1;
+                monthNum = 12;
+            }
+        }
+        String agoYear = yearNum.toString();
+        String agoMonth = monthNum.toString();
+
+        String agoDate = agoYear + "-" + agoMonth + "-" + split[2];
+
+        return agoDate;
+    }
+
+    /**
+     * 传入日期获取上个月份
+     *
+     * @param Date
+     * @return
+     */
+    public static String getAgoMonth(String Date) {
+        String[] split = Date.split("-");
+        String year = split[0];
+        String month = split[1];
+        Integer yearNum = Integer.parseInt(year);
+        Integer monthNum = Integer.parseInt(month);
+
+        monthNum = monthNum - 1;
+        if (monthNum == 0) {
+            yearNum = yearNum - 1;
+            monthNum = 12;
+        }
+
+        String agoYear = yearNum.toString();
+        String agoMonth = monthNum.toString();
+        if(agoMonth.length() == 1){
+            agoMonth = "0" + agoMonth;
+        }
+
+        String agoDate = agoYear + "-" + agoMonth + "-" + split[2];
+
+        return agoDate;
+    }
+
+    /**
+     * 传入日期获取下个月份
+     *
+     * @param Date
+     * @return
+     */
+    public static String getNextMonth(String Date) {
+        String[] split = Date.split("-");
+        String year = split[0];
+        String month = split[1];
+        Integer yearNum = Integer.parseInt(year);
+        Integer monthNum = Integer.parseInt(month);
+
+        monthNum = monthNum + 1;
+        if (monthNum == 13) {
+            yearNum = yearNum + 1;
+            monthNum = 01;
+        }
+
+        String nextYear = yearNum.toString();
+        String nextMonth = monthNum.toString();
+        if(nextMonth.length() == 1){
+            nextMonth = "0" + nextMonth;
+        }
+
+        String nextDate = nextYear + "-" + nextMonth + "-" + split[2];
+
+        return nextDate;
+    }
+
+    public static void main(String[] args) throws Exception {
         /*Date date3 = DateUtils.addMinutes(new Date(), 5);
         System.out.println(new Date().after(DateUtils.addMinute(new Date(), -10)));
         Date date1 = DateUtils.addMinutes(new Date(), -1);
@@ -1593,11 +1638,11 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils{
             e.printStackTrace();
         }*/
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR,2018);
-        c.set(Calendar.MONTH,1);
-        c.set(Calendar.HOUR_OF_DAY,0);
-        c.set(Calendar.MINUTE,0);
-        c.set(Calendar.SECOND,0);
+        c.set(Calendar.YEAR, 2018);
+        c.set(Calendar.MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
         Date date = getFirstDayOfMonth(c.getTime());
         Date endD = getLastDayOfMonth(c.getTime());
 

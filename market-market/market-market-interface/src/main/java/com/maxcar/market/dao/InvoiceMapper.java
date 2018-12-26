@@ -7,6 +7,8 @@ import com.maxcar.market.model.response.DealResponse;
 import com.maxcar.market.model.response.InvoicePerson;
 import com.maxcar.market.pojo.Invoice;
 import com.maxcar.market.pojo.InvoiceExample;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -116,4 +118,8 @@ public interface InvoiceMapper extends BaseDao<Invoice, String> {
     List<InvoiceExcel> detailsManage(Invoice invoice);
 
     Double selectPriceByCarId(@Param("carId") String carId);
+
+    Map<String, Object> nowDeal(@Param("marketId") String marketId, @Param("tenantId") String tenantId, @Param("dayStart") Date dayStart, @Param("dayEnd") Date dayEnd);
+
+    Map<String,Object> nowCommercialDeal(@Param("marketId") String marketId, @Param("tenantId") String tenantId, @Param("dayStart") Date dayStart, @Param("dayEnd") Date dayEnd);
 }

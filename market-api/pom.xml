@@ -445,6 +445,11 @@
             <artifactId>market-tenant-app-interface</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.maxcar</groupId>
+            <artifactId>market-statistics-interface</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!--websocket-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
