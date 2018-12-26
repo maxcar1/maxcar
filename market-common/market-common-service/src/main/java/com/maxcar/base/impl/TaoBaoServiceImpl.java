@@ -458,7 +458,6 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 			result=checkByZCJ(car.getVin());
 			String time1  = String.valueOf(System.currentTimeMillis());
 			int stop = time1.length();
-			String fileName = car.getVin()+"_"+time1.substring(stop-3, stop)+".jpg";
 			JSONObject json = new JSONObject();
 			if(result.getResultCode()==200){
 				json = updateTaobaoImg(projectUrl+"\\"+result.getMessage(), result.getMessage(), sessionKey);
@@ -470,16 +469,16 @@ public class TaoBaoServiceImpl implements TaoBaoService {
 						if (!json.isEmpty() && json.get("picture_path") != null) {
 							map.put("zcjUrl", json.get("picture_path").toString());
 						}else {
-							ftlName="carInfo";
+							ftlName="czCarInfoBackups";
 						}
 					}else {
-						ftlName="carInfo";
+						ftlName="czCarInfoBackups";
 					}
 				}else {
-					ftlName="carInfo";
+					ftlName="czCarInfoBackups";
 				}
 			}else {
-				ftlName="carInfo";
+				ftlName="czCarInfoBackups";
 			}
 
 		}else if (config.getCheckSource()==3){
