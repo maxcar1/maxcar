@@ -4,7 +4,6 @@ import com.maxcar.base.util.DateUtils;
 import com.maxcar.statistics.dao.CarpriceDayMapper;
 import com.maxcar.statistics.dao.InventoryInvoiceDayMapper;
 import com.maxcar.statistics.dao.InventoryInvoiceMonthMapper;
-import com.maxcar.statistics.model.entity.InventoryInvoiceDayEntity;
 import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
 import com.maxcar.statistics.model.request.TradingRequest;
 import com.maxcar.statistics.model.response.TradingResponse;
@@ -12,7 +11,6 @@ import com.maxcar.statistics.service.TradingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 
@@ -217,10 +215,10 @@ public class TradingServiceImpl implements TradingService {
             double avgPriceYear = 0.0;
             List<InventoryInvoiceMonthEntity> agoYearList = inventoryInvoiceMonthMapper.selectAllMonth(tradingRequest);
             if (agoYearList.size() > 0) {
-                InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity1 = agoList.get(0);
+                InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity1 = agoYearList.get(0);
                 Double agoSalesAvgPrice = inventoryInvoiceMonthEntity1.getSalesAvgPrice();
                 avgPriceYear = Math.round((nowSalesAvgPrice - agoSalesAvgPrice) / agoSalesAvgPrice * 100) / 100.0;
-                tradingResponse.setAvgPriceMonth(avgPriceYear);
+                tradingResponse.setAvgPriceYear(avgPriceYear);
             }
             tradingResponses.add(tradingResponse);
         }
@@ -231,12 +229,12 @@ public class TradingServiceImpl implements TradingService {
     public Map<String, Double> getTenantCount(TradingRequest tradingRequest) {
         Map map = inventoryInvoiceDayMapper.tenantCarNum(tradingRequest);
         if (map == null) {
-            map.put("10万以下", 0.0);
-            map.put("10-20万", 0.0);
-            map.put("20-30万", 0.0);
-            map.put("30-40万", 0.0);
-            map.put("40-50万", 0.0);
-            map.put("50万以上", 0.0);
+            map.put("10台以下", 0.0);
+            map.put("10-20台", 0.0);
+            map.put("20-30台", 0.0);
+            map.put("30-40台", 0.0);
+            map.put("40-50台", 0.0);
+            map.put("50台以上", 0.0);
         }
         return map;
     }
@@ -288,7 +286,12 @@ public class TradingServiceImpl implements TradingService {
     }
 
     @Override
-    public Map<String, Object> getCarPrice(TradingRequest tradingRequest) {
+    public Map<String, Object> getCarPrice(TradingRequest tradingRequest) throws ParseException {
+        String timeEnd = tradingRequest.getTimeEnd();
+        Date date = DateUtils.parseDate(timeEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        Date dayEnd = DateUtils.getDayEnd(date);
+        String s = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATETIME);
+        tradingRequest.setTimeEnd(s);
         Map<String, Object> map = inventoryInvoiceMonthMapper.countCarPriceDistribution(tradingRequest);
         return map;
     }
@@ -297,7 +300,11 @@ public class TradingServiceImpl implements TradingService {
     public List<TradingResponse> transactionLevel(TradingRequest tradingRequest) throws ParseException {
         String timeStart = tradingRequest.getTimeStart();
         timeStart += "-01";
-        tradingRequest.setTimeStart(timeStart);
+        Date dateStart = DateUtils.parseDate(timeStart, DateUtils.DATE_FORMAT_DATEONLY);
+        Date monthStart = DateUtils.getMonthStart(dateStart);
+        String startS = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
+        tradingRequest.setTimeStart(startS);
+
         String timeEnd = tradingRequest.getTimeEnd();
         timeEnd += "-01";
         Date date = DateUtils.parseDate(timeEnd, DateUtils.DATE_FORMAT_DATEONLY);

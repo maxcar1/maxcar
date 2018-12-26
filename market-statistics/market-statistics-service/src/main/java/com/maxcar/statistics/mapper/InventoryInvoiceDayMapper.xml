@@ -316,12 +316,12 @@
     <select id="tenantCarNum" resultType="java.util.LinkedHashMap"
             parameterType="com.maxcar.statistics.model.request.TradingRequest">
         SELECT
-        IFNULL((SUM(aa.sales_count &lt; 10)),0) AS '10万以下',
-        IFNULL((SUM(9 &lt; aa.sales_count AND aa.sales_count &lt; 20)),0) AS '10-20万',
-        IFNULL((SUM(19 &lt; aa.sales_count AND aa.sales_count &lt; 30)),0) AS '20-30万',
-        IFNULL((SUM(29 &lt; aa.sales_count AND aa.sales_count &lt; 40)),0) AS '30-40万',
-        IFNULL((SUM(39 &lt; aa.sales_count AND aa.sales_count &lt; 50)),0) AS '40-50万以上',
-        IFNULL((SUM(49 &lt; aa.sales_count)),0) AS '50万以上'
+        IFNULL((SUM(aa.sales_count &lt; 10)),0) AS '10台以下',
+        IFNULL((SUM(9 &lt; aa.sales_count AND aa.sales_count &lt; 20)),0) AS '10-20台',
+        IFNULL((SUM(19 &lt; aa.sales_count AND aa.sales_count &lt; 30)),0) AS '20-30台',
+        IFNULL((SUM(29 &lt; aa.sales_count AND aa.sales_count &lt; 40)),0) AS '30-40台',
+        IFNULL((SUM(39 &lt; aa.sales_count AND aa.sales_count &lt; 50)),0) AS '40-50台以上',
+        IFNULL((SUM(49 &lt; aa.sales_count)),0) AS '50台以上'
         FROM
         (SELECT
         tenant_id,
@@ -331,8 +331,8 @@
         <if test="marketId != null and marketId != '' ">
             AND market_id = #{marketId}
         </if>
-        <if test="timeStart != null and timeStart != '' ">
-            AND report_time BETWEEN #{timeStart} and #{timeEnd}
+        <if test="timeEnd != null and timeEnd != '' ">
+            AND report_time = #{timeEnd}
         </if>
         <if test="tenantId != null and tenantId != '' ">
             AND tenant_id = #{tenantId}
