@@ -143,16 +143,6 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<StockResponse> getStockAvgDayCar(StockRequest stockRequest) {
-        String timeEnd = stockRequest.getTimeEnd();
-        if (StringUtil.isNotEmpty(timeEnd)) {
-            timeEnd = timeEnd.substring(0, 7);
-            stockRequest.setTimeEnd(timeEnd);
-        }
-        String timeStart = stockRequest.getTimeStart();
-        if (StringUtil.isNotEmpty(timeStart)) {
-            timeStart = timeStart.substring(0, 7);
-            stockRequest.setTimeStart(timeStart);
-        }
         List<StockResponse> list = inventoryInvoiceMonthMapper.getStockAvgMonthCar(stockRequest);
 //        Date date = new Date();
 //        Date monthStart = DateUtils.getMonthStart(date);

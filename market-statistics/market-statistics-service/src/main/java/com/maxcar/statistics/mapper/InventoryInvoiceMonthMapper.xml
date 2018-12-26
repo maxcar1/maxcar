@@ -400,7 +400,7 @@
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
         report_time,
-        AVG(stock_day_avg)
+        AVG(stock_day_avg)  AS stock_day_avg
         FROM
         `inventory_invoice_month`
         WHERE isvalid = 1
