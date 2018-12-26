@@ -214,7 +214,7 @@ public class PropertyContractController extends BaseController {
 
             stringBuffer.append(" <table border=\"1\" cellspacing=\"0\" width=\"100%\" height=\"150\" style=\"margin: 0 auto;text-align: center\">");
 
-            stringBuffer.append(" <thead> <tr><th >物业类型</th><th >区域</th><th >编号</th> <th >数量</th> <th >单价</th><th >优惠后单价</th><th >年费用（元）</th>  <th >期限</th></tr></thead>");
+            stringBuffer.append(" <thead> <tr><th >物业类型</th><th >区域</th><th >编号</th> <th >数量</th> <th >单价</th><th >优惠后单价</th><th >年费用</th>  <th >期限</th></tr></thead>");
 
             Configuration configurationTenantType = new Configuration();
             configurationTenantType.setMarketId(request.getPropertyContract().getMarketId());
