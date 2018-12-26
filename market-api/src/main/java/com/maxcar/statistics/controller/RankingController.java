@@ -163,6 +163,14 @@ public class RankingController extends BaseController {
             groupYesterdayRankingRequest.setMarketId(user.getMarketId());
         }
 
+        if (StringUtil.isEmpty(groupYesterdayRankingRequest.getMarketId())) {
+            groupYesterdayRankingRequest.setMarketId(null);
+        }
+
+        if (StringUtil.isEmpty(groupYesterdayRankingRequest.getTenantId())) {
+            groupYesterdayRankingRequest.setTenantId(null);
+        }
+
         List<GroupYesterdayRankingResponse> list = rankingService.getYesterdayRanking(groupYesterdayRankingRequest);
 
         if (tIsNotEmpty(list)) {

@@ -83,6 +83,11 @@ public class UserTenantServiceImpl extends BaseServiceImpl<UserTenant, String> i
         UserTenantExample userTenantExample = new UserTenantExample();
         UserTenantExample.Criteria userTenantExample1 = userTenantExample.createCriteria();
         userTenantExample1.andIsvalidEqualTo(1);
+
+        if (StringUtil.isNotEmpty(userTenant.getMarketId())){
+            userTenantExample1.andMarketIdEqualTo(userTenant.getMarketId());
+        }
+
         if (null != userTenant.getTenantName() && userTenant.getTenantName() != "") {
             userTenantExample1.andTenantNameLike(userTenant.getTenantName());
         }
