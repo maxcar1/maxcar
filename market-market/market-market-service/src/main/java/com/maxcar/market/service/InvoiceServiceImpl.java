@@ -228,6 +228,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
         if (sum != null) {
             nowSum = Double.parseDouble(sum.toString());
             nowSum = Math.round(nowSum * 100) / 100.0;
+            map.put("sum",Math.round(nowSum * 10000) / 10000.0);
         }
         // 平均交易价格
         Object avg = map.get("avg");
@@ -322,7 +323,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
             double compare = Math.round(contrastSum / yesterSum * 100.0);
             map.put("increaseContrastSum", compare);
         }
-        map.put("contrastSum", contrastSum);
+        map.put("contrastSum", Math.round(contrastSum * 10000) / 10000.0);
         double contrastCount = nowCount - yesterCount;
         if (yesterCount == 0) {
             map.put("increaseContrastCount", "--");
@@ -346,7 +347,7 @@ public class InvoiceServiceImpl extends BaseServiceImpl<Invoice, String> impleme
             double compare = Math.round(contrastStockSum / yesterStockSum * 100.0);
             map.put("increaseContrastStockSum", compare);
         }
-        map.put("contrastStockSum", contrastStockSum);
+        map.put("contrastStockSum",Math.round(contrastStockSum * 10000) / 10000.0);
         double contrastStockCount = nowStockCount - yesterStockCount;
         if (yesterStockCount == 0) {
             map.put("increaseContrastStockCount", "--");
