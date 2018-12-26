@@ -1,5 +1,6 @@
 package com.maxcar.statistics.service.impl;
 
+import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.StringUtil;
 import com.maxcar.market.model.request.GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest;
 import com.maxcar.market.model.response.GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse;
@@ -7,11 +8,16 @@ import com.maxcar.market.service.PropertyContractService;
 import com.maxcar.statistics.dao.*;
 import com.maxcar.statistics.model.entity.*;
 import com.maxcar.statistics.service.InsertStockAndInvoice;
+import com.maxcar.user.entity.Market;
+import com.maxcar.user.service.MarketService;
+import org.apache.commons.lang.math.DoubleRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("insertStockAndInvoice")
 public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
@@ -33,6 +39,12 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
 
     @Autowired
     private PropertyContractService propertyContractService;
+
+    @Autowired
+    private StockAvgDayMapper stockAvgDayMapper;
+
+    @Autowired
+    private MarketService marketService;
 
     @Override
     public void InsertCarpriceDay() throws Exception {
@@ -137,7 +149,7 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
 
     @Override
     public void InsertCarstockDay() throws Exception {
-        for( int i = 0; i< 11; i++){
+        for (int i = 0; i < 11; i++) {
             int priceStart = 0;
             int priceEnd = 0;
             switch (i) {
@@ -238,7 +250,7 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
 
     @Override
     public void InsertCarstockMonth() throws Exception {
-        for( int i = 0; i< 11; i++){
+        for (int i = 0; i < 11; i++) {
             int priceStart = 0;
             int priceEnd = 0;
             switch (i) {
@@ -340,20 +352,20 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
     @Override
     public void InsertInventoryInvoiceDay() throws Exception {
         List<InventoryInvoiceDayEntity> inventoryInvoiceDayEntities = inventoryInvoiceDayMapper.selectInventoryInvoiceDay();
-        for(InventoryInvoiceDayEntity invpice : inventoryInvoiceDayEntities){
+        for (InventoryInvoiceDayEntity invpice : inventoryInvoiceDayEntities) {
             String tenantId = invpice.getTenantId();
             String marketId = invpice.getMarketId();
 
             GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
             requests.setMarketId(marketId);
-            if(StringUtil.isNotEmpty(tenantId)) {
+            if (StringUtil.isNotEmpty(tenantId)) {
                 requests.setTenantId(tenantId);
             }
             GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-            if(responses == null){
-                System.out.println("定时任务 库存交易，"+marketId+"市场没有配置浮动车位");
+            if (responses == null) {
+                System.out.println("定时任务 库存交易，" + marketId + "市场没有配置浮动车位");
             }
-            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal() );
+            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
             invpice.setTenantSpace(parkCount);
             invpice.setIsvalid(1);
             invpice.setVersion(1);
@@ -365,26 +377,115 @@ public class InsertStockAndInvoiceImpl implements InsertStockAndInvoice {
     @Override
     public void InsertInventoryInvoiceMonth() throws Exception {
         List<InventoryInvoiceMonthEntity> inventoryInvoiceMonthEntities = inventoryInvoiceMonthMapper.selectInventoryInvoiceMonth();
-        for(InventoryInvoiceMonthEntity invpice : inventoryInvoiceMonthEntities){
+        for (InventoryInvoiceMonthEntity invpice : inventoryInvoiceMonthEntities) {
             String tenantId = invpice.getTenantId();
             String marketId = invpice.getMarketId();
 
             GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
             requests.setMarketId(marketId);
-            if(StringUtil.isNotEmpty(tenantId)) {
+            if (StringUtil.isNotEmpty(tenantId)) {
                 requests.setTenantId(tenantId);
             }
             GetCarTotalByMarketIdOrTenantIdOrAreaIdResponse responses = propertyContractService.getCarTotalByMarketIdOrTenantIdOrAreaId(requests);
-            if(responses == null){
-                System.out.println("定时任务 库存交易，"+marketId+"市场没有配置浮动车位");
+            if (responses == null) {
+                System.out.println("定时任务 库存交易，" + marketId + "市场没有配置浮动车位");
             }
-            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal() );
+            int parkCount = (responses.getCarTotal() == null ? 0 : responses.getCarTotal());
             invpice.setTenantSpace(parkCount);
 
             invpice.setIsvalid(1);
             invpice.setVersion(1);
             invpice.setRegisterTime(new Date());
             inventoryInvoiceMonthMapper.insert(invpice);
+        }
+    }
+
+    @Override
+    public void InsertStockAvgDay() throws Exception {
+        Map<Object, Object> map = new HashMap<>();
+        for (int i = 0; i < 10; i++) {
+            int start = 0;
+            int end = 0;
+            String name = "";
+            switch (i) {
+                case 0:
+                    start = 0;
+                    end = 10;
+                    name = "10天以下";
+                    break;
+                case 1:
+                    start = 10;
+                    end = 20;
+                    name = "10-20天";
+                    break;
+                case 2:
+                    start = 20;
+                    end = 30;
+                    name = "20-30天";
+                    break;
+                case 3:
+                    start = 30;
+                    end = 40;
+                    name = "30-40天";
+                    break;
+                case 4:
+                    start = 40;
+                    end = 50;
+                    name = "40-50天";
+                    break;
+                case 5:
+                    start = 50;
+                    end = 60;
+                    name = "50-60天";
+                    break;
+                case 6:
+                    start = 60;
+                    end = 70;
+                    name = "60-70天";
+                    break;
+                case 7:
+                    start = 70;
+                    end = 80;
+                    name = "70-80天";
+                    break;
+                case 8:
+                    start = 80;
+                    end = 90;
+                    name = "80-90天";
+                    break;
+                case 9:
+                    start = 90;
+                    end = 0;
+                    name = "90天以上";
+                    break;
+            }
+            map.put("start",start);
+            map.put("end",end);
+
+            List<Market> markets = marketService.selectAll();
+            for(Market market : markets){
+                String marketNo = market.getMarketNo();
+                map.put("marketId",marketNo);
+                //  查交易
+                Double dealCount = stockAvgDayMapper.sumDealNum(map);
+                //  查库存
+                Double stockCount = stockAvgDayMapper.sumStockNum(map);
+
+                Date date = new Date();
+                String reportTime = DateUtils.formatDate(date, DateUtils.DATE_FORMAT_DATEONLY);
+
+                StockAvgDayEntity stockAvgDayEntity = new StockAvgDayEntity();
+                stockAvgDayEntity.setReportTime(reportTime);
+                stockAvgDayEntity.setMarketId(marketNo);
+                stockAvgDayEntity.setStockDealAvgId(i);
+                stockAvgDayEntity.setStockDealAvgNum(dealCount.intValue() + stockCount.intValue());
+                stockAvgDayEntity.setStockDealAvgName(name);
+                stockAvgDayEntity.setIsvalid(1);
+                stockAvgDayEntity.setVersion(1);
+                stockAvgDayEntity.setRegisterTime(date);
+
+                stockAvgDayMapper.insert(stockAvgDayEntity);
+            }
         }
     }
 }

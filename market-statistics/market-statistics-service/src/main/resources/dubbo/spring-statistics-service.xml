@@ -41,4 +41,9 @@
             id="propertyContractService"
             check="false" retries="0" timeout="20000"/>
 
+    <dubbo:reference
+            interface="com.maxcar.user.service.MarketService"
+            id="marketService"
+            check="false" retries="0" timeout="20000"/>
+
 </beans>

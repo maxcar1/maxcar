@@ -2,10 +2,8 @@ package com.maxcar.statistics.service.impl;
 
 import com.maxcar.base.util.DateUtils;
 import com.maxcar.base.util.StringUtil;
-import com.maxcar.statistics.dao.CarStockDayMapper;
-import com.maxcar.statistics.dao.CarStockMonthMapper;
-import com.maxcar.statistics.dao.InventoryInvoiceDayMapper;
-import com.maxcar.statistics.dao.InventoryInvoiceMonthMapper;
+import com.maxcar.statistics.dao.*;
+import com.maxcar.statistics.model.entity.StockAvgDayEntity;
 import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.service.StockService;
@@ -27,20 +25,27 @@ public class StockServiceImpl implements StockService {
     private CarStockMonthMapper carStockMonthMapper;
 
     @Autowired
-    private CarStockDayMapper carStockDayMapper;
+    private StockAvgDayMapper stockAvgDayMapper;
 
     @Override
     public List<StockResponse> getCountAndValue(StockRequest stockRequest) {
         //  封装当月的数据的查询条件
         StockRequest stockRequestNowMonth = new StockRequest();
         Date date = new Date();
-        Date monthStart = DateUtils.getMonthStart(date);
-        String nowMonthStart = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
-        stockRequestNowMonth.setTimeStart(nowMonthStart);
-        Date monthEnd = DateUtils.getMonthEnd(date);
-        String nowMonthEnd = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
-        stockRequestNowMonth.setTimeEnd(nowMonthEnd);
+//        Date monthStart = DateUtils.getMonthStart(date);
+//        String nowMonthStart = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
+//        stockRequestNowMonth.setTimeStart(nowMonthStart);
+//        Date monthEnd = DateUtils.getMonthEnd(date);
+//        String nowMonthEnd = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
+//        stockRequestNowMonth.setTimeEnd(nowMonthEnd);
         stockRequestNowMonth.setMarketId(stockRequest.getMarketId());
+        Date monthEnd = DateUtils.getMonthEnd(date);
+        Date monthStart = DateUtils.getMonthStart(date);
+        String monthS = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATEONLY);
+        String monthE = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATEONLY);
+        stockRequestNowMonth.setTimeStart(monthS.substring(0,7));
+        stockRequestNowMonth.setTimeEnd(monthE.substring(0,7));
+
         if (StringUtil.isNotEmpty(stockRequest.getTenantId())) {
             stockRequestNowMonth.setTenantId(stockRequest.getTenantId());
         }
@@ -51,11 +56,12 @@ public class StockServiceImpl implements StockService {
         //  获取前几个月的数据集合
         List<StockResponse> list = inventoryInvoiceMonthMapper.getCountAndValue(stockRequest);
         //  获取当月数据
-        StockResponse nowMonth = inventoryInvoiceDayMapper.getCountAndValue(stockRequestNowMonth);
+        List<StockResponse> nowMonth = inventoryInvoiceMonthMapper.getCountAndValue(stockRequestNowMonth);
         //  如果当月数据不为空，则加入集合
-        if (nowMonth != null) {
-            nowMonth.setReportTime(nowMonthStart.substring(0, 7));
-            list.add(nowMonth);
+        if (nowMonth != null && nowMonth.size() > 0) {
+            StockResponse response = nowMonth.get(0);
+            response.setReportTime(monthS.substring(0, 7));
+            list.add(response);
         }
         for (StockResponse inventory : list) {
             Double stockPrice = inventory.getStockPrice();
@@ -86,12 +92,12 @@ public class StockServiceImpl implements StockService {
                 agoMonthCount = stockResponse.getStockCount();
                 agoMonthPrice = stockResponse.getStockPrice();
             }
-            avgStockPrice = Math.round((stockPrice + agoMonthPrice) / 2);
+            avgStockPrice = Math.round((stockPrice + agoMonthPrice) * 10000 / 2) / 10000.0;
             avgStockCount = Math.round((stockCount + agoMonthCount) / 2);
 
             //  环比
-            rateMonthStockCount = Math.round((stockCount - agoMonthCount) / agoMonthCount * 100) / 100.0;
-            rateMonthStockPrice = Math.round((stockPrice - agoMonthPrice) / agoMonthPrice * 100) / 100.0;
+            rateMonthStockCount = Math.round((stockCount - agoMonthCount) / agoMonthCount * 10000) / 10000.0;
+            rateMonthStockPrice = Math.round((stockPrice - agoMonthPrice) / agoMonthPrice * 10000) / 10000.0;
             //  设置移动平均
             inventory.setAvgStockCount(avgStockCount);
             inventory.setAvgStockPrice(avgStockPrice);
@@ -106,8 +112,8 @@ public class StockServiceImpl implements StockService {
                 Double stockPriceYear = stockResponse.getStockPrice();
                 Double stockCountYear = stockResponse.getStockCount();
 
-                rateYearStockCount = Math.round((stockCount - stockCountYear) / stockCountYear * 100) / 100.0;
-                rateYearStockPrice = Math.round((stockPrice - stockPriceYear) / stockPriceYear * 100) / 100.0;
+                rateYearStockCount = Math.round((stockCount - stockCountYear) / stockCountYear * 10000) / 10000.0;
+                rateYearStockPrice = Math.round((stockPrice - stockPriceYear) / stockPriceYear * 10000) / 10000.0;
             }
             //  设置同比参数
             inventory.setStockYearCountIncrease(rateYearStockCount);
@@ -131,8 +137,8 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<StockResponse> getStockDayCar(StockRequest stockRequest) {
-        return inventoryInvoiceMonthMapper.getStockDayCar(stockRequest);
+    public List<StockAvgDayEntity> getStockDayCar(StockRequest stockRequest) {
+        return stockAvgDayMapper.getStockDayCar(stockRequest);
     }
 
     @Override

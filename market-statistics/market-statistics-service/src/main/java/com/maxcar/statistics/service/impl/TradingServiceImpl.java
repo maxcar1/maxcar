@@ -52,7 +52,14 @@ public class TradingServiceImpl implements TradingService {
                 Integer nowSalesCount = inventory.getSalesCount();
                 Double nowSalesPrice = inventory.getSalesPrice();
                 Integer avgSalesCount = (nowSalesCount + (agoSalesCount == null ? 0 : agoSalesCount)) / 2;
-                Double avgSalesPrice = (nowSalesPrice + (agoSalesPrice == null ? 0 : agoSalesPrice)) / 2 / 10000.0;
+                Double avgSalesPrice = (nowSalesPrice + (agoSalesPrice == null ? 0 : agoSalesPrice)) / 2;
+                inventory.setAvgSalesCount(avgSalesCount);
+                inventory.setAvgSalesPrice(avgSalesPrice);
+            } else {
+                Integer nowSalesCount = inventory.getSalesCount();
+                Double nowSalesPrice = inventory.getSalesPrice();
+                Integer avgSalesCount = (nowSalesCount) / 2;
+                Double avgSalesPrice = (nowSalesPrice) / 2;
                 inventory.setAvgSalesCount(avgSalesCount);
                 inventory.setAvgSalesPrice(avgSalesPrice);
             }
@@ -146,31 +153,31 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public Map<String, Object> getAvgPrice(TradingRequest tradingRequest) {
         List<InventoryInvoiceMonthEntity> list = inventoryInvoiceMonthMapper.selectAllMonth(tradingRequest);
-        Date date = new Date();
-        Date monthStart = DateUtils.getMonthStart(date);
-        Date monthEnd = DateUtils.getMonthEnd(date);
-        String start = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATETIME);
-        String end = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATETIME);
-        String nowMonth = start.substring(0, 7);
-        tradingRequest.setTimeStart(start);
-        tradingRequest.setTimeEnd(end);
-
-        InventoryInvoiceDayEntity inventoryInvoiceDayEntity = inventoryInvoiceDayMapper.sumMonth(tradingRequest);
+//        Date date = new Date();
+//        Date monthStart = DateUtils.getMonthStart(date);
+//        Date monthEnd = DateUtils.getMonthEnd(date);
+//        String start = DateUtils.formatDate(monthStart, DateUtils.DATE_FORMAT_DATETIME);
+//        String end = DateUtils.formatDate(monthEnd, DateUtils.DATE_FORMAT_DATETIME);
+//        String nowMonth = start.substring(0, 7);
+//        tradingRequest.setTimeStart(start);
+//        tradingRequest.setTimeEnd(end);
+//
+//        InventoryInvoiceDayEntity inventoryInvoiceDayEntity = inventoryInvoiceDayMapper.sumMonth(tradingRequest);
         Double avgSalesPrice = 0.0;
-        if (inventoryInvoiceDayEntity != null) {
-            avgSalesPrice = inventoryInvoiceDayEntity.getSalesAvgPrice();
-            InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity = new InventoryInvoiceMonthEntity();
-            inventoryInvoiceMonthEntity.setReportTime(inventoryInvoiceDayEntity.getReportTime());
-            inventoryInvoiceMonthEntity.setSalesAvgPrice(inventoryInvoiceDayEntity.getSalesAvgPrice());
-            inventoryInvoiceMonthEntity.setReportTime(nowMonth);
-            list.add(inventoryInvoiceMonthEntity);
-        }
+//        if (inventoryInvoiceDayEntity != null) {
+//            avgSalesPrice = inventoryInvoiceDayEntity.getSalesAvgPrice();
+//            InventoryInvoiceMonthEntity inventoryInvoiceMonthEntity = new InventoryInvoiceMonthEntity();
+//            inventoryInvoiceMonthEntity.setReportTime(inventoryInvoiceDayEntity.getReportTime());
+//            inventoryInvoiceMonthEntity.setSalesAvgPrice(inventoryInvoiceDayEntity.getSalesAvgPrice());
+//            inventoryInvoiceMonthEntity.setReportTime(nowMonth);
+//            list.add(inventoryInvoiceMonthEntity);
+//        }
         for (InventoryInvoiceMonthEntity monthEntity : list) {
             avgSalesPrice += monthEntity.getSalesAvgPrice();
         }
 
 
-        double avgYearPrice = Math.round((avgSalesPrice == 0 ? 1 : avgSalesPrice) / 12 * 100) / 100.0;
+        double avgYearPrice = Math.round((avgSalesPrice == 0 ? 1 : avgSalesPrice) / list.size() * 100) / 100.0;
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);
         map.put("avgYearPrice", avgYearPrice);

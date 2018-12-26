@@ -621,6 +621,6 @@
           AND c.car_type = 1
           AND c.isvalid = 1
           AND i.bill_time BETWEEN DATE_ADD(CURDATE(),INTERVAL - DAY(CURDATE()) + 1 DAY) AND  NOW()
-        GROUP BY i.tenant_id,i.market_id  limit 10
+        GROUP BY i.tenant_id,i.market_id
     </select>
 </mapper>

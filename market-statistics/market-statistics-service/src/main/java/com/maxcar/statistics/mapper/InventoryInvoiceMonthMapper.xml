@@ -244,8 +244,8 @@
         select
         report_time,
         SUM(IFNULL(sales_count, 0)) AS sales_count,
-        SUM(IFNULL(sales_price, 0)) AS sales_price,
-        AVG(IFNULL(sales_avg_price,0)) AS sales_avg_price
+        SUM(IFNULL(sales_price, 0)) / 10000 AS sales_price ,
+        ROUND(AVG(IFNULL(sales_avg_price,0)),4) AS sales_avg_price
         FROM inventory_invoice_month
         WHERE isvalid = 1
         <if test="marketId != null and marketId != '' ">

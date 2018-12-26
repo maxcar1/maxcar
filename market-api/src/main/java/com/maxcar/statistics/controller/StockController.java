@@ -2,8 +2,7 @@ package com.maxcar.statistics.controller;
 
 import com.maxcar.BaseController;
 import com.maxcar.base.pojo.InterfaceResult;
-import com.maxcar.base.util.DateUtils;
-import com.maxcar.statistics.model.entity.InventoryInvoiceMonthEntity;
+import com.maxcar.statistics.model.entity.StockAvgDayEntity;
 import com.maxcar.statistics.model.request.StockRequest;
 import com.maxcar.statistics.model.response.StockResponse;
 import com.maxcar.statistics.service.StockService;
@@ -102,7 +101,7 @@ public class StockController extends BaseController {
         getUserMarketId(stockRequest, request);
         InterfaceResult interfaceResult = new InterfaceResult();
 
-        List<StockResponse> stockDayCar = stockService.getStockDayCar(stockRequest);
+        List<StockAvgDayEntity> stockDayCar = stockService.getStockDayCar(stockRequest);
 
         if(stockDayCar == null && stockDayCar.size() == 0){
             stockDayCar = new ArrayList<>();
