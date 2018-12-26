@@ -178,15 +178,17 @@ public class ReportController extends BaseController {
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
+            Double growByYearOnYear = null;
+
             if (0 != lastResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
-
-                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
-
-                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+                growByYearOnYear = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
             }
+
+            growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+            growthByMonthYearOnYearPack.setGrowthByYearOnYear(growByYearOnYear == null ? null : df.format(growByYearOnYear));
+
+            yearOnYearPacks.add(growthByMonthYearOnYearPack);
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
 
@@ -205,15 +207,17 @@ public class ReportController extends BaseController {
                 lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
             }
 
+            Double growBySequential = null;
+
             if (0 != lastMonthResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
-
-                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
-
-                sequentialPacks.add(growthByMonthSequentialPack);
+                growBySequential = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
             }
+
+            growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+            growthByMonthSequentialPack.setGrowthBySequential(growBySequential == null ? null : df.format(growBySequential));
+
+            sequentialPacks.add(growthByMonthSequentialPack);
 
         }
 
@@ -454,15 +458,17 @@ public class ReportController extends BaseController {
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
+            Double growByMonthYearOnYear = null;
+
             if (0 != lastResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
-
-                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
-
-                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+                growByMonthYearOnYear = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
             }
+
+            growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+            growthByMonthYearOnYearPack.setGrowthByYearOnYear(growByMonthYearOnYear == null ? null : df.format(growByMonthYearOnYear));
+
+            yearOnYearPacks.add(growthByMonthYearOnYearPack);
 
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
@@ -481,15 +487,16 @@ public class ReportController extends BaseController {
                 lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
             }
 
+            Double growByMonthSequential = null;
+
             if (0 != lastMonthResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
-
-                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
-
-                sequentialPacks.add(growthByMonthSequentialPack);
+                growByMonthSequential = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
             }
+            growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+            growthByMonthSequentialPack.setGrowthBySequential(growByMonthSequential == null ? null : df.format(growByMonthSequential));
+
+            sequentialPacks.add(growthByMonthSequentialPack);
         }
 
 
@@ -694,15 +701,16 @@ public class ReportController extends BaseController {
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
+            Double growByMonthYearOnYear = null;
             if (0 != lastResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
-
-                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
-
-                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+                growByMonthYearOnYear = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
             }
+
+            growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+            growthByMonthYearOnYearPack.setGrowthByYearOnYear(growByMonthYearOnYear == null ? null : df.format(growByMonthYearOnYear));
+
+            yearOnYearPacks.add(growthByMonthYearOnYearPack);
 
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
@@ -721,15 +729,17 @@ public class ReportController extends BaseController {
                 lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
             }
 
+            Double growByMonthSequential = null;
+
             if (0 != lastMonthResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
-
-                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
-
-                sequentialPacks.add(growthByMonthSequentialPack);
+                growByMonthSequential = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
             }
+
+            growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+            growthByMonthSequentialPack.setGrowthBySequential(growByMonthSequential == null ? null : df.format(growByMonthSequential));
+
+            sequentialPacks.add(growthByMonthSequentialPack);
         }
 
 
@@ -933,15 +943,16 @@ public class ReportController extends BaseController {
 
             Double lastResponseAvgPrice = ToolDataUtils.getAvgPrice(lastResponse.getInvoicePrice(), lastResponse.getInvoiceCount());
 
+            Double growByMonthYearOnYear = null;
             if (0 != lastResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
-
-                growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
-                growthByMonthYearOnYearPack.setGrowthByYearOnYear(df.format(grow));
-
-                yearOnYearPacks.add(growthByMonthYearOnYearPack);
+                growByMonthYearOnYear = (thisResponseAvgPrice - lastResponseAvgPrice) / lastResponseAvgPrice * 100;
             }
+
+            growthByMonthYearOnYearPack.setMonth(thisResponse.getNumTime());
+            growthByMonthYearOnYearPack.setGrowthByYearOnYear(growByMonthYearOnYear == null ? null : df.format(growByMonthYearOnYear));
+
+            yearOnYearPacks.add(growthByMonthYearOnYearPack);
 
             // 环比增长率
             GrowthByMonthSequentialPack growthByMonthSequentialPack = new GrowthByMonthSequentialPack();
@@ -960,15 +971,16 @@ public class ReportController extends BaseController {
                 lastMonthResponseAvgPrice = ToolDataUtils.getAvgPrice(lastMonthResponse.get(0).getInvoicePrice(), lastMonthResponse.get(0).getInvoiceCount());
             }
 
+            Double growByMonthSequential = null;
+
             if (0 != lastMonthResponseAvgPrice) {
 
-                Double grow = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
-
-                growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
-                growthByMonthSequentialPack.setGrowthBySequential(df.format(grow));
-
-                sequentialPacks.add(growthByMonthSequentialPack);
+                growByMonthSequential = (thisResponseAvgPrice - lastMonthResponseAvgPrice) / lastMonthResponseAvgPrice * 100;
             }
+            growthByMonthSequentialPack.setMonth(thisResponse.getNumTime());
+            growthByMonthSequentialPack.setGrowthBySequential(growByMonthSequential == null ? null : df.format(growByMonthSequential));
+
+            sequentialPacks.add(growthByMonthSequentialPack);
         }
 
 
