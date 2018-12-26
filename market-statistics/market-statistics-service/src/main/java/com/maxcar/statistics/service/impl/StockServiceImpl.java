@@ -245,12 +245,12 @@ public class StockServiceImpl implements StockService {
         Map<String, Object> map = inventoryInvoiceDayMapper.getTenantStockBranch(stockRequest);
         if (map == null) {
             LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
-            map1.put("10台以下", 0);
-            map1.put("10-20台", 0);
-            map1.put("20-30台", 0);
-            map1.put("30-40台", 0);
-            map1.put("40-50台", 0);
-            map1.put("50台以上", 0);
+            map1.put("10万以下", 0);
+            map1.put("10-20万", 0);
+            map1.put("20-30万", 0);
+            map1.put("30-40万", 0);
+            map1.put("40-50万", 0);
+            map1.put("50万以上", 0);
             return map1;
         }
         return map;
@@ -258,13 +258,15 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Map<String, Object>> getTenantAvgStockTrend(StockRequest stockRequest) {
+        stockRequest.setTimeStart(stockRequest.getTimeStart().substring(0,7));
+        stockRequest.setTimeEnd(stockRequest.getTimeEnd().substring(0,7));
         List<Map<String, Object>> mapList = inventoryInvoiceMonthMapper.getTenantAvgStockTrend(stockRequest);
         Date date = new Date();
         String s = DateUtils.formatDate(date, DateUtils.DATE_FORMAT_DATETIME);
         stockRequest.setTimeStart(s.substring(0, 7));
-        Map<String, Object> nowMap = inventoryInvoiceDayMapper.getTenantAvgStockTrend(stockRequest);
-        nowMap.put("reportTime", s.substring(0, 7));
-        mapList.add(nowMap);
+//        Map<String, Object> nowMap = inventoryInvoiceDayMapper.getTenantAvgStockTrend(stockRequest);
+//        nowMap.put("reportTime", s.substring(0, 7));
+//        mapList.add(nowMap);
         for (Map map : mapList) {
             String reportTime = map.get("reportTime").toString();
             int count = Integer.parseInt(map.get("count").toString());

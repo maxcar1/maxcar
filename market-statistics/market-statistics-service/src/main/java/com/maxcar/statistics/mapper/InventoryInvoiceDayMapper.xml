@@ -507,12 +507,12 @@
     <select id="getTenantStockBranch" resultType="java.util.LinkedHashMap"
             parameterType="com.maxcar.statistics.model.request.StockRequest">
         SELECT
-        SUM(stock_count &lt; 10) AS '10台以下',
-        SUM(9 &lt; stock_count AND stock_count &lt; 20) AS '10-20台',
-        SUM(19 &lt; stock_count AND stock_count &lt; 30) AS '20-30台',
-        SUM(29 &lt; stock_count AND stock_count &lt; 40) AS '30-40台',
-        SUM(39 &lt; stock_count AND stock_count &lt; 50) AS '40-50台',
-        SUM(49 &lt; stock_count) AS '50台以上'
+        SUM(stock_count &lt; 10) AS '10万以下',
+        SUM(9 &lt; stock_count AND stock_count &lt; 20) AS '10-20万',
+        SUM(19 &lt; stock_count AND stock_count &lt; 30) AS '20-30万',
+        SUM(29 &lt; stock_count AND stock_count &lt; 40) AS '30-40万',
+        SUM(39 &lt; stock_count AND stock_count &lt; 50) AS '40-50万',
+        SUM(49 &lt; stock_count) AS '50万以上'
         FROM
         `inventory_invoice_day`
         WHERE
