@@ -206,7 +206,7 @@ public class RankingController extends BaseController {
         }
         InterfaceResult interfaceResult = new InterfaceResult();
         Map<String, Object> map = carService.nowRanking(marketId, tenantId);
-        if (managerFlag == 0 && !StringUtil.isNotEmpty(marketId) && !StringUtil.isNotEmpty(tenantId)) {
+        if (managerFlag == 0 && !StringUtil.isNotEmpty(marketId)) {
             GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest requests = new GetCarSpaceAndOfficeByMarketIdOrAreaIdRequest();
             List<Market> marketList = marketService.selectAll();
             int parkCount = 0;
