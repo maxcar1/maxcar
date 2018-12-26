@@ -1530,7 +1530,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return sb.toString();
     }
 
-    public static void main(String[] args) throws Exception{
     /**
      * 传入日期获取12月前的月份
      *
