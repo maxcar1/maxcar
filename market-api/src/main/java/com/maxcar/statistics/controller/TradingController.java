@@ -146,11 +146,11 @@ public class TradingController extends BaseController {
 //        getUserMarketAndSetTime(tradingRequest, request);
         getUserMarketId(tradingRequest, request);
 
-        String timeStart = tradingRequest.getTimeStart();
-        Date date = DateUtils.parseDate(timeStart, DateUtils.DATE_FORMAT_DATEONLY);
-        Date dayEnd = DateUtils.getDayEnd(date);
-        timeStart = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATEONLY);
-        tradingRequest.setTimeEnd(timeStart);
+//        String timeStart = tradingRequest.getTimeStart();
+//        Date date = DateUtils.parseDate(timeStart, DateUtils.DATE_FORMAT_DATEONLY);
+//        Date dayEnd = DateUtils.getDayEnd(date);
+//        timeStart = DateUtils.formatDate(dayEnd, DateUtils.DATE_FORMAT_DATEONLY);
+//        tradingRequest.setTimeEnd(timeStart);
 
         Map<String, Double> tenantCount = tradingService.getTenantCount(tradingRequest);
 
