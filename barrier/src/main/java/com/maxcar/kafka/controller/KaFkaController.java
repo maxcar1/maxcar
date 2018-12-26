@@ -1,8 +1,10 @@
 package com.maxcar.kafka.controller;
 
 import com.maxcar.barrier.pojo.InterfaceResult;
+import com.maxcar.base.util.JsonUtils;
 import com.maxcar.kafka.service.MessageProducerService;
 import com.maxcar.util.Canstats;
+import com.maxcar.util.JsonTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 
 /**
  * Created by Administrator on 2018/7/11.
@@ -27,14 +31,21 @@ public class KaFkaController {
     private MessageProducerService messageProducerService;
 
     @RequestMapping(value="/send/{topic}/{data}")
-    public InterfaceResult sendMsg(@PathVariable("topic")String topic, @PathVariable("data")String data){
+    public InterfaceResult sendMsg(@PathVariable("topic")String topic, @PathVariable("data")String data, HttpServletResponse response){
         InterfaceResult result = new InterfaceResult();
         try {
             result = messageProducerService.sendMessage(topic,data,false,0, Canstats.KAFKA_SASS);
+            String s = result.getMsg();
+
+            result.setData(URLEncoder.encode(s,"gbk"));
+//            System.out.println(JsonTools.toJson(result).getBytes().length);
+//            result.setTotal(JsonTools.toJson(result).getBytes().length);
+//            result.setTotal(JsonTools.toJson(result).getBytes().length);
         } catch (Exception e) {
             logger.error("发送kafka失败", e);
 
         }
+        response.setHeader("Content-Length",JsonTools.toJson(result).getBytes().length+"");
         return result;
     }
     @RequestMapping(value="/send")

@@ -48,27 +48,42 @@ public class BarrierValid {
         logger.info("rfid" + marketId + Canstats.between + values);
         logger.info("道闸是否受限制：" + !barrier.getStatus().equals("0"));
         String rfid = marketId + Canstats.between + values;
-        if (barrier.getStatus().equals("5")) {//无地感需要控制读标次数10秒内不允许再次读标
-            try {
-                Jedis jedis = RedisUtil.getInstance().getJedis();
-                if (jedis.get("rfid" + rfid) != null) {//如果缓存中已经有请求
-                    logger.info("请不要重复刷标签rfid");
-                    return null;
-                } else {
-                    RedisUtil.getInstance().strings().set("rfid" + rfid, rfid);
-                    //设置十秒时间
-                    RedisUtil.getInstance().keys().expire("rfid" + rfid, 10);
-                }
-                RedisUtil.getInstance().closeJedis(jedis);
-                return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
+        //现做逻辑判定是否特殊请求，同时单独处理异常，也就是这里请求出错不影响开闸
+        try {
+            switch (barrier.getStatus()) {
+                case "5"://无地感需要控制读标次数10秒内不允许再次读标
+                    Jedis jedis = RedisUtil.getInstance().getJedis();
+                    if (jedis.get("rfid" + rfid) != null) {//如果缓存中已经有请求
+                        logger.info("10秒内请重复请求");
+                        return null;
+                    } else {
+                        RedisUtil.getInstance().strings().set("rfid" + rfid, rfid);
+                        //设置十秒时间
+                        RedisUtil.getInstance().keys().expire("rfid" + rfid, 10);
+                    }
+                    RedisUtil.getInstance().closeJedis(jedis);
+                    return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
+                case "6"://公用道闸逻辑，先判断进口是否30秒内读标，如果有出口不处理逻辑
+                    Jedis jediss = RedisUtil.getInstance().getJedis();
+                    if (barrier.getInOutType()==1 && jediss.get("rfid" + rfid) != null) {//如果是出口，那判定入口的rfid缓存中是否已经存在
+                        logger.info("30秒内入口已经请求");
+                        return null;
+                    } else {
+                        if(barrier.getInOutType()==0) {//如果是入口
+                            RedisUtil.getInstance().strings().set("rfid" + rfid, rfid);
+                            //设置30秒时间
+                            RedisUtil.getInstance().keys().expire("rfid" + rfid, 30);
+                        }
+                    }
+                    RedisUtil.getInstance().closeJedis(jediss);
+                    return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
+                default:
+                    return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
             }
-        }else{
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return doS(barrier, rfid, value1, value2, value3, value4, value5, value6, value7, value8, outParam, map);
         }
-
     }
     //下一步执行
     public Map doS(Barrier barrier,String rfid,String value1,String value2,String value3,String value4,String value5,String value6,String value7,String value8,String outParam,Map map){

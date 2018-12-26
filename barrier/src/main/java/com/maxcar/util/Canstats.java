@@ -63,9 +63,9 @@ public class Canstats {
 
     public static String second_send = "8A";//数据二次发送，例：签名错误
 
-    public static String dzOpen = "8180";//开闸命令
+    public static String dzOpen = "80";//开闸命令
 
-    public static String dzClose = "81FF";//开闸命令
+    public static String dzClose = "FF";//关闸命令
 
     public static String dgMark_union_id = "88"; //unionId获取地感的标识
 
