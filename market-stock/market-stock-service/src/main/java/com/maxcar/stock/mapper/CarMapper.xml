@@ -1842,7 +1842,7 @@
     <select id="nowRanking" parameterType="String" resultType="java.util.Map">
         SELECT
         COUNT(*) AS `count`,
-        SUM(cb.market_price) AS stockPrice,
+        IFNULL(SUM(cb.market_price),0) AS stockPrice,
         IFNULL(AVG(DATEDIFF(NOW(),c.`register_time`)),0) AS `avg`
         FROM
         `car` c LEFT JOIN car_base cb

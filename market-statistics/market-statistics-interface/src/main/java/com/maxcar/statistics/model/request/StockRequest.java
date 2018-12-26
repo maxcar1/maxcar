@@ -22,6 +22,8 @@ public class StockRequest implements Serializable {
     private String timeEnd;
     //  车辆数量区间 类型
     private String carNumType;
+    //  同比 环比分类
+    private Integer type;
     //查询的月份
     private String monthNum;
 }
